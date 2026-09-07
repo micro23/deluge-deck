@@ -1,0 +1,10 @@
+node_modules/
+.deluge-test/
+.egg-cache/
+dist/
+!plugin/dist/
+!plugin/dist/*.egg
+.DS_Store
+*.log
+build/
+*.egg-info/
