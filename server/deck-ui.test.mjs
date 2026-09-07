@@ -1,0 +1,839 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { contrastRatio, themeAccentPairs, themePalettes } from './theme-contrast.mjs';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const source = () => readFile(path.join(root, 'src/main.jsx'), 'utf8');
+
+test('remove choices are in-app and pass Deluge the selected remove_data boolean', async () => {
+  const ui = await source();
+  assert.match(ui, /function RemoveModal/);
+  assert.match(ui, /Remove torrent only/);
+  assert.match(ui, /Keep downloaded data on disk/);
+  assert.match(ui, /Remove torrent and data/);
+  assert.match(ui, /remove\(false\)/);
+  assert.match(ui, /remove\(true\)/);
+  assert.match(ui, /core\.remove_torrents', \[initialFiles\.targets, removeData\]/);
+  assert.match(ui, /setAddFiles\(\{ kind: 'remove', targets: target \}\)/);
+  assert.match(ui, /setError\(reason\.message \|\| 'Deluge could not remove/);
+  assert.doesNotMatch(ui, /window\.(alert|confirm)\s*\(/);
+});
+
+test('themes have persistent palette declarations and a desktop/mobile menu', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  for (const name of ['ocean', 'forest', 'sunset', 'christmas', 'halloween', 'valentine', 'st-patricks', 'independence', 'new-year']) {
+    assert.match(ui, new RegExp(`'${name}'`));
+    assert.match(css, new RegExp(`data-theme=\\"${name}\\"`));
+  }
+  assert.match(ui, /localStorage\.setItem\('deck-theme', theme\)/);
+  assert.match(ui, /function ThemeMenu/);
+  assert.match(ui, /Choose color theme; current theme/);
+  assert.doesNotMatch(ui, /className="theme-label"/);
+  assert.doesNotMatch(ui, /<ChevronDown size=\{13\}/);
+  assert.match(css, /@media \(max-width:760px\).*theme-popover/s);
+  assert.match(css, /data-theme="light".*--text:#071f2d/s);
+  assert.match(ui, /function Topbar\([^)]*onPreferences/);
+  assert.match(ui, /mobile-preferences/);
+  assert.match(ui, /aria-label="Open Deluge Preferences"/);
+  assert.match(ui, /<Topbar[\s\S]*onPreferences=\{openPreferences\}/);
+  assert.match(css, /\.mobile-preferences\{display:grid!important\}/);
+  assert.match(css, /\.icon-button,.row-menu,.add-tabs button,.nav-item,.theme-popover button,.avatar,.context-menu button,.drawer-tabs button,.clear-search,.remove-choice,.hash-button,.file-chips button,.search-note button,.view-controls button\{min-height:44px;min-width:44px\}/);
+});
+
+test('Deluge Preferences is in-app first and browser popup APIs are absent from action paths', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /function PreferencesModal/);
+  assert.match(ui, /function DeckPreferences/);
+  assert.match(ui, /const openPreferences = \(\) => setAddFiles\(\{ kind: 'preferences' \}\)/);
+  assert.match(ui, /Open native Deluge Preferences/);
+  assert.match(ui, /const openNative = \(\) =>/);
+  assert.match(ui, /__DELUGE_DECK_SHOW_NATIVE_PREFERENCES__/);
+  assert.match(ui, /else preferences\.show\(\)/);
+  const preferencesBlock = ui.slice(ui.indexOf('function PreferencesModal'), ui.indexOf('function DeckPreferences'));
+  assert.doesNotMatch(preferencesBlock, /theme-grid|THEMES\.map/);
+  assert.match(preferencesBlock, /<kbd>T<\/kbd> cycles themes/);
+  assert.match(css, /\[data-deluge-deck-native-window="true"\]\{[^}]*top:50%!important;left:50%!important;[^}]*transform:translate\(-50%,-50%\)!important/);
+  assert.match(css, /\[data-deluge-deck-native-window="true"\][^\{]*\{[^}]*background:var\(--surface\)!important/);
+  assert.doesNotMatch(ui, /const openPreferences[^\n]*preferences\.show/);
+  assert.doesNotMatch(ui, /window\.(alert|confirm|prompt)\s*\(/);
+  const modalRouter = ui.slice(ui.indexOf('function AddModal'), ui.indexOf('function AddTorrentModal'));
+  assert.match(modalRouter, /return <AddTorrentModal/);
+  assert.doesNotMatch(modalRouter, /use(State|Effect|Ref)\(/);
+});
+
+test('preferences expose modern Deluge download location controls', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /core\.get_config/);
+  assert.match(ui, /downloadLocation/);
+  assert.match(ui, /completedPath/);
+  assert.match(ui, /moveCompleted/);
+  assert.match(ui, /Save paths/);
+  assert.match(css, /\.path-preference/);
+  assert.match(server, /download_location/);
+});
+
+test('preferences expose modern network listen controls', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /networkPort/);
+  assert.match(ui, /randomPort/);
+  assert.match(ui, /listen_ports/);
+  assert.match(ui, /Save network/);
+  assert.match(css, /\.network-preference/);
+  assert.match(server, /listen_ports/);
+});
+
+test('preferences expose modern proxy controls', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /proxyEnabled/);
+  assert.match(ui, /proxyHost/);
+  assert.match(ui, /proxyPort/);
+  assert.match(ui, /proxyType/);
+  assert.match(ui, /Save proxy/);
+  assert.match(css, /\.proxy-preference/);
+  assert.match(server, /proxy: \{/);
+});
+
+test('preferences expose modern disk cache controls', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /cacheSize/);
+  assert.match(ui, /cacheExpiry/);
+  assert.match(ui, /Save cache/);
+  assert.match(css, /\.cache-preference/);
+  assert.match(server, /cache_size/);
+  assert.match(server, /cache_expiry/);
+});
+
+test('preferences expose modern plugin status', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /web\.get_plugins/);
+  assert.match(ui, /plugins\.enabled\.length/);
+  assert.match(ui, /plugin-chip/);
+  assert.match(css, /\.plugin-preference/);
+});
+
+test('completion celebrations are optional and reduced-motion aware', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /deck-celebrations/);
+  assert.match(ui, /const \[celebrateCompletions, setCelebrateCompletions\] = useState/);
+  assert.match(ui, /prefers-reduced-motion: reduce/);
+  assert.match(ui, /completed! 🎉/);
+  assert.match(ui, /celebration-preference/);
+  assert.match(css, /\.celebration-toast/);
+});
+
+test('torrent rows can open details from the keyboard', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /role="button" aria-label=\{`Open details for/);
+  assert.match(ui, /event\.key === 'Enter' \|\| event\.key === ' '/);
+  assert.match(css, /tbody tr\[role="button"\]:focus-visible/);
+});
+
+test('torrent row keyboard opening ignores nested controls', async () => {
+  const ui = await source();
+  assert.match(ui, /if \(event\.target !== event\.currentTarget\) return/);
+});
+
+test('torrent table announces sort changes accessibly', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /sortLabel/);
+  assert.match(ui, /aria-live="polite"/);
+  assert.match(ui, /Sorted by \{sortLabel\}/);
+  assert.match(css, /\.sort-announcement/);
+});
+
+test('torrent table exposes current sort direction to assistive technology', async () => {
+  const ui = await source();
+  assert.match(ui, /const sortValue = \(key\) => sort\.key === key/);
+  assert.match(ui, /aria-sort=\{sortValue\('name'\)\}/);
+  assert.match(ui, /aria-sort=\{sortValue\('queue'\)\}/);
+  assert.match(ui, /sort\.direction === 1 \? 'ascending' : 'descending'/);
+});
+
+test('theme menu supports arrow, Home, and End keyboard navigation', async () => {
+  const ui = await source();
+  const theme = ui.slice(ui.indexOf('function ThemeMenu'), ui.indexOf('function SearchField'));
+  assert.match(theme, /const navigateMenu = \(event\)/);
+  assert.match(theme, /ArrowDown/);
+  assert.match(theme, /ArrowUp/);
+  assert.match(theme, /event\.key === 'Home'/);
+  assert.match(theme, /event\.key === 'End'/);
+  assert.match(theme, /role="menuitemradio"/);
+});
+
+test('preferences restore focus to the opener when dismissed', async () => {
+  const ui = await source();
+  assert.match(ui, /function useRestoreFocus/);
+  assert.match(ui, /previous\.current = document\.activeElement/);
+  assert.match(ui, /previous\.current\.focus\(\)/);
+  assert.match(ui, /useRestoreFocus\(\)/);
+});
+
+test('detail drawer tabs support arrow navigation and tab panels', async () => {
+  const ui = await source();
+  assert.match(ui, /event\.key === 'ArrowRight' \|\| event\.key === 'ArrowLeft'/);
+  assert.match(ui, /aria-controls=\{`drawer-panel-\$\{name\}`\}/);
+  assert.match(ui, /role="tabpanel" aria-labelledby="drawer-tab-overview"/);
+  assert.match(ui, /role="tabpanel" aria-labelledby="drawer-tab-files"/);
+});
+
+test('refresh adapts to activity and pauses while the tab is hidden', async () => {
+  const ui = await source();
+  assert.match(ui, /document\.hidden/);
+  assert.match(ui, /visibilitychange/);
+  assert.match(ui, /active \? refreshMs : Math\.max\(refreshMs \* 2, 5000\)/);
+});
+
+test('expired sessions return to login with a reauthentication message', async () => {
+  const ui = await source();
+  assert.match(ui, /session expired\|not authenticated\|unauthorized\|authentication/);
+  assert.match(ui, /setConnected\(false\)/);
+  assert.match(ui, /sessionMessage=\{sessionData\?\.sessionMessage\}/);
+  assert.match(ui, /Your session expired\. Sign in again to continue\./);
+});
+
+test('command palette provides keyboard-first quick actions', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /function CommandPalette/);
+  assert.match(ui, /metaKey \|\| event\.ctrlKey.*'k'/);
+  assert.match(ui, /Add torrent/);
+  assert.match(ui, /Open Preferences/);
+  assert.match(ui, /aria-label="Command palette"/);
+  assert.match(css, /\.command-palette/);
+});
+
+test('torrent actions announce successful completion', async () => {
+  const ui = await source();
+  assert.match(ui, /const labels = \{ pause/);
+  assert.match(ui, /setCopied\(`\$\{labels\[action\]/);
+  assert.match(ui, /className="action-toast" role="status" aria-live="polite"/);
+});
+
+test('preferences trap keyboard focus inside the dialog', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /function useFocusTrap/);
+  assert.match(ui, /event\.key !== 'Tab'/);
+  assert.match(ui, /event\.shiftKey && document\.activeElement === first/);
+  assert.match(ui, /className="preferences-modal"/);
+  assert.match(css, /\.preferences-backdrop \{[\s\S]*display:block!important;[\s\S]*overflow-y:auto!important;[\s\S]*-webkit-overflow-scrolling:touch/);
+  assert.match(css, /\.preferences-modal \{[\s\S]*height:auto!important;[\s\S]*max-height:none!important;[\s\S]*overflow:visible!important/);
+});
+
+test('preferences checkboxes have a white field and an explicit checked mark', async () => {
+  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\] \{[\s\S]*background-color:#ffffff!important[\s\S]*width:26px!important[\s\S]*height:26px!important/);
+  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\]:checked \{[\s\S]*background-image:url\("data:image\/svg\+xml/);
+  assert.match(css, /input\.x-form-checkbox \{[\s\S]*width:26px!important/);
+  assert.match(css, /input\.x-form-checkbox \{[\s\S]*background-color:#ffffff!important/);
+});
+
+test('detail drawer is a focus-trapped dialog with focus restoration and outside dismissal', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /function DetailDrawer/);
+  assert.match(ui, /useRestoreFocus\(\)/);
+  assert.match(ui, /useFocusTrap\(drawerRef\)/);
+  assert.match(ui, /className="detail-drawer" aria-label="Torrent details" role="dialog" aria-modal="true"/);
+  assert.match(ui, /className="detail-backdrop" onMouseDown=\{onClose\}/);
+  assert.match(css, /\.detail-backdrop\{position:fixed/);
+});
+
+test('remove dialog traps focus and restores it after dismissal', async () => {
+  const ui = await source();
+  const removeBlock = ui.slice(ui.indexOf('function RemoveModal'), ui.indexOf('function MoveStorageModal'));
+  assert.match(removeBlock, /useRestoreFocus\(\)/);
+  assert.match(removeBlock, /useFocusTrap\(modalRef\)/);
+  assert.match(removeBlock, /ref=\{modalRef\}/);
+  assert.match(removeBlock, /role="dialog" aria-modal="true"/);
+});
+
+test('removing torrents returns focus to a remaining torrent row', async () => {
+  const ui = await source();
+  assert.match(ui, /const removalFocusPending = useRef\(false\)/);
+  assert.match(ui, /removalFocusPending\.current = true/);
+  assert.match(ui, /requestAnimationFrame\(\(\) => document\.querySelector\('tbody tr\[role="button"\]'\)\?\.focus\(\)\)/);
+});
+
+test('add torrent review traps focus and restores it after dismissal', async () => {
+  const ui = await source();
+  const addBlock = ui.slice(ui.indexOf('function AddTorrentModal'), ui.indexOf('function App'));
+  assert.match(addBlock, /useRestoreFocus\(\)/);
+  assert.match(addBlock, /useFocusTrap\(modalRef\)/);
+  assert.match(addBlock, /ref=\{modalRef\}/);
+  assert.match(addBlock, /role="dialog" aria-modal="true"/);
+});
+
+test('command palette traps focus and restores it after dismissal', async () => {
+  const ui = await source();
+  const palette = ui.slice(ui.indexOf('function CommandPalette'), ui.indexOf('function swarmCount'));
+  assert.match(palette, /useRestoreFocus\(\)/);
+  assert.match(palette, /useFocusTrap\(paletteRef\)/);
+  assert.match(palette, /ref=\{paletteRef\}/);
+  assert.match(palette, /role="dialog" aria-modal="true" aria-label="Command palette"/);
+});
+
+test('connection manager traps focus and restores it after dismissal', async () => {
+  const ui = await source();
+  const manager = ui.slice(ui.indexOf('function ConnectionManagerModal'), ui.indexOf('function AccountMenu'));
+  assert.match(manager, /useRestoreFocus\(\)/);
+  assert.match(manager, /useFocusTrap\(modalRef\)/);
+  assert.match(manager, /ref=\{modalRef\}/);
+  assert.match(manager, /role="dialog" aria-modal="true" aria-labelledby="connections-title"/);
+});
+
+test('connection manager provides an in-app add host form', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /web\.add_host/);
+  assert.match(ui, /Add host/);
+  assert.match(ui, /Host<input/);
+  assert.match(ui, /Password<input type="password"/);
+  assert.match(css, /\.host-add-form/);
+  assert.match(server, /'web\.add_host'/);
+});
+
+test('connection manager provides confirmed host removal', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /web\.remove_host/);
+  assert.match(ui, /Remove this host\?/);
+  assert.match(ui, /Remove host \$\{host\.host\}/);
+  assert.match(ui, /className="host-remove-confirm"/);
+  assert.match(css, /\.host-remove-confirm/);
+  assert.match(server, /'web\.remove_host'/);
+});
+
+test('move storage dialog traps focus and restores it after dismissal', async () => {
+  const ui = await source();
+  const move = ui.slice(ui.indexOf('function MoveStorageModal'), ui.indexOf('function RenameTorrentModal'));
+  assert.match(move, /useRestoreFocus\(\)/);
+  assert.match(move, /useFocusTrap\(modalRef\)/);
+  assert.match(move, /ref=\{modalRef\}/);
+  assert.match(move, /role="dialog" aria-modal="true" aria-labelledby="move-storage-title"/);
+});
+
+test('rename dialog traps focus and restores it after dismissal', async () => {
+  const ui = await source();
+  const rename = ui.slice(ui.indexOf('function RenameTorrentModal'), ui.indexOf('function useRestoreFocus'));
+  assert.match(rename, /useRestoreFocus\(\)/);
+  assert.match(rename, /useFocusTrap\(modalRef\)/);
+  assert.match(rename, /ref=\{modalRef\}/);
+  assert.match(rename, /role="dialog" aria-modal="true" aria-labelledby="rename-torrent-title"/);
+});
+
+test('classic ExtJS preferences are isolated from Deck table and form resets', async () => {
+  const [css, bridge, fixture] = await Promise.all([
+    readFile(path.join(root, 'src/styles.css'), 'utf8'),
+    readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8'),
+    readFile(path.join(root, 'server/hosted-layout-fixture.mjs'), 'utf8'),
+  ]);
+  assert.match(bridge, /Math\.min\(560,[\s\S]*Math\.min\(610,/);
+  assert.match(css, /\[data-deluge-deck-native-window="true"\] \* \{\s*box-sizing:content-box/);
+  assert.match(css, /\[data-deluge-deck-native-window="true"\] table \{[\s\S]*width:auto!important;[\s\S]*table-layout:auto!important/);
+  assert.match(css, /input\.x-form-checkbox,[\s\S]*width:16px!important;[\s\S]*height:16px!important/);
+  assert.match(css, /\.x-list-body \.x-list-selected \{[\s\S]*background:var\(--cyan-soft\)!important/);
+  assert.match(css, /\.x-form-trigger \{[\s\S]*width:22px!important;[\s\S]*height:28px!important/);
+  assert.match(css, /\.x-panel-btns>table \{[\s\S]*float:right!important/);
+  assert.match(css, /\.deck-native-preferences-close \{[\s\S]*position:absolute!important;[\s\S]*pointer-events:auto!important/);
+  assert.match(css, /\.deck-native-preferences-actions \{[\s\S]*bottom:0!important;[\s\S]*pointer-events:auto!important/);
+  assert.match(css, /\.global-popover,.account-popover\{[\s\S]*animation:deck-popover \.15s ease/);
+  assert.match(css, /@keyframes deck-popover\{[\s\S]*transform:none/);
+  assert.doesNotMatch(css, /\.context-menu\{[^}]*animation:pop /);
+  assert.match(fixture, /classic-network/);
+  assert.match(fixture, /classic-bandwidth/);
+});
+
+test('global shortcuts are modal-aware, busy-aware, and ignore interactive controls', async () => {
+  const ui = await source();
+  assert.match(ui, /const deckModalState = \{ locked: false \}/);
+  assert.match(ui, /input,textarea,select,button,a,\[contenteditable="true"\]/);
+  assert.match(ui, /const panelOpen = Boolean\(addFiles \|\| detail \|\| menuTorrent\)/);
+  assert.match(ui, /if \(event\.key === 'Escape'\) \{[\s\S]*setAddFiles\(null\);[\s\S]*setDetail\(null\);[\s\S]*setMenuTorrent\(null\)/);
+  assert.match(ui, /function ThemeMenu[\s\S]*closeOnEscape[\s\S]*event\.key === 'Escape'/);
+  assert.match(ui, /onClick=\{\(\) => \{ setDetail\(menuTorrent\); setMenuTorrent\(null\); \}\}/);
+  assert.match(ui, /useEffect\(\(\) => \{ const locked = busy \|\| Boolean\(error\); deckModalState\.locked = locked/);
+  const shortcutBlock = ui.slice(ui.indexOf('const keys ='), ui.indexOf('const act ='));
+  assert.match(shortcutBlock, /event\.key === 'Escape'[\s\S]*active\?\.matches[\s\S]*panelOpen\) return;[\s\S]*event\.key === '\/'/);
+  assert.match(shortcutBlock, /event\.key\.toLowerCase\(\) === 't'[\s\S]*setTheme\(\(current\)[\s\S]*THEMES\.findIndex/);
+  assert.match(shortcutBlock, /event\.key\.toLowerCase\(\) === 't'[^\n]*!event\.repeat\) \{/);
+});
+
+test('mobile torrent checkboxes stay compact', async () => {
+  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  assert.match(css, /@media \(max-width:760px\)[^\n]*\.table-shell input\[type=checkbox\]\{width:18px;height:18px/);
+  assert.doesNotMatch(css, /\.table-shell input\[type=checkbox\]\{width:44px;height:44px/);
+});
+
+test('portrait layout uses compact controls and a horizontally scrollable torrent table', async () => {
+  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  assert.match(css, /\.topbar-heading,\.mobile-stats\{display:none!important\}/);
+  assert.match(css, /\.global-controls \.session-quick-actions\{display:none\}/);
+  assert.match(css, /input:not\(\[type="checkbox"\]\):not\(\[type="radio"\]\),select,textarea\{font-size:16px!important\}/);
+  assert.match(css, /\.table-shell\{overflow-x:auto!important;overflow-y:hidden!important/);
+  assert.match(css, /min-width:780px!important;table-layout:auto!important/);
+  assert.match(css, /th:nth-child\(2\),\.table-shell td:nth-child\(2\)\{position:sticky/);
+  assert.match(css, /\.table-shell th:last-child,\.table-shell td:last-child\{position:sticky;right:0/);
+});
+
+test('every theme meets AAA text contrast and accessible component contrast', async () => {
+  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  assert.match(css, /\.add-button \{[^}]*color:var\(--accent-fg\)/);
+  assert.match(css, /\.primary-button \{[^}]*color:var\(--accent-fg\)/);
+  assert.match(css, /\.avatar \{[^}]*color:var\(--accent-fg\)[^}]*background:var\(--cyan\)/);
+  const pairs = themeAccentPairs(css);
+  assert.equal(pairs.length, 11);
+  for (const { theme, cyan, foreground } of pairs) {
+    assert.ok(cyan && foreground, `${theme} declares cyan and accent foreground`);
+    assert.ok(contrastRatio(cyan, foreground) >= 7, `${theme} primary control contrast is at least 7:1`);
+  }
+
+  const palettes = themePalettes(css);
+  for (const palette of palettes) {
+    const surfaces = [palette.bg, palette.surface, palette.surface2, palette.surface3];
+    for (const [role, color] of Object.entries({ text: palette.text, muted: palette.muted, muted2: palette.muted2, cyan: palette.cyan, violet: palette.violet, amber: palette.amber, green: palette.green, danger: palette.danger })) {
+      assert.ok(color, `${palette.theme} declares ${role}`);
+      const minimum = Math.min(...surfaces.map((surface) => contrastRatio(color, surface)));
+      assert.ok(minimum >= 7, `${palette.theme} ${role} remains at least 7:1 on every theme surface (received ${minimum.toFixed(2)}:1)`);
+    }
+    assert.ok(contrastRatio(palette.lineStrong, palette.surface3) >= 3, `${palette.theme} strong control boundaries remain at least 3:1`);
+  }
+});
+
+test('Halloween is a strict black, neutral, and orange palette without purple', async () => {
+  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  const block = css.match(/:root\[data-theme="halloween"\]\s*\{([^}]*)\}/)?.[1] || '';
+  assert.match(block, /--bg:#000000/);
+  for (const [color] of block.matchAll(/#[a-f\d]{6}/gi)) {
+    const [red, green, blue] = color.match(/[a-f\d]{2}/gi).map((part) => Number.parseInt(part, 16));
+    assert.ok(red >= blue && green >= blue, `Halloween color ${color} stays neutral or in the orange family`);
+  }
+  assert.match(css, /\.theme-swatch\.halloween \{ background:linear-gradient\(135deg,#ff9d2e,#000000\); \}/);
+});
+
+test('theme stage and floating background emoji decorations stay removed', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.doesNotMatch(ui, /function ThemeAtmosphere/);
+  assert.doesNotMatch(ui, /className="theme-atmosphere"/);
+  assert.doesNotMatch(ui, /function ThemeStage/);
+  assert.doesNotMatch(ui, /className="theme-stage"/);
+  assert.doesNotMatch(ui, /className="signal-graphic"/);
+  assert.match(ui, /className="stat-spark" aria-hidden="true"/);
+  assert.doesNotMatch(css, /\.theme-atmosphere/);
+  assert.doesNotMatch(css, /\.theme-stage/);
+  assert.doesNotMatch(css, /\.signal-graphic/);
+  assert.match(css, /@media \(prefers-reduced-motion:reduce\)[\s\S]*\.stat-spark i/);
+});
+
+test('top bar exposes complete global daemon operations and account controls', async () => {
+  const [ui, css, server] = await Promise.all([
+    source(),
+    readFile(path.join(root, 'src/styles.css'), 'utf8'),
+    readFile(path.join(root, 'server/index.mjs'), 'utf8'),
+  ]);
+  assert.match(ui, /function GlobalControls/);
+  assert.match(ui, /core\.pause_session/);
+  assert.match(ui, /core\.resume_session/);
+  assert.match(ui, /className="session-quick-actions"/);
+  assert.match(ui, /Pause all/);
+  assert.match(ui, /Resume all/);
+  assert.match(ui, /max_download_speed/);
+  assert.match(ui, /max_upload_speed/);
+  assert.match(ui, /max_connections_global/);
+  assert.match(ui, /stats\.free_space/);
+  assert.match(ui, /stats\.has_incoming_connections/);
+  assert.match(ui, /stats\.max_num_connections/);
+  assert.match(ui, /function ConnectionManagerModal/);
+  assert.match(ui, /web\.get_hosts/);
+  assert.match(ui, /web\.get_host_status/);
+  assert.match(ui, /web\.disconnect/);
+  assert.match(ui, /web\.connect/);
+  assert.doesNotMatch(ui, /function PluginStatusModal/);
+  assert.doesNotMatch(ui, /Plugin status/);
+  assert.match(ui, /function AccountMenu/);
+  assert.match(ui, /Open account menu/);
+  assert.match(ui, /End Web session/);
+  assert.match(server, /'web\.get_plugins'/);
+  assert.match(server, /'web\.disconnect'/);
+  assert.match(css, /\.global-popover/);
+  assert.match(css, /\.session-quick-actions/);
+  assert.match(css, /\.manager-modal/);
+  assert.match(css, /\.account-popover/);
+});
+
+test('floating pill shows the external IP reported by Deluge', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /className="external-ip"/);
+  assert.match(ui, /stats\?\.external_ip/);
+  assert.match(ui, /torrents=\{torrents\} stats=\{stats\}/);
+  assert.match(css, /\.external-ip\{position:fixed/);
+  assert.match(css, /right:20px;bottom:20px/);
+});
+
+test('torrent details show connected and total seed and peer counts', async () => {
+  const ui = await source();
+  assert.match(ui, /Detail label="Seeds" value=\{swarmCount\(torrent\.num_seeds, torrent\.total_seeds\)\}/);
+  assert.match(ui, /Detail label="Peers" value=\{swarmCount\(torrent\.num_peers, torrent\.total_peers\)\}/);
+  assert.match(ui, /connected · \$\{Number\(total\) \|\| 0\} total/);
+});
+
+test('torrent details request and show piece count and piece size', async () => {
+  const [ui, server] = await Promise.all([source(), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /'num_pieces', 'piece_length'/);
+  assert.match(server, /'num_pieces', 'piece_length'/);
+  assert.match(ui, /Detail label="Pieces" value=\{pieceCount\(torrent\.num_pieces\)\}/);
+  assert.match(ui, /Detail label="Piece size" value=\{pieceSize\(torrent\.piece_length\)\}/);
+});
+
+test('torrent details show active and seeding time as readable durations', async () => {
+  const ui = await source();
+  assert.match(ui, /Detail label="Active time" value=\{elapsedTime\(torrent\.active_time\)\}/);
+  assert.match(ui, /Detail label="Seeding time" value=\{elapsedTime\(torrent\.seeding_time\)\}/);
+  assert.match(ui, /if \(days\) return `\$\{days\}d \$\{hours\}h`/);
+  assert.match(ui, /if \(hours\) return `\$\{hours\}h \$\{minutes\}m`/);
+});
+
+test('torrent details show localized added and completed dates', async () => {
+  const ui = await source();
+  assert.match(ui, /Detail label="Added" value=\{torrentDate\(torrent\.time_added\)\}/);
+  assert.match(ui, /Detail label="Completed" value=\{torrentDate\(torrent\.completed_time, 'Not completed'\)\}/);
+  assert.match(ui, /new Intl\.DateTimeFormat\(undefined, \{ dateStyle: 'medium', timeStyle: 'short' \}\)/);
+});
+
+test('torrent details show tracker health and download path', async () => {
+  const ui = await source();
+  assert.match(ui, /<Detail label="Tracker" value=\{`\$\{torrent\.tracker_status/);
+  assert.match(ui, /<Detail label="Download path" value=\{torrent\.save_path/);
+});
+
+test('torrent details expose editable transfer behavior options', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /core\.set_torrent_options/);
+  assert.match(ui, /Auto-managed queue/);
+  assert.match(ui, /Sequential download/);
+  assert.match(ui, /Prioritize first and last pieces/);
+  assert.match(ui, /Save options/);
+  assert.match(css, /\.torrent-options/);
+  assert.match(server, /core\.set_torrent_options/);
+  assert.match(server, /sequential_download/);
+});
+
+test('torrent row menu exposes all four queue movement controls', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  for (const [action, method] of [['queueTop', 'core.queue_top'], ['queueUp', 'core.queue_up'], ['queueDown', 'core.queue_down'], ['queueBottom', 'core.queue_bottom']]) {
+    assert.match(ui, new RegExp(`${action}: '${method.replace('.', '\\.')}'`));
+    assert.match(ui, new RegExp(`act\\('${action}', \\[menuTorrent\\.hash\\]\\)`));
+  }
+  assert.match(ui, /aria-label="Move torrent in queue"/);
+  assert.match(ui, /> Top<\/button>.*> Up<\/button>.*> Down<\/button>.*> Bottom<\/button>/s);
+  assert.match(css, /\.queue-action-grid/);
+});
+
+test('torrent row menu opens an in-app move storage dialog', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /function MoveStorageModal/);
+  assert.match(ui, /setAddFiles\(\{ kind: 'move', torrent: menuTorrent \}\)/);
+  assert.match(ui, /initialFiles\?\.kind === 'move'/);
+  assert.match(ui, /rpc\('core\.move_storage', \[\[torrent\.hash\], path\]\)/);
+  assert.match(ui, /Destination folder/);
+  assert.match(ui, /Move storage…/);
+  assert.match(ui, /aria-label="Close move storage"/);
+  assert.match(css, /\.move-storage-body/);
+  assert.doesNotMatch(ui.slice(ui.indexOf('function MoveStorageModal'), ui.indexOf('function PreferencesModal')), /window\.(prompt|confirm|alert)/);
+});
+
+test('torrent row menu renames native top-level files or folders', async () => {
+  const [ui, server] = await Promise.all([source(), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /function RenameTorrentModal/);
+  assert.match(ui, /setAddFiles\(\{ kind: 'rename', torrent: menuTorrent \}\)/);
+  assert.match(ui, /initialFiles\?\.kind === 'rename'/);
+  assert.match(ui, /rpc\('core\.rename_folder', \[torrent\.hash, target\.path, nextName\]\)/);
+  assert.match(ui, /rpc\('core\.rename_files', \[torrent\.hash, \[\[target\.index,/);
+  assert.match(ui, /Use a name only, without folder separators/);
+  assert.match(ui, /aria-label="Close rename torrent"/);
+  assert.match(server, /'core\.rename_files', 'core\.rename_folder'/);
+});
+
+test('torrent row menu copies a magnet link with insecure-http fallback', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /Copy magnet link/);
+  assert.match(ui, /rpc\('web\.get_torrent_status', \[torrent\.hash, \['magnet_uri'\]\]\)/);
+  assert.match(ui, /status\?\.magnet_uri \|\| fallbackMagnet\(torrent\)/);
+  assert.match(ui, /navigator\.clipboard\?\.writeText/);
+  assert.match(ui, /document\.execCommand\?\.\('copy'\)/);
+  assert.match(ui, /className="action-toast" role="status" aria-live="polite"/);
+  assert.match(css, /\.action-toast/);
+});
+
+test('torrent detail files expose skip and download priority toggles', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const setFileWanted = async/);
+  assert.match(ui, /rpc\('core\.set_torrent_file_priorities', \[torrent\.hash, priorities\]\)/);
+  assert.match(ui, /aria-pressed=\{Number\(entry\.file\.priority\) !== 0\}/);
+  assert.match(ui, /Number\(entry\.file\.priority\) === 0 \? 'Download file' : 'Skip file'/);
+  assert.match(ui, /Skipped/);
+  assert.match(ui, /file-action-error/);
+  assert.match(css, /\.file-wanted-toggle/);
+});
+
+test('torrent detail files expose low normal and high priority choices', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const setFilePriority = async/);
+  assert.match(ui, /value="1">Low/);
+  assert.match(ui, /value="4">Normal/);
+  assert.match(ui, /value="7">High/);
+  assert.match(ui, /className="file-priority"/);
+  assert.match(css, /\.file-priority/);
+});
+
+test('torrent detail files support multi-select with clear selection', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const \[selectedFiles, setSelectedFiles\] = useState\(new Set\(\)\)/);
+  assert.match(ui, /const toggleFileSelection = \(position\)/);
+  assert.match(ui, /const setSelectedPriority = async/);
+  assert.match(ui, /Priority for selected files/);
+  assert.match(ui, /selectedFiles\.has\(index\)/);
+  assert.match(ui, /selectedFiles\.has\(entry\.index\)/);
+  assert.match(ui, /Clear selection/);
+  assert.match(css, /\.files-selection-bar/);
+  assert.match(css, /\.file-select/);
+});
+
+test('torrent detail files expose a folder skip and download action', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const setFolderPriority = async/);
+  assert.match(ui, /core\.set_torrent_file_priorities/);
+  assert.match(ui, /folder-priority-button/);
+  assert.doesNotMatch(ui, /'Sample folder'/);
+  assert.match(css, /\.folder-actions/);
+});
+
+test('torrent detail files expose an action for each discovered folder', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /seenFolders = new Set/);
+  assert.match(ui, /depth: folderParts\.length/);
+  assert.match(ui, /paddingLeft: `\$\{10 \+ \(entry\.depth \|\| 1\) \* 16\}/);
+  assert.match(ui, /setFolderPriority\(entry\.folder/);
+  assert.match(ui, /folder-priority-button/);
+  assert.match(ui, /folderFiles\(entry\.folder\)/);
+  assert.match(css, /\.folder-priority-button/);
+});
+
+test('torrent detail files and folders support inline rename controls', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /function InlineRename/);
+  assert.match(ui, /Rename file \$\{entry\.file\.path\}/);
+  assert.match(ui, /Rename folder \$\{entry\.folder\}/);
+  assert.match(ui, /rpc\('core\.rename_files'/);
+  assert.match(ui, /rpc\('core\.rename_folder'/);
+  assert.match(css, /\.inline-rename/);
+  assert.match(server, /'core\.rename_files', 'core\.rename_folder'/);
+});
+
+test('torrent detail files show completion and availability', async () => {
+  const [ui, server] = await Promise.all([source(), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /% complete/);
+  assert.match(ui, /Availability/);
+  assert.match(ui, /entry\.file\.progress/);
+  assert.match(ui, /entry\.file\.availability/);
+  assert.match(server, /availability: 0\.84/);
+});
+
+test('add torrent review supports selecting individual torrent files', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /selectedAddFiles/);
+  assert.match(ui, /Select at least one torrent file to add/);
+  assert.match(ui, /files\.filter\(\(file\) => selectedAddFiles\.has\(file\.name\)\)/);
+  assert.match(ui, /Select .* for adding/);
+  assert.match(css, /\.add-file-chip/);
+});
+
+test('add torrent review supports per-file priorities', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /addFilePriorities/);
+  assert.match(ui, /file_priorities/);
+  assert.match(ui, /uploaded\.map\(\(file, index\)/);
+  assert.match(ui, /className="add-file-priority"/);
+  assert.match(ui, /value="1">Low/);
+  assert.match(ui, /value="7">High/);
+  assert.match(css, /\.add-file-priority/);
+});
+
+test('add torrent review supports full and compact storage allocation', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const \[allocation, setAllocation\] = useState\('full'\)/);
+  assert.match(ui, /compact_allocation: allocation === 'compact'/);
+  assert.match(ui, /Full allocation/);
+  assert.match(ui, /Compact allocation/);
+  assert.match(css, /\.allocation-label/);
+});
+
+test('add torrent review warns about duplicate torrent names', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /existingNames/);
+  assert.match(ui, /duplicateNames/);
+  assert.match(ui, /Duplicate torrent name/);
+  assert.match(ui, /className="duplicate-warning"/);
+  assert.match(css, /\.duplicate-warning/);
+});
+
+test('add torrent review validates free space before upload', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /core\.get_free_space/);
+  assert.match(ui, /requiredBytes/);
+  assert.match(ui, /Not enough free space/);
+  assert.match(ui, /free-space-status/);
+  assert.match(css, /\.free-space-status/);
+  assert.match(server, /'core\.get_free_space'/);
+});
+
+test('add torrent review previews magnet metadata', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /magnetPreview/);
+  assert.match(ui, /Info-hash:/);
+  assert.match(ui, /Name will be fetched from metadata/);
+  assert.match(ui, /className="magnet-preview"/);
+  assert.match(css, /\.magnet-preview/);
+});
+
+test('torrent table supports sortable columns', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const \[sort, setSort\] = useState/);
+  assert.match(ui, /const toggleSort = \(key\)/);
+  assert.match(ui, /const sortedTorrents = useMemo/);
+  assert.match(ui, /toggleSort\('progress'\)/);
+  assert.match(css, /\.sort-button/);
+});
+
+test('torrent table headers support horizontal resizing', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /className="resizable-th"/);
+  assert.match(ui, /data-column="name"/);
+  assert.match(css, /\.resizable-th \{ resize:horizontal/);
+  assert.match(css, /min-width:72px/);
+});
+
+test('torrent table persists resized column widths', async () => {
+  const ui = await source();
+  assert.match(ui, /localStorage\.getItem\('deck-column-widths'/);
+  assert.match(ui, /localStorage\.setItem\('deck-column-widths', JSON\.stringify\(columnWidths\)\)/);
+  assert.match(ui, /new ResizeObserver/);
+  assert.match(ui, /header\.style\.width = savedWidth \+ 'px'/);
+});
+
+test('torrent table supports column visibility toggles', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /columnVisibility/);
+  assert.match(ui, /toggleColumn/);
+  assert.match(ui, /aria-label="Column visibility"/);
+  assert.match(ui, /aria-label="Choose visible columns"/);
+  assert.match(ui, /className=\{tableClass\}/);
+  assert.match(ui, /function ColumnChooser/);
+  assert.match(ui, /aria-labelledby="column-chooser-title"/);
+  assert.match(css, /\.column-chooser-backdrop/);
+  assert.match(css, /\.column-chooser-modal/);
+  assert.match(css, /\.column-menu-trigger/);
+  assert.match(css, /hide-state/);
+});
+
+test('torrent table persists column visibility preferences', async () => {
+  const ui = await source();
+  assert.match(ui, /localStorage\.getItem\('deck-column-visibility'/);
+  assert.match(ui, /localStorage\.setItem\('deck-column-visibility', JSON\.stringify\(columnVisibility\)\)/);
+});
+
+test('torrent table exposes seed peer added and tracker columns', async () => {
+  const ui = await source();
+  assert.match(ui, />Seeds<\/button>/);
+  assert.match(ui, />Peers<\/button>/);
+  assert.match(ui, />Added<\/button>/);
+  assert.match(ui, />Tracker<\/button>/);
+  assert.match(ui, /torrent\.tracker_host/);
+});
+
+test('torrent table supports tracker favicons, compact swarm counts, and seeding time', async () => {
+  const ui = await source();
+  assert.match(ui, /const trackerFavicon/);
+  assert.match(ui, /TRACKER_FAVICON_CATALOG/);
+  assert.match(ui, /torrentleech\.org/);
+  assert.match(ui, /funfile\.org/);
+  assert.doesNotMatch(ui, /google\.com\/s2\/favicons/);
+  assert.match(ui, /icons\.duckduckgo\.com\/ip3/);
+  assert.match(ui, /className="tracker-favicon-small"/);
+  assert.match(ui, /seedingTime: 'Seeding time'/);
+  assert.match(ui, /toggleSort\('seeding_time'\)/);
+  assert.match(ui, /Number\(torrent\.num_seeds\) \|\| 0} \/ \$\{Number\(torrent\.total_seeds\)/);
+  assert.match(ui, /Number\(torrent\.num_peers\) \|\| 0} \/ \$\{Number\(torrent\.total_peers\)/);
+});
+
+test('torrent table shows sortable queue positions beside queue actions', async () => {
+  const ui = await source();
+  assert.match(ui, /toggleSort\('queue'\)/);
+  assert.match(ui, /queueRank\(torrent\) === Number\.MAX_SAFE_INTEGER/);
+  assert.match(ui, /queueRank\(torrent\) \+ 1/);
+});
+
+test('queue position participates in column visibility controls', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /queue: true/);
+  assert.match(ui, /queue: 'Queue'/);
+  assert.match(css, /hide-queue th:nth-child\(15\)/);
+});
+
+test('torrent table shows tracker status with host details', async () => {
+  const [ui, css, server] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8'), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /tracker_status/);
+  assert.match(ui, /className=\{`tracker-status/);
+  assert.match(ui, /className="tracker-host"/);
+  assert.match(css, /\.tracker-status/);
+  assert.match(server, /tracker_status/);
+});
+
+test('torrent table keeps filtering controls out of the main view', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.doesNotMatch(ui, /smartFilter/);
+  assert.doesNotMatch(ui, /Smart torrent filter/);
+  assert.doesNotMatch(css, /\.smart-filter/);
+});
+
+test('mobile torrent actions use a bottom-sheet layout', async () => {
+  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  assert.match(css, /@media \(max-width:760px\)\{\.context-menu\{top:auto!important/);
+  assert.match(css, /bottom:calc\(12px \+ env\(safe-area-inset-bottom\)\)/);
+  assert.match(css, /mobile-sheet-in/);
+  assert.match(css, /\.context-menu button\{padding:10px 11px/);
+});
+
+test('torrent actions expose tracker reannounce', async () => {
+  const [ui, server] = await Promise.all([source(), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
+  assert.match(ui, /reannounce: 'core\.force_reannounce'/);
+  assert.match(ui, /> Reannounce<\/button>/);
+  assert.match(server, /core\.force_reannounce/);
+});
+
+test('top bar overlays stay dismissible and inside the viewport', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /document\.addEventListener\('keydown', dismiss, true\)/);
+  assert.match(ui, /open \? 'Close global session controls' : 'Open global session controls'/);
+  assert.match(ui, /function useDialogDismiss/);
+  assert.match(ui, /useDialogDismiss\(onClose, modalRef\)/);
+  assert.match(ui, /container\.querySelector\('#deluge-deck-global-popover-root'\)/);
+  assert.match(ui, /container\.appendChild\(host\)/);
+  assert.doesNotMatch(ui, /document\.body\.appendChild\(host\)/);
+  assert.match(css, /\.global-popover\{position:fixed!important;top:84px!important;right:24px!important;[^}]*transform:none!important;[^}]*max-height:calc\(100dvh - 96px\)[^}]*overflow:auto!important/);
+  assert.match(css, /\.global-popover\.portal-popover \{[\s\S]*position:absolute!important;[\s\S]*top:calc\(100% \+ 10px\)!important;[\s\S]*right:0!important/);
+  assert.match(css, /\.global-trigger\[aria-expanded="true"\]:before\{content:"×"/);
+});
+
+test('every Deck overlay supports Escape and outside-pointer dismissal', async () => {
+  const [ui, bridge] = await Promise.all([source(), readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8')]);
+  assert.match(ui, /function useDialogDismiss[\s\S]*event\.type === 'pointerdown'[\s\S]*event\.key === 'Escape'/);
+  for (const name of ['ConnectionManagerModal', 'DetailDrawer', 'RemoveModal', 'MoveStorageModal', 'RenameTorrentModal', 'PreferencesModal', 'AddTorrentModal']) {
+    const start = ui.indexOf(`function ${name}`);
+    const end = ui.indexOf('\nfunction ', start + 1);
+    assert.match(ui.slice(start, end < 0 ? undefined : end), /useDialogDismiss\(onClose, (modalRef|drawerRef|dialogRef)\)/, `${name} should use shared dismissal`);
+  }
+  assert.match(ui, /function ThemeMenu[\s\S]*usePopoverDismiss\(open, setOpen, menuRef\)/);
+  assert.match(ui, /function ColumnChooser[\s\S]*useDialogDismiss\(onClose, dialogRef\)/);
+  assert.match(ui, /closest\('\.context-menu, \.row-menu'\)/);
+  assert.match(ui, /function Sidebar[\s\S]*event\.key === 'Escape'[\s\S]*sidebarRef\.current\?\.contains/);
+  assert.match(bridge, /document\.addEventListener\('pointerdown', closeNativePreferences, true\)/);
+});

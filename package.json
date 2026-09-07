@@ -1,0 +1,25 @@
+{
+  "name": "deluge-deck",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"node server/index.mjs\"",
+    "build": "vite build",
+    "build:plugin": "npm run build && node scripts/build-plugin.mjs",
+    "start": "node server/index.mjs",
+    "demo": "DELUGE_DEMO=1 node server/index.mjs",
+    "verify:deluge": "node scripts/verify-deluge.mjs",
+    "test": "node --test server/*.test.mjs",
+    "check": "vite build && node --check server/index.mjs && node --check server/hosted-layout-fixture.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "concurrently": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {}
+}
