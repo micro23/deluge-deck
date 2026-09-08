@@ -220,8 +220,9 @@ test('preferences trap keyboard focus inside the dialog', async () => {
   assert.match(ui, /event\.key !== 'Tab'/);
   assert.match(ui, /event\.shiftKey && document\.activeElement === first/);
   assert.match(ui, /className="preferences-modal"/);
-  assert.match(css, /\.preferences-backdrop \{[\s\S]*display:block!important;[\s\S]*overflow-y:auto!important;[\s\S]*-webkit-overflow-scrolling:touch/);
-  assert.match(css, /\.preferences-modal \{[\s\S]*height:auto!important;[\s\S]*max-height:none!important;[\s\S]*overflow:visible!important/);
+  assert.match(css, /\.preferences-backdrop \{[\s\S]*display:grid!important;[\s\S]*place-items:center;[\s\S]*overflow:hidden!important/);
+  assert.match(css, /\.preferences-modal \{[\s\S]*display:flex!important;[\s\S]*height:min\(800px,calc\(100dvh - 32px\)\)!important;[\s\S]*overflow:hidden!important/);
+  assert.match(css, /\.preferences-content \{[\s\S]*overflow-y:auto!important;[\s\S]*scrollbar-gutter:stable/);
 });
 
 test('preferences checkboxes have a white field and an explicit checked mark', async () => {
@@ -857,6 +858,8 @@ test('every Deck overlay supports Escape and outside-pointer dismissal', async (
   assert.match(ui, /function ThemeMenu[\s\S]*usePopoverDismiss\(open, setOpen, menuRef\)/);
   assert.match(ui, /function ColumnChooser[\s\S]*useDialogDismiss\(onClose, dialogRef\)/);
   assert.match(ui, /closest\('\.context-menu, \.row-menu'\)/);
-  assert.match(ui, /function Sidebar[\s\S]*event\.key === 'Escape'[\s\S]*sidebarRef\.current\?\.contains/);
+  const sidebar = ui.slice(ui.indexOf('function Sidebar'), ui.indexOf('const signalPopover'));
+  assert.doesNotMatch(sidebar, /document\.addEventListener\('pointerdown'/);
+  assert.match(sidebar, /onClick=\{\(\) => setCollapsed\(\(value\) => !value\)\}/);
   assert.match(bridge, /document\.addEventListener\('pointerdown', closeNativePreferences, true\)/);
 });

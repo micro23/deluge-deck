@@ -511,29 +511,9 @@ function Sidebar({
     ['seeding', 'Seeding', ArrowUpFromLine],
     ['paused', 'Paused', CirclePause],
   ];
-  const sidebarRef = useRef(null);
-  useEffect(() => {
-    if (collapsed) return undefined;
-    const dismiss = (event) => {
-      if (event.type === 'keydown' && event.key === 'Escape')
-        setCollapsed(true);
-      if (
-        event.type === 'pointerdown' &&
-        !sidebarRef.current?.contains(event.target)
-      )
-        setCollapsed(true);
-    };
-    document.addEventListener('keydown', dismiss, true);
-    document.addEventListener('pointerdown', dismiss, true);
-    return () => {
-      document.removeEventListener('keydown', dismiss, true);
-      document.removeEventListener('pointerdown', dismiss, true);
-    };
-  }, [collapsed, setCollapsed]);
   return (
     <>
       <aside
-        ref={sidebarRef}
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
         <div className="sidebar-top">
@@ -5302,7 +5282,7 @@ function App() {
               icon={Network}
               label="Connections"
               value={stats.num_connections || 0}
-              detail={`${stats.dht_nodes || 0} DHT nodes`}
+              detail={Number(stats.dht_nodes) > 0 ? `${stats.dht_nodes} DHT nodes` : ''}
               tone="amber"
               trend={telemetryHistory.connections}
             />
@@ -5373,7 +5353,7 @@ function App() {
           />
           <footer className="deck-status-rail" aria-label="Session status">
             <span><i className={refreshError ? 'status-dot' : 'status-dot live'} />{refreshError ? 'Connection interrupted' : 'Live sync'}</span>
-            <span><Network size={13} />{stats.dht_nodes || 0} DHT nodes</span>
+            {Number(stats.dht_nodes) > 0 && <span><Network size={13} />{stats.dht_nodes} DHT nodes</span>}
             <span className="status-rail-spacer" />
             <span><ArrowDown size={13} />{rate(stats.download_rate)}</span>
             <span><ArrowUp size={13} />{rate(stats.upload_rate)}</span>

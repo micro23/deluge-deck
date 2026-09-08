@@ -1303,27 +1303,64 @@ tbody tr:hover .state-icon {
   .top-actions .icon-button,.top-actions .avatar,.top-actions .theme-trigger{width:38px!important;min-width:38px!important;height:38px}
 }
 
-/* Preferences are long forms. The full-screen backdrop owns scrolling instead
-   of a clipped inner panel: this is reliable for wheel, keyboard and iOS touch
-   scrolling, and guarantees every setting remains reachable. */
+/* Preferences are a self-contained desktop window: the window remains
+   centered while its settings area owns the scroll chain. This keeps the
+   header and Done action reachable at every viewport height. */
 .preferences-backdrop {
-  display:block!important;
-  overflow-y:auto!important;
-  overscroll-behavior-y:contain;
-  -webkit-overflow-scrolling:touch;
+  display:grid!important;
+  place-items:center;
+  overflow:hidden!important;
+  overscroll-behavior:contain;
 }
 .preferences-modal {
-  display:block!important;
-  height:auto!important;
-  min-height:calc(100dvh - 40px);
-  max-height:none!important;
-  margin:0 auto;
-  overflow:visible!important;
+  display:flex!important;
+  flex-direction:column;
+  width:min(850px,calc(100vw - 32px));
+  height:min(800px,calc(100dvh - 32px))!important;
+  min-height:0!important;
+  max-height:calc(100dvh - 32px)!important;
+  margin:0!important;
+  overflow:hidden!important;
 }
 .preferences-content {
-  min-height:auto!important;
-  overflow:visible!important;
+  flex:1 1 auto;
+  min-height:0!important;
+  overflow-y:auto!important;
   align-content:start;
+  grid-auto-rows:max-content;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-gutter:stable;
+  padding:0 2px 2px 0;
+}
+.preferences-content::-webkit-scrollbar { width:10px; }
+.preferences-content::-webkit-scrollbar-track { background:var(--surface-2); border-radius:99px; }
+.preferences-content::-webkit-scrollbar-thumb { background:var(--line-strong); border:3px solid var(--surface-2); border-radius:99px; }
+.preferences-content::-webkit-scrollbar-thumb:hover { background:var(--cyan); }
+.preferences-footer { flex:none; }
+
+/* The manager is always a viewport dialog, not a continuation of the global
+   controls popover. Its host list scrolls inside the centered window. */
+.manager-backdrop {
+  position:fixed!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:20px!important;
+  overflow:hidden!important;
+}
+.manager-modal {
+  display:flex;
+  flex-direction:column;
+  width:min(650px,calc(100vw - 40px));
+  max-height:calc(100dvh - 40px);
+  overflow:hidden;
+}
+.manager-list { min-height:0; overflow:auto; overscroll-behavior:contain; }
+@media (max-width:760px) {
+  .preferences-backdrop,.manager-backdrop { padding:10px!important; }
+  .preferences-modal { width:calc(100vw - 20px); height:calc(100dvh - 20px)!important; max-height:calc(100dvh - 20px)!important; padding:0 14px; }
+  .manager-modal { width:calc(100vw - 20px); max-height:calc(100dvh - 20px); }
 }
 .preferences-modal .path-check {
   display:flex;
