@@ -812,6 +812,26 @@ test('torrent actions expose tracker reannounce', async () => {
   assert.match(server, /core\.force_reannounce/);
 });
 
+test('dashboard exposes the dream-loop telemetry hierarchy', async () => {
+  const [ui, polish] = await Promise.all([
+    source(),
+    readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8'),
+  ]);
+  assert.match(ui, /FAST · PRIVATE · IN YOUR CONTROL/);
+  assert.match(ui, /aria-label="Torrent filters"/);
+  assert.match(ui, /className="deck-filter-summary"/);
+  assert.match(ui, /aria-label="Session status"/);
+  assert.match(ui, /Current payload/);
+  assert.match(ui, /telemetryHistory/);
+  assert.match(ui, /\}, \[stats, torrents\.length\]\);/);
+  assert.match(ui, /countTorrentStates/);
+  assert.match(ui, /counts=\{torrentCounts\}/);
+  assert.match(ui, /<polyline points=\{points\}/);
+  assert.match(polish, /\.stats-grid \.stat-card>\.stat-spark \{ display:block!important/);
+  assert.match(polish, /\.deck-status-rail/);
+  assert.match(polish, /\.external-ip \{ display:none; \}/);
+});
+
 test('top bar overlays stay dismissible and inside the viewport', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /document\.addEventListener\('keydown', dismiss, true\)/);

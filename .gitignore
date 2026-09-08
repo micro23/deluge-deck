@@ -1,4 +1,5 @@
 node_modules/
+.dream-loop/
 .deluge-test/
 .egg-cache/
 dist/

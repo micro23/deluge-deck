@@ -106,6 +106,14 @@ const mapTorrents = (data) =>
     .map(([hash, torrent]) => ({ ...torrent, hash }))
     .sort((left, right) => queueRank(left) - queueRank(right));
 const stateKey = (state = '') => state.toLowerCase().replaceAll(' ', '-');
+const countTorrentStates = (torrents) => torrents.reduce((counts, torrent) => {
+  counts.all += 1;
+  if (torrent.state === 'Downloading') counts.downloading += 1;
+  if (torrent.state === 'Seeding') counts.seeding += 1;
+  if (torrent.state === 'Paused') counts.paused += 1;
+  if (torrent.state === 'Downloading' || torrent.state === 'Seeding') counts.active += 1;
+  return counts;
+}, { all: 0, active: 0, downloading: 0, seeding: 0, paused: 0 });
 const shortHash = (hash = '') => `${hash.slice(0, 7)}…${hash.slice(-5)}`;
 const rate = (value = 0) => (value ? `${formatBytes(value)}/s` : '—');
 const eta = (value = 0) => {
@@ -489,26 +497,13 @@ function Login({ onConnect, mode, sessionMessage = '' }) {
 function Sidebar({
   filter,
   setFilter,
-  torrents,
+  counts,
   stats,
   onAdd,
   onPreferences,
   collapsed,
   setCollapsed,
 }) {
-  const counts = useMemo(
-    () => ({
-      all: torrents.length,
-      active: torrents.filter((torrent) =>
-        ['Downloading', 'Seeding'].includes(torrent.state),
-      ).length,
-      downloading: torrents.filter((torrent) => torrent.state === 'Downloading')
-        .length,
-      seeding: torrents.filter((torrent) => torrent.state === 'Seeding').length,
-      paused: torrents.filter((torrent) => torrent.state === 'Paused').length,
-    }),
-    [torrents],
-  );
   const items = [
     ['all', 'All torrents', LayoutDashboard],
     ['active', 'Active now', Activity],
@@ -1476,6 +1471,7 @@ function Topbar({
         </div>
         <div className="topbar-heading">
           <h1>Deluge</h1>
+          <span>FAST · PRIVATE · IN YOUR CONTROL</span>
         </div>
         <div className="top-actions">
           <GlobalControls
@@ -5070,6 +5066,18 @@ function App() {
       }),
     [torrents, filter, search],
   );
+  const torrentCounts = useMemo(() => countTorrentStates(torrents), [torrents]);
+  const [telemetryHistory, setTelemetryHistory] = useState({
+    download: [], upload: [], connections: [], library: [],
+  });
+  useEffect(() => {
+    setTelemetryHistory((current) => ({
+      download: [...current.download, Number(stats.download_rate) || 0].slice(-14),
+      upload: [...current.upload, Number(stats.upload_rate) || 0].slice(-14),
+      connections: [...current.connections, Number(stats.num_connections) || 0].slice(-14),
+      library: [...current.library, torrents.length].slice(-14),
+    }));
+  }, [stats, torrents.length]);
   useEffect(() => {
     const keys = (event) => {
       const panelOpen = Boolean(addFiles || detail || menuTorrent);
@@ -5213,6 +5221,7 @@ function App() {
         setFilter={setFilter}
         torrents={torrents}
         stats={stats}
+        counts={torrentCounts}
         onAdd={() => setAddFiles([])}
         onPreferences={openPreferences}
         collapsed={sidebarCollapsed}
@@ -5278,12 +5287,16 @@ function App() {
               icon={Download}
               label="Download"
               value={rate(stats.download_rate)}
+              detail="Current payload"
+              trend={telemetryHistory.download}
             />
             <Stat
               icon={UploadCloud}
               label="Upload"
               value={rate(stats.upload_rate)}
+              detail="Current payload"
               tone="violet"
+              trend={telemetryHistory.upload}
             />
             <Stat
               icon={Network}
@@ -5291,13 +5304,15 @@ function App() {
               value={stats.num_connections || 0}
               detail={`${stats.dht_nodes || 0} DHT nodes`}
               tone="amber"
+              trend={telemetryHistory.connections}
             />
             <Stat
               icon={HardDriveDownload}
               label="Library"
               value={torrents.length}
-              detail={`${torrents.filter((torrent) => torrent.state === 'Seeding').length} seeding`}
+              detail={`${torrentCounts.seeding} seeding`}
               tone="green"
+              trend={telemetryHistory.library}
             />
           </div>
           <div className="list-heading">
@@ -5309,13 +5324,20 @@ function App() {
             </div>
             <button className="primary-button mobile-add-torrent" onClick={() => setAddFiles([])}><Plus size={17} />Add torrent</button>
           </div>
-          <nav className="mobile-library-filters" aria-label="Mobile torrent filters">
+          <nav className="mobile-library-filters" aria-label="Torrent filters">
             {[
               ['all', 'All'], ['active', 'Active'], ['downloading', 'Downloading'],
               ['seeding', 'Seeding'], ['paused', 'Paused'],
             ].map(([key, label]) => (
-              <button key={key} aria-pressed={filter === key} onClick={() => setFilter(key)}>{label}</button>
+              <button key={key} aria-pressed={filter === key} onClick={() => setFilter(key)}>
+                <span>{label}</span>
+                <b>{torrentCounts[key]}</b>
+              </button>
             ))}
+            <span className="deck-filter-summary">
+              <span className="status-dot live" />
+              {filtered.length} visible · live data
+            </span>
           </nav>
           {search && (
             <div className="search-note">
@@ -5349,6 +5371,14 @@ function App() {
             loading={loading}
             onAdd={() => setAddFiles([])}
           />
+          <footer className="deck-status-rail" aria-label="Session status">
+            <span><i className={refreshError ? 'status-dot' : 'status-dot live'} />{refreshError ? 'Connection interrupted' : 'Live sync'}</span>
+            <span><Network size={13} />{stats.dht_nodes || 0} DHT nodes</span>
+            <span className="status-rail-spacer" />
+            <span><ArrowDown size={13} />{rate(stats.download_rate)}</span>
+            <span><ArrowUp size={13} />{rate(stats.upload_rate)}</span>
+            <span className="status-ip"><Wifi size={13} />{stats.external_ip || 'IP unavailable'}</span>
+          </footer>
         </section>
       </main>
       {selected.size > 0 && (
@@ -5501,7 +5531,14 @@ function App() {
     </div>
   );
 }
-function Stat({ icon: Icon, label, value, detail, tone = '' }) {
+function Stat({ icon: Icon, label, value, detail, tone = '', trend = [] }) {
+  const values = trend.length > 1 ? trend : [trend[0] || 0, trend[0] || 0];
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  const range = Math.max(1, high - low);
+  const points = values.map((sample, index) =>
+    `${(index / (values.length - 1)) * 100},${high === low ? 16 : 27 - ((sample - low) / range) * 21}`,
+  ).join(' ');
   return (
     <div className={`stat-card ${tone}`}>
       <div className="stat-icon">
@@ -5512,13 +5549,10 @@ function Stat({ icon: Icon, label, value, detail, tone = '' }) {
         <strong>{value}</strong>
         {detail && <small>{detail}</small>}
       </div>
-      <div className="stat-spark" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <i />
-        <i />
-      </div>
+      <svg className="stat-spark" aria-hidden="true" viewBox="0 0 100 30" preserveAspectRatio="none">
+        <polygon points={`0,30 ${points} 100,30`} />
+        <polyline points={points} />
+      </svg>
     </div>
   );
 }

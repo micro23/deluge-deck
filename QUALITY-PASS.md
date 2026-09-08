@@ -40,3 +40,12 @@ Objective: improve the interface, themes, and reliability to a polished release 
 ## Deployment limits
 
 The local UI/reliability quality pass is complete. The Python 3.9 artifact is `plugin/dist/DelugeDeck-1.0.0-py3.9.egg`. Testing used demo data and the hosted-layout fixture, not the user's production Deluge daemon. Real-server session expiry, Windows installation, and compatibility with other Python versions are not certified by this pass. No passwords or production settings were changed.
+
+## Dream-loop refinement — 2026-09-08
+
+- Generated a higher-fidelity target from the live New Year dashboard and iterated the implementation against it.
+- Added a compact top-bar control statement, taller layered telemetry cards, real rolling SVG trends, a count-aware desktop/mobile filter rail, a richer table frame, and a non-overlapping session-status rail.
+- Removed the legacy floating external-IP badge because it covered table controls and now surface the address in the session rail.
+- Verified the final 390×844 layout at exactly 390px document width, inspected Paper mobile plus New Year and Ocean desktop, exercised populated and empty filter states, and inspected the Ocean detail drawer.
+- Rebuilt and opened the packaged hosted fixture. Browser diagnostics contained no warnings or errors. Automated animation-frame measurement was unavailable in the browser harness, but the new telemetry graphics are static SVG paths and add no animation loop.
+- Strict self-judgment against the generated target improved from 7.4 to 8.2. No independent judge agent was available in this environment.
