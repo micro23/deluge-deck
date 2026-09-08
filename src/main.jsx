@@ -58,6 +58,9 @@ import {
   serializeRpcRequest,
 } from '../server/hosted-contracts.mjs';
 import './styles.css';
+import './theme-gallery.css';
+import './dashboard-polish.css';
+import { createPoller } from '../server/polling.mjs';
 
 const VERSION = '1.0.0';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
@@ -549,7 +552,7 @@ function Sidebar({
             <Menu size={18} />
           </button>
         </div>
-        <button className="add-button" onClick={onAdd}>
+        <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
           <Plus size={18} />
           <span>Add torrent</span>
         </button>
@@ -560,6 +563,9 @@ function Sidebar({
               key={key}
               className={`nav-item ${filter === key ? 'active' : ''}`}
               onClick={() => setFilter(key)}
+              aria-label={`${label}, ${counts[key]} torrents`}
+              aria-pressed={filter === key}
+              title={label}
             >
               <Icon size={17} />
               <span>{label}</span>
@@ -569,7 +575,7 @@ function Sidebar({
         </nav>
         <div className="sidebar-spacer" />
         <div className="sidebar-bottom">
-          <button className="nav-item" onClick={onPreferences}>
+          <button className="nav-item" onClick={onPreferences} aria-label="Preferences" title="Preferences">
             <Settings2 size={17} />
             <span>Preferences</span>
           </button>
@@ -593,10 +599,15 @@ function ThemeMenu({ theme, setTheme }) {
   const menuRef = useRef(null);
   const selected = THEMES.find(([key]) => key === theme) || THEMES[0];
   usePopoverDismiss(open, setOpen, menuRef);
+  const restoreTriggerFocus = () => menuRef.current?.querySelector('.theme-trigger')?.focus();
   useEffect(() => {
     if (!open) return undefined;
+    menuRef.current?.querySelector('[aria-checked="true"]')?.focus();
     const closeOnEscape = (event) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') {
+        setOpen(false);
+        restoreTriggerFocus();
+      }
     };
     window.addEventListener('keydown', closeOnEscape);
     return () => window.removeEventListener('keydown', closeOnEscape);
@@ -610,10 +621,10 @@ function ThemeMenu({ theme, setTheme }) {
       window.removeEventListener('deluge-deck:close-popovers', close);
   }, []);
   const navigateMenu = (event) => {
-    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+    if (!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
     const items = [
-      ...event.currentTarget.parentElement.querySelectorAll(
+      ...menuRef.current.querySelectorAll(
         '[role="menuitemradio"]',
       ),
     ];
@@ -623,7 +634,7 @@ function ThemeMenu({ theme, setTheme }) {
         ? 0
         : event.key === 'End'
           ? items.length - 1
-          : (current + (event.key === 'ArrowDown' ? 1 : -1) + items.length) %
+          : (current + (['ArrowDown', 'ArrowRight'].includes(event.key) ? 1 : -1) + items.length) %
             items.length;
     items[next]?.focus();
   };
@@ -638,29 +649,37 @@ function ThemeMenu({ theme, setTheme }) {
         aria-label={`Choose color theme; current theme ${selected[1]}`}
         title={`Theme: ${selected[1]}`}
         aria-expanded={open}
+        aria-haspopup="menu"
       >
         <Palette size={17} />
         <span className="theme-name">{selected[1]}</span>
       </button>
       {open && (
         <div className="theme-popover" role="menu" aria-label="Color themes">
-          {THEMES.map(([key, label, , emoji]) => (
+          <div className="theme-gallery-heading" role="presentation">
+            <span>MAKE IT YOURS</span>
+            <strong>A different atmosphere.</strong>
+            <p>Eleven palettes. One familiar workspace.</p>
+          </div>
+          {THEMES.map(([key, label, description]) => (
             <button
               key={key}
-              className={theme === key ? 'active' : ''}
+              className={`theme-gallery-option ${theme === key ? 'active' : ''}`}
               onKeyDown={navigateMenu}
               onClick={() => {
                 setTheme(key);
                 setOpen(false);
+                restoreTriggerFocus();
               }}
               role="menuitemradio"
               aria-checked={theme === key}
+              aria-label={`${label}: ${description}`}
             >
-              <span className={`theme-swatch ${key}`} />
-              <span className="theme-option-emoji" aria-hidden="true">
-                {emoji}
+              <span className={`theme-preview ${key}`} aria-hidden="true">
+                <span className="theme-preview-sidebar"><i /><i /><i /></span>
+                <span className="theme-preview-content"><i /><span><i /><i /><i /></span><i /><i /></span>
               </span>
-              <span>{label}</span>
+              <span className="theme-gallery-caption"><strong>{label}</strong><small>{description}</small></span>
               {theme === key && <Check size={14} />}
             </button>
           ))}
@@ -677,7 +696,9 @@ function SearchField({ search, setSearch }) {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         aria-label="Search torrents"
+        placeholder="Search your library…"
       />
+      {!search && <kbd className="search-shortcut" aria-hidden="true">/</kbd>}
       {search && (
         <button
           className="clear-search"
@@ -1973,7 +1994,10 @@ function LegacyTorrentTable({
                 <tr
                   key={torrent.hash}
                   className={selected.has(torrent.hash) ? 'selected' : ''}
-                  onDoubleClick={() => onOpen(torrent)}
+                  onClick={(event) => {
+                    if (event.target.closest('button,input,select,a')) return;
+                    onOpen(torrent);
+                  }}
                   tabIndex="0"
                   role="button"
                   aria-label={`Open details for ${torrent.name}`}
@@ -2505,7 +2529,10 @@ function TorrentTable({
                 <tr
                   key={torrent.hash}
                   className={selected.has(torrent.hash) ? 'selected' : ''}
-                  onDoubleClick={() => onOpen(torrent)}
+                  onClick={(event) => {
+                    if (event.target.closest('button,input,select,a')) return;
+                    onOpen(torrent);
+                  }}
                   tabIndex="0"
                   role="button"
                   aria-label={`Open details for ${torrent.name}`}
@@ -4875,12 +4902,16 @@ function App() {
   const [menuTorrent, setMenuTorrent] = useState(null);
   const [menuPosition, setMenuPosition] = useState(null);
   const [theme, setTheme] = useState(
-    () => localStorage.getItem('deck-theme') || 'dark',
+    () => {
+      const saved = localStorage.getItem('deck-theme');
+      return THEMES.some(([key]) => key === saved) ? saved : 'dark';
+    },
   );
   const [refreshMs, setRefreshMs] = useState(
     () => Number(localStorage.getItem('deck-refresh-ms')) || 1500,
   );
   const [notice, setNotice] = useState('');
+  const [refreshError, setRefreshError] = useState('');
   const [copied, setCopied] = useState('');
   const [celebrateCompletions, setCelebrateCompletions] = useState(
     () => localStorage.getItem('deck-celebrations') === 'true',
@@ -4911,6 +4942,7 @@ function App() {
     try {
       const data = await api.torrents();
       const next = mapTorrents(data);
+      setRefreshError('');
       if (
         celebrateCompletions &&
         !window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
@@ -4937,6 +4969,7 @@ function App() {
           (next.find((torrent) => torrent.hash === current.hash) || null),
       );
     } catch (reason) {
+      setRefreshError(reason?.message || 'Unable to reach Deluge.');
       if (
         /(session expired|not authenticated|unauthorized|authentication)/i.test(
           reason?.message || '',
@@ -4974,31 +5007,25 @@ function App() {
       .catch(() => setLoading(false))
       .finally(() => setSessionReady(true));
   }, []);
+  const pollState = useRef(null);
+  pollState.current = { refresh, torrents };
   useEffect(() => {
     if (!connected) return undefined;
-    let timer;
-    const schedule = () => {
-      if (document.hidden) return;
-      refresh();
-      const active = torrents.some((torrent) =>
+    const poller = createPoller({
+      refresh: () => pollState.current.refresh(),
+      visible: () => !document.hidden,
+      delay: () => pollState.current.torrents.some((torrent) =>
         ['Downloading', 'Seeding'].includes(torrent.state),
-      );
-      const delay = active ? refreshMs : Math.max(refreshMs * 2, 5000);
-      timer = setTimeout(schedule, delay);
-    };
-    const onVisibility = () => {
-      if (!document.hidden) {
-        clearTimeout(timer);
-        schedule();
-      }
-    };
-    schedule();
+      ) ? refreshMs : Math.max(refreshMs * 2, 5000),
+    });
+    const onVisibility = () => { void poller.wake(); };
+    void poller.wake();
     document.addEventListener('visibilitychange', onVisibility);
     return () => {
-      clearTimeout(timer);
+      poller.stop();
       document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [connected, refreshMs, torrents]);
+  }, [connected, refreshMs]);
   useEffect(() => {
     const syncSettings = (event) => {
       if (event.detail?.theme) setTheme(event.detail.theme);
@@ -5214,6 +5241,13 @@ function App() {
           }}
         />
         <section className="workspace">
+          {refreshError && (
+            <div className="connection-recovery" role="status">
+              <WifiOff size={18} aria-hidden="true" />
+              <div><strong>Reconnecting to Deluge</strong><span>Showing the last received data. {refreshError}</span></div>
+              <button className="secondary-button" onClick={refresh}><RefreshCw size={14} />Retry now</button>
+            </div>
+          )}
           {notice && (
             <div className="form-error" role="status">
               <AlertTriangle size={15} />
@@ -5269,10 +5303,20 @@ function App() {
           <div className="list-heading">
             <div>
               <h2>
-                Torrents <span>{filtered.length}</span>
+                {{ all: 'Torrents', active: 'Active now', downloading: 'Downloading', seeding: 'Seeding', paused: 'Paused' }[filter] || 'Torrents'} <span>{filtered.length}</span>
               </h2>
+              <p className="library-caption">{search ? 'Matching torrents in this view' : 'Your transfers, at a glance'}</p>
             </div>
+            <button className="primary-button mobile-add-torrent" onClick={() => setAddFiles([])}><Plus size={17} />Add torrent</button>
           </div>
+          <nav className="mobile-library-filters" aria-label="Mobile torrent filters">
+            {[
+              ['all', 'All'], ['active', 'Active'], ['downloading', 'Downloading'],
+              ['seeding', 'Seeding'], ['paused', 'Paused'],
+            ].map(([key, label]) => (
+              <button key={key} aria-pressed={filter === key} onClick={() => setFilter(key)}>{label}</button>
+            ))}
+          </nav>
           {search && (
             <div className="search-note">
               <Search size={14} /> Showing results for{' '}

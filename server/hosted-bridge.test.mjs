@@ -66,7 +66,7 @@ test('compiled app waits for hosted bootstrap when script completion order is re
   assert.match(ui, /const pluginMode = \(\) => Boolean\(window\.__DELUGE_DECK_PLUGIN__\)/);
   assert.match(ui, /let mounted = false/);
   assert.match(ui, /const resolveMountRoot = \(\) =>/);
-  assert.match(ui, /window\.addEventListener\('deluge-deck-bootstrap-ready', mount, \{ once: true \}\)/);
+  assert.match(ui, /window\.addEventListener\('deluge-deck-bootstrap-ready', mount, \{\s*once: true,?\s*\}\)/);
   assert.match(ui, /if \(!root\) \{[\s\S]*deluge-deck-bootstrap-ready[\s\S]*return;/);
   assert.match(ui, /if \(mounted\) return;/);
   assert.match(bridge, /window\.__DELUGE_DECK_BOOTSTRAP_READY__ = true/);
