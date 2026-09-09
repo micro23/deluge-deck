@@ -1718,17 +1718,34 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
    The toggle lives in the existing command bar, leaving the sidebar and
    dashboard content close to their useful controls. */
 @media (min-width:761px) {
+  /* The command controls float above the workspace instead of reserving a
+     separate header row.  This keeps the hamburger and actions available
+     without pushing the dashboard down. */
+  .topbar {
+    position:relative;
+    top:auto;
+    height:0;
+    min-height:0;
+    padding:0;
+    border:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    overflow:visible;
+    backdrop-filter:none;
+  }
   .navigation-toggle {
     position:absolute;
     left:14px;
+    top:10px;
     z-index:1;
   }
-  .topbar {
-    height:54px;
-    padding-left:18px;
-    padding-right:18px;
+  .topbar-heading { display:none!important; }
+  .top-actions {
+    position:absolute;
+    top:10px;
+    right:14px;
+    z-index:1;
   }
-  .topbar-heading h1 { font-size:20px; }
   .sidebar { padding:12px 12px 16px; }
   .sidebar .add-button { margin-bottom:16px; }
   .workspace { padding:10px 18px 36px; }
