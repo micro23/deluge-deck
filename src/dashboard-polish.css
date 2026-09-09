@@ -118,3 +118,20 @@
   background:color-mix(in srgb,var(--surface-2) 86%,transparent);
 }
 .table-shell thead th:last-child { width:52px; min-width:52px; padding-right:52px; }
+
+/* v1.0.11: never let Deluge's stock ExtJS windows flash over Deck during a cold boot. */
+html.deluge-deck-loading body .x-window,
+html.deluge-deck-loading body [class*="x-window" i],
+html.deluge-deck-loading body .ext-el-mask {
+  display:none!important;
+  visibility:hidden!important;
+}
+
+/* v1.0.11 compact desktop rhythm: reclaim roughly 70% of the vertical dead space. */
+@media(min-width:761px) {
+  .workspace { padding-top:12px; padding-bottom:24px; }
+  .page-heading { margin-bottom:8px; }
+  .stats-grid { margin-bottom:10px; }
+  .list-heading { margin-bottom:5px; }
+  .mobile-library-filters { margin-bottom:4px; }
+}
