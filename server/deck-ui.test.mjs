@@ -721,8 +721,10 @@ test('torrent table persists resized column widths', async () => {
   const ui = await source();
   assert.match(ui, /localStorage\.getItem\('deck-column-widths'/);
   assert.match(ui, /localStorage\.setItem\('deck-column-widths', JSON\.stringify\(columnWidths\)\)/);
-  assert.match(ui, /new ResizeObserver/);
-  assert.match(ui, /header\.style\.width = savedWidth \+ 'px'/);
+  assert.match(ui, /const normalizeColumnWidths = \(savedWidths\)/);
+  assert.match(ui, /window\.addEventListener\('pointerup', saveManualResize\)/);
+  assert.match(ui, /style=\{\{ width: `\$\{columnWidths\[key\]\}px` \}\}/);
+  assert.doesNotMatch(ui.slice(ui.indexOf('function TorrentTable')), /new ResizeObserver/);
 });
 
 test('torrent table supports column visibility toggles', async () => {
@@ -748,7 +750,7 @@ test('torrent table persists column visibility preferences', async () => {
 
 test('torrent table uses one compact default layout across themes', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
-  assert.match(ui, /const TABLE_LAYOUT_VERSION = '2026-09-compact'/);
+  assert.match(ui, /const TABLE_LAYOUT_VERSION = '2026-09-stable-widths'/);
   assert.match(ui, /const DEFAULT_COLUMN_VISIBILITY = \{[\s\S]*added: false,[\s\S]*tracker: false,[\s\S]*queue: false/);
   assert.match(ui, /const DEFAULT_COLUMN_WIDTHS = \{[\s\S]*name: 400,[\s\S]*progress: 156/);
   assert.match(ui, /localStorage\.getItem\('deck-table-layout-version'\)/);

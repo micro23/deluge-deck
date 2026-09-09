@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.7';
+const VERSION = '1.0.8';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -2112,7 +2112,7 @@ const TABLE_COLUMN_ORDER = [
 // This is intentionally theme-independent. Themes may change the table's
 // colors and surface treatment, but never which information is presented or
 // how comfortably the default table scans across a desktop screen.
-const TABLE_LAYOUT_VERSION = '2026-09-compact';
+const TABLE_LAYOUT_VERSION = '2026-09-stable-widths';
 const DEFAULT_COLUMN_VISIBILITY = {
   state: true,
   progress: true,
@@ -2140,6 +2140,32 @@ const DEFAULT_COLUMN_WIDTHS = {
   seeds: 88,
   peers: 88,
 };
+const MIN_COLUMN_WIDTHS = {
+  name: 280,
+  state: 92,
+  progress: 132,
+  size: 72,
+  ratio: 64,
+  download: 86,
+  upload: 82,
+  eta: 64,
+  seeds: 78,
+  peers: 78,
+};
+const normalizeColumnWidths = (savedWidths) =>
+  Object.fromEntries(
+    Object.entries(DEFAULT_COLUMN_WIDTHS).map(([key, fallback]) => {
+      const width = Number(savedWidths?.[key]);
+      return [
+        key,
+        Number.isFinite(width) &&
+        width >= MIN_COLUMN_WIDTHS[key] &&
+        width <= 800
+          ? Math.round(width)
+          : fallback,
+      ];
+    }),
+  );
 const hasCurrentTableLayout = () =>
   localStorage.getItem('deck-table-layout-version') === TABLE_LAYOUT_VERSION;
 const TABLE_COLUMN_LABELS = {
@@ -2188,7 +2214,7 @@ function TorrentTable({
   const [sort, setSort] = useState({ key: 'queue', direction: 1 });
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const [draggingColumn, setDraggingColumn] = useState(null);
-  const tableRef = useRef(null);
+  const columnResizeStart = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
     if (!hasCurrentTableLayout()) return DEFAULT_COLUMN_VISIBILITY;
     try {
@@ -2203,10 +2229,9 @@ function TorrentTable({
   const [columnWidths, setColumnWidths] = useState(() => {
     if (!hasCurrentTableLayout()) return DEFAULT_COLUMN_WIDTHS;
     try {
-      return {
-        ...DEFAULT_COLUMN_WIDTHS,
-        ...JSON.parse(localStorage.getItem('deck-column-widths') || '{}'),
-      };
+      return normalizeColumnWidths(
+        JSON.parse(localStorage.getItem('deck-column-widths') || '{}'),
+      );
     } catch {
       return DEFAULT_COLUMN_WIDTHS;
     }
@@ -2251,30 +2276,31 @@ function TorrentTable({
       window.removeEventListener('deluge-deck:close-popovers', close);
   }, []);
   useEffect(() => {
-    const table = tableRef.current;
-    if (!table || !window.ResizeObserver) return undefined;
-    const headers = [...table.querySelectorAll('th[data-column]')];
-    headers.forEach((header) => {
-      const savedWidth = Number(columnWidths[header.dataset.column]);
-      if (savedWidth > 0) header.style.width = savedWidth + 'px';
-    });
-    const observer = new ResizeObserver((entries) =>
-      setColumnWidths((current) => {
-        let changed = false;
-        const next = { ...current };
-        entries.forEach(({ target, contentRect }) => {
-          const key = target.dataset.column;
-          const width = Math.round(contentRect.width);
-          if (key && width > 0 && next[key] !== width) {
-            next[key] = width;
-            changed = true;
-          }
-        });
-        return changed ? next : current;
-      }),
-    );
-    headers.forEach((header) => observer.observe(header));
-    return () => observer.disconnect();
+    const saveManualResize = () => {
+      const resize = columnResizeStart.current;
+      columnResizeStart.current = null;
+      if (!resize) return;
+      const width = Math.round(resize.element.getBoundingClientRect().width);
+      if (
+        width < MIN_COLUMN_WIDTHS[resize.key] ||
+        Math.abs(width - resize.startWidth) < 3
+      )
+        return;
+      setColumnWidths((current) =>
+        current[resize.key] === width
+          ? current
+          : { ...current, [resize.key]: width },
+      );
+    };
+    const cancelManualResize = () => {
+      columnResizeStart.current = null;
+    };
+    window.addEventListener('pointerup', saveManualResize);
+    window.addEventListener('pointercancel', cancelManualResize);
+    return () => {
+      window.removeEventListener('pointerup', saveManualResize);
+      window.removeEventListener('pointercancel', cancelManualResize);
+    };
   }, []);
   const toggleSort = (key) =>
     setSort((current) =>
@@ -2448,7 +2474,7 @@ function TorrentTable({
           />
         )}
       </div>
-      <table ref={tableRef}>
+      <table>
         <thead>
           <tr>
             <th className="check-cell">
@@ -2471,7 +2497,18 @@ function TorrentTable({
                 aria-sort={sortValue(TABLE_SORT_KEYS[key])}
                 className={`resizable-th ${draggingColumn === key ? 'column-dragging' : ''}`}
                 data-column={key}
+                style={{ width: `${columnWidths[key]}px` }}
                 draggable={key !== 'name'}
+                onPointerDown={(event) => {
+                  if (event.button !== 0) return;
+                  columnResizeStart.current = {
+                    key,
+                    element: event.currentTarget,
+                    startWidth: Math.round(
+                      event.currentTarget.getBoundingClientRect().width,
+                    ),
+                  };
+                }}
                 onDragStart={(event) => {
                   if (key === 'name') return;
                   event.dataTransfer.effectAllowed = 'move';
