@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.5';
+const VERSION = '1.0.6';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -115,7 +115,7 @@ const countTorrentStates = (torrents) => torrents.reduce((counts, torrent) => {
   return counts;
 }, { all: 0, active: 0, downloading: 0, seeding: 0, paused: 0 });
 const shortHash = (hash = '') => `${hash.slice(0, 7)}…${hash.slice(-5)}`;
-const rate = (value = 0) => (value ? `${formatBytes(value)}/s` : '—');
+const rate = (value = 0) => (value ? `${formatBytes(value)}/s` : '0');
 const eta = (value = 0) => {
   const n = Number(value) || 0;
   if (!n || n >= 8640000) return '—';
@@ -671,7 +671,6 @@ function SearchField({ search, setSearch }) {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         aria-label="Search torrents"
-        placeholder="Search your library…"
       />
       {!search && <kbd className="search-shortcut" aria-hidden="true">/</kbd>}
       {search && (
@@ -1451,7 +1450,6 @@ function Topbar({
         </div>
         <div className="topbar-heading">
           <h1>Deluge</h1>
-          <span>FAST · PRIVATE · IN YOUR CONTROL</span>
         </div>
         <div className="top-actions">
           <GlobalControls

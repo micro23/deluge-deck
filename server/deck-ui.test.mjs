@@ -764,6 +764,14 @@ test('desktop dashboard relies on sidebar filters instead of duplicate library c
   assert.match(css, /@media \(min-width:761px\) \{[\s\S]*\.stats-grid \{ margin-bottom:24px; \}/);
 });
 
+test('dashboard uses concise command bar copy and zero-valued idle rates', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const rate = \(value = 0\) => \(value \? `\$\{formatBytes\(value\)\}\/s` : '0'\)/);
+  assert.doesNotMatch(ui, /placeholder="Search your library…"/);
+  assert.doesNotMatch(ui, /FAST · PRIVATE · IN YOUR CONTROL/);
+  assert.match(css, /@media \(min-width:761px\) \{[\s\S]*\.topbar \{ height:64px;[\s\S]*\.workspace > \.search-wrap \{ height:42px; margin-bottom:18px; \}/);
+});
+
 test('torrent table exposes seed peer added and tracker columns', async () => {
   const ui = await source();
   assert.match(ui, />\s*Seeds\s*<\/button>/);
@@ -838,7 +846,7 @@ test('dashboard exposes the dream-loop telemetry hierarchy', async () => {
     source(),
     readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8'),
   ]);
-  assert.match(ui, /FAST · PRIVATE · IN YOUR CONTROL/);
+  assert.match(ui, /<h1>Deluge<\/h1>/);
   assert.match(ui, /aria-label="Torrent filters"/);
   assert.match(ui, /className="deck-filter-summary"/);
   assert.match(ui, /aria-label="Session status"/);

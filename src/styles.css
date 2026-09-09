@@ -1570,6 +1570,18 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
 }
 @media (max-width:760px) { .library-mobile-controls { display:block; } }
 
+/* A compact desktop command bar keeps the dashboard data close to the action
+   controls without making its cards feel crowded. */
+@media (min-width:761px) {
+  .topbar { height:64px; gap:12px; padding-left:26px; padding-right:26px; }
+  .topbar-heading h1 { font-size:22px; }
+  .top-actions { gap:2px; }
+  .connection-pill { margin-right:4px; }
+  .workspace { padding-top:18px; }
+  .workspace > .search-wrap { height:42px; margin-bottom:18px; }
+  .stats-grid { gap:12px; margin-bottom:20px; }
+}
+
 /* One shared table rhythm for every theme. Individual themes decorate this
    structure but do not squeeze or expand the information layout. */
 @media (min-width:761px) {
