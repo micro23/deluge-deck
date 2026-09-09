@@ -99,6 +99,15 @@ test('hosted first paint is gated before the stock Deluge shell can render', asy
   assert.doesNotMatch(mountBlock, /requestAnimationFrame/);
 });
 
+test('late hosted resources cannot re-enable the loading gate after Deck is ready', async () => {
+  const [builder, bridge] = await Promise.all([
+    readFile(path.join(root, 'scripts/build-plugin.mjs'), 'utf8'),
+    readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8'),
+  ]);
+  assert.match(builder, /if \(!document\.documentElement\.classList\.contains\('deluge-deck-ready'\)\) document\.documentElement\.classList\.add\('deluge-deck-loading'\)/);
+  assert.match(bridge, /if \(!document\.documentElement\.classList\.contains\('deluge-deck-ready'\)\)\s*document\.documentElement\.classList\.add\('deluge-deck-loading'\)/);
+});
+
 test('hosted requests are base-aware and a dashboard drop only opens a review modal', async () => {
   const source = await readFile(path.join(root, 'src/main.jsx'), 'utf8');
   assert.match(source, /new URL\(resource, new URL\('\.', document\.baseURI\)\)/);

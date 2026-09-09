@@ -45,11 +45,11 @@ writeFileSync(path.join(dataDir, `deluge-deck-${version}.css`), embeddedCss);
 // CSS from a tiny JS resource so hosted plugin mode is styled as well.
 writeFileSync(
   path.join(dataDir, 'deluge-deck-style.js'),
-  `(() => { document.documentElement.classList.add('deluge-deck-loading'); const style = document.createElement('style'); style.dataset.delugeDeck = 'true'; style.textContent = ${JSON.stringify(embeddedCss)}; document.head.appendChild(style); })();\n`,
+  `(() => { if (!document.documentElement.classList.contains('deluge-deck-ready')) document.documentElement.classList.add('deluge-deck-loading'); const style = document.createElement('style'); style.dataset.delugeDeck = 'true'; style.textContent = ${JSON.stringify(embeddedCss)}; document.head.appendChild(style); })();\n`,
 );
 writeFileSync(
   path.join(dataDir, `deluge-deck-${version}-style.js`),
-  `(() => { document.documentElement.classList.add('deluge-deck-loading'); const style = document.createElement('style'); style.dataset.delugeDeck = 'true'; style.textContent = ${JSON.stringify(embeddedCss)}; document.head.appendChild(style); })();\n`,
+  `(() => { if (!document.documentElement.classList.contains('deluge-deck-ready')) document.documentElement.classList.add('deluge-deck-loading'); const style = document.createElement('style'); style.dataset.delugeDeck = 'true'; style.textContent = ${JSON.stringify(embeddedCss)}; document.head.appendChild(style); })();\n`,
 );
 copyFileSync(path.join(dataDir, 'deluge-deck-plugin.js'), path.join(dataDir, `deluge-deck-${version}-plugin.js`));
 rmSync(path.join(pluginRoot, 'build'), { recursive: true, force: true });

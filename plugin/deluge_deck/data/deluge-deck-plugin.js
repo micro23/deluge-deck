@@ -5,7 +5,12 @@ window.__DELUGE_DECK_PLUGIN__ = true;
 window.__DELUGE_DECK_ROOT_ID__ = 'deluge-deck-root';
 window.__DELUGE_DECK_OVERLAY_ROOT_ID__ = 'deluge-deck-viewport-overlay';
 document.documentElement.classList.add('deluge-deck-hosted');
-document.documentElement.classList.add('deluge-deck-loading');
+// Deluge can load its three plugin resources in a different order after a
+// hard browser reload.  Never re-enable the first-paint gate after React has
+// already made Deck ready: body-level dialogs would then be hidden while the
+// main root remained visible.
+if (!document.documentElement.classList.contains('deluge-deck-ready'))
+  document.documentElement.classList.add('deluge-deck-loading');
 const viewport = document.querySelector('meta[name="viewport"]') || document.createElement('meta');
 viewport.name = 'viewport';
 viewport.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
