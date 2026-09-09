@@ -4393,6 +4393,9 @@ function AddModal({
   onAdded,
   onModalState,
 }) {
+  const preferencesOverlayHost = useViewportOverlayHost(
+    initialFiles?.kind === 'preferences',
+  );
   if (initialFiles?.kind === 'remove')
     return (
       <RemoveModal
@@ -4425,7 +4428,9 @@ function AddModal({
       />
     );
   if (initialFiles?.kind === 'preferences')
-    return <DeckPreferences onClose={onClose} />;
+    return preferencesOverlayHost
+      ? createPortal(<DeckPreferences onClose={onClose} />, preferencesOverlayHost)
+      : null;
   return (
     <AddTorrentModal
       initialFiles={initialFiles}

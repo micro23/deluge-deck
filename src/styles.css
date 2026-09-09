@@ -1542,7 +1542,8 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
   pointer-events:none!important;
 }
 #deluge-deck-viewport-overlay .global-popover,
-#deluge-deck-viewport-overlay .manager-backdrop { pointer-events:auto!important; }
+#deluge-deck-viewport-overlay .manager-backdrop,
+#deluge-deck-viewport-overlay .preferences-backdrop { pointer-events:auto!important; }
 
 /* Column headers can be dragged to arrange the table around the information
    each person uses most. The subdued state keeps sorting and resizing clear. */

@@ -223,6 +223,8 @@ test('preferences trap keyboard focus inside the dialog', async () => {
   assert.match(css, /\.preferences-backdrop \{[\s\S]*display:grid!important;[\s\S]*place-items:center;[\s\S]*overflow:hidden!important/);
   assert.match(css, /\.preferences-modal \{[\s\S]*display:flex!important;[\s\S]*height:min\(800px,calc\(100dvh - 32px\)\)!important;[\s\S]*overflow:hidden!important/);
   assert.match(css, /\.preferences-content \{[\s\S]*overflow-y:auto!important;[\s\S]*scrollbar-gutter:stable/);
+  assert.match(ui, /createPortal\(<DeckPreferences onClose=\{onClose\} \/>, preferencesOverlayHost\)/);
+  assert.match(css, /#deluge-deck-viewport-overlay \.preferences-backdrop/);
 });
 
 test('preferences checkboxes have a white field and an explicit checked mark', async () => {
