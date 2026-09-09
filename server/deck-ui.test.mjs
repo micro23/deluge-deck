@@ -839,11 +839,13 @@ test('top bar overlays stay dismissible and inside the viewport', async () => {
   assert.match(ui, /open \? 'Close global session controls' : 'Open global session controls'/);
   assert.match(ui, /function useDialogDismiss/);
   assert.match(ui, /useDialogDismiss\(onClose, modalRef\)/);
-  assert.match(ui, /container\.querySelector\('#deluge-deck-global-popover-root'\)/);
-  assert.match(ui, /container\.appendChild\(host\)/);
-  assert.doesNotMatch(ui, /document\.body\.appendChild\(host\)/);
+  assert.match(ui, /function useViewportOverlayHost/);
+  assert.match(ui, /document\.getElementById\('deluge-deck-viewport-overlay'\)/);
+  assert.match(ui, /document\.body\.appendChild\(overlay\)/);
+  assert.match(ui, /createPortal\([\s\S]*ConnectionManagerModal/);
   assert.match(css, /\.global-popover\{position:fixed!important;top:84px!important;right:24px!important;[^}]*transform:none!important;[^}]*max-height:calc\(100dvh - 96px\)[^}]*overflow:auto!important/);
-  assert.match(css, /\.global-popover\.portal-popover \{[\s\S]*position:absolute!important;[\s\S]*top:calc\(100% \+ 10px\)!important;[\s\S]*right:0!important/);
+  assert.match(css, /\.global-popover\.portal-popover \{[\s\S]*position:fixed!important;[\s\S]*top:84px!important;[\s\S]*right:24px!important/);
+  assert.match(css, /#deluge-deck-viewport-overlay \{[\s\S]*position:fixed!important;[\s\S]*inset:0!important/);
   assert.match(css, /\.global-trigger\[aria-expanded="true"\]:before\{content:"×"/);
 });
 

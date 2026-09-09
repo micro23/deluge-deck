@@ -33,7 +33,8 @@ test('hosted bridge narrowly suppresses an ExtJS login window and leaves an exis
   assert.match(bridge, /const containingNativeWindow = nativeWindow \? node : node\.closest\?\.\(windowSelector\)/);
   assert.match(bridge, /containingNativeWindow\.dataset\.delugeDeckNativeWindow = 'true'/);
   assert.match(bridge, /delete containingNativeWindow\.dataset\.delugeDeckLegacy/);
-  assert.match(bridge, /if \(node\.parentElement === body && !infrastructure && !nativeWindow && node\.id !== window\.__DELUGE_DECK_ROOT_ID__\) node\.dataset\.delugeDeckLegacy/);
+  assert.match(bridge, /window\.__DELUGE_DECK_OVERLAY_ROOT_ID__/);
+  assert.match(bridge, /node\.id !== window\.__DELUGE_DECK_ROOT_ID__ && node\.id !== window\.__DELUGE_DECK_OVERLAY_ROOT_ID__/);
   assert.match(bridge, /record\.addedNodes\.forEach\(markLegacyNode\)/);
   assert.doesNotMatch(bridge, /Array\.from\(body\.children\)\.forEach\(\(node\) => \{\s*if \(node\.id !==/);
   assert.match(bridge, /\.ext-el-mask/);

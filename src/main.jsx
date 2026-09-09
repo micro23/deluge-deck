@@ -737,6 +737,25 @@ function useDialogDismiss(onClose, ref, blocked = false) {
     };
   }, [onClose, ref, blocked]);
 }
+function useViewportOverlayHost(active) {
+  const [host, setHost] = useState(null);
+  useEffect(() => {
+    if (!active) {
+      setHost(null);
+      return undefined;
+    }
+    let overlay = document.getElementById('deluge-deck-viewport-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'deluge-deck-viewport-overlay';
+      overlay.dataset.delugeDeckOverlay = 'true';
+      document.body.appendChild(overlay);
+    }
+    setHost(overlay);
+    return undefined;
+  }, [active]);
+  return host;
+}
 function GlobalControls({ stats, onRefresh, onOpenConnections }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState('');
@@ -744,7 +763,7 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
   const [message, setMessage] = useState('');
   const anchor = useRef();
   const popoverRef = useRef();
-  const [portalHost, setPortalHost] = useState(null);
+  const portalHost = useViewportOverlayHost(open);
   const [limits, setLimits] = useState({
     down: '-1',
     up: '-1',
@@ -775,22 +794,6 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
         connections: String(stats.max_num_connections ?? -1),
       });
   }, [open, stats.max_download, stats.max_upload, stats.max_num_connections]);
-  useEffect(() => {
-    if (!open) {
-      setPortalHost(null);
-      return undefined;
-    }
-    const container = anchor.current;
-    if (!container) return undefined;
-    let host = container.querySelector('#deluge-deck-global-popover-root');
-    if (!host) {
-      host = document.createElement('div');
-      host.id = 'deluge-deck-global-popover-root';
-      container.appendChild(host);
-    }
-    setPortalHost(host);
-    return undefined;
-  }, [open]);
   const operate = async (method, label) => {
     setBusy(method);
     setError('');
@@ -1443,6 +1446,7 @@ function Topbar({
   onConnectionChanged,
 }) {
   const [connectionsOpen, setConnectionsOpen] = useState(false);
+  const viewportOverlayHost = useViewportOverlayHost(connectionsOpen);
   return (
     <>
       <header className="topbar">
@@ -1480,12 +1484,14 @@ function Topbar({
           </span>
         </div>
       </header>
-      {connectionsOpen && (
-        <ConnectionManagerModal
-          onClose={() => setConnectionsOpen(false)}
-          onConnected={onConnectionChanged}
-        />
-      )}
+      {connectionsOpen && viewportOverlayHost &&
+        createPortal(
+          <ConnectionManagerModal
+            onClose={() => setConnectionsOpen(false)}
+            onConnected={onConnectionChanged}
+          />,
+          viewportOverlayHost,
+        )}
     </>
   );
 }

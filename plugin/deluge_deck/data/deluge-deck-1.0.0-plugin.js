@@ -1,217 +1,154 @@
-// Pre-React duties only. The initial ExtJS shell is marked before React's
-// mount turn; later additions are limited to a LoginWindow with a login marker
-// and its ExtJS mask, never generic native dialogs such as Preferences.
-window.__DELUGE_DECK_PLUGIN__ = true;
-window.__DELUGE_DECK_ROOT_ID__ = 'deluge-deck-root';
-document.documentElement.classList.add('deluge-deck-hosted');
-document.documentElement.classList.add('deluge-deck-loading');
-const viewport = document.querySelector('meta[name="viewport"]') || document.createElement('meta');
-viewport.name = 'viewport';
-viewport.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
-if (!viewport.parentNode) document.head.appendChild(viewport);
-const earlyStyle = document.createElement('style');
-earlyStyle.dataset.delugeDeck = 'preauth';
-earlyStyle.textContent = 'html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"] { display:none !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
-(document.head || document.documentElement).appendChild(earlyStyle);
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { authenticateAndConnectHosted, connectHostedDaemon, createRequestGate, formatBytes, normalizeTorrentFiles, serializeRpcRequest } from './hosted-contracts.mjs';
 
-const windowSelector = '.x-window,[class*="x-window" i],[role="dialog"]';
-const nativeWindowMarker = /pref(erence)?|plugin|bandwidth|daemon/i;
-const markerText = (node) => `${node?.id || ''} ${node?.className || ''} ${node?.getAttribute?.('aria-label') || ''}`;
-const hasNativeWindowMarker = (node) => {
-  if (!(node instanceof Element)) return false;
-  return nativeWindowMarker.test(markerText(node))
-    || nativeWindowMarker.test((node.textContent || '').slice(0, 500))
-    || Boolean(node.querySelector?.('[id*="preference" i],[class*="preference" i],[id*="plugin" i],[class*="plugin" i]'));
-};
-const hasLoginMarker = (node) => {
-  if (!(node instanceof Element) || hasNativeWindowMarker(node)) return false;
-  const marker = markerText(node).toLowerCase();
-  return /(^|[-_ ])login([-_ ]|$)|login-win|loginwindow/.test(marker)
-    || Boolean(node.querySelector?.('[id*="login" i],[class*="login" i]'));
-};
-const hasStockConnectionMarker = (node) => {
-  if (!(node instanceof Element)) return false;
-  const marker = `${markerText(node)} ${(node.textContent || '').slice(0, 220)}`;
-  return /connection\s*manager|connectionmanager|x-deluge-connect-window-icon/i.test(marker);
-};
-const loginWindowFor = (node) => {
-  if (!(node instanceof Element)) return null;
-  const candidates = [node, ...node.querySelectorAll?.(windowSelector) || []];
-  return candidates.find((candidate) => !hasNativeWindowMarker(candidate) && hasLoginMarker(candidate) && candidate.matches?.(windowSelector))
-    || (hasLoginMarker(node) ? node.closest?.(windowSelector) : null);
-};
-const isLegacyShellNode = (node) => {
-  if (!(node instanceof Element) || node.id === window.__DELUGE_DECK_ROOT_ID__) return false;
-  // Do not hide an existing ExtJS window/panel while Deck is enabled live.
-  if (node.matches?.('.x-window,[class*="x-window" i],.x-panel,[class*="x-panel" i]') || hasNativeWindowMarker(node)) return false;
-  return node.id === 'main-viewport' || node.id === 'deluge-web' || node.classList.contains('x-viewport')
-    || node.classList.contains('x-border-layout-ct') || Boolean(node.querySelector?.('#main-viewport,.x-viewport,.x-border-layout-ct'));
-};
-let stockLoginWindow = null;
-const isAssociatedLoginMask = (mask) => {
-  if (!stockLoginWindow || !(mask instanceof Element)) return false;
-  if (stockLoginWindow.contains(mask)) return true;
-  const loginId = stockLoginWindow.id;
-  const relation = `${markerText(mask)} ${mask.dataset.owner || ''} ${mask.dataset.ownerid || ''} ${mask.getAttribute('aria-controls') || ''}`;
-  if (loginId && relation.includes(loginId)) return true;
-  const parent = stockLoginWindow.parentElement;
-  if (!parent || mask.parentElement !== parent) return false;
-  return mask.nextElementSibling === stockLoginWindow || mask.previousElementSibling === stockLoginWindow;
-};
-const hideAssociatedLoginMasks = () => {
-  document.querySelectorAll('.ext-el-mask').forEach((mask) => {
-    if (isAssociatedLoginMask(mask)) mask.dataset.delugeDeckStockLogin = 'true';
-  });
-};
-const suppressStockLogin = (node) => {
-  if (!(node instanceof Element)) return;
-  const loginWindow = loginWindowFor(node);
-  if (loginWindow) { stockLoginWindow = loginWindow; loginWindow.dataset.delugeDeckStockLogin = 'true'; }
-  hideAssociatedLoginMasks();
-};
-// Deck owns daemon selection in hosted mode. Deluge's stock UI can race the
-// post-login auto-connect request and show its Connection Manager over Deck.
-let stockConnectionManagerPatched = false;
-const disableStockConnectionManager = () => {
-  const manager = window.deluge?.connectionManager;
-  if (!manager) return false;
-  const element = manager.getEl?.()?.dom;
-  if (element) element.dataset.delugeDeckStockConnection = 'true';
-  if (!stockConnectionManagerPatched && typeof manager.show === 'function') {
-    manager.show = function suppressDeckStockConnectionManager() {
-      this.hide?.();
-      return this;
-    };
-    stockConnectionManagerPatched = true;
-  }
-  if (manager.isVisible?.()) manager.hide?.();
-  return true;
-};
-const suppressStockConnectionWindow = (node) => {
-  if (!(node instanceof Element)) return;
-  const candidates = [node, ...node.querySelectorAll?.(windowSelector) || []];
-  candidates.filter((candidate) => candidate.matches?.(windowSelector) && hasStockConnectionMarker(candidate)).forEach((candidate) => {
-    candidate.dataset.delugeDeckStockConnection = 'true';
-  });
-  disableStockConnectionManager();
-};
-const ensureNativePreferencesControls = (preferences, element) => {
-  if (!element || element.querySelector('.deck-native-preferences-controls')) return;
-  const controls = document.createElement('div');
-  controls.className = 'deck-native-preferences-controls';
-  controls.setAttribute('role', 'group');
-  controls.setAttribute('aria-label', 'Preferences actions');
-  controls.innerHTML = '<button type="button" class="deck-native-preferences-close" data-action="close" aria-label="Close Preferences">×</button><div class="deck-native-preferences-actions"><button type="button" data-action="close">Close</button><button type="button" data-action="apply">Apply</button><button type="button" data-action="ok">OK</button></div>';
-  const invokeNative = (action) => {
-    const handler = preferences?.[`on${action[0].toUpperCase()}${action.slice(1)}`];
-    if (typeof handler === 'function') handler.call(preferences);
-    else if (action === 'apply') preferences.onApply?.();
-    else if (action === 'ok') preferences.onOk?.();
-    else if (typeof preferences?.[action] === 'function') preferences[action]();
-    // ExtJS versions differ: some expose methods, others only wire the
-    // footer buttons. Trigger the native button when no API is available.
-    if (typeof handler !== 'function' && typeof preferences?.[action] !== 'function') {
-      const nativeButton = [...element.querySelectorAll('button')].find((button) => !controls.contains(button) && button.textContent.trim().toLowerCase() === action);
-      nativeButton?.click();
-    }
-    if (action === 'close') {
-      // Keep the close affordance reliable even when an older ExtJS build has
-      // a no-op hide/close implementation (or delays its visibility update).
-      element.hidden = true;
-      element.style.setProperty('display', 'none', 'important');
-    }
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+test('hosted bridge narrowly suppresses an ExtJS login window and leaves an existing Preferences window alone', async () => {
+  const bridge = await readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8');
+  const delayedLoginFixture = '<div class="root"><div id="stock-mask" class="ext-el-mask"></div><div id="stock-login" class="x-window"><div class="login-form">Password</div></div><div id="preferences-mask" class="ext-el-mask"></div><div id="preferences" class="x-window"><div class="preferences-form">Preferences</div></div></div>';
+  assert.match(bridge, /data-deluge-deck-legacy/);
+  assert.match(bridge, /data-deluge-deck-stock-login/);
+  assert.match(bridge, /MutationObserver/);
+  assert.match(delayedLoginFixture, /stock-login[\s\S]*login-form/);
+  assert.match(delayedLoginFixture, /preferences-mask[\s\S]*preferences-form/);
+  assert.match(bridge, /hasLoginMarker/);
+  assert.match(bridge, /loginWindowFor/);
+  assert.match(bridge, /isLegacyShellNode/);
+  assert.match(bridge, /hasNativeWindowMarker/);
+  assert.match(bridge, /const showNativePreferences = \(\) =>/);
+  assert.match(bridge, /preferences\.setSize\?\.\(width, height\)/);
+  assert.match(bridge, /preferences\.center\?\.\(\)/);
+  assert.match(bridge, /preferences\.doLayout\?\.\(\)/);
+  assert.match(bridge, /ensureNativePreferencesControls\(preferences, element\)/);
+  assert.match(bridge, /data-action="apply"/);
+  assert.match(bridge, /preferences\.onApply\?\.\(\)/);
+  assert.match(bridge, /preferences\.onOk\?\.\(\)/);
+  assert.match(bridge, /nativeWindowMarker/);
+  assert.match(bridge, /\.x-window,\[class\*="x-window" i\],\.x-panel/);
+  assert.match(bridge, /const nativeWindow = node\.matches\?\.\(windowSelector\) && hasNativeWindowMarker\(node\)/);
+  assert.match(bridge, /const containingNativeWindow = nativeWindow \? node : node\.closest\?\.\(windowSelector\)/);
+  assert.match(bridge, /containingNativeWindow\.dataset\.delugeDeckNativeWindow = 'true'/);
+  assert.match(bridge, /delete containingNativeWindow\.dataset\.delugeDeckLegacy/);
+  assert.match(bridge, /window\.__DELUGE_DECK_OVERLAY_ROOT_ID__/);
+  assert.match(bridge, /node\.id !== window\.__DELUGE_DECK_ROOT_ID__ && node\.id !== window\.__DELUGE_DECK_OVERLAY_ROOT_ID__/);
+  assert.match(bridge, /record\.addedNodes\.forEach\(markLegacyNode\)/);
+  assert.doesNotMatch(bridge, /Array\.from\(body\.children\)\.forEach\(\(node\) => \{\s*if \(node\.id !==/);
+  assert.match(bridge, /\.ext-el-mask/);
+  assert.match(bridge, /isAssociatedLoginMask/);
+  assert.match(bridge, /mask\.nextElementSibling === stockLoginWindow \|\| mask\.previousElementSibling === stockLoginWindow/);
+  assert.match(bridge, /if \(isAssociatedLoginMask\(mask\)\) mask\.dataset\.delugeDeckStockLogin/);
+  assert.doesNotMatch(bridge, /querySelectorAll\('\.ext-el-mask'\)\.forEach\(\(mask\) => \{ mask\.dataset/);
+  assert.doesNotMatch(bridge, /\.x-mask/);
+  assert.doesNotMatch(bridge, /body > \*/);
+  assert.match(bridge, /deluge-deck-root/);
+  assert.doesNotMatch(bridge, /document\.addEventListener\(['"]drop/);
+  assert.doesNotMatch(bridge, /window\.fetch\s*=/);
+});
+
+test('hosted bridge suppresses Deluge stock connection manager in favor of Deck controls', async () => {
+  const bridge = await readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8');
+  assert.match(bridge, /data-deluge-deck-stock-connection/);
+  assert.match(bridge, /hasStockConnectionMarker/);
+  assert.match(bridge, /window\.deluge\?\.connectionManager/);
+  assert.match(bridge, /manager\.show = function suppressDeckStockConnectionManager/);
+  assert.match(bridge, /manager\.isVisible\?\.\(\)\) manager\.hide/);
+});
+
+test('compiled app waits for hosted bootstrap when script completion order is reversed', async () => {
+  const [ui, webui, bridge] = await Promise.all([
+    readFile(path.join(root, 'src/main.jsx'), 'utf8'),
+    readFile(path.join(root, 'plugin/deluge_deck/webui.py'), 'utf8'),
+    readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8'),
+  ]);
+  assert.match(ui, /const pluginMode = \(\) => Boolean\(window\.__DELUGE_DECK_PLUGIN__\)/);
+  assert.match(ui, /let mounted = false/);
+  assert.match(ui, /const resolveMountRoot = \(\) =>/);
+  assert.match(ui, /window\.addEventListener\('deluge-deck-bootstrap-ready', mount, \{\s*once: true,?\s*\}\)/);
+  assert.match(ui, /if \(!root\) \{[\s\S]*deluge-deck-bootstrap-ready[\s\S]*return;/);
+  assert.match(ui, /if \(mounted\) return;/);
+  assert.match(bridge, /window\.__DELUGE_DECK_BOOTSTRAP_READY__ = true/);
+  assert.match(bridge, /window\.dispatchEvent\(new Event\('deluge-deck-bootstrap-ready'\)\)/);
+  assert.match(webui, /resource\(f'deluge-deck-\{__version__\}-style\.js'\),[\s\S]*resource\(f'deluge-deck-\{__version__\}-plugin\.js'\),[\s\S]*resource\(f'deluge-deck-\{__version__\}\.js'\)/);
+});
+
+test('hosted first paint is gated before the stock Deluge shell can render', async () => {
+  const [css, builder, bridge, ui] = await Promise.all([
+    readFile(path.join(root, 'src/styles.css'), 'utf8'),
+    readFile(path.join(root, 'scripts/build-plugin.mjs'), 'utf8'),
+    readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8'),
+    readFile(path.join(root, 'src/main.jsx'), 'utf8'),
+  ]);
+  assert.match(builder, /classList\.add\('deluge-deck-loading'\)[\s\S]*appendChild\(style\)/);
+  assert.match(css, /html\.deluge-deck-loading body>[^\{]*#deluge-deck-root[^\{]*\{display:none!important\}/);
+  assert.match(css, /html\.deluge-deck-loading body:before/);
+  assert.match(css, /html\.deluge-deck-hosted #deluge-deck-root\{position:fixed!important;inset:0!important/);
+  assert.match(css, /data-deluge-deck-legacy="true"\][^\{]*\{display:none!important\}/);
+  assert.match(bridge, /classList\.add\('deluge-deck-loading'\)/);
+  assert.match(bridge, /deck-boot-splash/);
+  assert.match(bridge, /#deluge-deck-root \{ position:fixed !important; inset:0 !important/);
+  assert.match(bridge, /node\.dataset\.delugeDeckLegacy = 'true'/);
+  const appStart = ui.indexOf('function App()');
+  const mountStart = ui.indexOf('const mount =');
+  const appBlock = ui.slice(appStart, mountStart);
+  const mountBlock = ui.slice(mountStart);
+  assert.match(appBlock, /useEffect\(\(\) => \{\s*if \(!pluginMode\(\)\) return;\s*document\.documentElement\.classList\.add\('deluge-deck-ready'\);\s*document\.documentElement\.classList\.remove\('deluge-deck-loading'\)/);
+  assert.doesNotMatch(mountBlock, /requestAnimationFrame/);
+});
+
+test('hosted requests are base-aware and a dashboard drop only opens a review modal', async () => {
+  const source = await readFile(path.join(root, 'src/main.jsx'), 'utf8');
+  assert.match(source, /new URL\(resource, new URL\('\.', document\.baseURI\)\)/);
+  assert.match(source, /setAddFiles\(files\)/);
+  const dropStart = source.indexOf('const drop =');
+  const dropBlock = source.slice(dropStart, source.indexOf('if (!connected) return', dropStart));
+  assert.notEqual(dropBlock.length, 0);
+  assert.doesNotMatch(dropBlock, /api\.upload|web\.add_torrents|core\.add_torrent/);
+  assert.match(source, /Nothing is added until you confirm/);
+  assert.match(source, /preferences\.show\(\)/);
+  assert.match(source, /authenticateAndConnectHosted\(rpc, password\)/);
+});
+
+test('a hosted login discovers and connects an available Deluge host before dashboard entry', async () => {
+  const calls = [];
+  const call = async (method, params = []) => {
+    calls.push([method, params]);
+    if (method === 'auth.login') { assert.deepEqual(params, ['secret']); return true; }
+    if (method === 'web.connected') return calls.filter(([name]) => name === 'web.connected').length > 1;
+    // Deluge 2.1 tuples contain username in slot 3, not a host status.
+    if (method === 'web.get_hosts') return [['offline', '127.0.0.1', 58846, 'alice'], ['online', '127.0.0.1', 58846, 'bob'], ['connected', '127.0.0.1', 58846, 'carol']];
+    if (method === 'web.get_host_status') return params[0] === 'offline' ? ['offline', 'Offline'] : params[0] === 'online' ? { status: 'Online' } : ['connected', 'Connected'];
+    if (method === 'web.connect') { assert.deepEqual(params, ['connected']); return true; }
+    throw new Error(`unexpected ${method}`);
   };
-  const close = () => invokeNative('close');
-  controls.querySelectorAll('[data-action="close"]').forEach((button) => button.addEventListener('click', close));
-  controls.querySelector('[data-action="apply"]')?.addEventListener('click', () => invokeNative('apply'));
-  controls.querySelector('[data-action="ok"]')?.addEventListener('click', () => invokeNative('ok'));
-  element.appendChild(controls);
-};
-const showNativePreferences = () => {
-  const preferences = window.deluge?.preferences;
-  if (typeof preferences?.show !== 'function') return false;
-  const fitAndReveal = () => {
-    const element = preferences.getEl?.()?.dom;
-    if (element) {
-      element.dataset.delugeDeckNativeWindow = 'true';
-      delete element.dataset.delugeDeckLegacy;
-      delete element.dataset.delugeDeckStockLogin;
-      element.style.removeProperty('display');
-      element.style.removeProperty('visibility');
-      ensureNativePreferencesControls(preferences, element);
-    }
-    const width = Math.min(560, Math.max(320, window.innerWidth - 32));
-    const height = Math.min(610, Math.max(360, window.innerHeight - 32));
-    preferences.setSize?.(width, height);
-    preferences.center?.();
-    preferences.doLayout?.();
-  };
-  if (!preferences.rendered && typeof preferences.on === 'function') {
-    preferences.on('afterrender', fitAndReveal, null, { single: true });
-  }
-  preferences.show();
-  fitAndReveal();
-  requestAnimationFrame(fitAndReveal);
-  return true;
-};
-window.__DELUGE_DECK_SHOW_NATIVE_PREFERENCES__ = showNativePreferences;
-// ExtJS's native Preferences window does not consistently wire dismissal on
-// touch layouts. Keep both Escape and clicks outside the panel reliable.
-const closeNativePreferences = (event) => {
-  const preferences = window.deluge?.preferences;
-  const element = preferences?.getEl?.()?.dom;
-  if (!element || element.hidden || element.style.display === 'none' || element.dataset.delugeDeckNativeWindow !== 'true') return;
-  if (event.type === 'pointerdown' && element.contains(event.target)) return;
-  event.preventDefault();
-  event.stopPropagation();
-  if (typeof preferences.hide === 'function') preferences.hide();
-  else if (typeof preferences.close === 'function') preferences.close();
-  if (element) {
-    element.hidden = true;
-    element.style.setProperty('display', 'none', 'important');
-  }
-};
-document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeNativePreferences(event); }, true);
-document.addEventListener('pointerdown', closeNativePreferences, true);
-const ensureRoot = () => {
-  const body = document.body;
-  if (!body) return null;
-  const markLegacyNode = (node) => {
-    if (!(node instanceof Element)) return;
-    suppressStockLogin(node);
-    suppressStockConnectionWindow(node);
-    const infrastructure = ['SCRIPT', 'STYLE', 'LINK'].includes(node.tagName);
-    const nativeWindow = node.matches?.(windowSelector) && hasNativeWindowMarker(node);
-    const containingNativeWindow = nativeWindow ? node : node.closest?.(windowSelector);
-    if (containingNativeWindow && hasNativeWindowMarker(containingNativeWindow)) {
-      containingNativeWindow.dataset.delugeDeckNativeWindow = 'true';
-      delete containingNativeWindow.dataset.delugeDeckLegacy;
-    }
-    if (node.parentElement === body && !infrastructure && !nativeWindow && node.id !== window.__DELUGE_DECK_ROOT_ID__) node.dataset.delugeDeckLegacy = 'true';
-  };
-  Array.from(body.children).forEach(markLegacyNode);
-  // The bridge may initialize just before Deluge assigns connectionManager.
-  if (!disableStockConnectionManager()) {
-    let attempts = 0;
-    const patchManager = window.setInterval(() => {
-      attempts += 1;
-      if (disableStockConnectionManager() || attempts >= 40) window.clearInterval(patchManager);
-    }, 100);
-  }
-  let root = document.getElementById(window.__DELUGE_DECK_ROOT_ID__);
-  if (!root) {
-    root = document.createElement('div');
-    root.id = window.__DELUGE_DECK_ROOT_ID__;
-    root.innerHTML = '<div class="deck-boot-splash" role="status" aria-label="Loading Deluge">Deluge</div>';
-    body.appendChild(root);
-  }
-  // Observe delayed generic Ext.Window only when it contains a login marker.
-  // A native Preferences Ext.Window has no marker and is left alone.
-  new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach(markLegacyNode))).observe(body, { childList: true, subtree: true });
-  window.__DELUGE_DECK_BOOTSTRAP_READY__ = true;
-  window.dispatchEvent(new Event('deluge-deck-bootstrap-ready'));
-  return root;
-};
-// Deluge injects plugin scripts after body creation in normal hosted use, so
-// this synchronous call hides the pre-existing shell before its next paint.
-if (document.body) ensureRoot(); else document.addEventListener('DOMContentLoaded', ensureRoot, { once: true });
+  assert.equal(await authenticateAndConnectHosted(call, 'secret'), true);
+  assert.deepEqual(calls.map(([method]) => method), ['auth.login', 'web.connected', 'web.get_hosts', 'web.get_host_status', 'web.get_host_status', 'web.get_host_status', 'web.connect', 'web.connected']);
+  await assert.rejects(() => connectHostedDaemon(async (method) => method === 'web.connected' ? false : []), /No available Deluge daemon hosts/);
+});
+
+test('normalizes Deluge 2.1 nested files and invalidates obsolete detail requests', () => {
+  const rows = normalizeTorrentFiles({ type: 'dir', path: 'release', contents: [{ type: 'file', path: 'readme.txt', size: 12, progress: 100 }, { type: 'dir', path: 'video', contents: [{ type: 'file', path: 'episode.mkv', size: 42, progress: 25 }] }] });
+  assert.deepEqual(rows.map((row) => row.path), ['release/readme.txt', 'release/video/episode.mkv']);
+  const gate = createRequestGate(); const first = gate.begin(); const second = gate.begin();
+  assert.equal(gate.isCurrent(first), false); assert.equal(gate.isCurrent(second), true); gate.cancel(); assert.equal(gate.isCurrent(second), false);
+});
+
+test('formats Deluge byte counts without shifting MB values into GB', () => {
+  assert.equal(formatBytes(619), '619 B');
+  assert.equal(formatBytes(1331), '1.3 KB');
+  assert.equal(formatBytes(648753971), '618.7 MB');
+  assert.equal(formatBytes(624531866), '595.6 MB');
+  assert.equal(formatBytes(664576984064), '618.9 GB');
+});
+
+test('blank download paths are omitted while explicit paths remain in all add options', () => {
+  const blank = JSON.parse(serializeRpcRequest({ method: 'web.add_torrents', params: [[{ options: { download_location: '   ', add_paused: true } }]] }));
+  assert.deepEqual(blank.params[0][0].options, { add_paused: true });
+  const urlBlank = JSON.parse(serializeRpcRequest({ method: 'core.add_torrent_url', params: ['https://example.test/file.torrent', { download_location: '', add_paused: false }] }));
+  assert.deepEqual(urlBlank.params[1], { add_paused: false });
+  const explicit = JSON.parse(serializeRpcRequest({ method: 'core.add_torrent_magnet', params: ['magnet:?x', { download_location: 'D:\\Downloads', sequential_download: true }] }));
+  assert.equal(explicit.params[1].download_location, 'D:\\Downloads');
+});

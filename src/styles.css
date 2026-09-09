@@ -1514,13 +1514,13 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
    same visible coordinate system as its trigger instead of a detached body
    layer that a hosted Deluge shell can hide. */
 .global-popover.portal-popover {
-  position:absolute!important;
-  top:calc(100% + 10px)!important;
+  position:fixed!important;
+  top:84px!important;
+  right:24px!important;
   left:auto!important;
-  right:0!important;
-  width:min(390px,calc(100vw - 24px))!important;
-  max-height:calc(100dvh - 100px)!important;
-  z-index:1000!important;
+  width:min(390px,calc(100vw - 48px))!important;
+  max-height:calc(100dvh - 96px)!important;
+  z-index:2147483001!important;
 }
 @media (max-width:760px) {
   .global-popover {
@@ -1530,6 +1530,19 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
     max-height:calc(100dvh - 84px - env(safe-area-inset-top))!important;
   }
 }
+
+/* Hosted Deluge can transform the shell that owns the React root.  Anything
+   fixed inside that shell is fixed to the shell rather than the browser
+   viewport.  This dedicated body-level layer keeps critical overlays in the
+   real viewport, regardless of the host application's layout. */
+#deluge-deck-viewport-overlay {
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483000!important;
+  pointer-events:none!important;
+}
+#deluge-deck-viewport-overlay .global-popover,
+#deluge-deck-viewport-overlay .manager-backdrop { pointer-events:auto!important; }
 
 /* Column headers can be dragged to arrange the table around the information
    each person uses most. The subdued state keeps sorting and resizing clear. */
