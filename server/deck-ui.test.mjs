@@ -757,6 +757,13 @@ test('torrent table uses one compact default layout across themes', async () => 
   assert.match(css, /@media \(min-width:761px\) \{[\s\S]*\.table-shell table \{ min-width:1400px; table-layout:fixed; \}/);
 });
 
+test('desktop dashboard relies on sidebar filters instead of duplicate library controls', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /className="library-mobile-controls"/);
+  assert.match(css, /\.library-mobile-controls \{ display:none; \}/);
+  assert.match(css, /@media \(min-width:761px\) \{[\s\S]*\.stats-grid \{ margin-bottom:24px; \}/);
+});
+
 test('torrent table exposes seed peer added and tracker columns', async () => {
   const ui = await source();
   assert.match(ui, />\s*Seeds\s*<\/button>/);

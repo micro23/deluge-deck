@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.4';
+const VERSION = '1.0.5';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -5327,30 +5327,32 @@ function App() {
               trend={telemetryHistory.library}
             />
           </div>
-          <div className="list-heading">
-            <div>
-              <h2>
-                {{ all: 'Torrents', active: 'Active now', downloading: 'Downloading', seeding: 'Seeding', paused: 'Paused' }[filter] || 'Torrents'} <span>{filtered.length}</span>
-              </h2>
-              <p className="library-caption">{search ? 'Matching torrents in this view' : 'Your transfers, at a glance'}</p>
+          <div className="library-mobile-controls">
+            <div className="list-heading">
+              <div>
+                <h2>
+                  {{ all: 'Torrents', active: 'Active now', downloading: 'Downloading', seeding: 'Seeding', paused: 'Paused' }[filter] || 'Torrents'} <span>{filtered.length}</span>
+                </h2>
+                <p className="library-caption">{search ? 'Matching torrents in this view' : 'Your transfers, at a glance'}</p>
+              </div>
+              <button className="primary-button mobile-add-torrent" onClick={() => setAddFiles([])}><Plus size={17} />Add torrent</button>
             </div>
-            <button className="primary-button mobile-add-torrent" onClick={() => setAddFiles([])}><Plus size={17} />Add torrent</button>
+            <nav className="mobile-library-filters" aria-label="Torrent filters">
+              {[
+                ['all', 'All'], ['active', 'Active'], ['downloading', 'Downloading'],
+                ['seeding', 'Seeding'], ['paused', 'Paused'],
+              ].map(([key, label]) => (
+                <button key={key} aria-pressed={filter === key} onClick={() => setFilter(key)}>
+                  <span>{label}</span>
+                  <b>{torrentCounts[key]}</b>
+                </button>
+              ))}
+              <span className="deck-filter-summary">
+                <span className="status-dot live" />
+                {filtered.length} visible · live data
+              </span>
+            </nav>
           </div>
-          <nav className="mobile-library-filters" aria-label="Torrent filters">
-            {[
-              ['all', 'All'], ['active', 'Active'], ['downloading', 'Downloading'],
-              ['seeding', 'Seeding'], ['paused', 'Paused'],
-            ].map(([key, label]) => (
-              <button key={key} aria-pressed={filter === key} onClick={() => setFilter(key)}>
-                <span>{label}</span>
-                <b>{torrentCounts[key]}</b>
-              </button>
-            ))}
-            <span className="deck-filter-summary">
-              <span className="status-dot live" />
-              {filtered.length} visible · live data
-            </span>
-          </nav>
           {search && (
             <div className="search-note">
               <Search size={14} /> Showing results for{' '}

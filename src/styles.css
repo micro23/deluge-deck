@@ -1560,6 +1560,16 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
   vertical-align:1px;
 }
 
+/* Desktop already has the persistent sidebar filters and Add torrent action.
+   Keep the duplicate library header and filter strip for phone layouts only. */
+.library-mobile-controls { display:none; }
+@media (min-width:761px) {
+  .workspace { padding-top:24px; padding-bottom:48px; }
+  .workspace > .search-wrap { margin-bottom:22px; }
+  .stats-grid { margin-bottom:24px; }
+}
+@media (max-width:760px) { .library-mobile-controls { display:block; } }
+
 /* One shared table rhythm for every theme. Individual themes decorate this
    structure but do not squeeze or expand the information layout. */
 @media (min-width:761px) {
