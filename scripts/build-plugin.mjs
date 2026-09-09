@@ -9,6 +9,13 @@ const pluginRoot = path.join(root, 'plugin');
 const dataDir = path.join(pluginRoot, 'deluge_deck', 'data');
 const builtAssets = path.join(root, 'dist', 'assets');
 mkdirSync(dataDir, { recursive: true });
+// A Deluge egg only needs the assets for the release it contains. Removing
+// prior versioned copies prevents a stale bundle from being mistaken for the
+// active build when inspecting or reinstalling the plugin.
+for (const file of readdirSync(dataDir)) {
+  if (/^deluge-deck-\d+\.\d+\.\d+(?:-(?:style|plugin))?\.(?:js|css)$/.test(file))
+    rmSync(path.join(dataDir, file), { force: true });
+}
 const findAsset = (suffix) => {
   const file = readdirSync(builtAssets).find((candidate) => candidate.endsWith(suffix));
   if (!file) throw new Error(`Could not find the Vite ${suffix} asset. Run npm run build first.`);
