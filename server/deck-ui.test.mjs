@@ -868,3 +868,9 @@ test('every Deck overlay supports Escape and outside-pointer dismissal', async (
   assert.match(sidebar, /onClick=\{\(\) => setCollapsed\(\(value\) => !value\)\}/);
   assert.match(bridge, /document\.addEventListener\('pointerdown', closeNativePreferences, true\)/);
 });
+
+test('hosted bridge leaves Deck viewport overlays out of legacy window detection', async () => {
+  const bridge = await readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8');
+  assert.match(bridge, /if \(node\.closest\?\.\(`#\$\{window\.__DELUGE_DECK_OVERLAY_ROOT_ID__\}`\)\) return;/);
+  assert.match(bridge, /!candidate\.closest\?\.\(`#\$\{window\.__DELUGE_DECK_OVERLAY_ROOT_ID__\}`\)/);
+});
