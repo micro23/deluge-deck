@@ -746,6 +746,17 @@ test('torrent table persists column visibility preferences', async () => {
   assert.match(ui, /localStorage\.setItem\(\s*'deck-column-visibility',\s*JSON\.stringify\(columnVisibility\),?\s*\)/);
 });
 
+test('torrent table uses one compact default layout across themes', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /const TABLE_LAYOUT_VERSION = '2026-09-compact'/);
+  assert.match(ui, /const DEFAULT_COLUMN_VISIBILITY = \{[\s\S]*added: false,[\s\S]*tracker: false,[\s\S]*queue: false/);
+  assert.match(ui, /const DEFAULT_COLUMN_WIDTHS = \{[\s\S]*name: 400,[\s\S]*progress: 156/);
+  assert.match(ui, /localStorage\.getItem\('deck-table-layout-version'\)/);
+  assert.match(ui, /localStorage\.setItem\('deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
+  assert.match(ui, /'size',[\s\S]*'ratio',[\s\S]*'download'/);
+  assert.match(css, /@media \(min-width:761px\) \{[\s\S]*\.table-shell table \{ min-width:1400px; table-layout:fixed; \}/);
+});
+
 test('torrent table exposes seed peer added and tracker columns', async () => {
   const ui = await source();
   assert.match(ui, />\s*Seeds\s*<\/button>/);

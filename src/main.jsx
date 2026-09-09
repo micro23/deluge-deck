@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.3';
+const VERSION = '1.0.4';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -2100,10 +2100,10 @@ const TABLE_COLUMN_ORDER = [
   'state',
   'progress',
   'size',
+  'ratio',
   'download',
   'upload',
   'eta',
-  'ratio',
   'seeds',
   'peers',
   'added',
@@ -2111,6 +2111,39 @@ const TABLE_COLUMN_ORDER = [
   'tracker',
   'queue',
 ];
+// This is intentionally theme-independent. Themes may change the table's
+// colors and surface treatment, but never which information is presented or
+// how comfortably the default table scans across a desktop screen.
+const TABLE_LAYOUT_VERSION = '2026-09-compact';
+const DEFAULT_COLUMN_VISIBILITY = {
+  state: true,
+  progress: true,
+  size: true,
+  ratio: true,
+  download: true,
+  upload: true,
+  eta: true,
+  seeds: true,
+  peers: true,
+  added: false,
+  seedingTime: false,
+  tracker: false,
+  queue: false,
+};
+const DEFAULT_COLUMN_WIDTHS = {
+  name: 400,
+  state: 112,
+  progress: 156,
+  size: 82,
+  ratio: 72,
+  download: 96,
+  upload: 92,
+  eta: 74,
+  seeds: 88,
+  peers: 88,
+};
+const hasCurrentTableLayout = () =>
+  localStorage.getItem('deck-table-layout-version') === TABLE_LAYOUT_VERSION;
 const TABLE_COLUMN_LABELS = {
   state: 'State',
   progress: 'Progress',
@@ -2159,38 +2192,29 @@ function TorrentTable({
   const [draggingColumn, setDraggingColumn] = useState(null);
   const tableRef = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
-    const defaults = {
-      state: true,
-      progress: true,
-      size: true,
-      download: true,
-      upload: true,
-      eta: true,
-      ratio: true,
-      seeds: true,
-      peers: true,
-      added: true,
-      seedingTime: false,
-      tracker: true,
-      queue: true,
-    };
+    if (!hasCurrentTableLayout()) return DEFAULT_COLUMN_VISIBILITY;
     try {
       return {
-        ...defaults,
+        ...DEFAULT_COLUMN_VISIBILITY,
         ...JSON.parse(localStorage.getItem('deck-column-visibility') || '{}'),
       };
     } catch {
-      return defaults;
+      return DEFAULT_COLUMN_VISIBILITY;
     }
   });
   const [columnWidths, setColumnWidths] = useState(() => {
+    if (!hasCurrentTableLayout()) return DEFAULT_COLUMN_WIDTHS;
     try {
-      return JSON.parse(localStorage.getItem('deck-column-widths') || '{}');
+      return {
+        ...DEFAULT_COLUMN_WIDTHS,
+        ...JSON.parse(localStorage.getItem('deck-column-widths') || '{}'),
+      };
     } catch {
-      return {};
+      return DEFAULT_COLUMN_WIDTHS;
     }
   });
   const [columnOrder, setColumnOrder] = useState(() => {
+    if (!hasCurrentTableLayout()) return TABLE_COLUMN_ORDER;
     try {
       const stored = JSON.parse(
         localStorage.getItem('deck-column-order') || '[]',
@@ -2219,6 +2243,9 @@ function TorrentTable({
   useEffect(() => {
     localStorage.setItem('deck-column-order', JSON.stringify(columnOrder));
   }, [columnOrder]);
+  useEffect(() => {
+    localStorage.setItem('deck-table-layout-version', TABLE_LAYOUT_VERSION);
+  }, []);
   useEffect(() => {
     const close = () => setColumnMenuOpen(false);
     window.addEventListener('deluge-deck:close-popovers', close);

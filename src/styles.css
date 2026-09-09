@@ -1559,6 +1559,20 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
   letter-spacing:-2px;
   vertical-align:1px;
 }
+
+/* One shared table rhythm for every theme. Individual themes decorate this
+   structure but do not squeeze or expand the information layout. */
+@media (min-width:761px) {
+  .table-shell table { min-width:1400px; table-layout:fixed; }
+  .table-shell th { height:48px; }
+  .table-shell td { height:72px; }
+  .table-shell th,.table-shell td { padding-left:12px; padding-right:12px; }
+  .table-shell .check-cell { width:44px; padding-right:6px; }
+  .table-shell .name-cell { min-width:0; max-width:none; }
+  .table-shell .name-content { gap:10px; }
+  .table-shell .torrent-name strong { max-width:none; }
+  .table-shell .progress-wrap { min-width:0; }
+}
 .column-menu-hint {
   grid-column:1/-1;
   padding-bottom:3px;
