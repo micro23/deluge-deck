@@ -1713,3 +1713,29 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
   :root[data-theme="independence"] .app-shell { background:linear-gradient(rgba(2,11,27,.87),rgba(4,20,43,.82)),url('./assets/independence-night-frame.jpg') center/auto 100% fixed!important; }
   :root[data-theme="new-year"] .app-shell { background:linear-gradient(rgba(3,4,5,.87),rgba(10,10,10,.82)),url('./assets/new-year-velvet-frame.jpg') center/auto 100% fixed!important; }
 }
+
+/* Desktop density: navigation no longer needs its own branded header row.
+   The toggle lives in the existing command bar, leaving the sidebar and
+   dashboard content close to their useful controls. */
+@media (min-width:761px) {
+  .navigation-toggle {
+    position:absolute;
+    left:14px;
+    z-index:1;
+  }
+  .topbar {
+    height:54px;
+    padding-left:18px;
+    padding-right:18px;
+  }
+  .topbar-heading h1 { font-size:20px; }
+  .sidebar { padding:12px 12px 16px; }
+  .sidebar .add-button { margin-bottom:16px; }
+  .workspace { padding:10px 18px 36px; }
+  .workspace > .search-wrap { height:40px; margin-bottom:12px; }
+  .stats-grid { gap:10px; margin-bottom:12px; }
+  .stats-grid .stat-card { min-height:132px; padding:14px 12px; }
+  .table-shell th { height:44px; }
+  .table-shell td { height:66px; }
+}
+@media (max-width:760px) { .navigation-toggle { display:none; } }

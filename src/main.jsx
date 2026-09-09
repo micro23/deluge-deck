@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.8';
+const VERSION = '1.0.9';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -516,17 +516,6 @@ function Sidebar({
       <aside
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
-        <div className="sidebar-top">
-          <Brand />
-          <button
-            className="icon-button collapse-button"
-            onClick={() => setCollapsed((value) => !value)}
-            aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-            aria-expanded={!collapsed}
-          >
-            <Menu size={18} />
-          </button>
-        </div>
         <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
           <Plus size={18} />
           <span>Add torrent</span>
@@ -1439,12 +1428,25 @@ function Topbar({
   onPreferences,
   onRefresh,
   onConnectionChanged,
+  navigationCollapsed,
+  onToggleNavigation,
 }) {
   const [connectionsOpen, setConnectionsOpen] = useState(false);
   const viewportOverlayHost = useViewportOverlayHost();
   return (
     <>
       <header className="topbar">
+        <button
+          className="icon-button navigation-toggle"
+          onClick={onToggleNavigation}
+          aria-label={
+            navigationCollapsed ? 'Expand navigation' : 'Collapse navigation'
+          }
+          aria-expanded={!navigationCollapsed}
+          title={navigationCollapsed ? 'Expand navigation' : 'Collapse navigation'}
+        >
+          <Menu size={18} />
+        </button>
         <div className="mobile-brand">
           <Brand />
         </div>
@@ -5282,6 +5284,8 @@ function App() {
           session={sessionData}
           onPreferences={openPreferences}
           onRefresh={refresh}
+          navigationCollapsed={sidebarCollapsed}
+          onToggleNavigation={() => setSidebarCollapsed((value) => !value)}
           onConnectionChanged={async (host) => {
             setSessionData((current) => ({
               ...current,

@@ -892,8 +892,11 @@ test('every Deck overlay supports Escape and outside-pointer dismissal', async (
   assert.match(ui, /function ColumnChooser[\s\S]*useDialogDismiss\(onClose, dialogRef\)/);
   assert.match(ui, /closest\('\.context-menu, \.row-menu'\)/);
   const sidebar = ui.slice(ui.indexOf('function Sidebar'), ui.indexOf('const signalPopover'));
+  const topbar = ui.slice(ui.indexOf('function Topbar'), ui.indexOf('function Progress'));
   assert.doesNotMatch(sidebar, /document\.addEventListener\('pointerdown'/);
-  assert.match(sidebar, /onClick=\{\(\) => setCollapsed\(\(value\) => !value\)\}/);
+  assert.doesNotMatch(sidebar, /sidebar-top/);
+  assert.match(topbar, /className="icon-button navigation-toggle"/);
+  assert.match(topbar, /onClick=\{onToggleNavigation\}/);
   assert.match(bridge, /document\.addEventListener\('pointerdown', closeNativePreferences, true\)/);
 });
 
