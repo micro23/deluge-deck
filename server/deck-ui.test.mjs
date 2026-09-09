@@ -841,7 +841,8 @@ test('top bar overlays stay dismissible and inside the viewport', async () => {
   assert.match(ui, /open \? 'Close global session controls' : 'Open global session controls'/);
   assert.match(ui, /function useDialogDismiss/);
   assert.match(ui, /useDialogDismiss\(onClose, modalRef\)/);
-  assert.match(ui, /function useViewportOverlayHost/);
+  assert.match(ui, /function ensureViewportOverlayHost/);
+  assert.match(ui, /function useViewportOverlayHost\(\)/);
   assert.match(ui, /document\.getElementById\('deluge-deck-viewport-overlay'\)/);
   assert.match(ui, /document\.body\.appendChild\(overlay\)/);
   assert.match(ui, /createPortal\([\s\S]*ConnectionManagerModal/);

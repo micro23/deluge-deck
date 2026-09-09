@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.2';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -737,24 +737,20 @@ function useDialogDismiss(onClose, ref, blocked = false) {
     };
   }, [onClose, ref, blocked]);
 }
-function useViewportOverlayHost(active) {
-  const [host, setHost] = useState(null);
-  useEffect(() => {
-    if (!active) {
-      setHost(null);
-      return undefined;
-    }
-    let overlay = document.getElementById('deluge-deck-viewport-overlay');
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.id = 'deluge-deck-viewport-overlay';
-      overlay.dataset.delugeDeckOverlay = 'true';
-      document.body.appendChild(overlay);
-    }
-    setHost(overlay);
-    return undefined;
-  }, [active]);
-  return host;
+function ensureViewportOverlayHost() {
+  let overlay = document.getElementById('deluge-deck-viewport-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'deluge-deck-viewport-overlay';
+    overlay.dataset.delugeDeckOverlay = 'true';
+    document.body.appendChild(overlay);
+  }
+  return overlay;
+}
+function useViewportOverlayHost() {
+  const host = useRef(null);
+  if (!host.current) host.current = ensureViewportOverlayHost();
+  return host.current;
 }
 function GlobalControls({ stats, onRefresh, onOpenConnections }) {
   const [open, setOpen] = useState(false);
@@ -763,7 +759,7 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
   const [message, setMessage] = useState('');
   const anchor = useRef();
   const popoverRef = useRef();
-  const portalHost = useViewportOverlayHost(open);
+  const portalHost = useViewportOverlayHost();
   const [limits, setLimits] = useState({
     down: '-1',
     up: '-1',
@@ -1446,7 +1442,7 @@ function Topbar({
   onConnectionChanged,
 }) {
   const [connectionsOpen, setConnectionsOpen] = useState(false);
-  const viewportOverlayHost = useViewportOverlayHost(connectionsOpen);
+  const viewportOverlayHost = useViewportOverlayHost();
   return (
     <>
       <header className="topbar">
@@ -4393,9 +4389,7 @@ function AddModal({
   onAdded,
   onModalState,
 }) {
-  const preferencesOverlayHost = useViewportOverlayHost(
-    initialFiles?.kind === 'preferences',
-  );
+  const preferencesOverlayHost = useViewportOverlayHost();
   if (initialFiles?.kind === 'remove')
     return (
       <RemoveModal
