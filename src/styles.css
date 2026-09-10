@@ -1373,25 +1373,30 @@ tbody tr:hover .state-icon {
   -webkit-appearance:none!important;
   flex:none;
   position:relative!important;
-  width:26px!important;
-  height:26px!important;
+  width:18px!important;
+  height:18px!important;
   margin:0!important;
-  border:2px solid #ffffff!important;
-  border-radius:6px!important;
-  background-color:#ffffff!important;
+  border:1px solid var(--line-strong)!important;
+  border-radius:5px!important;
+  background-color:var(--surface-3)!important;
   background-image:none!important;
-  box-shadow:0 0 0 2px #53739d!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.18)!important;
 }
 .preferences-modal .path-check input[type="checkbox"]:checked {
-  border-color:#ffffff!important;
-  background-color:#ffffff!important;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.2 4.2L19.5 6.8' fill='none' stroke='%23071b2c' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
-  background-position:center!important;
-  background-repeat:no-repeat!important;
-  background-size:21px!important;
+  border-color:var(--cyan)!important;
+  background-color:var(--cyan)!important;
+  background-image:none!important;
 }
 .preferences-modal .path-check input[type="checkbox"]:checked::after {
-  content:none!important;
+  content:""!important;
+  position:absolute;
+  left:4px;
+  top:4px;
+  width:7px;
+  height:3px;
+  border-left:2px solid var(--accent-fg);
+  border-bottom:2px solid var(--accent-fg);
+  transform:rotate(-45deg);
 }
 
 /* Deluge's ExtJS Preferences needs an explicit scroll chain. A previous skin
@@ -1433,23 +1438,29 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
   cursor:pointer!important;
 }
 html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-checkbox {
-  width:26px!important;
-  height:26px!important;
-  border:2px solid #ffffff!important;
-  border-radius:6px!important;
-  background-color:#ffffff!important;
+  width:18px!important;
+  height:18px!important;
+  border:1px solid var(--line-strong)!important;
+  border-radius:5px!important;
+  background-color:var(--surface-3)!important;
   background-image:none!important;
-  box-shadow:0 0 0 2px #53739d!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.18)!important;
 }
 html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-checkbox:checked {
-  background-color:#ffffff!important;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.2 4.2L19.5 6.8' fill='none' stroke='%23071b2c' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
-  background-position:center!important;
-  background-repeat:no-repeat!important;
-  background-size:21px!important;
+  border-color:var(--cyan)!important;
+  background-color:var(--cyan)!important;
+  background-image:none!important;
 }
 html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-checkbox:checked::after {
-  content:none!important;
+  content:""!important;
+  position:absolute;
+  left:4px;
+  top:4px;
+  width:7px;
+  height:3px;
+  border-left:2px solid var(--accent-fg);
+  border-bottom:2px solid var(--accent-fg);
+  transform:rotate(-45deg);
 }
 html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-checkbox:focus-visible,
 html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-radio:focus-visible {

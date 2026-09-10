@@ -227,12 +227,12 @@ test('preferences trap keyboard focus inside the dialog', async () => {
   assert.match(css, /#deluge-deck-viewport-overlay \.preferences-backdrop/);
 });
 
-test('preferences checkboxes have a white field and an explicit checked mark', async () => {
+test('preferences checkboxes have a consistent field and an explicit checked mark', async () => {
   const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
-  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\] \{[\s\S]*background-color:#ffffff!important[\s\S]*width:26px!important[\s\S]*height:26px!important/);
-  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\]:checked \{[\s\S]*background-image:url\("data:image\/svg\+xml/);
-  assert.match(css, /input\.x-form-checkbox \{[\s\S]*width:26px!important/);
-  assert.match(css, /input\.x-form-checkbox \{[\s\S]*background-color:#ffffff!important/);
+  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\] \{[\s\S]*background-color:var\(--surface-3\)!important[\s\S]*width:18px!important[\s\S]*height:18px!important/);
+  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\]:checked \{[\s\S]*background-color:var\(--cyan\)!important/);
+  assert.match(css, /input\.x-form-checkbox \{[\s\S]*width:18px!important/);
+  assert.match(css, /input\.x-form-checkbox \{[\s\S]*background-color:var\(--surface-3\)!important/);
 });
 
 test('detail drawer is a focus-trapped dialog with focus restoration and outside dismissal', async () => {
