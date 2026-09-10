@@ -1744,12 +1744,6 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
     overflow:visible;
     backdrop-filter:none;
   }
-  .navigation-toggle {
-    position:absolute;
-    left:14px;
-    top:10px;
-    z-index:1;
-  }
   .topbar-heading { display:none!important; }
   .top-actions {
     position:absolute;
@@ -1757,13 +1751,68 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
     right:14px;
     z-index:1;
   }
-  .sidebar { padding:12px 12px 16px; }
-  .sidebar .add-button { margin-bottom:16px; }
-  .workspace { padding:10px 18px 36px; }
-  .workspace > .search-wrap { height:40px; margin-bottom:12px; }
+  .app-shell { height:100vh; height:100dvh; overflow:hidden; }
+  .sidebar { height:100%; min-height:0; padding:12px 12px 16px; }
+  .sidebar-command-row { display:flex; align-items:stretch; gap:8px; margin-bottom:16px; }
+  .sidebar-command-row .add-button { flex:1; width:auto; min-width:0; margin:0; }
+  .sidebar-toggle {
+    flex:none;
+    width:39px;
+    height:39px;
+    border:1px solid var(--line-strong);
+    background:var(--surface-2);
+  }
+  .sidebar.collapsed .sidebar-command-row { flex-direction:column; }
+  .sidebar.collapsed .sidebar-toggle { order:-1; width:100%; }
+  .main-content { height:100%; min-height:0; display:flex; flex-direction:column; overflow:hidden; }
+  .workspace {
+    width:100%;
+    max-width:none;
+    min-height:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    margin:0;
+    padding:10px 18px 12px;
+    overflow:hidden;
+  }
+  .workspace > .search-wrap { flex:0 0 40px; height:40px; margin-bottom:12px; }
   .stats-grid { gap:10px; margin-bottom:12px; }
   .stats-grid .stat-card { min-height:132px; padding:14px 12px; }
+  .table-shell {
+    min-height:210px;
+    flex:1;
+    overflow:auto!important;
+    overscroll-behavior:contain;
+    scrollbar-gutter:stable;
+  }
+  .table-shell table { width:max(100%,1180px); min-width:1180px; }
+  .table-shell .table-tools {
+    position:absolute;
+    top:0;
+    right:0;
+    z-index:7;
+    width:52px;
+    height:44px;
+    min-height:0;
+    padding:0;
+    border:0;
+    background:transparent;
+    pointer-events:none;
+  }
+  .table-shell .table-tools .column-menu-trigger {
+    top:5px;
+    right:6px;
+    width:34px;
+    height:34px;
+    pointer-events:auto;
+  }
+  .table-shell thead th {
+    position:sticky;
+    top:0;
+    z-index:6;
+  }
   .table-shell th { height:44px; }
   .table-shell td { height:66px; }
+  .deck-status-rail { flex:none; margin-top:10px; }
 }
-@media (max-width:760px) { .navigation-toggle { display:none; } }

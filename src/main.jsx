@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.12';
+const VERSION = '1.0.13';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -516,10 +516,21 @@ function Sidebar({
       <aside
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
-        <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
-          <Plus size={18} />
-          <span>Add torrent</span>
-        </button>
+        <div className="sidebar-command-row">
+          <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
+            <Plus size={18} />
+            <span>Add torrent</span>
+          </button>
+          <button
+            className="icon-button sidebar-toggle"
+            onClick={() => setCollapsed((value) => !value)}
+            aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+            aria-expanded={!collapsed}
+            title={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+          >
+            <Menu size={20} />
+          </button>
+        </div>
         <nav aria-label="Torrent filters">
           <div className="nav-label">Library</div>
           {items.map(([key, label, Icon]) => (
@@ -1428,25 +1439,12 @@ function Topbar({
   onPreferences,
   onRefresh,
   onConnectionChanged,
-  navigationCollapsed,
-  onToggleNavigation,
 }) {
   const [connectionsOpen, setConnectionsOpen] = useState(false);
   const viewportOverlayHost = useViewportOverlayHost();
   return (
     <>
       <header className="topbar">
-        <button
-          className="icon-button navigation-toggle"
-          onClick={onToggleNavigation}
-          aria-label={
-            navigationCollapsed ? 'Expand navigation' : 'Collapse navigation'
-          }
-          aria-expanded={!navigationCollapsed}
-          title={navigationCollapsed ? 'Expand navigation' : 'Collapse navigation'}
-        >
-          <Menu size={18} />
-        </button>
         <div className="mobile-brand">
           <Brand />
         </div>
@@ -5288,8 +5286,6 @@ function App() {
           session={sessionData}
           onPreferences={openPreferences}
           onRefresh={refresh}
-          navigationCollapsed={sidebarCollapsed}
-          onToggleNavigation={() => setSidebarCollapsed((value) => !value)}
           onConnectionChanged={async (host) => {
             setSessionData((current) => ({
               ...current,

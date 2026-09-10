@@ -132,6 +132,7 @@ html.deluge-deck-loading body .ext-el-mask {
   .workspace { padding-top:12px; padding-bottom:24px; }
   .page-heading { margin-bottom:8px; }
   .stats-grid { margin-bottom:10px; }
+  .stats-grid .stat-card { min-height:132px; padding:14px 12px; }
   .list-heading { margin-bottom:5px; }
   .mobile-library-filters { margin-bottom:4px; }
 }

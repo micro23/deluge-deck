@@ -764,6 +764,15 @@ test('torrent table uses one compact default layout across themes', async () => 
   assert.match(css, /@media \(min-width:761px\) \{[\s\S]*\.table-shell table \{ min-width:1400px; table-layout:fixed; \}/);
 });
 
+test('desktop torrent area fills the viewport and scrolls inside the table', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  assert.match(ui, /className="sidebar-command-row"[\s\S]*className="icon-button sidebar-toggle"/);
+  assert.match(css, /\.main-content \{ height:100%; min-height:0; display:flex; flex-direction:column; overflow:hidden; \}/);
+  assert.match(css, /\.table-shell \{[\s\S]*flex:1;[\s\S]*overflow:auto!important/);
+  assert.match(css, /\.table-shell \.table-tools \{[\s\S]*position:absolute;[\s\S]*height:44px/);
+  assert.match(css, /\.table-shell thead th \{[\s\S]*position:sticky;[\s\S]*top:0/);
+});
+
 test('desktop dashboard relies on sidebar filters instead of duplicate library controls', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /className="library-mobile-controls"/);
@@ -900,8 +909,8 @@ test('every Deck overlay supports Escape and outside-pointer dismissal', async (
   const topbar = ui.slice(ui.indexOf('function Topbar'), ui.indexOf('function Progress'));
   assert.doesNotMatch(sidebar, /document\.addEventListener\('pointerdown'/);
   assert.doesNotMatch(sidebar, /sidebar-top/);
-  assert.match(topbar, /className="icon-button navigation-toggle"/);
-  assert.match(topbar, /onClick=\{onToggleNavigation\}/);
+  assert.doesNotMatch(topbar, /navigation-toggle/);
+  assert.match(ui, /className="icon-button sidebar-toggle"[\s\S]*onClick=\{\(\) => setCollapsed\(\(value\) => !value\)\}/);
   assert.match(bridge, /document\.addEventListener\('pointerdown', closeNativePreferences, true\)/);
 });
 
