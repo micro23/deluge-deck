@@ -76,7 +76,7 @@ html.deluge-deck-ready body:before{content:none}
 .column-menu-trigger { display:grid; place-items:center; width:30px; height:30px; padding:0; border:1px solid var(--line); border-radius:7px; color:var(--muted); background:var(--surface-2); cursor:pointer; }
 .column-menu-trigger:hover { border-color:var(--cyan); color:var(--cyan); }
 .column-menu-trigger:focus-visible { outline:2px solid var(--cyan); outline-offset:2px; }
-.column-chooser-backdrop { z-index:2147482400!important; overflow-y:auto!important; overscroll-behavior:contain; }
+.column-chooser-backdrop { z-index:2147482400!important; overflow-y:auto!important; overscroll-behavior:contain; pointer-events:auto!important; }
 .column-chooser-modal { width:min(680px,100%); max-height:calc(100dvh - 40px); overflow:auto; border:1px solid var(--line-strong); border-radius:16px; background:var(--surface); box-shadow:0 30px 90px rgba(0,0,0,.52); animation:deck-modal-pop .2s ease; }
 .column-chooser-head { min-height:92px; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:0 24px; border-bottom:1px solid var(--line); }
 .column-chooser-head>div>span { display:block; margin-bottom:5px; color:var(--cyan); font:700 10px 'DM Mono',monospace; letter-spacing:.11em; }
@@ -1869,38 +1869,12 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-pre
 .table-shell { background:color-mix(in srgb,var(--surface) 90%,transparent)!important; backdrop-filter:blur(14px); }
 .search-field { backdrop-filter:blur(14px); }
 
-:root[data-theme="christmas"] .app-shell {
-  background:linear-gradient(90deg,rgba(3,17,12,.84),rgba(4,22,15,.72) 51%,rgba(12,25,18,.83)),url('./assets/christmas-night-frame.jpg') center/cover fixed!important;
-}
-:root[data-theme="halloween"] .app-shell {
-  background:linear-gradient(90deg,rgba(0,0,0,.83),rgba(6,4,1,.72) 51%,rgba(0,0,0,.88)),url('./assets/halloween-candle-frame.jpg') center/cover fixed!important;
-}
-:root[data-theme="valentine"] .app-shell {
-  background:linear-gradient(90deg,rgba(255,246,248,.82),rgba(255,243,246,.74) 51%,rgba(255,246,248,.86)),url('./assets/valentine-paper-frame.jpg') center/cover fixed!important;
-}
-:root[data-theme="st-patricks"] .app-shell {
-  background:linear-gradient(90deg,rgba(241,245,232,.84),rgba(239,244,228,.73) 51%,rgba(241,245,232,.87)),url('./assets/st-patricks-linen-frame.jpg') center/cover fixed!important;
-}
-:root[data-theme="independence"] .app-shell {
-  background:linear-gradient(90deg,rgba(2,11,27,.86),rgba(4,20,43,.73) 51%,rgba(2,11,27,.87)),url('./assets/independence-night-frame.jpg') center/cover fixed!important;
-}
-:root[data-theme="new-year"] .app-shell {
-  background:linear-gradient(90deg,rgba(3,4,5,.87),rgba(10,10,10,.73) 51%,rgba(3,4,5,.88)),url('./assets/new-year-velvet-frame.jpg') center/cover fixed!important;
-}
 :root[data-theme="christmas"] .sidebar,:root[data-theme="halloween"] .sidebar,:root[data-theme="independence"] .sidebar,:root[data-theme="new-year"] .sidebar { background:linear-gradient(180deg,color-mix(in srgb,var(--surface-2) 94%,transparent),color-mix(in srgb,var(--bg) 90%,transparent))!important; }
 :root[data-theme="valentine"] .sidebar,:root[data-theme="st-patricks"] .sidebar { box-shadow:inset -1px 0 0 color-mix(in srgb,#ffffff 55%,transparent); }
 :root[data-theme="christmas"] .stat-card,:root[data-theme="halloween"] .stat-card,:root[data-theme="independence"] .stat-card,:root[data-theme="new-year"] .stat-card { background:linear-gradient(155deg,color-mix(in srgb,var(--surface) 90%,transparent),color-mix(in srgb,var(--surface-2) 86%,transparent))!important; backdrop-filter:blur(14px); }
 :root[data-theme="christmas"] .add-button,:root[data-theme="halloween"] .add-button,:root[data-theme="independence"] .add-button,:root[data-theme="new-year"] .add-button { border:1px solid color-mix(in srgb,#ffffff 18%,transparent); }
 
-@media (max-width:760px) {
-  .app-shell { background-attachment:scroll!important; }
-  :root[data-theme="christmas"] .app-shell { background:linear-gradient(rgba(3,17,12,.82),rgba(4,22,15,.78)),url('./assets/christmas-night-frame.jpg') center/auto 100% fixed!important; }
-  :root[data-theme="halloween"] .app-shell { background:linear-gradient(rgba(0,0,0,.84),rgba(6,4,1,.8)),url('./assets/halloween-candle-frame.jpg') center/auto 100% fixed!important; }
-  :root[data-theme="valentine"] .app-shell { background:linear-gradient(rgba(255,246,248,.85),rgba(255,243,246,.8)),url('./assets/valentine-paper-frame.jpg') center/auto 100% fixed!important; }
-  :root[data-theme="st-patricks"] .app-shell { background:linear-gradient(rgba(241,245,232,.85),rgba(239,244,228,.8)),url('./assets/st-patricks-linen-frame.jpg') center/auto 100% fixed!important; }
-  :root[data-theme="independence"] .app-shell { background:linear-gradient(rgba(2,11,27,.87),rgba(4,20,43,.82)),url('./assets/independence-night-frame.jpg') center/auto 100% fixed!important; }
-  :root[data-theme="new-year"] .app-shell { background:linear-gradient(rgba(3,4,5,.87),rgba(10,10,10,.82)),url('./assets/new-year-velvet-frame.jpg') center/auto 100% fixed!important; }
-}
+@media (max-width:760px) { .app-shell { background-attachment:scroll!important; } }
 
 /* Desktop density: navigation no longer needs its own branded header row.
    The toggle lives in the existing command bar, leaving the sidebar and
@@ -2018,4 +1992,471 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-pre
   .table-shell th { height:44px; }
   .table-shell td { height:66px; }
   .deck-status-rail { flex:none; margin-top:10px; }
+}
+
+/* Dream-loop visual pass ---------------------------------------------------
+   Preserve the dashboard geometry while giving each palette a richer
+   material system: ambient light, layered surfaces, crisp edge highlights,
+   and restrained depth cues. */
+:root {
+  --theme-glow-a: color-mix(in srgb,var(--cyan) 18%,transparent);
+  --theme-glow-b: color-mix(in srgb,var(--violet) 12%,transparent);
+  --theme-panel: linear-gradient(145deg,color-mix(in srgb,var(--surface-2) 92%,white 8%),color-mix(in srgb,var(--surface) 94%,var(--bg)));
+  --theme-card-shadow: 0 24px 62px color-mix(in srgb,var(--bg) 58%,transparent), inset 0 1px 0 color-mix(in srgb,#fff 14%,transparent), inset 0 -1px 0 color-mix(in srgb,var(--bg) 45%,transparent);
+  --theme-edge: color-mix(in srgb,var(--cyan) 38%,var(--line-strong));
+}
+:root[data-theme="dark"]:not(#dream-loop-skip) {
+  --bg:#050b12; --surface:#09131d; --surface-2:#0d1c29; --surface-3:#142a39;
+  --line:#345263; --line-strong:#6d9aaa; --text:#f7fbff; --muted:#b9cfda; --muted-2:#8eafbd;
+  --cyan:#66f5f2; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent); --violet:#c6b5ff; --amber:#ffd47b; --green:#75efb0;
+  --danger:#ff9fae; --theme-glow-a:#0c7e8b55; --theme-glow-b:#4c4fa955; --theme-edge:#4b8da0;
+  --theme-topbar:linear-gradient(115deg,#07121b 0%,#0a1c29 48%,#111d31 100%);
+  --theme-sidebar:linear-gradient(180deg,#081620 0%,#061019 52%,#08131c 100%);
+  --theme-card:linear-gradient(145deg,#122737 0%,#0b1823 58%,#09131c 100%);
+}
+:root[data-theme="light"]:not(#dream-loop-skip) {
+  --bg:#e9f0f2; --surface:#f9fcfc; --surface-2:#eaf3f5; --surface-3:#d8e7eb;
+  --line:#8aaab4; --line-strong:#507480; --text:#082330; --muted:#315765; --muted-2:#446a77;
+  --cyan:#006d73; --cyan-soft:color-mix(in srgb,var(--cyan) 13%,transparent); --violet:#4e4c91; --amber:#925b00; --green:#087346;
+  --danger:#a62039; --theme-glow-a:#66bfc044; --theme-glow-b:#d9a77c33; --theme-edge:#6b919b;
+  --theme-topbar:linear-gradient(115deg,#ffffff 0%,#f3faf9 52%,#f6eee8 100%);
+  --theme-sidebar:linear-gradient(180deg,#eff8f8 0%,#e1eef1 100%);
+  --theme-card:linear-gradient(145deg,#ffffff 0%,#f1f8f8 62%,#eaf2f3 100%);
+}
+:root[data-theme="ocean"]:not(#dream-loop-skip) {
+  --bg:#02101b; --surface:#061d2d; --surface-2:#0a2b42; --surface-3:#123e58;
+  --line:#3d7088; --line-strong:#70a9c0; --text:#f3fcff; --muted:#b8dae8; --muted-2:#8fc0d4;
+  --cyan:#65ecff; --cyan-soft:color-mix(in srgb,var(--cyan) 17%,transparent); --violet:#cdbdff; --amber:#ffd26f; --green:#67efbb;
+  --danger:#ff9eb0; --theme-glow-a:#008eb955; --theme-glow-b:#00c6b944; --theme-edge:#42a0bd;
+  --theme-topbar:linear-gradient(115deg,#031827,#083b59 55%,#082843);
+  --theme-sidebar:linear-gradient(180deg,#082d46,#031a2a 75%,#04131f);
+  --theme-card:linear-gradient(145deg,#12425d,#092b42 54%,#061c2c);
+}
+:root[data-theme="forest"]:not(#dream-loop-skip) {
+  --bg:#e7eee0; --surface:#fbfdf7; --surface-2:#e8f0df; --surface-3:#d6e4c8;
+  --line:#829a78; --line-strong:#5c7658; --text:#132a1a; --muted:#385640; --muted-2:#4f6b50;
+  --cyan:#126849; --cyan-soft:color-mix(in srgb,var(--cyan) 13%,transparent); --violet:#684526; --amber:#95601b; --green:#08743c;
+  --danger:#a52239; --theme-glow-a:#4f9a5b3d; --theme-glow-b:#d49a4b33; --theme-edge:#74916d;
+  --theme-topbar:linear-gradient(115deg,#fbfff6,#eef5e2 56%,#f6ecda);
+  --theme-sidebar:linear-gradient(180deg,#edf6e3,#dcebd0 72%,#d5e5ca);
+  --theme-card:linear-gradient(145deg,#ffffff,#f4faed 58%,#e7f1de);
+}
+:root[data-theme="sunset"]:not(#dream-loop-skip) {
+  --bg:#11152a; --surface:#1a203b; --surface-2:#252e4d; --surface-3:#35405f;
+  --line:#756f8c; --line-strong:#aa9db9; --text:#fff9f6; --muted:#e8d8d7; --muted-2:#cdbec8;
+  --cyan:#ffb39f; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent); --violet:#c9b7ff; --amber:#ffd37d; --green:#87e7b6;
+  --danger:#ff9eae; --theme-glow-a:#fa72534c; --theme-glow-b:#7656cf55; --theme-edge:#a77d92;
+  --theme-topbar:linear-gradient(115deg,#151f3a,#3a3b62 52%,#763f59);
+  --theme-sidebar:linear-gradient(180deg,#273252,#171c35 76%,#121527);
+  --theme-card:linear-gradient(145deg,#354363,#252c4b 56%,#1d213c);
+}
+:root[data-theme="christmas"]:not(#dream-loop-skip) {
+  --bg:#06120e; --surface:#0a1e16; --surface-2:#103126; --surface-3:#194535;
+  --line:#4d806c; --line-strong:#83b09a; --text:#fffaf1; --muted:#d5e8d8; --muted-2:#b4d2bc;
+  --cyan:#ff9fb0; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent); --violet:#f4d89a; --amber:#ffd474; --green:#74efae;
+  --danger:#ff9aae; --theme-glow-a:#0e9b6255; --theme-glow-b:#d9274b44; --theme-edge:#6b9b82;
+  --theme-topbar:linear-gradient(115deg,#071f16,#125138 56%,#4b1d2b);
+  --theme-sidebar:linear-gradient(180deg,#0c3424,#061b13 75%,#07100d);
+  --theme-card:linear-gradient(145deg,#17422f,#0d2b20 58%,#091b14);
+}
+:root[data-theme="halloween"]:not(#dream-loop-skip) {
+  --bg:#030201; --surface:#0d0804; --surface-2:#180d04; --surface-3:#281506;
+  --line:#764312; --line-strong:#c16c1c; --text:#fff8eb; --muted:#f0d4b1; --muted-2:#d9b68a;
+  --cyan:#ff9c28; --cyan-soft:color-mix(in srgb,var(--cyan) 17%,transparent); --violet:#ffbb65; --amber:#ffd078; --green:#ffb34f;
+  --danger:#ff7920; --theme-glow-a:#ff720044; --theme-glow-b:#b43f0b33; --theme-edge:#a75d18;
+  --theme-topbar:linear-gradient(115deg,#080402,#251103 55%,#100803);
+  --theme-sidebar:linear-gradient(180deg,#1b0d03,#080402 76%,#020202);
+  --theme-card:linear-gradient(145deg,#241305,#140a03 58%,#090503);
+}
+:root[data-theme="valentine"]:not(#dream-loop-skip) {
+  --bg:#fae9ed; --surface:#fffafc; --surface-2:#f7e0e6; --surface-3:#efd0da;
+  --line:#ad7f91; --line-strong:#8b5d70; --text:#3a0d1e; --muted:#6e3048; --muted-2:#7e4258;
+  --cyan:#a01650; --cyan-soft:color-mix(in srgb,var(--cyan) 13%,transparent); --violet:#682b83; --amber:#965310; --green:#08724e;
+  --danger:#a51b48; --theme-glow-a:#dc4d8144; --theme-glow-b:#9c459955; --theme-edge:#b47f91;
+  --theme-topbar:linear-gradient(115deg,#fffdfd,#fdecef 58%,#f8e0e8);
+  --theme-sidebar:linear-gradient(180deg,#fbe8ee,#f2d5df 72%,#ecd0da);
+  --theme-card:linear-gradient(145deg,#ffffff,#fff4f7 58%,#f8e4eb);
+}
+:root[data-theme="st-patricks"]:not(#dream-loop-skip) {
+  --bg:#e9f0df; --surface:#fcfef8; --surface-2:#e4eed2; --surface-3:#d2e1b9;
+  --line:#829b71; --line-strong:#5d7652; --text:#102916; --muted:#35553b; --muted-2:#4b684d;
+  --cyan:#087047; --cyan-soft:color-mix(in srgb,var(--cyan) 14%,transparent); --violet:#714413; --amber:#9d6b16; --green:#087742;
+  --danger:#a2223a; --theme-glow-a:#3c9c5c3d; --theme-glow-b:#d4aa3c33; --theme-edge:#789366;
+  --theme-topbar:linear-gradient(115deg,#fbfff7,#eaf4dd 56%,#f8f0d9);
+  --theme-sidebar:linear-gradient(180deg,#e8f2da,#d6e7c3 72%,#cfe0bb);
+  --theme-card:linear-gradient(145deg,#fffffb,#f3f9e9 58%,#e6f0d8);
+}
+:root[data-theme="independence"]:not(#dream-loop-skip) {
+  --bg:#020a19; --surface:#07172d; --surface-2:#0c2747; --surface-3:#143b65;
+  --line:#4d6f98; --line-strong:#82a8d0; --text:#f7fbff; --muted:#ccdbed; --muted-2:#a9c2df;
+  --cyan:#ff9eac; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent); --violet:#b9d3ff; --amber:#ffd47c; --green:#7fe8b2;
+  --danger:#ff9fae; --theme-glow-a:#2a72c455; --theme-glow-b:#d62d4944; --theme-edge:#648fc0;
+  --theme-topbar:linear-gradient(115deg,#06132d,#12417a 55%,#5a2036);
+  --theme-sidebar:linear-gradient(180deg,#0f315f,#071a37 75%,#040e20);
+  --theme-card:linear-gradient(145deg,#194475,#0e2d57 58%,#071a35);
+}
+:root[data-theme="new-year"]:not(#dream-loop-skip) {
+  --bg:#050607; --surface:#0c0f13; --surface-2:#171b22; --surface-3:#252b34;
+  --line:#6b624e; --line-strong:#a4926a; --text:#fffdf4; --muted:#e4d8b8; --muted-2:#c6b991;
+  --cyan:#f4d06a; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent); --violet:#e9d6a4; --amber:#f7cb5d; --green:#a7e1b2;
+  --danger:#ff9d8d; --theme-glow-a:#c08d2f44; --theme-glow-b:#8a6b3744; --theme-edge:#9d8b61;
+  --theme-topbar:linear-gradient(115deg,#0b0e12,#252218 55%,#101114);
+  --theme-sidebar:linear-gradient(180deg,#181812,#0b0d10 76%,#050607);
+  --theme-card:linear-gradient(145deg,#28261e,#17181a 58%,#0b0d10);
+}
+
+.app-shell {
+  background:
+    radial-gradient(60rem 28rem at 72% -8%,var(--theme-glow-a),transparent 68%),
+    radial-gradient(50rem 30rem at 3% 100%,var(--theme-glow-b),transparent 70%),
+    linear-gradient(135deg,color-mix(in srgb,var(--bg) 92%,#fff 8%),var(--bg))!important;
+  isolation:isolate;
+}
+.app-shell::before {
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.28;
+  background:linear-gradient(115deg,transparent 0 38%,color-mix(in srgb,var(--cyan) 9%,transparent) 50%,transparent 68%);
+  mix-blend-mode:screen;
+}
+.topbar {
+  background:var(--theme-topbar)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--theme-edge) 78%,transparent)!important;
+  box-shadow:0 16px 36px color-mix(in srgb,var(--bg) 48%,transparent), inset 0 -1px 0 color-mix(in srgb,#fff 8%,transparent)!important;
+}
+.sidebar {
+  background:var(--theme-sidebar)!important;
+  border-right:1px solid color-mix(in srgb,var(--theme-edge) 70%,transparent)!important;
+  box-shadow:12px 0 34px color-mix(in srgb,var(--bg) 25%,transparent), inset -1px 0 0 color-mix(in srgb,#fff 5%,transparent);
+}
+.stat-card,.table-shell,.search-wrap,.global-popover,.theme-popover,.context-menu,.modal-card,.detail-drawer {
+  box-shadow:var(--theme-card-shadow)!important;
+}
+.stat-card {
+  background:var(--theme-card)!important;
+  border-color:color-mix(in srgb,var(--theme-edge) 86%,var(--line))!important;
+  box-shadow:var(--theme-card-shadow), inset 0 0 0 1px color-mix(in srgb,var(--cyan) 8%,transparent)!important;
+}
+.stat-card::before {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(118deg,color-mix(in srgb,#fff 11%,transparent),transparent 28% 72%,color-mix(in srgb,var(--cyan) 7%,transparent));
+  opacity:.8;
+}
+.stat-card::after {
+  background:radial-gradient(22rem 8rem at 30% 0%,color-mix(in srgb,var(--cyan) 12%,transparent),transparent 70%),linear-gradient(115deg,color-mix(in srgb,#fff 5%,transparent),transparent 36%)!important;
+}
+.table-shell {
+  background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 96%,#fff 4%),color-mix(in srgb,var(--bg) 78%,var(--surface)))!important;
+  border-color:color-mix(in srgb,var(--theme-edge) 88%,var(--line))!important;
+  box-shadow:var(--theme-card-shadow), inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent)!important;
+}
+.table-shell thead { background:linear-gradient(180deg,color-mix(in srgb,var(--surface-3) 70%,transparent),transparent)!important; }
+.table-shell th { border-bottom-color:color-mix(in srgb,var(--theme-edge) 90%,var(--line))!important; color:color-mix(in srgb,var(--text) 86%,var(--cyan))!important; }
+.table-shell tbody tr { transition:background .18s ease,box-shadow .18s ease; }
+.table-shell tbody tr:hover td { background:color-mix(in srgb,var(--cyan) 9%,var(--surface))!important; box-shadow:inset 0 1px 0 color-mix(in srgb,var(--cyan) 17%,transparent),inset 0 -1px 0 color-mix(in srgb,var(--cyan) 9%,transparent); }
+.search-wrap { background:linear-gradient(135deg,color-mix(in srgb,var(--surface-2) 90%,#fff 10%),color-mix(in srgb,var(--surface) 94%,var(--bg)))!important; border-color:color-mix(in srgb,var(--theme-edge) 72%,var(--line))!important; box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent),0 12px 30px color-mix(in srgb,var(--bg) 28%,transparent)!important; }
+.nav-item.active { background:linear-gradient(100deg,color-mix(in srgb,var(--cyan) 20%,transparent),color-mix(in srgb,var(--surface-3) 70%,transparent) 64%,transparent)!important; box-shadow:inset 3px 0 0 var(--cyan),0 8px 22px color-mix(in srgb,var(--cyan) 14%,transparent)!important; }
+.primary-button,.add-button { box-shadow:0 12px 26px color-mix(in srgb,var(--cyan) 24%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 35%,transparent)!important; }
+.secondary-button,.icon-button,.theme-trigger { box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 11%,transparent),0 7px 18px color-mix(in srgb,var(--bg) 24%,transparent); }
+.status-dot.live { box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 23%,transparent),0 0 14px color-mix(in srgb,var(--green) 60%,transparent); }
+.progress-track { background:color-mix(in srgb,var(--bg) 75%,var(--surface-3))!important; box-shadow:inset 0 2px 4px color-mix(in srgb,var(--bg) 58%,transparent),0 1px 0 color-mix(in srgb,#fff 7%,transparent)!important; }
+.progress-bar { box-shadow:0 0 15px color-mix(in srgb,var(--cyan) 42%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 55%,transparent)!important; }
+.theme-popover { background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 96%,#fff 4%),var(--surface))!important; border-color:var(--theme-edge)!important; }
+.theme-popover .theme-gallery-option { background:linear-gradient(145deg,color-mix(in srgb,var(--surface-2) 94%,#fff 6%),color-mix(in srgb,var(--surface) 90%,var(--bg)))!important; border-color:color-mix(in srgb,var(--theme-edge) 68%,var(--line))!important; box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 9%,transparent),0 8px 18px color-mix(in srgb,var(--bg) 18%,transparent); }
+.theme-popover .theme-gallery-option:hover,.theme-popover .theme-gallery-option.active { border-color:var(--cyan)!important; box-shadow:0 0 0 1px color-mix(in srgb,var(--cyan) 40%,transparent),0 12px 26px color-mix(in srgb,var(--cyan) 13%,transparent)!important; }
+
+@media (prefers-reduced-motion:no-preference) {
+  .stat-card,.table-shell,.primary-button,.nav-item.active { transition:box-shadow .22s ease,border-color .22s ease,transform .22s ease; }
+  .stat-card:hover { transform:translateY(-2px); box-shadow:var(--theme-card-shadow),0 16px 34px color-mix(in srgb,var(--cyan) 12%,transparent)!important; }
+}
+
+/* Midnight environment plate: the generated environment sits behind the
+   unchanged dashboard geometry, with translucent surfaces preserving the
+   original information hierarchy. */
+:root[data-theme="dark"] .app-shell {
+  background:
+    linear-gradient(90deg,rgba(3,10,17,.94) 0%,rgba(3,10,17,.76) 22%,rgba(3,10,17,.68) 54%,rgba(3,10,17,.82) 100%),
+    url('./assets/midnight-operations-bay.jpg') center/cover fixed!important;
+}
+:root[data-theme="dark"] .topbar {
+  background:linear-gradient(105deg,rgba(5,17,27,.9),rgba(7,26,40,.72) 55%,rgba(10,23,38,.86))!important;
+  backdrop-filter:blur(16px) saturate(1.22);
+}
+:root[data-theme="dark"] .sidebar {
+  background:linear-gradient(180deg,rgba(4,18,28,.94),rgba(3,12,20,.84) 65%,rgba(5,14,23,.92))!important;
+  backdrop-filter:blur(14px) saturate(1.18);
+}
+:root[data-theme="dark"] .stat-card {
+  background:linear-gradient(145deg,rgba(15,42,58,.78),rgba(7,22,33,.84) 58%,rgba(5,15,24,.9))!important;
+  backdrop-filter:blur(16px) saturate(1.25);
+}
+:root[data-theme="dark"] .table-shell {
+  background:linear-gradient(145deg,rgba(8,26,39,.78),rgba(4,14,23,.86))!important;
+  backdrop-filter:blur(18px) saturate(1.22);
+}
+:root[data-theme="dark"] .deck-status-rail,
+:root[data-theme="dark"] .search-wrap {
+  background:linear-gradient(135deg,rgba(11,34,48,.78),rgba(5,17,27,.86))!important;
+  backdrop-filter:blur(16px) saturate(1.18);
+}
+@media (max-width:760px) {
+  :root[data-theme="dark"] .app-shell { background-attachment:scroll!important; }
+}
+
+/* The remaining palettes share the same environmental depth, but each gets
+   its own light treatment so the identity of the palette remains intact. */
+:root[data-theme="ocean"] .app-shell {
+  background:linear-gradient(90deg,rgba(2,16,29,.82),rgba(3,26,45,.42) 48%,rgba(1,14,27,.74)),url('./assets/ocean-deep-sea-habitat.jpg') center/cover fixed!important;
+}
+:root[data-theme="sunset"] .app-shell {
+  background:linear-gradient(90deg,rgba(16,20,42,.82),rgba(44,32,68,.44) 46%,rgba(65,28,48,.74)),url('./assets/sunset-desert-observatory.jpg') center/cover fixed!important;
+}
+:root[data-theme="independence"] .app-shell {
+  background:linear-gradient(90deg,rgba(2,12,31,.82),rgba(10,40,78,.44) 48%,rgba(46,14,32,.74)),url('./assets/independence-coastal-observatory.jpg') center/cover fixed!important;
+}
+:root[data-theme="new-year"] .app-shell {
+  background:linear-gradient(90deg,rgba(4,6,9,.84),rgba(29,27,21,.44) 48%,rgba(8,8,10,.78)),url('./assets/new-year-rooftop-observatory.jpg') center/cover fixed!important;
+}
+:root[data-theme="light"] .app-shell {
+  background:linear-gradient(90deg,rgba(233,242,244,.84),rgba(218,235,236,.48) 48%,rgba(245,235,225,.78)),url('./assets/paper-observatory-atrium.jpg') center/cover fixed!important;
+}
+:root[data-theme="forest"] .app-shell {
+  background:linear-gradient(90deg,rgba(220,234,210,.82),rgba(202,224,199,.44) 48%,rgba(240,230,211,.76)),url('./assets/forest-bioluminescent-conservatory.jpg') center/cover fixed!important;
+}
+:root[data-theme="ocean"] .stat-card,
+:root[data-theme="sunset"] .stat-card,
+:root[data-theme="independence"] .stat-card,
+:root[data-theme="new-year"] .stat-card,
+:root[data-theme="dark"] .stat-card {
+  backdrop-filter:blur(18px) saturate(1.26);
+}
+:root[data-theme="light"] .stat-card,
+:root[data-theme="forest"] .stat-card,
+:root[data-theme="valentine"] .stat-card,
+:root[data-theme="st-patricks"] .stat-card {
+  background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(239,247,241,.7))!important;
+  backdrop-filter:blur(18px) saturate(1.14);
+}
+:root[data-theme="ocean"] .table-shell,
+:root[data-theme="sunset"] .table-shell,
+:root[data-theme="independence"] .table-shell,
+:root[data-theme="new-year"] .table-shell {
+  background:linear-gradient(145deg,rgba(7,27,43,.72),rgba(5,16,27,.82))!important;
+  backdrop-filter:blur(20px) saturate(1.2);
+}
+:root[data-theme="light"] .table-shell,
+:root[data-theme="forest"] .table-shell,
+:root[data-theme="valentine"] .table-shell,
+:root[data-theme="st-patricks"] .table-shell {
+  background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(235,244,238,.7))!important;
+  backdrop-filter:blur(20px) saturate(1.12);
+}
+:root[data-theme="christmas"] .app-shell,
+:root[data-theme="halloween"] .app-shell,
+:root[data-theme="valentine"] .app-shell,
+:root[data-theme="st-patricks"] .app-shell {
+  background-attachment:fixed!important;
+}
+@media (max-width:760px) {
+  :root[data-theme="ocean"] .app-shell,
+  :root[data-theme="sunset"] .app-shell,
+  :root[data-theme="independence"] .app-shell,
+  :root[data-theme="new-year"] .app-shell,
+  :root[data-theme="light"] .app-shell,
+  :root[data-theme="forest"] .app-shell { background-attachment:scroll!important; }
+}
+
+/* Final menu refinement: give both settings surfaces a deliberate rhythm and
+   keep the legacy ExtJS form controls aligned instead of inheriting its old
+   fixed-width geometry. */
+.preferences-modal {
+  width:min(920px,calc(100vw - 48px));
+  height:min(760px,calc(100dvh - 48px))!important;
+  padding:0 28px;
+  border-radius:22px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 97%,#fff 3%),var(--surface));
+}
+.preferences-head { min-height:88px; padding:0 2px; }
+.preferences-heading { gap:13px; }
+.preferences-heading h2 { font-size:25px; letter-spacing:-.055em; }
+.preferences-content {
+  grid-template-columns:1fr!important;
+  gap:12px;
+  padding:0 3px 4px 0;
+}
+.preferences-content>section.preferences-card {
+  min-height:78px;
+  grid-template-columns:42px minmax(0,1fr) auto!important;
+  column-gap:16px;
+  padding:16px 18px;
+  border-radius:15px;
+  background:linear-gradient(120deg,color-mix(in srgb,var(--surface-2) 94%,#fff 6%),color-mix(in srgb,var(--surface-3) 46%,var(--surface-2)));
+  box-shadow:0 8px 22px color-mix(in srgb,var(--bg) 18%,transparent),inset 0 1px 0 rgba(255,255,255,.055);
+}
+.preferences-card-icon { width:42px; height:42px; border-radius:12px; color:var(--cyan); background:var(--cyan-soft); }
+.preferences-card-copy strong { font-size:15px; }
+.preferences-card-copy span { font-size:12px; }
+.preferences-card .preferences-select select { width:148px; min-height:40px; }
+.preferences-content>.path-preference,
+.preferences-content>.network-preference,
+.preferences-content>.proxy-preference,
+.preferences-content>.cache-preference,
+.preferences-content>.plugin-preference,
+.preferences-content>.native-preferences,
+.preferences-content>.celebration-preference { grid-column:1!important; }
+.preferences-footer { min-height:76px; margin-top:12px; }
+.preferences-footer .primary-button { min-width:92px; height:44px; border-radius:12px; }
+.path-setting { gap:14px; }
+.path-setting span { min-width:128px; }
+.path-setting input { flex:1; min-width:0; min-height:38px; }
+
+/* Remove the malformed legacy action strip; Deck's injected action rail is
+   the single source of truth and stays anchored to the window footer. */
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-bbar,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-panel-bbar,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-panel-fbar {
+  display:none!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body .x-border-layout-ct > .x-panel:last-child {
+  padding:0!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form {
+  width:100%!important;
+  padding:18px 20px 78px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-fieldset {
+  width:100%!important;
+  margin:0 0 16px!important;
+  padding:19px 18px 13px!important;
+  border-radius:14px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-fieldset-header {
+  margin-left:6px!important;
+  padding:0 10px!important;
+  font-size:12px!important;
+  letter-spacing:.09em!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item {
+  display:grid!important;
+  grid-template-columns:minmax(142px,190px) minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:14px!important;
+  width:100%!important;
+  min-height:40px!important;
+  margin:0 0 10px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item-label {
+  width:auto!important;
+  line-height:1.35!important;
+  font-size:12px!important;
+  text-align:left!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-field-wrap,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-field-wrap input,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-text,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] textarea,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] select {
+  width:100%!important;
+  max-width:none!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item:has(input[type="checkbox"]),
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item:has(input[type="radio"]) {
+  display:flex!important;
+  gap:10px!important;
+  justify-content:flex-start!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item:has(input[type="checkbox"]) .x-form-cb-label,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item:has(input[type="radio"]) .x-form-cb-label {
+  flex:0 1 auto!important;
+  line-height:1.35!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-preferences-actions {
+  min-height:72px!important;
+  gap:10px!important;
+  padding:14px 20px!important;
+  border-top:1px solid color-mix(in srgb,var(--line-strong) 70%,transparent)!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-preferences-actions button {
+  min-width:92px!important;
+  min-height:42px!important;
+  border-radius:10px!important;
+}
+
+/* Seasonal plates: each one now has a different location and lighting
+   language instead of sharing the earlier frame exports. */
+:root[data-theme="christmas"] .app-shell { background:linear-gradient(90deg,rgba(2,14,22,.78),rgba(5,25,30,.34) 48%,rgba(10,16,20,.7)),url('./assets/christmas-night-observatory.jpg') center/cover fixed!important; }
+:root[data-theme="halloween"] .app-shell { background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(9,4,1,.34) 48%,rgba(0,0,0,.82)),url('./assets/halloween-midnight-conservatory.jpg') center/cover fixed!important; }
+:root[data-theme="valentine"] .app-shell { background:linear-gradient(90deg,rgba(255,243,246,.78),rgba(100,23,53,.24) 48%,rgba(255,243,246,.72)),url('./assets/valentine-art-deco-salon.jpg') center/cover fixed!important; }
+:root[data-theme="st-patricks"] .app-shell { background:linear-gradient(90deg,rgba(231,243,219,.78),rgba(21,74,43,.22) 48%,rgba(239,242,220,.7)),url('./assets/st-patricks-botanical-conservatory.jpg') center/cover fixed!important; }
+:root[data-theme="independence"] .app-shell { background:linear-gradient(90deg,rgba(2,12,31,.8),rgba(10,38,74,.32) 48%,rgba(34,13,30,.74)),url('./assets/independence-coastal-observatory.jpg') center/cover fixed!important; }
+:root[data-theme="new-year"] .app-shell { background:linear-gradient(90deg,rgba(3,4,6,.82),rgba(28,25,20,.32) 48%,rgba(3,4,6,.76)),url('./assets/new-year-rooftop-observatory.jpg') center/cover fixed!important; }
+@media (max-width:760px) {
+  .preferences-modal { width:calc(100vw - 20px); height:calc(100dvh - 20px)!important; padding:0 15px; }
+  html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form { padding:14px 12px 78px!important; }
+  html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item { grid-template-columns:1fr!important; gap:5px!important; }
+  html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item:has(input[type="checkbox"]),
+  html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item:has(input[type="radio"]) { display:flex!important; }
+  :root[data-theme="christmas"] .app-shell,:root[data-theme="halloween"] .app-shell,:root[data-theme="valentine"] .app-shell,:root[data-theme="st-patricks"] .app-shell,:root[data-theme="independence"] .app-shell,:root[data-theme="new-year"] .app-shell { background-attachment:scroll!important; }
+}
+
+/* Artwork-matched palette pass. These tokens intentionally follow the light
+   temperature and dominant materials of each seasonal plate. */
+:root[data-theme="christmas"] {
+  color-scheme:dark;
+  --bg:#06101b; --surface:#0b1825; --surface-2:#12263a; --surface-3:#1d3449;
+  --line:#4e6c86; --line-strong:#88a8c1; --text:#f7fbff; --muted:#d0dfec; --muted-2:#aec6d8;
+  --cyan:#bfe1ff; --accent-fg:#07111b; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent);
+  --violet:#dec8ff; --amber:#f2c66d; --green:#8fd7ac; --danger:#ffc4cc;
+  --shadow:0 24px 60px rgba(2,8,15,.78);
+  --theme-glow-a:#416f9c55; --theme-glow-b:#b56a3a33; --theme-edge:#789bb6;
+  --theme-topbar:linear-gradient(115deg,#071321,#10283e 55%,#38212a);
+  --theme-sidebar:linear-gradient(180deg,#0b1e30,#07121d 75%,#050b12);
+  --theme-card:linear-gradient(145deg,#19344b,#0e2032 58%,#091622);
+}
+:root[data-theme="halloween"] {
+  --theme-glow-a:#b34d0b42; --theme-glow-b:#6f2f0b2c; --theme-edge:#b96a26;
+  --theme-topbar:linear-gradient(115deg,#080604,#241207 55%,#120906);
+  --theme-sidebar:linear-gradient(180deg,#1a0d04,#080403 76%,#020202);
+  --theme-card:linear-gradient(145deg,#281508,#160b04 58%,#090504);
+  --cyan:#ff9a2e; --violet:#ffc071; --amber:#ffd58b; --green:#d18b45; --danger:#ff7621;
+}
+:root[data-theme="valentine"] {
+  color-scheme:dark;
+  --bg:#1b0c17; --surface:#26121f; --surface-2:#38182a; --surface-3:#4b2237;
+  --line:#925d73; --line-strong:#d095a8; --text:#fff4f0; --muted:#f0cbd0; --muted-2:#f1c7ce;
+  --cyan:#ffb8c2; --accent-fg:#310a13; --cyan-soft:color-mix(in srgb,var(--cyan) 17%,transparent);
+  --violet:#ebc8f1; --amber:#efbf78; --green:#8ed0ad; --danger:#ffb7c4;
+  --shadow:0 24px 60px rgba(28,5,17,.62);
+  --theme-glow-a:#c24d7044; --theme-glow-b:#d4935d32; --theme-edge:#c18498;
+  --theme-topbar:linear-gradient(115deg,#21101b,#4a1e32 55%,#6a332f);
+  --theme-sidebar:linear-gradient(180deg,#361729,#1f0e1b 76%,#140911);
+  --theme-card:linear-gradient(145deg,#4a2035,#2d1525 58%,#20101c);
+}
+:root[data-theme="st-patricks"] {
+  --bg:#e7f0dc; --surface:#fbfff5; --surface-2:#e0ecd0; --surface-3:#cbdcaf;
+  --line:#78966c; --line-strong:#4f7657; --text:#102817; --muted:#24472e; --muted-2:#24472e;
+  --cyan:#004422; --accent-fg:#ffffff; --cyan-soft:color-mix(in srgb,var(--cyan) 15%,transparent);
+  --violet:#4a2e14; --amber:#4c2b00; --green:#003a19; --danger:#7a1025;
+  --theme-glow-a:#5f9b4a45; --theme-glow-b:#d1a43f36; --theme-edge:#6f9268;
+  --theme-topbar:linear-gradient(115deg,#f8fff1,#e7f1d8 56%,#f5ebcf);
+  --theme-sidebar:linear-gradient(180deg,#e5f1d6,#d2e5bd 72%,#c4d9ad);
+  --theme-card:linear-gradient(145deg,#fffffa,#f1f8e7 58%,#e2efd3);
+}
+:root[data-theme="independence"] {
+  --bg:#020a1a; --surface:#07172e; --surface-2:#0d294b; --surface-3:#163e69;
+  --line:#4e729d; --line-strong:#8ab1dc; --text:#f8fbff; --muted:#d6e4f4; --muted-2:#d6e4f4;
+  --cyan:#ffd0d7; --accent-fg:#24060b; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent);
+  --violet:#bdd6ff; --amber:#ffd37e; --green:#83e8b4; --danger:#ffd0d8;
+  --theme-glow-a:#2f78c952; --theme-glow-b:#d3324b44; --theme-edge:#6e96c3;
+  --theme-topbar:linear-gradient(115deg,#06142f,#12447d 55%,#5a1e34);
+  --theme-sidebar:linear-gradient(180deg,#103664,#071b39 75%,#040c1e);
+  --theme-card:linear-gradient(145deg,#1c4b7d,#0f315e 58%,#071a35);
+}
+:root[data-theme="new-year"] {
+  --bg:#050608; --surface:#0d1015; --surface-2:#191d25; --surface-3:#292d35;
+  --line:#71684f; --line-strong:#b09a68; --text:#fffdf4; --muted:#e6d9b7; --muted-2:#cfbf96;
+  --cyan:#f5d477; --accent-fg:#171104; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent);
+  --violet:#ead5a0; --amber:#f7c95b; --green:#a8dfb4; --danger:#ffd0c5;
+  --theme-glow-a:#c6973f48; --theme-glow-b:#8a6d3c3d; --theme-edge:#a89568;
+  --theme-topbar:linear-gradient(115deg,#0b0e13,#29251b 55%,#111319);
+  --theme-sidebar:linear-gradient(180deg,#1a1a15,#0b0d11 76%,#050608);
+  --theme-card:linear-gradient(145deg,#2a281f,#18191b 58%,#0b0d10);
 }

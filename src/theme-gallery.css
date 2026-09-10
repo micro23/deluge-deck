@@ -23,12 +23,12 @@
 .theme-preview.st-patricks { --preview-bg:#f1f5e8; --preview-panel:#d7e4bd; --preview-accent:#004922; }
 .theme-preview.independence { --preview-bg:#020b1b; --preview-panel:#153454; --preview-accent:#ffb6c0; }
 .theme-preview.new-year { --preview-bg:#030405; --preview-panel:#1e2530; --preview-accent:#f6d274; }
-.theme-preview.christmas { background:linear-gradient(#04120e88,#04120ecc),url('./assets/christmas-night-frame.jpg') center/cover; }
-.theme-preview.halloween { background:linear-gradient(#00000055,#000000aa),url('./assets/halloween-candle-frame.jpg') center/cover; }
-.theme-preview.valentine { background:linear-gradient(#fff3f688,#fff3f6cc),url('./assets/valentine-paper-frame.jpg') center/cover; }
-.theme-preview.st-patricks { background:linear-gradient(#f1f5e888,#f1f5e8cc),url('./assets/st-patricks-linen-frame.jpg') center/cover; }
-.theme-preview.independence { background:linear-gradient(#020b1b88,#020b1bcc),url('./assets/independence-night-frame.jpg') center/cover; }
-.theme-preview.new-year { background:linear-gradient(#03040555,#030405aa),url('./assets/new-year-velvet-frame.jpg') center/cover; }
+.theme-preview.christmas { background:linear-gradient(#04120e55,#04120eb8),url('./assets/christmas-night-observatory.jpg') center/cover; }
+.theme-preview.halloween { background:linear-gradient(#00000044,#000000c4),url('./assets/halloween-midnight-conservatory.jpg') center/cover; }
+.theme-preview.valentine { background:linear-gradient(#fff3f655,#fff3f6c4),url('./assets/valentine-art-deco-salon.jpg') center/cover; }
+.theme-preview.st-patricks { background:linear-gradient(#f1f5e855,#f1f5e8c4),url('./assets/st-patricks-botanical-conservatory.jpg') center/cover; }
+.theme-preview.independence { background:linear-gradient(#020b1b55,#020b1bc4),url('./assets/independence-coastal-observatory.jpg') center/cover; }
+.theme-preview.new-year { background:linear-gradient(#03040544,#030405c4),url('./assets/new-year-rooftop-observatory.jpg') center/cover; }
 .theme-gallery-heading { position:sticky; top:-16px; z-index:2; margin:-4px -4px 0; padding:12px 6px; background:var(--surface); border-bottom:1px solid var(--line); }
 .theme-gallery-caption { font-family:system-ui,sans-serif; }
 .connection-recovery { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:14px 16px; border:1px solid var(--amber); border-radius:12px; color:var(--amber); background:var(--surface); }

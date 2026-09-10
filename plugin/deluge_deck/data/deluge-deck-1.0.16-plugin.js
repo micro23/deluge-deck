@@ -209,10 +209,12 @@ const ensureRoot = () => {
   Array.from(body.children).forEach(markLegacyNode);
   // The bridge may initialize just before Deluge assigns connectionManager.
   if (!disableStockConnectionManager()) {
-    let attempts = 0;
     const patchManager = window.setInterval(() => {
-      attempts += 1;
-      if (disableStockConnectionManager() || attempts >= 40) window.clearInterval(patchManager);
+      // Deluge can finish constructing connectionManager well after the
+      // plugin resources load on a cold/private session. Keep the guard alive
+      // until the manager exists so its automatic first-load show() cannot
+      // race past the bridge and cover Deck.
+      if (disableStockConnectionManager()) window.clearInterval(patchManager);
     }, 100);
   }
   let root = document.getElementById(window.__DELUGE_DECK_ROOT_ID__);

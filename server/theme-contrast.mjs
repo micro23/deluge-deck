@@ -33,5 +33,8 @@ export function themePalettes(css) {
       danger: values.danger,
     });
   }
-  return palettes;
+  // The stylesheet intentionally has layered art-direction blocks. Evaluate
+  // the final declaration for each theme, matching the browser cascade, rather
+  // than treating later visual overrides as additional palettes.
+  return [...new Map(palettes.map((palette) => [palette.theme, palette])).values()];
 }

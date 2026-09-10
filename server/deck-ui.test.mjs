@@ -43,6 +43,21 @@ test('themes have persistent palette declarations and a desktop/mobile menu', as
   assert.match(css, /\.icon-button,.row-menu,.add-tabs button,.nav-item,.theme-popover button,.avatar,.context-menu button,.drawer-tabs button,.clear-search,.remove-choice,.hash-button,.file-chips button,.search-note button,.view-controls button\{min-height:44px;min-width:44px\}/);
 });
 
+test('themes use distinct seasonal artwork and menus keep one aligned action rail', async () => {
+  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  for (const asset of [
+    'christmas-night-observatory.jpg',
+    'halloween-midnight-conservatory.jpg',
+    'valentine-art-deco-salon.jpg',
+    'st-patricks-botanical-conservatory.jpg',
+    'independence-coastal-observatory.jpg',
+    'new-year-rooftop-observatory.jpg',
+  ]) assert.match(css, new RegExp(asset.replace('.', '\\.'), 's'));
+  assert.match(css, /\.preferences-content\s*\{[\s\S]*grid-template-columns:1fr!important/);
+  assert.match(css, /\.x-window-bbar,[\s\S]*\.x-panel-fbar\s*\{\s*display:none!important/);
+  assert.match(css, /\.x-form-item\s*\{[\s\S]*grid-template-columns:minmax\(142px,190px\)/);
+});
+
 test('Deluge Preferences is in-app first and browser popup APIs are absent from action paths', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /function PreferencesModal/);
@@ -745,6 +760,7 @@ test('torrent table supports column visibility toggles', async () => {
   assert.match(ui, /function ColumnChooser/);
   assert.match(ui, /aria-labelledby="column-chooser-title"/);
   assert.match(css, /\.column-chooser-backdrop/);
+  assert.match(css, /\.column-chooser-backdrop[^\{]*\{[^}]*pointer-events:auto!important/);
   assert.match(css, /\.column-chooser-modal/);
   assert.match(css, /\.column-menu-trigger/);
   assert.match(css, /hide-state/);

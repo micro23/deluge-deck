@@ -56,6 +56,8 @@ test('hosted bridge suppresses Deluge stock connection manager in favor of Deck 
   assert.match(bridge, /window\.deluge\?\.connectionManager/);
   assert.match(bridge, /manager\.show = function suppressDeckStockConnectionManager/);
   assert.match(bridge, /manager\.isVisible\?\.\(\)\) manager\.hide/);
+  assert.match(bridge, /if \(disableStockConnectionManager\(\)\) window\.clearInterval\(patchManager\)/);
+  assert.doesNotMatch(bridge, /attempts >= 40/);
 });
 
 test('compiled app waits for hosted bootstrap when script completion order is reversed', async () => {
