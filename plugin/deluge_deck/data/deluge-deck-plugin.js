@@ -153,8 +153,8 @@ const showNativePreferences = () => {
       element.style.removeProperty('visibility');
       ensureNativePreferencesControls(preferences, element);
     }
-    const width = Math.min(560, Math.max(320, window.innerWidth - 32));
-    const height = Math.min(610, Math.max(360, window.innerHeight - 32));
+    const width = Math.min(760, Math.max(320, window.innerWidth - 32));
+    const height = Math.min(700, Math.max(360, window.innerHeight - 32));
     preferences.setSize?.(width, height);
     preferences.center?.();
     preferences.doLayout?.();

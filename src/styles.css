@@ -1472,6 +1472,183 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-rad
   html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body { max-height:calc(100% - 54px)!important; }
 }
 
+/* v1.0.14 settings refresh: both preference surfaces share the same roomy,
+   card-led hierarchy while keeping their own scroll region inside the dialog. */
+@media (min-width:861px) {
+  .preferences-modal {
+    width:min(980px,calc(100vw - 32px));
+    height:min(820px,calc(100dvh - 32px))!important;
+    padding:0 20px;
+  }
+  .preferences-head { min-height:74px; }
+  .preferences-heading h2 { font-size:22px; }
+  .preferences-content {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    padding-right:4px;
+  }
+  .preferences-content>section.preferences-card {
+    min-height:76px;
+    grid-template-columns:34px minmax(0,1fr) auto;
+    column-gap:11px;
+    padding:12px 13px;
+  }
+  .preferences-card-icon { width:34px; height:34px; }
+  .preferences-card-copy strong { font-size:14px; }
+  .preferences-card-copy span { font-size:11px; }
+  .preferences-card .preferences-select { gap:8px; }
+  .preferences-card .preferences-select select { width:116px; min-height:36px; }
+  .preferences-content>.path-preference,
+  .preferences-content>.proxy-preference,
+  .preferences-content>.plugin-preference,
+  .preferences-content>.native-preferences { grid-column:1/-1; }
+  .preferences-content>.path-preference,
+  .preferences-content>.proxy-preference { grid-template-columns:34px minmax(0,1fr) 126px; }
+  .preferences-content>.network-preference,
+  .preferences-content>.cache-preference,
+  .preferences-content>.celebration-preference { grid-template-columns:34px minmax(0,1fr); align-content:start; }
+  .preferences-content>.network-preference>.secondary-button,
+  .preferences-content>.cache-preference>.secondary-button {
+    grid-column:2;
+    width:100%;
+    min-height:36px;
+  }
+  .preferences-footer { min-height:66px; margin-top:10px; }
+}
+
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] {
+  width:min(760px,calc(100vw - 32px))!important;
+  height:min(700px,calc(100dvh - 32px))!important;
+  min-width:min(760px,calc(100vw - 32px))!important;
+  min-height:min(700px,calc(100dvh - 32px))!important;
+  border-radius:16px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-header {
+  min-height:38px!important;
+  padding:13px 17px 11px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-header-text {
+  min-height:30px!important;
+  padding-left:42px!important;
+  font-size:20px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-header-text:before {
+  width:31px;
+  height:31px;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-header-text:after {
+  left:8px;
+  top:8px;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-mc { padding:12px!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body {
+  height:min(585px,calc(100dvh - 135px))!important;
+  max-height:calc(100% - 66px)!important;
+  overflow:hidden!important;
+  border-radius:11px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body .x-border-layout-ct {
+  display:grid!important;
+  grid-template-columns:168px minmax(0,1fr)!important;
+  gap:0!important;
+  height:100%!important;
+  overflow:hidden!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body .x-border-layout-ct > .x-panel:first-child {
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;
+  height:100%!important;
+  overflow:hidden!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body .x-border-layout-ct > .x-panel:last-child {
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;
+  height:100%!important;
+  margin:0!important;
+  overflow:auto!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-list-wrap,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-list-body {
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-list-body { padding:8px 6px!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-list-body dl {
+  margin:2px 3px!important;
+  border-radius:8px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-list-body dt,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-list-body em,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-list-body span {
+  min-height:33px!important;
+  line-height:33px!important;
+  font-size:12px!important;
+  font-style:normal!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form {
+  padding:14px!important;
+  overflow:visible!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-fieldset {
+  margin:0 0 12px!important;
+  padding:15px 14px 10px!important;
+  border:1px solid var(--line)!important;
+  border-radius:10px!important;
+  background:linear-gradient(120deg,var(--surface-2),color-mix(in srgb,var(--surface-3) 60%,var(--surface-2)))!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.12),inset 0 1px rgba(255,255,255,.025)!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-fieldset:first-child { border-top:1px solid var(--line)!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-fieldset-header {
+  padding:0 8px!important;
+  color:var(--cyan)!important;
+  background:var(--surface-2)!important;
+  font-size:11px!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item {
+  min-height:34px!important;
+  margin-bottom:8px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item-label,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-cb-label {
+  font-size:12px!important;
+  line-height:32px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-text {
+  height:20px!important;
+  padding:6px 9px!important;
+  border-radius:7px!important;
+  font-size:12px!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-check-wrap { min-height:32px!important; line-height:32px!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-checkbox,
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] input.x-form-radio {
+  margin:7px 8px 0 0!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-preferences-close {
+  top:13px!important;
+  right:15px!important;
+}
+
+@media (max-width:860px) {
+  html.deluge-deck-hosted [data-deluge-deck-native-window="true"] {
+    width:calc(100vw - 20px)!important;
+    height:calc(100dvh - 20px)!important;
+    min-width:calc(100vw - 20px)!important;
+    min-height:calc(100dvh - 20px)!important;
+  }
+  html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body .x-border-layout-ct {
+    grid-template-columns:132px minmax(0,1fr)!important;
+  }
+  html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-body {
+    height:calc(100dvh - 134px)!important;
+    max-height:calc(100dvh - 134px)!important;
+  }
+}
+
 /* Center the dashboard's primary controls and telemetry so the overview reads
    as a balanced, focused status panel at every viewport width. */
 .workspace > .search-wrap {

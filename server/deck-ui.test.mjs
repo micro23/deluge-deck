@@ -332,7 +332,7 @@ test('classic ExtJS preferences are isolated from Deck table and form resets', a
     readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8'),
     readFile(path.join(root, 'server/hosted-layout-fixture.mjs'), 'utf8'),
   ]);
-  assert.match(bridge, /Math\.min\(560,[\s\S]*Math\.min\(610,/);
+  assert.match(bridge, /Math\.min\(760,[\s\S]*Math\.min\(700,/);
   assert.match(css, /\[data-deluge-deck-native-window="true"\] \* \{\s*box-sizing:content-box/);
   assert.match(css, /\[data-deluge-deck-native-window="true"\] table \{[\s\S]*width:auto!important;[\s\S]*table-layout:auto!important/);
   assert.match(css, /input\.x-form-checkbox,[\s\S]*width:16px!important;[\s\S]*height:16px!important/);
@@ -341,6 +341,9 @@ test('classic ExtJS preferences are isolated from Deck table and form resets', a
   assert.match(css, /\.x-panel-btns>table \{[\s\S]*float:right!important/);
   assert.match(css, /\.deck-native-preferences-close \{[\s\S]*position:absolute!important;[\s\S]*pointer-events:auto!important/);
   assert.match(css, /\.deck-native-preferences-actions \{[\s\S]*bottom:0!important;[\s\S]*pointer-events:auto!important/);
+  assert.match(css, /grid-template-columns:168px minmax\(0,1fr\)!important/);
+  assert.match(css, /\.x-fieldset \{[\s\S]*border:1px solid var\(--line\)!important;[\s\S]*border-radius:10px!important/);
+  assert.match(css, /height:min\(585px,calc\(100dvh - 135px\)\)!important;[\s\S]*overflow:hidden!important/);
   assert.match(css, /\.global-popover,.account-popover\{[\s\S]*animation:deck-popover \.15s ease/);
   assert.match(css, /@keyframes deck-popover\{[\s\S]*transform:none/);
   assert.doesNotMatch(css, /\.context-menu\{[^}]*animation:pop /);
