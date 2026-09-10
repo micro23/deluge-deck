@@ -481,6 +481,11 @@ test('torrent details show connected and total seed and peer counts', async () =
   assert.match(ui, /connected · \$\{Number\(total\) \|\| 0\} total/);
 });
 
+test('torrent details show total uploaded data', async () => {
+  const ui = await source();
+  assert.match(ui, /label="Uploaded"\s+value=\{formatBytes\(torrent\.total_uploaded\)\}/);
+});
+
 test('torrent details request and show piece count and piece size', async () => {
   const [ui, server] = await Promise.all([source(), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
   assert.match(ui, /'num_pieces',\s+'piece_length'/);

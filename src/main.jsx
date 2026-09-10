@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.9';
+const VERSION = '1.0.12';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -3071,6 +3071,10 @@ function DetailDrawer({ torrent, onClose, onAction }) {
               <Detail
                 label="Piece size"
                 value={pieceSize(torrent.piece_length)}
+              />
+              <Detail
+                label="Uploaded"
+                value={formatBytes(torrent.total_uploaded)}
               />
               <Detail
                 label="Active time"
