@@ -2594,3 +2594,42 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-pre
 .row-menu:hover {
   box-shadow:0 10px 20px color-mix(in srgb,var(--bg) 28%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 18%,transparent);
 }
+
+/* Christmas palette lock: the reference uses pine, sage, cream, charcoal,
+   and muted terracotta. Keep pink/red-pink out of every rendered Christmas
+   control, accent, warning, swatch, and atmospheric wash. */
+:root[data-theme="christmas"],
+:root[data-theme="christmas"]:not(#dream-loop-skip) {
+  --cyan:#2f6b4f;
+  --accent-fg:#fffaf1;
+  --violet:#b8cbb8;
+  --amber:#b56a45;
+  --green:#8eb08f;
+  --danger:#8f4034;
+  --theme-wash-two:color-mix(in srgb,#9c5138 17%,transparent);
+  --theme-texture:radial-gradient(circle,color-mix(in srgb,#fff0a6 50%,transparent) 0 2px,transparent 3px) 8px 7px/42px 42px,repeating-linear-gradient(135deg,color-mix(in srgb,#9c5138 11%,transparent) 0 5px,transparent 5px 28px);
+  --theme-topbar:linear-gradient(100deg,#0a2a20,#12452f 56%,#4a3a2a);
+}
+:root[data-theme="christmas"] .theme-swatch.christmas {
+  background:linear-gradient(135deg,#2f6b4f,#12452f 55%,#b56a45)!important;
+}
+:root[data-theme="christmas"] .stat-card:nth-child(2) {
+  border-top-color:#9c5d43!important;
+}
+:root[data-theme="christmas"] {
+  color-scheme:dark;
+  --bg:#0e1913; --surface:#15231b; --surface-2:#203027; --surface-3:#2d382d;
+  --line:#66806f; --line-strong:#9bb7a1; --text:#f5eee4; --muted:#f0eee2; --muted-2:#dfe7d9;
+  --cyan:#b8cbb8; --accent-fg:#17241b; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent);
+  --violet:#d4e0d1; --amber:#f1d0aa; --green:#b9d4b9; --danger:#f4c7a8;
+}
+:root[data-theme="christmas"]:not(#dream-loop-skip) {
+  --bg:#0e1913; --surface:#15231b; --surface-2:#203027; --surface-3:#2d382d;
+  --line:#66806f; --line-strong:#9bb7a1; --text:#f5eee4; --muted:#f0eee2; --muted-2:#dfe7d9;
+  --cyan:#b8cbb8; --accent-fg:#17241b; --cyan-soft:color-mix(in srgb,var(--cyan) 16%,transparent);
+  --violet:#d4e0d1; --amber:#f1d0aa; --green:#b9d4b9; --danger:#f4c7a8;
+  --theme-wash-one:color-mix(in srgb,#5f9972 24%,transparent);
+  --theme-wash-two:color-mix(in srgb,#a86b48 17%,transparent);
+  --theme-texture:radial-gradient(circle,color-mix(in srgb,#f3e4ad 50%,transparent) 0 2px,transparent 3px) 8px 7px/42px 42px,repeating-linear-gradient(135deg,color-mix(in srgb,#a86b48 11%,transparent) 0 5px,transparent 5px 28px);
+  --theme-topbar:linear-gradient(100deg,#0a2a20,#12452f 56%,#4a3a2a);
+}
