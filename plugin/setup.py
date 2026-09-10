@@ -9,7 +9,7 @@ setup(
     # Keep this name unhyphenated: Deluge uses the project name as the
     # component namespace shared by the core, GTK, and WebUI managers.
     name='DelugeDeck',
-    version='1.0.14',
+    version='1.0.15',
     description='Modern Deluge WebUI with drag-and-drop torrent intake',
     author='Deluge Deck contributors',
     url='https://github.com/deluge-torrent/deluge',

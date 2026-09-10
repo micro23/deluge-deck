@@ -1929,7 +1929,33 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-pre
     z-index:1;
   }
   .app-shell { height:100vh; height:100dvh; overflow:hidden; }
-  .sidebar { height:100%; min-height:0; padding:12px 12px 16px; }
+  .sidebar {
+    position:sticky;
+    top:0;
+    align-self:flex-start;
+    height:100vh;
+    height:100dvh;
+    min-height:0;
+    max-height:100dvh;
+    padding:12px 12px 16px;
+    overflow:hidden;
+  }
+  .sidebar>nav {
+    flex:0 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+  }
+  .sidebar-spacer { min-height:8px; }
+  .sidebar-bottom {
+    position:sticky;
+    bottom:0;
+    z-index:2;
+    flex:none;
+    padding-top:8px;
+    background:linear-gradient(180deg,transparent,var(--theme-sidebar) 24%);
+  }
   .sidebar-command-row { display:flex; align-items:stretch; gap:8px; margin-bottom:16px; }
   .sidebar-command-row .add-button { flex:1; width:auto; min-width:0; margin:0; }
   .sidebar-toggle {

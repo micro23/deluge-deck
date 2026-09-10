@@ -774,6 +774,9 @@ test('desktop torrent area fills the viewport and scrolls inside the table', asy
   assert.match(css, /\.table-shell \{[\s\S]*flex:1;[\s\S]*overflow:auto!important/);
   assert.match(css, /\.table-shell \.table-tools \{[\s\S]*position:absolute;[\s\S]*height:44px/);
   assert.match(css, /\.table-shell thead th \{[\s\S]*position:sticky;[\s\S]*top:0/);
+  assert.match(css, /\.sidebar \{[\s\S]*position:sticky;[\s\S]*height:100dvh;[\s\S]*overflow:hidden/);
+  assert.match(css, /\.sidebar-bottom \{[\s\S]*position:sticky;[\s\S]*bottom:0;[\s\S]*flex:none/);
+  assert.match(css, /\.sidebar>nav \{[\s\S]*overflow-y:auto/);
 });
 
 test('desktop dashboard relies on sidebar filters instead of duplicate library controls', async () => {

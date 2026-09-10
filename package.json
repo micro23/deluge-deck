@@ -1,6 +1,6 @@
 {
   "name": "deluge-deck",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "private": true,
   "type": "module",
   "scripts": {
