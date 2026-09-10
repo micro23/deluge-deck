@@ -123,6 +123,57 @@ const eta = (value = 0) => {
     ? `${Math.floor(n / 60)}m`
     : `${Math.floor(n / 3600)}h ${Math.floor((n % 3600) / 60)}m`;
 };
+
+// Read the small bencoded metadata header from a local .torrent so the add
+// review can expose the payload files before anything is sent to Deluge.
+const decodeTorrentMetadata = (buffer) => {
+  const bytes = new Uint8Array(buffer);
+  const text = new TextDecoder();
+  let offset = 0;
+  const read = () => {
+    const marker = bytes[offset];
+    if (marker === 105) {
+      offset += 1;
+      const end = bytes.indexOf(101, offset);
+      const value = Number(new TextDecoder().decode(bytes.slice(offset, end)));
+      offset = end + 1;
+      return value;
+    }
+    if (marker === 108) {
+      offset += 1;
+      const value = [];
+      while (bytes[offset] !== 101) value.push(read());
+      offset += 1;
+      return value;
+    }
+    if (marker === 100) {
+      offset += 1;
+      const value = {};
+      while (bytes[offset] !== 101) {
+        const key = read();
+        value[key] = read();
+      }
+      offset += 1;
+      return value;
+    }
+    const colon = bytes.indexOf(58, offset);
+    const length = Number(text.decode(bytes.slice(offset, colon)));
+    offset = colon + 1;
+    const value = text.decode(bytes.slice(offset, offset + length));
+    offset += length;
+    return value;
+  };
+  const metadata = read();
+  const info = metadata?.info;
+  if (!info) throw new Error('This torrent is missing its info metadata.');
+  if (Array.isArray(info.files))
+    return info.files.map((entry, index) => ({
+      index,
+      path: [...(entry.path || entry['path.utf-8'] || [])].join('/'),
+      size: Number(entry.length || 0),
+    }));
+  return [{ index: 0, path: String(info.name || 'Torrent payload'), size: Number(info.length || 0) }];
+};
 // Google S2 serves a generic globe whenever it cannot find an icon, which made
 // unrelated trackers appear to have the same fake favicon.  Prefer each
 // tracker's own icon and keep a curated list of commonly used tracker roots so
@@ -4520,6 +4571,12 @@ function AddTorrentModal({
   const [addFilePriorities, setAddFilePriorities] = useState(() =>
     Object.fromEntries(initialFiles.map((file) => [file.name, 4])),
   );
+  const [torrentPayloads, setTorrentPayloads] = useState(() =>
+    Object.fromEntries(initialFiles.map((file) => [file.name, { status: 'loading', files: [] }])),
+  );
+  const [selectedPayloadFiles, setSelectedPayloadFiles] = useState(() =>
+    Object.fromEntries(initialFiles.map((file) => [file.name, new Set()])),
+  );
   const [allocation, setAllocation] = useState('full');
   const [freeSpace, setFreeSpace] = useState(null);
   const [magnet, setMagnet] = useState('');
@@ -4540,6 +4597,37 @@ function AddTorrentModal({
       onModalState?.(false);
     };
   }, [busy, error, onModalState]);
+  const inspectTorrentFiles = (items) => {
+    Array.from(items || []).forEach(async (file) => {
+      setTorrentPayloads((current) => ({
+        ...current,
+        [file.name]: { status: 'loading', files: [] },
+      }));
+      try {
+        const payloadFiles = decodeTorrentMetadata(await file.arrayBuffer());
+        setTorrentPayloads((current) => ({
+          ...current,
+          [file.name]: { status: 'ready', files: payloadFiles },
+        }));
+        setSelectedPayloadFiles((current) => ({
+          ...current,
+          [file.name]: new Set(payloadFiles.map((entry) => entry.index)),
+        }));
+      } catch (reason) {
+        setTorrentPayloads((current) => ({
+          ...current,
+          [file.name]: {
+            status: 'error',
+            files: [],
+            error: reason.message || 'Could not read torrent contents.',
+          },
+        }));
+      }
+    });
+  };
+  useEffect(() => {
+    if (initialFiles.length) inspectTorrentFiles(initialFiles);
+  }, []);
   const addFiles = (items) => {
     const next = Array.from(items || []).filter((file) =>
       file.name?.toLowerCase().endsWith('.torrent'),
@@ -4552,6 +4640,7 @@ function AddTorrentModal({
       ...current,
       ...Object.fromEntries(next.map((file) => [file.name, 4])),
     }));
+    inspectTorrentFiles(next);
     setDragging(false);
   };
   const duplicateNames = files
@@ -4611,8 +4700,24 @@ function AddTorrentModal({
         const selected = files.filter((file) =>
           selectedAddFiles.has(file.name),
         );
+        if (selected.some((file) => torrentPayloads[file.name]?.status === 'loading'))
+          throw new Error('Still reading torrent contents. Please wait a moment.');
+        const unreadable = selected.find(
+          (file) => torrentPayloads[file.name]?.status !== 'ready',
+        );
+        if (unreadable)
+          throw new Error(
+            torrentPayloads[unreadable.name]?.error ||
+              `Could not read the files inside ${unreadable.name}.`,
+          );
+        if (!selected.some((file) => selectedPayloadFiles[file.name]?.size))
+          throw new Error('Select at least one payload file to download.');
         const requiredBytes = selected.reduce(
-          (total, file) => total + Number(file.size || 0),
+          (total, file) =>
+            total +
+            (torrentPayloads[file.name]?.files || [])
+              .filter((entry) => selectedPayloadFiles[file.name]?.has(entry.index))
+              .reduce((bytes, entry) => bytes + Number(entry.size || 0), 0),
           0,
         );
         const availableBytes = Number(
@@ -4633,7 +4738,11 @@ function AddTorrentModal({
               sequential_download: sequential,
               compact_allocation: allocation === 'compact',
               file_priorities: selected[index]
-                ? [Number(addFilePriorities[selected[index].name] ?? 4)]
+                ? torrentPayloads[selected[index].name]?.files.map((entry) =>
+                    (selectedPayloadFiles[selected[index].name]?.has(entry.index)
+                      ? Number(addFilePriorities[selected[index].name] ?? 4)
+                      : 0),
+                  )
                 : undefined,
             },
           })),
@@ -4763,6 +4872,7 @@ function AddTorrentModal({
                     <input
                       type="checkbox"
                       checked={selectedAddFiles.has(file.name)}
+                      onClick={(event) => event.stopPropagation()}
                       onChange={() =>
                         setSelectedAddFiles((current) => {
                           const next = new Set(current);
@@ -4810,6 +4920,50 @@ function AddTorrentModal({
                     </button>
                   </span>
                 ))}
+              </div>
+            )}
+            {files.length > 0 && (
+              <div
+                className="torrent-payload-review"
+                onClick={(event) => event.stopPropagation()}
+                aria-label="Files to download"
+              >
+                <div className="payload-review-heading">
+                  <strong>Files to download</strong>
+                  <span>Uncheck anything you do not want from each torrent.</span>
+                </div>
+                {files.map((file) => {
+                  const payload = torrentPayloads[file.name];
+                  const selected = selectedPayloadFiles[file.name] || new Set();
+                  return (
+                    <div className="torrent-payload-group" key={`payload-${file.name}`}>
+                      <strong>{file.name}</strong>
+                      {payload?.status === 'loading' && <span>Reading torrent contents…</span>}
+                      {payload?.status === 'error' && (
+                        <span className="payload-error">{payload.error}</span>
+                      )}
+                      {payload?.files.map((entry) => (
+                        <label className="payload-file-row" key={`${file.name}-${entry.index}`}>
+                          <input
+                            type="checkbox"
+                            checked={selected.has(entry.index)}
+                            onChange={() =>
+                              setSelectedPayloadFiles((current) => {
+                                const next = new Set(current[file.name] || []);
+                                if (next.has(entry.index)) next.delete(entry.index);
+                                else next.add(entry.index);
+                                return { ...current, [file.name]: next };
+                              })
+                            }
+                            aria-label={`Download ${entry.path}`}
+                          />
+                          <span>{entry.path}</span>
+                          <small>{formatBytes(entry.size)}</small>
+                        </label>
+                      ))}
+                    </div>
+                  );
+                })}
               </div>
             )}
             {duplicateNames.length > 0 && (
