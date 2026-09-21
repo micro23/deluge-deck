@@ -39,6 +39,7 @@ const hasStockConnectionMarker = (node) => {
   if (!(node instanceof Element)) return false;
   const marker = `${markerText(node)} ${(node.textContent || '').slice(0, 220)}`;
   return /connection\s*manager|connectionmanager|x-deluge-connect-window-icon/i.test(marker)
+    || /\bstatus\b[\s\S]{0,160}\bhost\b[\s\S]{0,160}\bversion\b/i.test(marker)
     || Boolean(node.querySelector?.('.x-deluge-connect-window-icon'));
 };
 const loginWindowFor = (node) => {
