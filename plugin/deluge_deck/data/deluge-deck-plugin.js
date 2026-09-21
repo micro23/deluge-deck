@@ -17,7 +17,7 @@ viewport.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
 if (!viewport.parentNode) document.head.appendChild(viewport);
 const earlyStyle = document.createElement('style');
 earlyStyle.dataset.delugeDeck = 'preauth';
-earlyStyle.textContent = 'html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"] { display:none !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
+earlyStyle.textContent = 'html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"],html.deluge-deck-hosted .x-window:has(.x-deluge-connect-window-icon),html.deluge-deck-hosted [class*="x-deluge-connect-window" i],html.deluge-deck-hosted [id*="connection-manager" i],html.deluge-deck-hosted [id*="connectionmanager" i] { display:none !important; visibility:hidden !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
 (document.head || document.documentElement).appendChild(earlyStyle);
 
 const windowSelector = '.x-window,[class*="x-window" i],[role="dialog"]';
@@ -41,6 +41,15 @@ const hasStockConnectionMarker = (node) => {
   return /connection\s*manager|connectionmanager|x-deluge-connect-window-icon/i.test(marker)
     || /\bstatus\b[\s\S]{0,160}\bhost\b[\s\S]{0,160}\bversion\b/i.test(marker)
     || Boolean(node.querySelector?.('.x-deluge-connect-window-icon'));
+};
+const deckOverlaySelector = () => `#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`;
+const isDeckOverlayNode = (node) => node?.closest?.(deckOverlaySelector());
+const hideStockConnectionElement = (element) => {
+  if (!(element instanceof Element) || isDeckOverlayNode(element)) return;
+  element.dataset.delugeDeckStockConnection = 'true';
+  element.hidden = true;
+  element.style.setProperty('display', 'none', 'important');
+  element.style.setProperty('visibility', 'hidden', 'important');
 };
 const loginWindowFor = (node) => {
   if (!(node instanceof Element)) return null;
@@ -86,11 +95,11 @@ const disableStockConnectionManager = () => {
   const manager = window.deluge?.connectionManager;
   if (!manager) return false;
   const element = manager.getEl?.()?.dom || manager.el?.dom;
-  if (element) element.dataset.delugeDeckStockConnection = 'true';
+  if (element) hideStockConnectionElement(element);
   if (!patchedStockConnectionManagers.has(manager) && typeof manager.show === 'function') {
     manager.show = function suppressDeckStockConnectionManager() {
       const currentElement = this.getEl?.()?.dom || this.el?.dom;
-      if (currentElement) currentElement.dataset.delugeDeckStockConnection = 'true';
+      if (currentElement) hideStockConnectionElement(currentElement);
       if (this.rendered && this.hidden !== true) this.hide?.();
       return this;
     };
@@ -110,7 +119,7 @@ const suppressStockConnectionWindow = (node) => {
     && !candidate.closest?.(`#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`)
     && hasStockConnectionMarker(candidate)
   ).forEach((candidate) => {
-    candidate.dataset.delugeDeckStockConnection = 'true';
+    hideStockConnectionElement(candidate);
   });
   // The Connection Manager title can be absent during its first render, but
   // its icon class is stable. Walk back to the Ext.Window instead of waiting
@@ -119,8 +128,11 @@ const suppressStockConnectionWindow = (node) => {
     ? node
     : node.querySelector?.('.x-deluge-connect-window-icon');
   const connectionWindow = connectionIcon?.closest?.(windowSelector);
-  if (connectionWindow && !connectionWindow.closest?.(`#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`))
-    connectionWindow.dataset.delugeDeckStockConnection = 'true';
+  if (connectionWindow && !isDeckOverlayNode(connectionWindow)) hideStockConnectionElement(connectionWindow);
+  node.querySelectorAll?.('[class*="x-deluge-connect-window" i],[id*="connection-manager" i],[id*="connectionmanager" i]').forEach((marker) => {
+    const windowElement = marker.closest?.(windowSelector) || marker;
+    if (!isDeckOverlayNode(windowElement)) hideStockConnectionElement(windowElement);
+  });
   disableStockConnectionManager();
 };
 let hostedAutoConnect = null;
@@ -144,7 +156,11 @@ const autoConnectHostedDaemon = () => {
       const status = await hostedRpc('web.get_host_status', [host[0]]).catch(() => null);
       const text = JSON.stringify(status || '').toLowerCase();
       if (!/online|available|connected/.test(text)) continue;
+      disableStockConnectionManager();
+      suppressStockConnectionWindow(document.body);
       await hostedRpc('web.connect', [host[0]]).catch(() => undefined);
+      disableStockConnectionManager();
+      suppressStockConnectionWindow(document.body);
       return await hostedRpc('web.connected').catch(() => false);
     }
     return false;
@@ -153,9 +169,9 @@ const autoConnectHostedDaemon = () => {
 };
 const scanStockConnectionWindows = () => {
   document.querySelectorAll(windowSelector).forEach((node) => {
-    if (!node.closest?.(`#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`)
+    if (!isDeckOverlayNode(node)
       && hasStockConnectionMarker(node)) {
-      node.dataset.delugeDeckStockConnection = 'true';
+      hideStockConnectionElement(node);
       autoConnectHostedDaemon();
     }
   });

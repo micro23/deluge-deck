@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.27
+
+- Prevented Deluge's stock Connection Manager from appearing during first-launch daemon connection.
+
 ## 1.0.26
 
 - Added the high-contrast Terminal monochrome black-and-white theme.
