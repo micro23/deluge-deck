@@ -62,7 +62,7 @@ import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.20';
+const VERSION = '1.0.21';
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
 // has installed its globals rather than becoming permanently standalone.
@@ -2160,11 +2160,11 @@ const DEFAULT_COLUMN_VISIBILITY = {
   tracker: false,
   queue: false,
 };
-// These are only the first-paint fallbacks. Once the table is mounted each
-// metadata column is measured from its real header and cell content. The name
-// column deliberately has no width: fixed table layout gives it every pixel
-// left after the content columns have been satisfied.
+// These are only the first-paint fallbacks. Once the table is mounted every
+// data column is measured from its real header and cell content. Each column,
+// including Torrent, can then be resized and reset independently.
 const AUTO_COLUMN_FALLBACKS = {
+  name: 360,
   state: 104,
   progress: 154,
   size: 78,
@@ -2180,6 +2180,7 @@ const AUTO_COLUMN_FALLBACKS = {
   queue: 70,
 };
 const MIN_COLUMN_WIDTHS = {
+  name: 220,
   state: 84,
   progress: 142,
   size: 68,
@@ -2195,6 +2196,7 @@ const MIN_COLUMN_WIDTHS = {
   queue: 60,
 };
 const MAX_COLUMN_WIDTHS = {
+  name: 720,
   state: 170,
   progress: 188,
   size: 116,
@@ -2209,7 +2211,6 @@ const MAX_COLUMN_WIDTHS = {
   tracker: 240,
   queue: 92,
 };
-const TABLE_NAME_MIN_WIDTH = 280;
 const TABLE_FIXED_CHROME_WIDTH = 96;
 const clampColumnWidth = (key, width) =>
   Math.min(
@@ -2228,6 +2229,7 @@ const normalizeColumnWidths = (savedWidths) =>
 const hasCurrentTableLayout = () =>
   localStorage.getItem('deck-table-layout-version') === TABLE_LAYOUT_VERSION;
 const TABLE_COLUMN_LABELS = {
+  name: 'Torrent',
   state: 'State',
   progress: 'Progress',
   size: 'Size',
@@ -2415,9 +2417,7 @@ function TorrentTable({
   const tableMinimumWidth = useMemo(
     () =>
       TABLE_FIXED_CHROME_WIDTH +
-      TABLE_NAME_MIN_WIDTH +
       visibleColumns
-        .filter((key) => key !== 'name')
         .reduce((total, key) => total + resolvedColumnWidths[key], 0),
     [resolvedColumnWidths, visibleColumns],
   );
@@ -2441,7 +2441,6 @@ function TorrentTable({
       table.parentElement.appendChild(clone);
       const measured = {};
       visibleColumns.forEach((key) => {
-        if (key === 'name') return;
         const header = clone.querySelector(`th[data-column="${key}"]`);
         if (header) {
           measured[key] = clampColumnWidth(
@@ -2489,7 +2488,7 @@ function TorrentTable({
   const renderCell = (key, torrent, Icon) => {
     if (key === 'name')
       return (
-        <td key={key} className="name-cell">
+        <td key={key} className="name-cell" data-column={key}>
           <div className="name-content">
             <div className={`state-icon ${stateKey(torrent.state)}`}>
               <Icon size={15} />
@@ -2509,7 +2508,7 @@ function TorrentTable({
       );
     if (key === 'state')
       return (
-        <td key={key}>
+        <td key={key} data-column={key}>
           <span className={`state-badge ${stateKey(torrent.state)}`}>
             <i />
             {torrent.state}
@@ -2518,28 +2517,28 @@ function TorrentTable({
       );
     if (key === 'progress')
       return (
-        <td key={key}>
+        <td key={key} data-column={key}>
           <Progress value={torrent.progress} state={torrent.state} />
         </td>
       );
     if (key === 'size')
-      return <td key={key}>{formatBytes(torrent.total_size)}</td>;
+      return <td key={key} data-column={key}>{formatBytes(torrent.total_size)}</td>;
     if (key === 'download')
       return (
-        <td key={key} className="rate-cell down">
+        <td key={key} className="rate-cell down" data-column={key}>
           {rate(torrent.download_payload_rate)}
         </td>
       );
     if (key === 'upload')
       return (
-        <td key={key} className="rate-cell up">
+        <td key={key} className="rate-cell up" data-column={key}>
           {rate(torrent.upload_payload_rate)}
         </td>
       );
-    if (key === 'eta') return <td key={key}>{eta(torrent.eta)}</td>;
+    if (key === 'eta') return <td key={key} data-column={key}>{eta(torrent.eta)}</td>;
     if (key === 'ratio')
       return (
-        <td key={key} className="ratio-cell">
+        <td key={key} className="ratio-cell" data-column={key}>
           {Number(torrent.ratio || 0).toFixed(2)}
         </td>
       );
@@ -2547,21 +2546,23 @@ function TorrentTable({
       return (
         <td
           key={key}
+          data-column={key}
         >{`${Number(torrent.num_seeds) || 0} / ${Number(torrent.total_seeds) || 0}`}</td>
       );
     if (key === 'peers')
       return (
         <td
           key={key}
+          data-column={key}
         >{`${Number(torrent.num_peers) || 0} / ${Number(torrent.total_peers) || 0}`}</td>
       );
     if (key === 'added')
-      return <td key={key}>{torrentDate(torrent.time_added)}</td>;
+      return <td key={key} data-column={key}>{torrentDate(torrent.time_added)}</td>;
     if (key === 'seedingTime')
-      return <td key={key}>{elapsedTime(torrent.seeding_time)}</td>;
+      return <td key={key} data-column={key}>{elapsedTime(torrent.seeding_time)}</td>;
     if (key === 'tracker')
       return (
-        <td key={key}>
+        <td key={key} data-column={key}>
           <span
             className={`tracker-status ${stateKey(torrent.tracker_status || 'unknown')}`}
           >
@@ -2571,7 +2572,7 @@ function TorrentTable({
         </td>
       );
     return (
-      <td key={key}>
+      <td key={key} data-column={key}>
         {queueRank(torrent) === Number.MAX_SAFE_INTEGER
           ? '—'
           : queueRank(torrent) + 1}
@@ -2630,13 +2631,9 @@ function TorrentTable({
               <th
                 key={key}
                 aria-sort={sortValue(TABLE_SORT_KEYS[key])}
-                className={`${key === 'name' ? 'flexible-th' : 'resizable-th'} ${draggingColumn === key ? 'column-dragging' : ''}`}
+                className={`resizable-th ${draggingColumn === key ? 'column-dragging' : ''}`}
                 data-column={key}
-                style={
-                  key === 'name'
-                    ? undefined
-                    : { width: `${resolvedColumnWidths[key]}px` }
-                }
+                style={{ width: `${resolvedColumnWidths[key]}px` }}
                 draggable={key !== 'name'}
                 onDragStart={(event) => {
                   if (key === 'name') return;
@@ -2673,61 +2670,59 @@ function TorrentTable({
                         ? 'Torrent'
                         : TABLE_COLUMN_LABELS[key]}
                 </button>
-                {key !== 'name' && (
-                  <span
-                    className="column-resize-handle"
-                    role="separator"
-                    aria-orientation="vertical"
-                    aria-label={`Resize ${TABLE_COLUMN_LABELS[key]} column`}
-                    aria-valuemin={MIN_COLUMN_WIDTHS[key]}
-                    aria-valuemax={MAX_COLUMN_WIDTHS[key]}
-                    aria-valuenow={resolvedColumnWidths[key]}
-                    tabIndex="0"
-                    title="Drag to resize · Double-click to auto-size"
-                    onPointerDown={(event) => {
-                      if (event.button !== 0) return;
-                      event.preventDefault();
-                      event.stopPropagation();
-                      columnResizeStart.current = {
-                        key,
-                        startX: event.clientX,
-                        startWidth: resolvedColumnWidths[key],
-                      };
-                      document.body.classList.add('resizing-table-column');
-                    }}
-                    onDoubleClick={(event) => {
-                      event.stopPropagation();
+                <span
+                  className="column-resize-handle"
+                  role="separator"
+                  aria-orientation="vertical"
+                  aria-label={`Resize ${TABLE_COLUMN_LABELS[key]} column`}
+                  aria-valuemin={MIN_COLUMN_WIDTHS[key]}
+                  aria-valuemax={MAX_COLUMN_WIDTHS[key]}
+                  aria-valuenow={resolvedColumnWidths[key]}
+                  tabIndex="0"
+                  title="Drag to resize · Double-click to auto-size"
+                  onPointerDown={(event) => {
+                    if (event.button !== 0) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    columnResizeStart.current = {
+                      key,
+                      startX: event.clientX,
+                      startWidth: resolvedColumnWidths[key],
+                    };
+                    document.body.classList.add('resizing-table-column');
+                  }}
+                  onDoubleClick={(event) => {
+                    event.stopPropagation();
+                    setColumnWidths((current) => {
+                      const next = { ...current };
+                      delete next[key];
+                      return next;
+                    });
+                  }}
+                  onKeyDown={(event) => {
+                    if (!['ArrowLeft', 'ArrowRight', 'Home'].includes(event.key))
+                      return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.key === 'Home') {
                       setColumnWidths((current) => {
                         const next = { ...current };
                         delete next[key];
                         return next;
                       });
-                    }}
-                    onKeyDown={(event) => {
-                      if (!['ArrowLeft', 'ArrowRight', 'Home'].includes(event.key))
-                        return;
-                      event.preventDefault();
-                      event.stopPropagation();
-                      if (event.key === 'Home') {
-                        setColumnWidths((current) => {
-                          const next = { ...current };
-                          delete next[key];
-                          return next;
-                        });
-                        return;
-                      }
-                      const delta = (event.shiftKey ? 24 : 8) *
-                        (event.key === 'ArrowRight' ? 1 : -1);
-                      setColumnWidths((current) => ({
-                        ...current,
-                        [key]: clampColumnWidth(
-                          key,
-                          (current[key] ?? autoColumnWidths[key]) + delta,
-                        ),
-                      }));
-                    }}
-                  />
-                )}
+                      return;
+                    }
+                    const delta = (event.shiftKey ? 24 : 8) *
+                      (event.key === 'ArrowRight' ? 1 : -1);
+                    setColumnWidths((current) => ({
+                      ...current,
+                      [key]: clampColumnWidth(
+                        key,
+                        (current[key] ?? autoColumnWidths[key]) + delta,
+                      ),
+                    }));
+                  }}
+                />
               </th>
             ))}
             <th />
@@ -2739,7 +2734,7 @@ function TorrentTable({
               <tr key={index} className="skeleton-row">
                 <td />
                 {visibleColumns.map((key) => (
-                  <td key={key}>
+                  <td key={key} data-column={key}>
                     <i />
                   </td>
                 ))}
@@ -5843,7 +5838,6 @@ function App() {
             onAdd={() => setAddFiles([])}
           />
           <footer className="deck-status-rail" aria-label="Session status">
-            <span><i className={refreshError ? 'status-dot' : 'status-dot live'} />{refreshError ? 'Connection interrupted' : 'Live sync'}</span>
             <span
               className="status-free-space"
               title="Available free space on the Deluge server"
@@ -5856,6 +5850,7 @@ function App() {
                   : formatBytes(stats.free_space)}
               </strong>
             </span>
+            <span><i className={refreshError ? 'status-dot' : 'status-dot live'} />{refreshError ? 'Connection interrupted' : 'Live sync'}</span>
             {Number(stats.dht_nodes) > 0 && <span><Network size={13} />{stats.dht_nodes} DHT nodes</span>}
             <span className="status-rail-spacer" />
             <span><ArrowDown size={13} />{rate(stats.download_rate)}</span>

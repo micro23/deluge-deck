@@ -746,6 +746,9 @@ test('torrent table supports sortable columns', async () => {
 test('torrent table headers support horizontal resizing', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8')]);
   assert.match(ui, /className="column-resize-handle"/);
+  assert.match(ui, /name: 360/);
+  assert.match(ui, /name: 'Torrent'/);
+  assert.doesNotMatch(ui, /key !== 'name' && \(/);
   assert.match(ui, /role="separator"/);
   assert.match(ui, /aria-valuemin=\{MIN_COLUMN_WIDTHS\[key\]\}/);
   assert.match(ui, /\['ArrowLeft', 'ArrowRight', 'Home'\]/);
@@ -786,19 +789,20 @@ test('torrent table persists column visibility preferences', async () => {
   assert.match(ui, /localStorage\.setItem\(\s*'deck-column-visibility',\s*JSON\.stringify\(columnVisibility\),?\s*\)/);
 });
 
-test('torrent table gives the title remaining space after content-sized columns', async () => {
+test('torrent table keeps every content-sized column resizable and aligned', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8')]);
   assert.match(ui, /const TABLE_LAYOUT_VERSION = '2026-09-content-aware-columns'/);
   assert.match(ui, /const DEFAULT_COLUMN_VISIBILITY = \{[\s\S]*added: false,[\s\S]*tracker: false,[\s\S]*queue: false/);
   assert.match(ui, /const AUTO_COLUMN_FALLBACKS = \{[\s\S]*progress: 154/);
   assert.match(ui, /classList\.add\('column-measure-table'\)/);
-  assert.match(ui, /key === 'name'[\s\S]*\? undefined/);
-  assert.match(ui, /TABLE_NAME_MIN_WIDTH/);
+  assert.match(ui, /style=\{\{ width: `\$\{resolvedColumnWidths\[key\]\}px` \}\}/);
+  assert.match(ui, /data-column=\{key\}/);
   assert.match(ui, /localStorage\.getItem\('deck-table-layout-version'\)/);
   assert.match(ui, /localStorage\.setItem\('deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
   assert.match(ui, /'size',[\s\S]*'ratio',[\s\S]*'download'/);
   assert.match(css, /table\.auto-sized-table \{[\s\S]*width:100%;[\s\S]*table-layout:fixed/);
   assert.match(css, /table\.column-measure-table \{[\s\S]*width:max-content!important/);
+  assert.match(css, /td\[data-column\][\s\S]*text-align:center/);
 });
 
 test('desktop torrent area fills the viewport and scrolls inside the table', async () => {
@@ -909,6 +913,7 @@ test('dashboard exposes the dream-loop telemetry hierarchy', async () => {
   assert.match(ui, /className="status-free-space"/);
   assert.match(ui, /Available free space on the Deluge server/);
   assert.match(ui, /formatBytes\(stats\.free_space\)/);
+  assert.match(ui, /className="status-free-space"[\s\S]*Live sync/);
   assert.match(ui, /Current payload/);
   assert.match(ui, /telemetryHistory/);
   assert.match(ui, /\}, \[stats, torrents\.length\]\);/);

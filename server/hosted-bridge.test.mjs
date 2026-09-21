@@ -53,10 +53,15 @@ test('hosted bridge suppresses Deluge stock connection manager in favor of Deck 
   const bridge = await readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8');
   assert.match(bridge, /data-deluge-deck-stock-connection/);
   assert.match(bridge, /hasStockConnectionMarker/);
+  assert.match(bridge, /node\.querySelector\?\.\('\.x-deluge-connect-window-icon'\)/);
+  assert.match(bridge, /connectionIcon\?\.closest\?\.\(windowSelector\)/);
   assert.match(bridge, /window\.deluge\?\.connectionManager/);
+  assert.match(bridge, /const patchedStockConnectionManagers = new WeakSet\(\)/);
+  assert.match(bridge, /!patchedStockConnectionManagers\.has\(manager\)/);
   assert.match(bridge, /manager\.show = function suppressDeckStockConnectionManager/);
-  assert.match(bridge, /manager\.isVisible\?\.\(\)\) manager\.hide/);
-  assert.match(bridge, /if \(disableStockConnectionManager\(\)\) window\.clearInterval\(patchManager\)/);
+  assert.match(bridge, /manager\.isVisible\?\.\(\) \|\| \(manager\.rendered && manager\.hidden !== true\)/);
+  assert.match(bridge, /window\.setInterval\(disableStockConnectionManager, 250\)/);
+  assert.doesNotMatch(bridge, /clearInterval\(patchManager\)/);
   assert.doesNotMatch(bridge, /attempts >= 40/);
 });
 

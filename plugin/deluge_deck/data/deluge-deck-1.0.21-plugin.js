@@ -38,7 +38,8 @@ const hasLoginMarker = (node) => {
 const hasStockConnectionMarker = (node) => {
   if (!(node instanceof Element)) return false;
   const marker = `${markerText(node)} ${(node.textContent || '').slice(0, 220)}`;
-  return /connection\s*manager|connectionmanager|x-deluge-connect-window-icon/i.test(marker);
+  return /connection\s*manager|connectionmanager|x-deluge-connect-window-icon/i.test(marker)
+    || Boolean(node.querySelector?.('.x-deluge-connect-window-icon'));
 };
 const loginWindowFor = (node) => {
   if (!(node instanceof Element)) return null;
@@ -77,20 +78,24 @@ const suppressStockLogin = (node) => {
 };
 // Deck owns daemon selection in hosted mode. Deluge's stock UI can race the
 // post-login auto-connect request and show its Connection Manager over Deck.
-let stockConnectionManagerPatched = false;
+// Deluge may replace the manager object while its UI is being initialized, so
+// track patched instances rather than treating the first one as permanent.
+const patchedStockConnectionManagers = new WeakSet();
 const disableStockConnectionManager = () => {
   const manager = window.deluge?.connectionManager;
   if (!manager) return false;
-  const element = manager.getEl?.()?.dom;
+  const element = manager.getEl?.()?.dom || manager.el?.dom;
   if (element) element.dataset.delugeDeckStockConnection = 'true';
-  if (!stockConnectionManagerPatched && typeof manager.show === 'function') {
+  if (!patchedStockConnectionManagers.has(manager) && typeof manager.show === 'function') {
     manager.show = function suppressDeckStockConnectionManager() {
-      this.hide?.();
+      const currentElement = this.getEl?.()?.dom || this.el?.dom;
+      if (currentElement) currentElement.dataset.delugeDeckStockConnection = 'true';
+      if (this.rendered && this.hidden !== true) this.hide?.();
       return this;
     };
-    stockConnectionManagerPatched = true;
+    patchedStockConnectionManagers.add(manager);
   }
-  if (manager.isVisible?.()) manager.hide?.();
+  if (manager.isVisible?.() || (manager.rendered && manager.hidden !== true)) manager.hide?.();
   return true;
 };
 const suppressStockConnectionWindow = (node) => {
@@ -106,6 +111,15 @@ const suppressStockConnectionWindow = (node) => {
   ).forEach((candidate) => {
     candidate.dataset.delugeDeckStockConnection = 'true';
   });
+  // The Connection Manager title can be absent during its first render, but
+  // its icon class is stable. Walk back to the Ext.Window instead of waiting
+  // for title text that may only appear on a later layout pass.
+  const connectionIcon = node.matches?.('.x-deluge-connect-window-icon')
+    ? node
+    : node.querySelector?.('.x-deluge-connect-window-icon');
+  const connectionWindow = connectionIcon?.closest?.(windowSelector);
+  if (connectionWindow && !connectionWindow.closest?.(`#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`))
+    connectionWindow.dataset.delugeDeckStockConnection = 'true';
   disableStockConnectionManager();
 };
 const ensureNativePreferencesControls = (preferences, element) => {
@@ -207,16 +221,12 @@ const ensureRoot = () => {
     if (node.parentElement === body && !infrastructure && !nativeWindow && node.id !== window.__DELUGE_DECK_ROOT_ID__ && node.id !== window.__DELUGE_DECK_OVERLAY_ROOT_ID__) node.dataset.delugeDeckLegacy = 'true';
   };
   Array.from(body.children).forEach(markLegacyNode);
-  // The bridge may initialize just before Deluge assigns connectionManager.
-  if (!disableStockConnectionManager()) {
-    const patchManager = window.setInterval(() => {
-      // Deluge can finish constructing connectionManager well after the
-      // plugin resources load on a cold/private session. Keep the guard alive
-      // until the manager exists so its automatic first-load show() cannot
-      // race past the bridge and cover Deck.
-      if (disableStockConnectionManager()) window.clearInterval(patchManager);
-    }, 100);
-  }
+  // The bridge may initialize just before Deluge assigns connectionManager,
+  // and Deluge may replace that object during a cold login. Keep reconciling
+  // for the page lifetime so every new instance is patched before (or quickly
+  // after) an automatic checkConnected()/disconnect(true) tries to show it.
+  disableStockConnectionManager();
+  window.setInterval(disableStockConnectionManager, 250);
   let root = document.getElementById(window.__DELUGE_DECK_ROOT_ID__);
   if (!root) {
     root = document.createElement('div');
