@@ -1,8 +1,11 @@
 # Changelog
 
-## 1.0.25
+## 1.0.26
 
 - Added the high-contrast Terminal monochrome black-and-white theme.
+
+## 1.0.25
+
 - Removed all stat-card gradient backgrounds and decorative wash overlays.
 
 ## 1.0.24
