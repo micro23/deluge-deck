@@ -572,15 +572,6 @@ function Sidebar({
             <Plus size={18} />
             <span>Add torrent</span>
           </button>
-          <button
-            className="icon-button sidebar-toggle"
-            onClick={() => setCollapsed((value) => !value)}
-            aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-            aria-expanded={!collapsed}
-            title={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-          >
-            <Menu size={20} />
-          </button>
         </div>
         <nav aria-label="Torrent filters">
           <div className="nav-label">Library</div>
@@ -604,6 +595,15 @@ function Sidebar({
           <button className="nav-item" onClick={onPreferences} aria-label="Preferences" title="Preferences">
             <Settings2 size={17} />
             <span>Preferences</span>
+          </button>
+          <button
+            className="icon-button sidebar-toggle"
+            onClick={() => setCollapsed((value) => !value)}
+            aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+            aria-expanded={!collapsed}
+            title={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+          >
+            <Menu size={20} />
           </button>
         </div>
       </aside>
@@ -802,7 +802,7 @@ function useViewportOverlayHost() {
   if (!host.current) host.current = ensureViewportOverlayHost();
   return host.current;
 }
-function GlobalControls({ stats, onRefresh, onOpenConnections }) {
+function GlobalControls({ stats, torrents, onRefresh, onOpenConnections }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
@@ -840,12 +840,13 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
         connections: String(stats.max_num_connections ?? -1),
       });
   }, [open, stats.max_download, stats.max_upload, stats.max_num_connections]);
-  const operate = async (method, label) => {
-    setBusy(method);
+  const operate = async (calls, label) => {
+    const operations = typeof calls === 'string' ? [[calls, []]] : calls;
+    setBusy(operations[0]?.[0] || 'session');
     setError('');
     setMessage('');
     try {
-      await rpc(method);
+      for (const [method, params = []] of operations) await rpc(method, params);
       setMessage(label);
       await onRefresh();
     } catch (reason) {
@@ -853,6 +854,16 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
     } finally {
       setBusy('');
     }
+  };
+  const resumeAll = () => {
+    const hashes = torrents.map((torrent) => torrent.hash);
+    return operate(
+      [
+        ['core.resume_session', []],
+        ...(hashes.length ? [['core.resume_torrents', [hashes]]] : []),
+      ],
+      'Entire session resumed.',
+    );
   };
   const save = async (event) => {
     event.preventDefault();
@@ -929,7 +940,7 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
           <button
             className="secondary-button"
             disabled={Boolean(busy)}
-            onClick={() => operate('core.resume_session', 'Session resumed.')}
+            onClick={resumeAll}
           >
             <Play size={15} /> Resume all
           </button>
@@ -1051,9 +1062,7 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
         <button
           type="button"
           disabled={Boolean(busy)}
-          onClick={() =>
-            operate('core.resume_session', 'Entire session resumed.')
-          }
+          onClick={resumeAll}
           title="Resume every torrent in the session"
           aria-label="Resume entire session"
         >
@@ -1464,6 +1473,7 @@ function AccountMenu({ session, onLogout }) {
 }
 function Topbar({
   stats,
+  torrents,
   theme,
   setTheme,
   session,
@@ -1486,6 +1496,7 @@ function Topbar({
         <div className="top-actions">
           <GlobalControls
             stats={stats}
+            torrents={torrents}
             onRefresh={onRefresh}
             onOpenConnections={() => setConnectionsOpen(true)}
           />
@@ -5673,7 +5684,7 @@ function App() {
     );
   return (
     <div
-      className="app-shell"
+      className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
       onDragOver={(event) => {
         if (Array.from(event.dataTransfer?.types || []).includes('Files'))
           event.preventDefault();
@@ -5694,6 +5705,7 @@ function App() {
       <main className="main-content">
         <Topbar
           stats={stats}
+          torrents={torrents}
           theme={theme}
           setTheme={setTheme}
           session={sessionData}

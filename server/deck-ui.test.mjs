@@ -456,6 +456,9 @@ test('top bar exposes complete global daemon operations and account controls', a
   assert.match(ui, /function GlobalControls/);
   assert.match(ui, /core\.pause_session/);
   assert.match(ui, /core\.resume_session/);
+  assert.match(ui, /const resumeAll = \(\) =>/);
+  assert.match(ui, /torrents\.map\(\(torrent\) => torrent\.hash\)/);
+  assert.match(ui, /\['core\.resume_torrents', \[hashes\]\]/);
   assert.match(ui, /className="session-quick-actions"/);
   assert.match(ui, /Pause all/);
   assert.match(ui, /Resume all/);
@@ -478,6 +481,8 @@ test('top bar exposes complete global daemon operations and account controls', a
   assert.match(server, /'web\.disconnect'/);
   assert.match(css, /\.global-popover/);
   assert.match(css, /\.session-quick-actions/);
+  assert.match(css, /\.bulk-bar \{[^}]*left:calc\(50vw \+ 125px\)/);
+  assert.match(css, /\.sidebar-collapsed \.bulk-bar \{ left:calc\(50vw \+ 60px\)/);
   assert.match(css, /\.manager-modal/);
   assert.match(css, /\.account-popover/);
 });
@@ -807,13 +812,15 @@ test('torrent table keeps every content-sized column resizable and aligned', asy
 
 test('desktop torrent area fills the viewport and scrolls inside the table', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
-  assert.match(ui, /className="sidebar-command-row"[\s\S]*className="icon-button sidebar-toggle"/);
+  assert.match(ui, /className="sidebar-command-row"[\s\S]*className="add-button"/);
+  assert.match(ui, /className="sidebar-bottom"[\s\S]*aria-label="Preferences"[\s\S]*className="icon-button sidebar-toggle"/);
   assert.match(css, /\.main-content \{ height:100%; min-height:0; display:flex; flex-direction:column; overflow:hidden; \}/);
   assert.match(css, /\.table-shell \{[\s\S]*flex:1;[\s\S]*overflow:auto!important/);
   assert.match(css, /\.table-shell \.table-tools \{[\s\S]*position:absolute;[\s\S]*height:44px/);
   assert.match(css, /\.table-shell thead th \{[\s\S]*position:sticky;[\s\S]*top:0/);
   assert.match(css, /\.sidebar \{[\s\S]*position:sticky;[\s\S]*height:100dvh;[\s\S]*overflow:hidden/);
   assert.match(css, /\.sidebar-bottom \{[\s\S]*position:sticky;[\s\S]*bottom:0;[\s\S]*flex:none/);
+  assert.match(css, /\.sidebar > nav \.nav-item \{[\s\S]*grid-template-columns:20px minmax\(0,1fr\) 20px;[\s\S]*text-align:center/);
   assert.match(css, /\.sidebar>nav \{[\s\S]*overflow-y:auto/);
 });
 
