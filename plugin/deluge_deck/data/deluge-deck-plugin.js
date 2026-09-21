@@ -123,6 +123,44 @@ const suppressStockConnectionWindow = (node) => {
     connectionWindow.dataset.delugeDeckStockConnection = 'true';
   disableStockConnectionManager();
 };
+let hostedAutoConnect = null;
+const hostedRpc = (method, params = []) => fetch('json', {
+  method: 'POST',
+  credentials: 'same-origin',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ method, params, id: Date.now() }),
+}).then((response) => response.json()).then((payload) => {
+  if (payload?.error) throw new Error(payload.error.message || 'Deluge Web request failed.');
+  return payload?.result;
+});
+const autoConnectHostedDaemon = () => {
+  if (hostedAutoConnect) return hostedAutoConnect;
+  hostedAutoConnect = (async () => {
+    if (!(await hostedRpc('auth.check_session').catch(() => false))) return false;
+    if (await hostedRpc('web.connected').catch(() => false)) return true;
+    const hosts = await hostedRpc('web.get_hosts').catch(() => []);
+    for (const host of Array.isArray(hosts) ? hosts : []) {
+      if (!Array.isArray(host) || !host[0]) continue;
+      const status = await hostedRpc('web.get_host_status', [host[0]]).catch(() => null);
+      const text = JSON.stringify(status || '').toLowerCase();
+      if (!/online|available|connected/.test(text)) continue;
+      await hostedRpc('web.connect', [host[0]]).catch(() => undefined);
+      return await hostedRpc('web.connected').catch(() => false);
+    }
+    return false;
+  })().finally(() => { hostedAutoConnect = null; });
+  return hostedAutoConnect;
+};
+const scanStockConnectionWindows = () => {
+  document.querySelectorAll(windowSelector).forEach((node) => {
+    if (!node.closest?.(`#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`)
+      && hasStockConnectionMarker(node)) {
+      node.dataset.delugeDeckStockConnection = 'true';
+      autoConnectHostedDaemon();
+    }
+  });
+  disableStockConnectionManager();
+};
 const ensureNativePreferencesControls = (preferences, element) => {
   if (!element || element.querySelector('.deck-native-preferences-controls')) return;
   const controls = document.createElement('div');
@@ -228,6 +266,7 @@ const ensureRoot = () => {
   // after) an automatic checkConnected()/disconnect(true) tries to show it.
   disableStockConnectionManager();
   window.setInterval(disableStockConnectionManager, 250);
+  window.setInterval(scanStockConnectionWindows, 250);
   let root = document.getElementById(window.__DELUGE_DECK_ROOT_ID__);
   if (!root) {
     root = document.createElement('div');
