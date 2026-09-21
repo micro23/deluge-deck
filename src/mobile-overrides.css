@@ -1,0 +1,757 @@
+/*
+ * Mobile is a different information surface, not a squeezed desktop table.
+ * Keep this file last in the import order so it is the single responsive
+ * authority.  The desktop layout is intentionally outside these queries.
+ */
+
+@media (max-width: 900px), (pointer: coarse) and (hover: none) and (max-width: 1280px) {
+  :root {
+    --mobile-gutter: max(16px, env(safe-area-inset-left));
+    --mobile-gutter-right: max(16px, env(safe-area-inset-right));
+    --mobile-radius: 16px;
+  }
+
+  html,
+  body,
+  #root,
+  #deluge-deck-root {
+    width: 100%;
+    min-width: 0;
+    min-height: 100%;
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+  }
+
+  .app-shell,
+  .main-content {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0;
+    min-height: 100dvh !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .app-shell {
+    background-attachment: scroll !important;
+  }
+
+  .sidebar {
+    display: none !important;
+  }
+
+  /* One compact command bar. It stays opaque when the document scrolls behind it. */
+  .topbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 30 !important;
+    display: flex !important;
+    align-items: center;
+    width: 100% !important;
+    min-height: 64px !important;
+    height: auto !important;
+    padding: calc(10px + env(safe-area-inset-top)) var(--mobile-gutter-right) 10px var(--mobile-gutter) !important;
+    gap: 10px;
+    background: color-mix(in srgb, var(--surface) 96%, transparent) !important;
+    border-bottom: 1px solid var(--line-strong) !important;
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--bg) 28%, transparent) !important;
+    backdrop-filter: blur(18px) saturate(1.2);
+  }
+
+  .mobile-brand {
+    display: block !important;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .mobile-brand .brand {
+    min-width: 0;
+    gap: 9px;
+  }
+
+  .mobile-brand .brand-mark {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    border-radius: 11px;
+  }
+
+  .mobile-brand .brand strong {
+    overflow: hidden;
+    font-size: 18px;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-brand .brand small,
+  .topbar-heading,
+  .mobile-stats,
+  .connection-pill,
+  .session-quick-actions {
+    display: none !important;
+  }
+
+  .top-actions {
+    display: flex !important;
+    flex: none;
+    align-items: center;
+    gap: 4px !important;
+    margin-left: auto !important;
+  }
+
+  .top-actions .icon-button,
+  .top-actions .theme-trigger,
+  .top-actions .avatar {
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 !important;
+  }
+
+  .top-actions .theme-trigger {
+    display: grid;
+    place-items: center;
+  }
+
+  .top-actions .mobile-preferences {
+    display: grid !important;
+    place-items: center;
+  }
+
+  .top-actions .theme-name {
+    display: none !important;
+  }
+
+  .workspace {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 16px var(--mobile-gutter-right) calc(32px + env(safe-area-inset-bottom)) var(--mobile-gutter) !important;
+    overflow: visible !important;
+  }
+
+  .workspace > .search-wrap {
+    width: 100%;
+    max-width: none;
+    height: 46px !important;
+    margin: 0 0 18px !important;
+    border-radius: 13px;
+  }
+
+  .workspace > .search-wrap input {
+    font-size: 16px !important;
+  }
+
+  .page-heading {
+    display: none !important;
+  }
+
+  /* Four quick metrics remain useful on a phone, but never become tall cards. */
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    margin: 0 0 22px !important;
+  }
+
+  .stats-grid .stat-card {
+    display: grid !important;
+    grid-template-columns: 30px minmax(0, 1fr) !important;
+    grid-template-rows: 1fr !important;
+    align-items: center !important;
+    min-width: 0;
+    min-height: 82px !important;
+    padding: 12px !important;
+    gap: 9px !important;
+    border-radius: 14px;
+  }
+
+  .stats-grid .stat-card > .stat-icon {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: center;
+    width: 30px;
+    height: 30px;
+  }
+
+  .stats-grid .stat-card > div:nth-child(2) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-width: 0;
+  }
+
+  .stats-grid .stat-card span {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .stats-grid .stat-card strong {
+    overflow: hidden;
+    margin: 3px 0 0;
+    font-size: 17px !important;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .stats-grid .stat-card small,
+  .stats-grid .stat-spark {
+    display: none !important;
+  }
+
+  .library-mobile-controls {
+    display: block !important;
+  }
+
+  .list-heading {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px;
+    margin: 0 0 10px !important;
+  }
+
+  .list-heading > div:first-child {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .list-heading h2 {
+    overflow: hidden;
+    font-size: 22px;
+    letter-spacing: -0.045em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .library-caption {
+    margin-top: 4px;
+    font-size: 11px;
+  }
+
+  .mobile-add-torrent {
+    display: inline-flex !important;
+    flex: none;
+    min-height: 42px;
+    padding: 0 13px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+
+  .mobile-library-filters {
+    display: flex !important;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 14px !important;
+    padding: 5px !important;
+    gap: 5px !important;
+    border-radius: 13px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .mobile-library-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-library-filters button {
+    min-height: 40px !important;
+    flex: 0 0 auto;
+    padding: 0 12px !important;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .mobile-library-filters b {
+    min-width: 18px;
+  }
+
+  .deck-filter-summary {
+    display: none !important;
+  }
+
+  .search-note {
+    margin-bottom: 12px;
+  }
+
+  /* The transfer list is a vertical card stack at every mobile orientation. */
+  .table-shell {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .table-shell > .table-tools,
+  .table-shell thead {
+    display: none !important;
+  }
+
+  .table-shell table.auto-sized-table {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto !important;
+  }
+
+  .table-shell tbody {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .table-shell tbody tr {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: start;
+    gap: 10px 8px !important;
+    width: 100%;
+    min-width: 0;
+    padding: 14px 12px 13px !important;
+    border: 1px solid color-mix(in srgb, var(--theme-edge) 78%, var(--line)) !important;
+    border-radius: var(--mobile-radius) !important;
+    background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 96%, #fff 4%), color-mix(in srgb, var(--surface-2) 92%, var(--bg))) !important;
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--bg) 28%, transparent), inset 0 1px color-mix(in srgb, #fff 10%, transparent) !important;
+  }
+
+  .table-shell tbody tr.selected {
+    border-color: var(--cyan) !important;
+    box-shadow: inset 3px 0 var(--cyan), 0 10px 24px color-mix(in srgb, var(--bg) 28%, transparent) !important;
+  }
+
+  .table-shell tbody td,
+  .table-shell tbody td[data-column] {
+    display: block !important;
+    position: relative !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--text);
+    font-size: 11px !important;
+    line-height: 1.35;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+
+  .table-shell tbody tr > td:first-child {
+    position: absolute !important;
+    top: 14px;
+    left: 12px;
+    z-index: 2;
+    display: block !important;
+    width: 24px !important;
+  }
+
+  .table-shell tbody tr > td:last-child {
+    position: absolute !important;
+    top: 7px;
+    right: 5px;
+    z-index: 2;
+    display: block !important;
+    width: 44px !important;
+  }
+
+  .table-shell .row-menu {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .table-shell tbody td[data-column]:not([data-column="name"]):not([data-column="state"]):not([data-column="progress"]):not([data-column="size"]):not([data-column="download"]):not([data-column="upload"]):not([data-column="eta"]):not([data-column="ratio"]) {
+    display: none !important;
+  }
+
+  .table-shell tbody td[data-column="name"] {
+    display: block !important;
+    grid-column: 1 / -1;
+    min-height: 44px !important;
+    padding: 0 42px 0 34px !important;
+  }
+
+  .table-shell .name-content {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .table-shell .name-content .state-icon {
+    display: none !important;
+  }
+
+  .table-shell .tracker-favicon-small {
+    width: 22px;
+    height: 22px;
+    flex: none;
+    border-radius: 6px;
+  }
+
+  .table-shell .torrent-name {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .table-shell .torrent-name strong {
+    display: -webkit-box;
+    max-width: none;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.28;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .table-shell tbody td[data-column="state"] {
+    grid-column: 1 / -1;
+    min-height: 24px !important;
+  }
+
+  .table-shell .state-badge {
+    min-height: 24px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface-3) 72%, transparent);
+  }
+
+  .table-shell tbody td[data-column="progress"] {
+    grid-column: 1 / -1;
+    min-height: 16px !important;
+  }
+
+  .table-shell td[data-column="progress"] .progress-wrap {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .table-shell td[data-column="progress"] .progress-track {
+    width: auto;
+    height: 6px;
+    flex: 1 1 auto;
+  }
+
+  .table-shell td[data-column="progress"] .progress-wrap > span {
+    width: auto;
+    flex: none;
+    font-size: 10px;
+  }
+
+  .table-shell tbody td[data-column="size"],
+  .table-shell tbody td[data-column="download"],
+  .table-shell tbody td[data-column="upload"],
+  .table-shell tbody td[data-column="eta"],
+  .table-shell tbody td[data-column="ratio"] {
+    display: flex !important;
+    min-height: 38px !important;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+    padding-top: 0 !important;
+    font: 650 12px/1.2 'DM Mono', monospace !important;
+  }
+
+  .table-shell tbody td[data-column="size"]::before,
+  .table-shell tbody td[data-column="download"]::before,
+  .table-shell tbody td[data-column="upload"]::before,
+  .table-shell tbody td[data-column="eta"]::before,
+  .table-shell tbody td[data-column="ratio"]::before {
+    display: block;
+    position: static;
+    margin: 0;
+    color: var(--muted-2);
+    font: 700 8px/1 system-ui, sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .table-shell td[data-column="size"]::before { content: 'Size'; }
+  .table-shell td[data-column="download"]::before { content: 'Down'; }
+  .table-shell td[data-column="upload"]::before { content: 'Up'; }
+  .table-shell td[data-column="eta"]::before { content: 'ETA'; }
+  .table-shell td[data-column="ratio"]::before { content: 'Ratio'; }
+
+  .table-shell tbody tr.skeleton-row {
+    min-height: 128px;
+  }
+
+  .table-shell tbody tr.skeleton-row td {
+    display: none !important;
+  }
+
+  .table-shell tbody tr.skeleton-row td[data-column="name"] {
+    display: block !important;
+    height: 18px !important;
+    margin: 9px 42px 0 34px;
+    background: var(--surface-3) !important;
+    border-radius: 7px !important;
+  }
+
+  .empty-table {
+    min-height: 220px;
+  }
+
+  .deck-status-rail {
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 0 10px;
+    gap: 14px;
+    overflow-x: auto;
+    border-radius: 13px;
+    overscroll-behavior-x: contain;
+  }
+
+  .status-rail-spacer,
+  .status-ip {
+    display: none !important;
+  }
+
+  /* Details become a real mobile screen above the dashboard, never a drawer
+     hidden underneath the sticky command bar. */
+  .detail-backdrop {
+    z-index: 49 !important;
+    background: color-mix(in srgb, var(--bg) 46%, transparent) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  .detail-drawer {
+    inset: 0 !important;
+    z-index: 50 !important;
+    display: flex !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    flex-direction: column;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .drawer-head {
+    flex: none;
+    min-height: 76px;
+    padding: calc(12px + env(safe-area-inset-top)) var(--mobile-gutter-right) 12px var(--mobile-gutter) !important;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .drawer-head h2 {
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    overflow: hidden;
+    font-size: 18px;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .drawer-head .icon-button {
+    flex: none;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .drawer-tabs {
+    flex: none;
+    padding: 0 var(--mobile-gutter) !important;
+  }
+
+  .drawer-tabs button {
+    min-height: 48px;
+    margin: 0 14px 0 0;
+    padding: 0 2px;
+    font-size: 11px;
+  }
+
+  .drawer-content {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 18px var(--mobile-gutter-right) 24px var(--mobile-gutter) !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px 12px;
+    padding-bottom: 20px;
+  }
+
+  .detail-item {
+    min-width: 0;
+  }
+
+  .detail-item span {
+    margin-bottom: 5px;
+    font-size: 10px;
+  }
+
+  .detail-item strong {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .torrent-options {
+    margin-top: 18px;
+  }
+
+  .torrent-options-head {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .torrent-options-head .primary-button {
+    min-height: 40px;
+    padding: 0 10px;
+  }
+
+  .drawer-footer {
+    position: static !important;
+    z-index: 2;
+    width: auto !important;
+    flex: none;
+    padding: 12px var(--mobile-gutter-right) calc(12px + env(safe-area-inset-bottom)) var(--mobile-gutter) !important;
+    border-top: 1px solid var(--line);
+    background: var(--surface) !important;
+  }
+
+  .drawer-footer button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  /* Row actions are a bottom sheet with comfortable tap targets. */
+  .context-menu {
+    position: fixed !important;
+    inset: auto 0 0 !important;
+    z-index: 60 !important;
+    width: auto !important;
+    max-height: min(78dvh, 580px) !important;
+    margin: 0 !important;
+    padding: 12px var(--mobile-gutter-right) calc(12px + env(safe-area-inset-bottom)) var(--mobile-gutter) !important;
+    overflow-y: auto;
+    border-radius: 24px 24px 0 0 !important;
+    box-shadow: 0 -16px 42px color-mix(in srgb, var(--bg) 42%, transparent) !important;
+    animation: mobile-sheet-in .2s ease;
+  }
+
+  .context-menu::before {
+    content: '';
+    display: block;
+    width: 38px;
+    height: 4px;
+    margin: 0 auto 9px;
+    border-radius: 99px;
+    background: var(--line-strong);
+  }
+
+  .context-menu strong {
+    display: block;
+    max-width: none;
+    padding: 8px 2px 10px;
+    color: var(--text);
+    font-size: 11px;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .context-menu button {
+    min-height: 48px !important;
+    padding: 10px 8px !important;
+    gap: 11px;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+
+  .context-menu hr {
+    margin: 8px 0;
+  }
+
+  .context-menu .queue-section > span {
+    display: block;
+    padding: 5px 2px 7px;
+    color: var(--muted-2);
+    font: 700 9px/1 'DM Mono', monospace;
+    letter-spacing: .1em;
+  }
+
+  .context-menu .queue-action-grid {
+    gap: 7px;
+  }
+
+  .context-menu .queue-action-grid button {
+    min-height: 46px !important;
+    border: 1px solid var(--line) !important;
+    background: var(--surface-2) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .top-actions {
+    gap: 2px !important;
+  }
+
+  .top-actions .icon-button,
+  .top-actions .theme-trigger,
+  .top-actions .avatar {
+    width: 37px !important;
+    min-width: 37px !important;
+    height: 37px !important;
+  }
+
+  .mobile-brand .brand strong {
+    font-size: 17px;
+  }
+
+  .mobile-add-torrent {
+    padding-inline: 10px;
+  }
+
+  .table-shell tbody tr {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .table-shell tbody td[data-column="state"],
+  .table-shell tbody td[data-column="progress"],
+  .table-shell tbody td[data-column="name"] {
+    grid-column: 1 / -1;
+  }
+}
+
+@keyframes mobile-sheet-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
