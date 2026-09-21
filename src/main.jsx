@@ -2135,6 +2135,46 @@ const TABLE_SORT_KEYS = {
   queue: 'queue',
 };
 
+const MOBILE_QUERY = '(max-width:760px), (max-width:950px) and (max-height:540px)';
+function useMobileLayout() {
+  const [mobile, setMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches);
+  useEffect(() => {
+    const query = window.matchMedia(MOBILE_QUERY);
+    const update = () => setMobile(query.matches);
+    query.addEventListener('change', update);
+    update();
+    return () => query.removeEventListener('change', update);
+  }, []);
+  return mobile;
+}
+
+function MobileTorrentList({ torrents, selected, setSelected, onOpen, onMenu, loading, onAdd, sort, setSort }) {
+  const allSelected = torrents.length > 0 && torrents.every(t => selected.has(t.hash));
+  return (
+    <section className="mobile-transfers" aria-label="Torrent list">
+      <div className="mobile-list-toolbar">
+        <label className="mobile-select-all"><input type="checkbox" aria-label="Select all filtered torrents" checked={allSelected} onChange={() => setSelected(allSelected ? new Set() : new Set(torrents.map(t => t.hash)))} />{selected.size ? `${selected.size} selected` : `${torrents.length} torrents`}</label>
+        <label className="mobile-sort">Sort<select aria-label="Sort torrents" value={sort.key} onChange={e => setSort({ key: e.target.value, direction: 1 })}>
+          <option value="queue">Queue</option><option value="name">Name</option><option value="state">State</option><option value="progress">Progress</option><option value="total_size">Size</option><option value="download_payload_rate">Download</option><option value="upload_payload_rate">Upload</option><option value="ratio">Ratio</option>
+        </select></label>
+        <button className="mobile-sort-direction" aria-label={sort.direction === 1 ? 'Sort descending' : 'Sort ascending'} onClick={() => setSort(s => ({ ...s, direction: -s.direction }))}>{sort.direction === 1 ? <ArrowDown size={16} /> : <ArrowUp size={16} />}</button>
+      </div>
+      {loading ? <p className="mobile-list-empty" role="status">Loading torrents…</p> : torrents.length ? <ul className="mobile-transfer-list">
+        {torrents.map(t => <li key={t.hash} className={`mobile-transfer ${selected.has(t.hash) ? 'selected' : ''}`}>
+          <label className="mobile-row-select"><input type="checkbox" aria-label={`Select ${t.name}`} checked={selected.has(t.hash)} onChange={() => setSelected(current => { const next = new Set(current); next.has(t.hash) ? next.delete(t.hash) : next.add(t.hash); return next; })} /></label>
+          <button className="mobile-transfer-open" aria-label={`Open details for ${t.name}`} onClick={() => onOpen(t)}>
+            <strong className="mobile-transfer-name">{t.name}</strong>
+            <span className="mobile-transfer-meta"><span className={`state-badge ${stateKey(t.state)}`}><i />{t.state}</span><span>{formatBytes(t.total_size)}</span><span>Ratio {Number(t.ratio || 0).toFixed(2)}</span></span>
+            <Progress value={t.progress} state={t.state} />
+            <span className="mobile-transfer-rates"><span><ArrowDown size={12} />{rate(t.download_payload_rate)}</span><span><ArrowUp size={12} />{rate(t.upload_payload_rate)}</span><span>ETA {eta(t.eta)}</span></span>
+          </button>
+          <button className="row-menu mobile-row-menu" aria-label={`Actions for ${t.name}`} onClick={event => onMenu(t, event)}><MoreHorizontal size={19} /></button>
+        </li>)}
+      </ul> : <div className="mobile-list-empty"><strong>No torrents here</strong><p>Try another filter or add a torrent.</p><button className="secondary-button" onClick={onAdd}><Plus size={16} />Add torrent</button></div>}
+    </section>
+  );
+}
+
 function TorrentTable({
   torrents,
   selected,
@@ -2149,6 +2189,7 @@ function TorrentTable({
   const [sort, setSort] = useState({ key: 'queue', direction: 1 });
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const [draggingColumn, setDraggingColumn] = useState(null);
+  const mobile = useMobileLayout();
   const columnResizeStart = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
     if (!hasCurrentTableLayout()) return DEFAULT_COLUMN_VISIBILITY;
@@ -2342,7 +2383,7 @@ function TorrentTable({
       cancelled = true;
       cancelAnimationFrame(frame);
     };
-  }, [loading, sortedTorrents, visibleColumns]);
+  }, [loading, sortedTorrents, visibleColumns, mobile]);
   const sortLabel =
     (Object.entries(TABLE_SORT_KEYS).find(
       ([, sortKey]) => sortKey === sort.key,
@@ -2359,6 +2400,7 @@ function TorrentTable({
         ? 'ascending'
         : 'descending'
       : 'none';
+  if (mobile) return <MobileTorrentList torrents={sortedTorrents} selected={selected} setSelected={setSelected} onOpen={onOpen} onMenu={onMenu} loading={loading} onAdd={onAdd} sort={sort} setSort={setSort} />;
   const renderCell = (key, torrent, Icon) => {
     if (key === 'name')
       return (
@@ -5208,6 +5250,9 @@ function AddTorrentModal({
   );
 }
 function App() {
+  const mobileLayout = useMobileLayout();
+  const mobileOverlayHost = useViewportOverlayHost();
+  const mobileOverlay = children => mobileLayout ? createPortal(children, mobileOverlayHost) : children;
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () => localStorage.getItem('deck-sidebar-collapsed') === 'true',
   );
@@ -5755,15 +5800,18 @@ function App() {
           </div>
         </div>
       )}
-      {detail && (
+      {detail && mobileOverlay(
         <DetailDrawer
           torrent={detail}
           onClose={() => setDetail(null)}
           onAction={(action) => act(action, [detail.hash])}
         />
       )}
-      {menuTorrent && (
+      {menuTorrent && mobileOverlay(
+        <>
+        {mobileLayout && <div className="mobile-menu-backdrop" onClick={() => setMenuTorrent(null)} />}
         <div className="context-menu" style={menuPosition || {}}>
+          {mobileLayout && <button className="mobile-menu-close" onClick={() => setMenuTorrent(null)} aria-label="Close torrent actions"><X size={18} />Close</button>}
           <strong>{menuTorrent.name}</strong>
           <button
             onClick={() => {
@@ -5851,6 +5899,7 @@ function App() {
             <Trash2 size={15} /> Remove…
           </button>
         </div>
+        </>
       )}
       {celebration && (
         <div className="celebration-toast" role="status" aria-live="polite">
@@ -5873,7 +5922,7 @@ function App() {
           onSearch={() => document.querySelector('.search-wrap input')?.focus()}
         />
       )}
-      {addFiles && (
+      {addFiles && mobileOverlay(
         <AddModal
           initialFiles={addFiles}
           existingNames={torrents.map((torrent) => torrent.name)}

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.29
+
+- Replaced oversized mobile cards with a compact torrent list, with names, progress, rates, size, ratio, sorting, and selection always available.
+- Rebuilt mobile details and action menus to fit portrait and landscape screens without hiding controls behind the header.
+- Simplified mobile navigation and summary statistics while preserving the desktop table and layout.
+- Included the mobile rebuild in the versioned Deluge plugin assets and egg.
+
 ## 1.0.28
 
 - Rebuilt the Terminal theme as a high-contrast operator console with hard-edged monochrome panels, scanlines, square controls, and terminal-style navigation.
