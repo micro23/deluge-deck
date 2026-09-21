@@ -6,7 +6,14 @@ import { fileURLToPath } from 'node:url';
 import { contrastRatio, themeAccentPairs, themePalettes } from './theme-contrast.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const source = () => readFile(path.join(root, 'src/main.jsx'), 'utf8');
+const source = async () => {
+  const [main, api, themes] = await Promise.all([
+    readFile(path.join(root, 'src/main.jsx'), 'utf8'),
+    readFile(path.join(root, 'src/app/api.js'), 'utf8'),
+    readFile(path.join(root, 'src/app/themes.js'), 'utf8'),
+  ]);
+  return `${main}\n${api}\n${themes}`;
+};
 
 test('remove choices are in-app and pass Deluge the selected remove_data boolean', async () => {
   const ui = await source();

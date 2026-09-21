@@ -1,15 +1,17 @@
 from pathlib import Path
+import json
 import os
 from setuptools import find_packages, setup
 
 
 ROOT = Path(__file__).parent
 os.chdir(ROOT)
+VERSION = json.loads((ROOT.parent / 'package.json').read_text())['version']
 setup(
     # Keep this name unhyphenated: Deluge uses the project name as the
     # component namespace shared by the core, GTK, and WebUI managers.
     name='DelugeDeck',
-    version='1.0.22',
+    version=VERSION,
     description='Modern Deluge WebUI with drag-and-drop torrent intake',
     author='Deluge Deck contributors',
     url='https://github.com/deluge-torrent/deluge',

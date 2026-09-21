@@ -1,7 +1,14 @@
 """Deluge Deck plugin entry points for Deluge 2.x."""
 
+from importlib.metadata import PackageNotFoundError, version as installed_version
+
 __plugin_name__ = 'Deluge Deck'
-__version__ = '1.0.22'
+try:
+    __version__ = installed_version('DelugeDeck')
+except PackageNotFoundError:
+    # Source checkouts do not have installed package metadata. setup.py reads
+    # the canonical package.json version when building the egg.
+    __version__ = '0.0.0-dev'
 __author__ = 'Deluge Deck contributors'
 __author_email__ = ''
 __description__ = 'Modern Deluge WebUI with drag-and-drop torrent intake'

@@ -22,11 +22,11 @@ Objective: improve the interface, themes, and reliability to a polished release 
 - Ten demo API tests and two scheduler behavior tests pass.
 - Desktop gallery rendered and inspected in Halloween; previews show the seasonal assets.
 - At 390×844, Paused filtering returns the one paused demo torrent. Add opens a 370×624 dialog within the viewport, and closing it restores focus to Add. Page width remains 390 with no horizontal page overflow. Paper dashboard and Halloween gallery screenshots inspected; gallery bounds are 366×762 at (12,66).
-- Plugin build succeeded and verified required archive members and entry points. The existing Python 3.9 egg and generated assets have been rebuilt with the current changes. All 100 tests passed again after packaging.
+- Plugin build succeeded and verified required archive members and entry points. The existing Python 3.9 egg and generated assets have been rebuilt with the current changes. All 110 tests passed again after packaging.
 - Plugin rebuilt again after mobile and single-click detail refinements.
 - Inspected all eleven dashboard palettes: nine additional desktop screenshots plus the previous Paper and Halloween review. Seasonal artwork remains behind opaque data surfaces.
 - Packaged hosted fixture login and single-click detail drawer verified. Stopping the fixture produced the reconnecting notice; restarting cleared it automatically. This fixture does not enforce authentication on every RPC and is not evidence of real-server session-expiry behavior.
-- Full suite now passes all 100 tests. Source assertions were updated to accept JSX line wrapping and optional trailing commas while retaining the required attributes, calls, and keyboard guards. These checks are not a replacement for browser interaction tests.
+- Full suite now passes all 110 tests. Source assertions were updated to accept JSX line wrapping and optional trailing commas while retaining the required attributes, calls, and keyboard guards. These checks are not a replacement for browser interaction tests.
 
 ## Final audit — 2026-09-08
 

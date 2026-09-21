@@ -51,54 +51,19 @@ import {
   Zap,
 } from 'lucide-react';
 import {
-  authenticateAndConnectHosted,
   createRequestGate,
   formatBytes,
   normalizeTorrentFiles,
-  serializeRpcRequest,
 } from '../server/hosted-contracts.mjs';
+import { api, pluginMode, rpc } from './app/api.js';
+import { APP_VERSION } from './app/version.js';
+import { REFRESH_OPTIONS, THEMES } from './app/themes.js';
 import './styles.css';
 import './theme-gallery.css';
 import './dashboard-polish.css';
 import { createPoller } from '../server/polling.mjs';
 
-const VERSION = '1.0.21';
-// Bootstrap and the compiled app are injected as separate Deluge Web scripts.
-// Keep this dynamic so an early app evaluation adopts hosted mode once bootstrap
-// has installed its globals rather than becoming permanently standalone.
-const pluginMode = () => Boolean(window.__DELUGE_DECK_PLUGIN__);
-const UI_KEYS = [
-  'queue',
-  'name',
-  'state',
-  'progress',
-  'total_size',
-  'total_done',
-  'total_uploaded',
-  'download_payload_rate',
-  'upload_payload_rate',
-  'eta',
-  'ratio',
-  'num_seeds',
-  'total_seeds',
-  'num_peers',
-  'total_peers',
-  'num_pieces',
-  'piece_length',
-  'tracker_host',
-  'tracker_status',
-  'save_path',
-  'download_location',
-  'time_added',
-  'completed_time',
-  'active_time',
-  'seeding_time',
-  'num_files',
-  'message',
-];
-const hostedUrl = (resource) =>
-  new URL(resource, new URL('.', document.baseURI)).toString();
-const endpoint = (resource) => (pluginMode() ? hostedUrl(resource) : resource);
+const VERSION = APP_VERSION;
 const queueRank = (torrent) =>
   Number(torrent.queue) >= 0 ? Number(torrent.queue) : Number.MAX_SAFE_INTEGER;
 const mapTorrents = (data) =>
@@ -344,110 +309,7 @@ const icons = {
   checking: RefreshCw,
   error: AlertTriangle,
 };
-const THEMES = [
-  ['dark', 'Midnight', 'Ink black, glacier cyan, and cool moonlight.', '🌙'],
-  ['light', 'Paper', 'Crisp white, slate ink, and editorial teal.', '📝'],
-  ['ocean', 'Ocean', 'Abyssal navy, clear aqua, and sea-glass light.', '🌊'],
-  ['forest', 'Forest', 'Pine ink, moss layers, and warm parchment.', '🌲'],
-  ['sunset', 'Sunset', 'Twilight blue, coral light, and soft gold.', '🌅'],
-  ['christmas', 'Christmas', 'Evergreen, cranberry, snow, and gold.', '🎄'],
-  ['halloween', 'Halloween', 'Strict black and harvest-orange contrast.', '🎃'],
-  ['valentine', 'Valentine’s', 'Rose paper, berry ink, and plum detail.', '💗'],
-  ['st-patricks', 'St. Patrick’s', 'Clover, heritage green, and cream.', '☘️'],
-  [
-    'independence',
-    'Independence',
-    'Midnight navy, signal red, and star blue.',
-    '⭐',
-  ],
-  ['new-year', 'New Year', 'Midnight black, champagne, and warm gold.', '✨'],
-];
-const REFRESH_OPTIONS = [
-  [1500, 'Every 1.5 seconds'],
-  [3000, 'Every 3 seconds'],
-  [5000, 'Every 5 seconds'],
-  [10000, 'Every 10 seconds'],
-];
 const deckModalState = { locked: false };
-
-async function rpc(method, params = []) {
-  const response = await fetch(endpoint(pluginMode() ? 'json' : '/api/rpc'), {
-    method: 'POST',
-    credentials: 'same-origin',
-    headers: { 'content-type': 'application/json' },
-    body: serializeRpcRequest({ method, params, id: Date.now() }),
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok || payload.error)
-    throw new Error(
-      payload.error?.message || payload.error || 'Deluge request failed.',
-    );
-  return payload.result;
-}
-const api = {
-  session: async () => {
-    if (!pluginMode())
-      return fetch('/api/session').then((response) => response.json());
-    const authenticated = await rpc('auth.check_session').catch(() => false);
-    const connected = authenticated
-      ? await rpc('web.connected').catch(() => false)
-      : false;
-    return {
-      mode: 'plugin',
-      authenticated,
-      connected,
-      delugeUrl: window.location.origin,
-    };
-  },
-  torrents: () =>
-    pluginMode()
-      ? rpc('web.update_ui', [UI_KEYS, {}]).then((result) => ({
-          ...result,
-          fetchedAt: Date.now(),
-        }))
-      : fetch('/api/torrents').then((response) => {
-          if (!response.ok) throw new Error('Session expired');
-          return response.json();
-        }),
-  connect: async (url, password) => {
-    if (pluginMode()) {
-      await authenticateAndConnectHosted(rpc, password);
-      const result = await api.session();
-      if (!result.connected)
-        throw new Error(
-          'Deluge Web is authenticated but has not connected to a daemon host.',
-        );
-      return result;
-    }
-    const response = await fetch('/api/session/connect', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ url, password }),
-    });
-    const result = await response.json();
-    if (!response.ok || !result.authenticated || !result.connected)
-      throw new Error(result.error || 'Unable to connect to Deluge.');
-    return result;
-  },
-  disconnect: () =>
-    pluginMode()
-      ? rpc('auth.delete_session').catch(() => undefined)
-      : fetch('/api/session/disconnect', { method: 'POST' }),
-  upload: async (files) => {
-    const form = new FormData();
-    files.forEach((file) => form.append('file', file));
-    const response = await fetch(
-      endpoint(pluginMode() ? 'upload' : '/api/upload'),
-      { method: 'POST', credentials: 'same-origin', body: form },
-    );
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.success || !result.files?.length)
-      throw new Error(
-        result.error || 'Deluge did not accept those torrent files.',
-      );
-    return result.files;
-  },
-};
 
 function Brand() {
   return (

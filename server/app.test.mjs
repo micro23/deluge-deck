@@ -1,9 +1,14 @@
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 let processHandle;
 const base = 'http://127.0.0.1:8127';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const packageJson = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 
 before(async () => {
   processHandle = spawn(process.execPath, ['server/index.mjs'], { env: { ...process.env, DELUGE_DEMO: '1', PORT: '8127' }, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -17,7 +22,7 @@ after(() => processHandle?.kill());
 
 test('health and session are available in demo mode', async () => {
   const health = await fetch(`${base}/api/health`).then((response) => response.json());
-  assert.deepEqual(health, { ok: true, mode: 'demo', version: '1.0.0' });
+  assert.deepEqual(health, { ok: true, mode: 'demo', version: packageJson.version });
   const session = await fetch(`${base}/api/session`).then((response) => response.json());
   assert.equal(session.connected, true);
 });

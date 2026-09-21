@@ -67,7 +67,10 @@ test('hosted bridge suppresses Deluge stock connection manager in favor of Deck 
 
 test('compiled app waits for hosted bootstrap when script completion order is reversed', async () => {
   const [ui, webui, bridge] = await Promise.all([
-    readFile(path.join(root, 'src/main.jsx'), 'utf8'),
+    Promise.all([
+      readFile(path.join(root, 'src/main.jsx'), 'utf8'),
+      readFile(path.join(root, 'src/app/api.js'), 'utf8'),
+    ]).then(([main, api]) => `${main}\n${api}`),
     readFile(path.join(root, 'plugin/deluge_deck/webui.py'), 'utf8'),
     readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8'),
   ]);
@@ -116,7 +119,10 @@ test('late hosted resources cannot re-enable the loading gate after Deck is read
 });
 
 test('hosted requests are base-aware and a dashboard drop only opens a review modal', async () => {
-  const source = await readFile(path.join(root, 'src/main.jsx'), 'utf8');
+  const source = await Promise.all([
+    readFile(path.join(root, 'src/main.jsx'), 'utf8'),
+    readFile(path.join(root, 'src/app/api.js'), 'utf8'),
+  ]).then(([main, api]) => `${main}\n${api}`);
   assert.match(source, /new URL\(resource, new URL\('\.', document\.baseURI\)\)/);
   assert.match(source, /setAddFiles\(files\)/);
   const dropStart = source.indexOf('const drop =');

@@ -4,6 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PACKAGE = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8'));
+const VERSION = PACKAGE.version;
 const PORT = Number(process.env.PORT || 8118);
 const HOST = process.env.HOST || '127.0.0.1';
 const DEMO = process.env.DELUGE_DEMO === '1';
@@ -162,7 +164,7 @@ async function route(req, res) {
   if (!safeOrigin(req)) return error(res, 403, 'Origin not allowed.');
   const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`); const pathname = parsed.pathname;
   try {
-    if (req.method === 'GET' && pathname === '/api/health') return send(res, 200, { ok: true, mode: DEMO ? 'demo' : 'live', version: '1.0.0' });
+    if (req.method === 'GET' && pathname === '/api/health') return send(res, 200, { ok: true, mode: DEMO ? 'demo' : 'live', version: VERSION });
     if (req.method === 'GET' && pathname === '/api/session') return send(res, 200, DEMO ? { mode: 'demo', authenticated: demoSession, connected: demoSession && demoDaemonConnected, delugeUrl: 'demo://local', host: { id: 'demo-local', host: 'Demo daemon', port: 58846 }, methods: [] } : await client.session());
     if (req.method === 'POST' && pathname === '/api/session/connect') {
       if (DEMO) { demoSession = true; demoDaemonConnected = true; return send(res, 200, { mode: 'demo', authenticated: true, connected: true, delugeUrl: 'demo://local', host: { id: 'demo-local', host: 'Demo daemon', port: 58846 } }); }
