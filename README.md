@@ -6,7 +6,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.19.
+Current release: 1.0.20.
 
 Version 0.9.17 keeps main-window `.torrent` drops in the review flow: a drop only preloads the normal Add to Deluge dialog, and nothing is uploaded or added until **Add to Deluge** is pressed. Removing one or many torrents opens a Deck dialog with separate **keep downloaded data** and **remove downloaded data** choices. Deck Preferences is an in-app panel for themes, refresh timing, keyboard help, and the centered native Deluge Preferences window. Deck owns the hosted viewport so the hidden stock ExtJS shell cannot push the login or dashboard below the fold. Desktop and mobile render the login immediately and transition to the correctly sized dashboard without a refresh. Torrent and file sizes match Deluge's binary units and one-decimal precision. Row actions close when details open, Escape closes Deck menus and dialogs even when a control has focus, and the top-bar theme control is now icon-only so theme names cannot overlap adjacent actions at compact widths.
 
@@ -28,7 +28,7 @@ npm install
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.19-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.20-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
 
 ### Using port 8888 (plugin mode)
 

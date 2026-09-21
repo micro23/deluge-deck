@@ -1,7 +1,7 @@
 """Deluge Deck plugin entry points for Deluge 2.x."""
 
 __plugin_name__ = 'Deluge Deck'
-__version__ = '1.0.19'
+__version__ = '1.0.20'
 __author__ = 'Deluge Deck contributors'
 __author_email__ = ''
 __description__ = 'Modern Deluge WebUI with drag-and-drop torrent intake'
