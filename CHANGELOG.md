@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.25
+
+- Removed all stat-card gradient backgrounds and decorative wash overlays.
+
 ## 1.0.24
 
 - Removed the distracting left-edge gradient overlay from dashboard stat cards.
