@@ -10,6 +10,7 @@ export const THEMES = [
   ['st-patricks', 'St. Patrick’s', 'Clover, heritage green, and cream.', '☘️'],
   ['independence', 'Independence', 'Midnight navy, signal red, and star blue.', '⭐'],
   ['new-year', 'New Year', 'Midnight black, champagne, and warm gold.', '✨'],
+  ['terminal', 'Terminal', 'Monochrome console, pure blacks, and stark white ink.', '📟'],
 ];
 
 export const REFRESH_OPTIONS = [

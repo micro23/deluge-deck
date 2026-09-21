@@ -547,7 +547,7 @@ function ThemeMenu({ theme, setTheme }) {
           <div className="theme-gallery-heading" role="presentation">
             <span>MAKE IT YOURS</span>
             <strong>A different atmosphere.</strong>
-            <p>Eleven palettes. One familiar workspace.</p>
+            <p>Twelve palettes. One familiar workspace.</p>
           </div>
           {THEMES.map(([key, label, description]) => (
             <button

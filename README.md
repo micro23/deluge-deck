@@ -56,7 +56,7 @@ If the plugin is listed but the checkbox immediately clears, the egg was loaded 
 - Drag-and-drop multi-file `.torrent` intake, magnet links, and torrent URLs
 - Add options for Windows download path, paused mode, and sequential downloads
 - Torrent detail drawer with overview, files, peers, trackers, and options surfaces
-- Eleven persistent, readable palettes (including light, seasonal, and holiday themes), responsive tablet/mobile layout, reduced-motion support, and keyboard shortcuts
+- Twelve persistent, readable palettes (including light, seasonal, holiday, and terminal themes), responsive tablet/mobile layout, reduced-motion support, and keyboard shortcuts
 - In-app Deck Preferences for themes, refresh interval, keyboard help, and optional native Deluge settings
 - Secure loopback proxy with RPC allowlisting, upload size caps, origin validation, and no-store responses
 
