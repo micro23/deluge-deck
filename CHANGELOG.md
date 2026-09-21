@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.28
+
+- Rebuilt the Terminal theme as a high-contrast operator console with hard-edged monochrome panels, scanlines, square controls, and terminal-style navigation.
+- Removed the remaining soft dashboard styling from Terminal stat cards, tables, dialogs, and status rails.
+- Included the updated Terminal theme in the generated Deluge plugin egg.
+
 ## 1.0.27
 
 - Prevented Deluge's stock Connection Manager from appearing during first-launch daemon connection.

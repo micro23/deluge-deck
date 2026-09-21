@@ -2705,6 +2705,446 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .deck-native-pre
   --theme-texture:radial-gradient(circle,color-mix(in srgb,#fff0a6 50%,transparent) 0 2px,transparent 3px) 8px 7px/42px 42px,repeating-linear-gradient(135deg,color-mix(in srgb,#9c5138 11%,transparent) 0 5px,transparent 5px 28px);
   --theme-topbar:linear-gradient(100deg,#0a2a20,#12452f 56%,#4a3a2a);
 }
+
+/* Terminal / operator console pass.
+   Keep this block last so the theme is a deliberate visual system instead of
+   a recolored version of the softer glass dashboard. */
+:root[data-theme="terminal"] {
+  color-scheme:dark;
+  --term-black:#000000;
+  --term-panel:#080808;
+  --term-panel-raised:#111111;
+  --term-rule:#3b3b3b;
+  --term-rule-bright:#8d8d8d;
+  --term-white:#ffffff;
+  --term-muted:#bdbdbd;
+  --term-dim:#707070;
+  --bg:#000000;
+  --surface:#080808;
+  --surface-2:#111111;
+  --surface-3:#1a1a1a;
+  --line:#3b3b3b;
+  --line-strong:#8d8d8d;
+  --text:#ffffff;
+  --muted:#bdbdbd;
+  --muted-2:#c0c0c0;
+  --cyan:#ffffff;
+  --accent-fg:#000000;
+  --cyan-soft:rgba(255,255,255,.1);
+  --violet:#ffffff;
+  --amber:#ffffff;
+  --green:#ffffff;
+  --danger:#ffffff;
+  --theme-radius:2px;
+  --theme-control-radius:2px;
+  --theme-wash-one:transparent;
+  --theme-wash-two:transparent;
+  --theme-topbar:#000000;
+  --theme-sidebar:#050505;
+  --theme-card:#080808;
+  --theme-edge:#3b3b3b;
+  --theme-texture:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px);
+}
+
+:root[data-theme="terminal"] body,
+:root[data-theme="terminal"] .app-shell,
+:root[data-theme="terminal"] button,
+:root[data-theme="terminal"] input,
+:root[data-theme="terminal"] select,
+:root[data-theme="terminal"] textarea {
+  font-family:"DM Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace!important;
+  font-variant-numeric:tabular-nums;
+}
+
+:root[data-theme="terminal"] .app-shell {
+  color:var(--term-white)!important;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px),
+    #000000!important;
+  background-size:100% 4px,auto!important;
+}
+
+:root[data-theme="terminal"] .app-shell::before {
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.035) 3px 4px)!important;
+  opacity:.5!important;
+  mix-blend-mode:screen!important;
+}
+
+:root[data-theme="terminal"] .sidebar {
+  background:#050505!important;
+  border-right:1px solid #3b3b3b!important;
+  box-shadow:inset -1px 0 #111111!important;
+  border-radius:0!important;
+}
+
+:root[data-theme="terminal"] .sidebar::before {
+  content:"DELUGE / TTY-01";
+  display:block;
+  padding:3px 8px 16px;
+  color:#ffffff;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.16em;
+  line-height:1;
+}
+
+:root[data-theme="terminal"] .sidebar-command-row {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+}
+
+:root[data-theme="terminal"] .sidebar-command-row::before {
+  content:"$ SESSION";
+  color:#707070;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.14em;
+}
+
+:root[data-theme="terminal"] .add-button,
+:root[data-theme="terminal"] .primary-button {
+  min-height:40px!important;
+  border:1px solid #ffffff!important;
+  border-radius:2px!important;
+  background:#ffffff!important;
+  color:#000000!important;
+  box-shadow:3px 3px 0 #4a4a4a!important;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+:root[data-theme="terminal"] .add-button:hover,
+:root[data-theme="terminal"] .primary-button:hover {
+  transform:translate(2px,2px)!important;
+  box-shadow:1px 1px 0 #4a4a4a!important;
+  background:#d7d7d7!important;
+}
+
+:root[data-theme="terminal"] .nav-label {
+  color:#707070!important;
+  font-size:10px!important;
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+}
+
+:root[data-theme="terminal"] .nav-label::before {
+  content:"// ";
+  color:#ffffff;
+}
+
+:root[data-theme="terminal"] .nav-item {
+  border:0!important;
+  border-left:2px solid transparent!important;
+  border-radius:0!important;
+  color:#bdbdbd!important;
+  background:transparent!important;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+:root[data-theme="terminal"] .nav-item:hover {
+  border-left-color:#707070!important;
+  background:#161616!important;
+  color:#ffffff!important;
+}
+
+:root[data-theme="terminal"] .nav-item.active {
+  border-left-color:#ffffff!important;
+  background:#ffffff!important;
+  color:#000000!important;
+  box-shadow:none!important;
+}
+
+:root[data-theme="terminal"] .nav-item.active svg,
+:root[data-theme="terminal"] .nav-item.active b {
+  color:#000000!important;
+  stroke:currentColor!important;
+}
+
+:root[data-theme="terminal"] .sidebar-bottom {
+  border-top:1px dashed #3b3b3b!important;
+  padding-top:12px!important;
+}
+
+:root[data-theme="terminal"] .topbar {
+  min-height:72px!important;
+  border-bottom:2px solid #ffffff!important;
+  border-radius:0!important;
+  background:#000000!important;
+  box-shadow:0 6px 0 rgba(255,255,255,.04)!important;
+}
+
+:root[data-theme="terminal"] .topbar-heading::before {
+  content:"TTY 01 / ";
+  color:#707070;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.1em;
+}
+
+:root[data-theme="terminal"] .topbar-heading h1,
+:root[data-theme="terminal"] .page-heading h1,
+:root[data-theme="terminal"] .page-heading h2 {
+  color:#ffffff!important;
+  font-family:inherit!important;
+  font-weight:700!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+
+:root[data-theme="terminal"] .connection-pill,
+:root[data-theme="terminal"] .theme-trigger,
+:root[data-theme="terminal"] .icon-button,
+:root[data-theme="terminal"] .secondary-button,
+:root[data-theme="terminal"] .view-controls button,
+:root[data-theme="terminal"] .session-quick-actions button {
+  border:1px solid #3b3b3b!important;
+  border-radius:2px!important;
+  background:#080808!important;
+  color:#ffffff!important;
+  box-shadow:2px 2px 0 #222222!important;
+}
+
+:root[data-theme="terminal"] .connection-pill:hover,
+:root[data-theme="terminal"] .theme-trigger:hover,
+:root[data-theme="terminal"] .icon-button:hover,
+:root[data-theme="terminal"] .secondary-button:hover,
+:root[data-theme="terminal"] .view-controls button:hover,
+:root[data-theme="terminal"] .session-quick-actions button:hover {
+  border-color:#ffffff!important;
+  background:#1a1a1a!important;
+}
+
+:root[data-theme="terminal"] .search-wrap {
+  min-height:40px!important;
+  border:1px solid #3b3b3b!important;
+  border-radius:2px!important;
+  background:#050505!important;
+  box-shadow:inset 0 0 0 1px #111111!important;
+}
+
+:root[data-theme="terminal"] .search-wrap:focus-within {
+  border-color:#ffffff!important;
+  box-shadow:0 0 0 1px #ffffff!important;
+}
+
+:root[data-theme="terminal"] .search-wrap input,
+:root[data-theme="terminal"] .search-wrap input::placeholder {
+  color:#ffffff!important;
+  letter-spacing:.03em;
+}
+
+:root[data-theme="terminal"] .search-wrap input::placeholder {
+  color:#707070!important;
+}
+
+:root[data-theme="terminal"] .stats-grid .stat-card,
+:root[data-theme="terminal"] .stats-grid .stat-card::before,
+:root[data-theme="terminal"] .stats-grid .stat-card::after {
+  border-radius:2px!important;
+  background:#080808!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+
+:root[data-theme="terminal"] .stats-grid .stat-card {
+  min-height:168px!important;
+  border:1px solid #3b3b3b!important;
+  border-top:2px solid #ffffff!important;
+  border-left:4px solid #ffffff!important;
+  box-shadow:4px 4px 0 #151515!important;
+}
+
+:root[data-theme="terminal"] .stats-grid .stat-card:hover {
+  border-color:#ffffff!important;
+  background:#111111!important;
+  transform:translateY(-2px)!important;
+}
+
+:root[data-theme="terminal"] .stat-icon {
+  border:1px solid #3b3b3b!important;
+  border-radius:2px!important;
+  background:#151515!important;
+  color:#ffffff!important;
+}
+
+:root[data-theme="terminal"] .stat-card span,
+:root[data-theme="terminal"] .stat-card small,
+:root[data-theme="terminal"] .stat-card .stat-label {
+  color:#bdbdbd!important;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+}
+
+:root[data-theme="terminal"] .stat-card strong {
+  color:#ffffff!important;
+  font-family:inherit!important;
+  text-shadow:0 0 12px rgba(255,255,255,.2);
+}
+
+:root[data-theme="terminal"] .stat-spark polyline {
+  stroke:#ffffff!important;
+  filter:none!important;
+}
+
+:root[data-theme="terminal"] .stat-spark polygon {
+  fill:rgba(255,255,255,.08)!important;
+}
+
+:root[data-theme="terminal"] .table-shell {
+  border:1px solid #3b3b3b!important;
+  border-radius:2px!important;
+  background:#000000!important;
+  box-shadow:4px 4px 0 #111111!important;
+}
+
+:root[data-theme="terminal"] .table-tools,
+:root[data-theme="terminal"] .list-heading {
+  border-bottom:1px dashed #3b3b3b!important;
+  background:#080808!important;
+}
+
+:root[data-theme="terminal"] .table-shell th {
+  border-bottom:2px solid #ffffff!important;
+  background:#111111!important;
+  color:#ffffff!important;
+  font-size:10px!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+
+:root[data-theme="terminal"] .table-shell td {
+  border-bottom:1px solid #242424!important;
+  color:#bdbdbd!important;
+}
+
+:root[data-theme="terminal"] .table-shell tbody tr:hover td {
+  background:#ffffff!important;
+  color:#000000!important;
+}
+
+:root[data-theme="terminal"] .table-shell tbody tr.selected td {
+  background:#1d1d1d!important;
+  box-shadow:inset 3px 0 #ffffff!important;
+  color:#ffffff!important;
+}
+
+:root[data-theme="terminal"] .torrent-name,
+:root[data-theme="terminal"] .sort-button,
+:root[data-theme="terminal"] .column-menu-trigger {
+  color:#ffffff!important;
+  font-family:inherit!important;
+}
+
+:root[data-theme="terminal"] .progress-wrap,
+:root[data-theme="terminal"] .progress-bar,
+:root[data-theme="terminal"] progress {
+  border-radius:0!important;
+}
+
+:root[data-theme="terminal"] .progress-wrap {
+  border:1px solid #3b3b3b!important;
+  background:#050505!important;
+}
+
+:root[data-theme="terminal"] .progress-bar,
+:root[data-theme="terminal"] progress::-webkit-progress-value {
+  background:#ffffff!important;
+}
+
+:root[data-theme="terminal"] input[type="checkbox"] {
+  border-radius:0!important;
+  border-color:#707070!important;
+  accent-color:#ffffff;
+}
+
+:root[data-theme="terminal"] .deck-status-rail {
+  min-height:38px!important;
+  border:1px solid #3b3b3b!important;
+  border-radius:0!important;
+  background:#050505!important;
+  box-shadow:none!important;
+  color:#bdbdbd!important;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+:root[data-theme="terminal"] .status-dot,
+:root[data-theme="terminal"] .status-dot.live {
+  width:6px!important;
+  height:6px!important;
+  border-radius:0!important;
+  background:#ffffff!important;
+  box-shadow:0 0 8px rgba(255,255,255,.75)!important;
+}
+
+:root[data-theme="terminal"] .status-ip,
+:root[data-theme="terminal"] .status-free-space {
+  border-color:#3b3b3b!important;
+  color:#ffffff!important;
+}
+
+:root[data-theme="terminal"] .modal-backdrop {
+  background:rgba(0,0,0,.9)!important;
+  backdrop-filter:none!important;
+}
+
+:root[data-theme="terminal"] .add-modal,
+:root[data-theme="terminal"] .modal-card,
+:root[data-theme="terminal"] .theme-popover,
+:root[data-theme="terminal"] .context-menu,
+:root[data-theme="terminal"] .drawer {
+  border:1px solid #707070!important;
+  border-radius:2px!important;
+  background:#080808!important;
+  box-shadow:8px 8px 0 #222222!important;
+}
+
+:root[data-theme="terminal"] .modal-head,
+:root[data-theme="terminal"] .modal-foot,
+:root[data-theme="terminal"] .add-tabs {
+  border-color:#3b3b3b!important;
+}
+
+:root[data-theme="terminal"] .drop-zone,
+:root[data-theme="terminal"] .link-panel,
+:root[data-theme="terminal"] .add-options {
+  border:1px dashed #707070!important;
+  border-radius:2px!important;
+  background:#050505!important;
+}
+
+:root[data-theme="terminal"] .theme-popover button[aria-pressed="true"] {
+  border-color:#ffffff!important;
+  background:#ffffff!important;
+  color:#000000!important;
+}
+
+:root[data-theme="terminal"] ::selection {
+  background:#ffffff!important;
+  color:#000000!important;
+}
+
+:root[data-theme="terminal"] ::-webkit-scrollbar {
+  width:10px;
+  height:10px;
+}
+
+:root[data-theme="terminal"] ::-webkit-scrollbar-track {
+  background:#000000;
+  border-left:1px solid #222222;
+}
+
+:root[data-theme="terminal"] ::-webkit-scrollbar-thumb {
+  border:2px solid #000000;
+  background:#707070;
+}
+
+:root[data-theme="terminal"] ::-webkit-scrollbar-thumb:hover {
+  background:#ffffff;
+}
 :root[data-theme="christmas"] .theme-swatch.christmas {
   background:linear-gradient(135deg,#2f6b4f,#12452f 55%,#b56a45)!important;
 }
