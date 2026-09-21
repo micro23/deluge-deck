@@ -460,7 +460,7 @@
   text-align:center;
 }
 .table-shell table.auto-sized-table td[data-column="name"] .name-content {
-  justify-content:center;
+  justify-content:flex-start;
 }
 .table-shell table.auto-sized-table td[data-column="progress"] .progress-wrap {
   justify-content:center;
