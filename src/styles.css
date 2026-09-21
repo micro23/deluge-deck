@@ -1929,7 +1929,6 @@ html.deluge-deck-hosted [data-deluge-deck-native-window="true"] select {
   background-attachment:fixed!important;
 }
 .stat-card { overflow:hidden; position:relative; }
-.stat-card::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(115deg,color-mix(in srgb,#ffffff 7%,transparent),transparent 36%); }
 .table-shell { background:color-mix(in srgb,var(--surface) 90%,transparent)!important; backdrop-filter:blur(14px); }
 .search-field { backdrop-filter:blur(14px); }
 
