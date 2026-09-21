@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.24
+
+- Removed the distracting left-edge gradient overlay from dashboard stat cards.
+
 ## 1.0.23
 
 - Centralized release versioning across the UI, server, plugin, and generated egg.
