@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import {
@@ -882,7 +882,6 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
       setBusy('');
     }
   };
-  const incoming = stats.has_incoming_connections;
   const popover =
     open &&
     portalHost &&
@@ -908,21 +907,6 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
               {stats.free_space == null
                 ? 'Checking…'
                 : formatBytes(stats.free_space)}
-            </strong>
-          </div>
-          <div>
-            <span
-              className={`health-orb ${incoming === true ? 'healthy' : incoming === false ? 'blocked' : ''}`}
-            >
-              {incoming === false ? <WifiOff size={17} /> : <Wifi size={17} />}
-            </span>
-            <span>Incoming</span>
-            <strong>
-              {incoming === true
-                ? 'Healthy'
-                : incoming === false
-                  ? 'Blocked'
-                  : 'Checking…'}
             </strong>
           </div>
           <div>
@@ -1078,7 +1062,7 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
         </button>
       </div>
       <button
-        className={`icon-button global-trigger ${incoming === false ? 'attention' : ''}`}
+        className="icon-button global-trigger"
         onClick={() => {
           signalPopover('global');
           setOpen((value) => !value);
@@ -1088,9 +1072,6 @@ function GlobalControls({ stats, onRefresh, onOpenConnections }) {
         title="Global session controls"
       >
         <SlidersHorizontal size={18} />
-        <span
-          className={`health-dot ${incoming === true ? 'healthy' : incoming === false ? 'blocked' : 'unknown'}`}
-        />
       </button>
       {popover}
     </div>
@@ -2163,7 +2144,7 @@ const TABLE_COLUMN_ORDER = [
 // This is intentionally theme-independent. Themes may change the table's
 // colors and surface treatment, but never which information is presented or
 // how comfortably the default table scans across a desktop screen.
-const TABLE_LAYOUT_VERSION = '2026-09-stable-widths';
+const TABLE_LAYOUT_VERSION = '2026-09-content-aware-columns';
 const DEFAULT_COLUMN_VISIBILITY = {
   state: true,
   progress: true,
@@ -2179,42 +2160,69 @@ const DEFAULT_COLUMN_VISIBILITY = {
   tracker: false,
   queue: false,
 };
-const DEFAULT_COLUMN_WIDTHS = {
-  name: 400,
-  state: 112,
-  progress: 156,
-  size: 82,
-  ratio: 72,
-  download: 96,
-  upload: 92,
-  eta: 74,
+// These are only the first-paint fallbacks. Once the table is mounted each
+// metadata column is measured from its real header and cell content. The name
+// column deliberately has no width: fixed table layout gives it every pixel
+// left after the content columns have been satisfied.
+const AUTO_COLUMN_FALLBACKS = {
+  state: 104,
+  progress: 154,
+  size: 78,
+  ratio: 68,
+  download: 104,
+  upload: 96,
+  eta: 68,
   seeds: 88,
   peers: 88,
+  added: 104,
+  seedingTime: 116,
+  tracker: 150,
+  queue: 70,
 };
 const MIN_COLUMN_WIDTHS = {
-  name: 280,
-  state: 92,
-  progress: 132,
-  size: 72,
-  ratio: 64,
-  download: 86,
-  upload: 82,
-  eta: 64,
-  seeds: 78,
-  peers: 78,
+  state: 84,
+  progress: 142,
+  size: 68,
+  ratio: 62,
+  download: 92,
+  upload: 84,
+  eta: 58,
+  seeds: 72,
+  peers: 72,
+  added: 88,
+  seedingTime: 104,
+  tracker: 112,
+  queue: 60,
 };
+const MAX_COLUMN_WIDTHS = {
+  state: 170,
+  progress: 188,
+  size: 116,
+  ratio: 92,
+  download: 142,
+  upload: 142,
+  eta: 118,
+  seeds: 132,
+  peers: 132,
+  added: 142,
+  seedingTime: 158,
+  tracker: 240,
+  queue: 92,
+};
+const TABLE_NAME_MIN_WIDTH = 280;
+const TABLE_FIXED_CHROME_WIDTH = 96;
+const clampColumnWidth = (key, width) =>
+  Math.min(
+    MAX_COLUMN_WIDTHS[key],
+    Math.max(MIN_COLUMN_WIDTHS[key], Math.round(width)),
+  );
 const normalizeColumnWidths = (savedWidths) =>
   Object.fromEntries(
-    Object.entries(DEFAULT_COLUMN_WIDTHS).map(([key, fallback]) => {
+    Object.entries(AUTO_COLUMN_FALLBACKS).flatMap(([key]) => {
       const width = Number(savedWidths?.[key]);
-      return [
-        key,
-        Number.isFinite(width) &&
-        width >= MIN_COLUMN_WIDTHS[key] &&
-        width <= 800
-          ? Math.round(width)
-          : fallback,
-      ];
+      return Number.isFinite(width)
+        ? [[key, clampColumnWidth(key, width)]]
+        : [];
     }),
   );
 const hasCurrentTableLayout = () =>
@@ -2277,14 +2285,18 @@ function TorrentTable({
       return DEFAULT_COLUMN_VISIBILITY;
     }
   });
+  const tableRef = useRef(null);
+  const [autoColumnWidths, setAutoColumnWidths] = useState(
+    AUTO_COLUMN_FALLBACKS,
+  );
   const [columnWidths, setColumnWidths] = useState(() => {
-    if (!hasCurrentTableLayout()) return DEFAULT_COLUMN_WIDTHS;
+    if (!hasCurrentTableLayout()) return {};
     try {
       return normalizeColumnWidths(
         JSON.parse(localStorage.getItem('deck-column-widths') || '{}'),
       );
     } catch {
-      return DEFAULT_COLUMN_WIDTHS;
+      return {};
     }
   });
   const [columnOrder, setColumnOrder] = useState(() => {
@@ -2327,30 +2339,36 @@ function TorrentTable({
       window.removeEventListener('deluge-deck:close-popovers', close);
   }, []);
   useEffect(() => {
-    const saveManualResize = () => {
+    const updateManualResize = (event) => {
       const resize = columnResizeStart.current;
-      columnResizeStart.current = null;
       if (!resize) return;
-      const width = Math.round(resize.element.getBoundingClientRect().width);
-      if (
-        width < MIN_COLUMN_WIDTHS[resize.key] ||
-        Math.abs(width - resize.startWidth) < 3
-      )
-        return;
+      const width = clampColumnWidth(
+        resize.key,
+        resize.startWidth + event.clientX - resize.startX,
+      );
       setColumnWidths((current) =>
         current[resize.key] === width
           ? current
           : { ...current, [resize.key]: width },
       );
     };
+    const finishManualResize = () => {
+      if (!columnResizeStart.current) return;
+      columnResizeStart.current = null;
+      document.body.classList.remove('resizing-table-column');
+    };
     const cancelManualResize = () => {
       columnResizeStart.current = null;
+      document.body.classList.remove('resizing-table-column');
     };
-    window.addEventListener('pointerup', saveManualResize);
+    window.addEventListener('pointermove', updateManualResize);
+    window.addEventListener('pointerup', finishManualResize);
     window.addEventListener('pointercancel', cancelManualResize);
     return () => {
-      window.removeEventListener('pointerup', saveManualResize);
+      window.removeEventListener('pointermove', updateManualResize);
+      window.removeEventListener('pointerup', finishManualResize);
       window.removeEventListener('pointercancel', cancelManualResize);
+      document.body.classList.remove('resizing-table-column');
     };
   }, []);
   const toggleSort = (key) =>
@@ -2390,6 +2408,68 @@ function TorrentTable({
       }),
     [torrents, sort],
   );
+  const resolvedColumnWidths = useMemo(
+    () => ({ ...autoColumnWidths, ...columnWidths }),
+    [autoColumnWidths, columnWidths],
+  );
+  const tableMinimumWidth = useMemo(
+    () =>
+      TABLE_FIXED_CHROME_WIDTH +
+      TABLE_NAME_MIN_WIDTH +
+      visibleColumns
+        .filter((key) => key !== 'name')
+        .reduce((total, key) => total + resolvedColumnWidths[key], 0),
+    [resolvedColumnWidths, visibleColumns],
+  );
+
+  // Measure an unconstrained clone so auto widths can both grow and shrink as
+  // data changes. Measuring the live fixed-layout table would only ever report
+  // its already assigned width and would slowly ratchet columns larger.
+  useLayoutEffect(() => {
+    const table = tableRef.current;
+    if (!table || loading) return undefined;
+    let cancelled = false;
+    let frame = 0;
+    const measure = () => {
+      if (cancelled || !table.isConnected) return;
+      const clone = table.cloneNode(true);
+      clone.removeAttribute('style');
+      clone.classList.add('column-measure-table');
+      clone.querySelectorAll('th[data-column]').forEach((header) => {
+        header.style.width = 'auto';
+      });
+      table.parentElement.appendChild(clone);
+      const measured = {};
+      visibleColumns.forEach((key) => {
+        if (key === 'name') return;
+        const header = clone.querySelector(`th[data-column="${key}"]`);
+        if (header) {
+          measured[key] = clampColumnWidth(
+            key,
+            Math.ceil(header.getBoundingClientRect().width) + 2,
+          );
+        }
+      });
+      clone.remove();
+      setAutoColumnWidths((current) => {
+        const changed = Object.entries(measured).some(
+          ([key, width]) => current[key] !== width,
+        );
+        return changed ? { ...current, ...measured } : current;
+      });
+    };
+    frame = requestAnimationFrame(measure);
+    document.fonts?.ready.then(() => {
+      if (!cancelled) {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(measure);
+      }
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+    };
+  }, [loading, sortedTorrents, visibleColumns]);
   const sortLabel =
     (Object.entries(TABLE_SORT_KEYS).find(
       ([, sortKey]) => sortKey === sort.key,
@@ -2525,7 +2605,11 @@ function TorrentTable({
           />
         )}
       </div>
-      <table>
+      <table
+        ref={tableRef}
+        className="auto-sized-table"
+        style={{ minWidth: `${tableMinimumWidth}px` }}
+      >
         <thead>
           <tr>
             <th className="check-cell">
@@ -2546,20 +2630,14 @@ function TorrentTable({
               <th
                 key={key}
                 aria-sort={sortValue(TABLE_SORT_KEYS[key])}
-                className={`resizable-th ${draggingColumn === key ? 'column-dragging' : ''}`}
+                className={`${key === 'name' ? 'flexible-th' : 'resizable-th'} ${draggingColumn === key ? 'column-dragging' : ''}`}
                 data-column={key}
-                style={{ width: `${columnWidths[key]}px` }}
+                style={
+                  key === 'name'
+                    ? undefined
+                    : { width: `${resolvedColumnWidths[key]}px` }
+                }
                 draggable={key !== 'name'}
-                onPointerDown={(event) => {
-                  if (event.button !== 0) return;
-                  columnResizeStart.current = {
-                    key,
-                    element: event.currentTarget,
-                    startWidth: Math.round(
-                      event.currentTarget.getBoundingClientRect().width,
-                    ),
-                  };
-                }}
                 onDragStart={(event) => {
                   if (key === 'name') return;
                   event.dataTransfer.effectAllowed = 'move';
@@ -2595,6 +2673,61 @@ function TorrentTable({
                         ? 'Torrent'
                         : TABLE_COLUMN_LABELS[key]}
                 </button>
+                {key !== 'name' && (
+                  <span
+                    className="column-resize-handle"
+                    role="separator"
+                    aria-orientation="vertical"
+                    aria-label={`Resize ${TABLE_COLUMN_LABELS[key]} column`}
+                    aria-valuemin={MIN_COLUMN_WIDTHS[key]}
+                    aria-valuemax={MAX_COLUMN_WIDTHS[key]}
+                    aria-valuenow={resolvedColumnWidths[key]}
+                    tabIndex="0"
+                    title="Drag to resize · Double-click to auto-size"
+                    onPointerDown={(event) => {
+                      if (event.button !== 0) return;
+                      event.preventDefault();
+                      event.stopPropagation();
+                      columnResizeStart.current = {
+                        key,
+                        startX: event.clientX,
+                        startWidth: resolvedColumnWidths[key],
+                      };
+                      document.body.classList.add('resizing-table-column');
+                    }}
+                    onDoubleClick={(event) => {
+                      event.stopPropagation();
+                      setColumnWidths((current) => {
+                        const next = { ...current };
+                        delete next[key];
+                        return next;
+                      });
+                    }}
+                    onKeyDown={(event) => {
+                      if (!['ArrowLeft', 'ArrowRight', 'Home'].includes(event.key))
+                        return;
+                      event.preventDefault();
+                      event.stopPropagation();
+                      if (event.key === 'Home') {
+                        setColumnWidths((current) => {
+                          const next = { ...current };
+                          delete next[key];
+                          return next;
+                        });
+                        return;
+                      }
+                      const delta = (event.shiftKey ? 24 : 8) *
+                        (event.key === 'ArrowRight' ? 1 : -1);
+                      setColumnWidths((current) => ({
+                        ...current,
+                        [key]: clampColumnWidth(
+                          key,
+                          (current[key] ?? autoColumnWidths[key]) + delta,
+                        ),
+                      }));
+                    }}
+                  />
+                )}
               </th>
             ))}
             <th />
@@ -4577,6 +4710,9 @@ function AddTorrentModal({
   const [selectedPayloadFiles, setSelectedPayloadFiles] = useState(() =>
     Object.fromEntries(initialFiles.map((file) => [file.name, new Set()])),
   );
+  const [activeTorrentName, setActiveTorrentName] = useState(
+    () => initialFiles[0]?.name || '',
+  );
   const [allocation, setAllocation] = useState('full');
   const [freeSpace, setFreeSpace] = useState(null);
   const [magnet, setMagnet] = useState('');
@@ -4640,9 +4776,32 @@ function AddTorrentModal({
       ...current,
       ...Object.fromEntries(next.map((file) => [file.name, 4])),
     }));
+    setActiveTorrentName((current) => current || next[0]?.name || '');
     inspectTorrentFiles(next);
     setDragging(false);
   };
+  const activeTorrent =
+    files.find((file) => file.name === activeTorrentName) || files[0] || null;
+  const activePayload = activeTorrent
+    ? torrentPayloads[activeTorrent.name]
+    : null;
+  const activePayloadSelection = activeTorrent
+    ? selectedPayloadFiles[activeTorrent.name] || new Set()
+    : new Set();
+  const activeSelectedBytes = (activePayload?.files || [])
+    .filter((entry) => activePayloadSelection.has(entry.index))
+    .reduce((total, entry) => total + Number(entry.size || 0), 0);
+  const selectedTorrentCount = files.filter((file) =>
+    selectedAddFiles.has(file.name),
+  ).length;
+  const selectedPayloadCount = files.reduce(
+    (total, file) =>
+      total +
+      (selectedAddFiles.has(file.name)
+        ? selectedPayloadFiles[file.name]?.size || 0
+        : 0),
+    0,
+  );
   const duplicateNames = files
     .filter((file) =>
       existingNames.some(
@@ -4838,7 +4997,7 @@ function AddTorrentModal({
         </div>
         {tab === 'files' && (
           <div
-            className={`drop-zone ${dragging ? 'dragging' : ''}`}
+            className={`drop-zone add-files-panel ${dragging ? 'dragging' : ''}`}
             onDragOver={(event) => {
               event.preventDefault();
               setDragging(true);
@@ -4848,7 +5007,6 @@ function AddTorrentModal({
               event.preventDefault();
               addFiles(event.dataTransfer.files);
             }}
-            onClick={() => input.current?.click()}
           >
             <input
               ref={input}
@@ -4858,118 +5016,224 @@ function AddTorrentModal({
               hidden
               onChange={(event) => addFiles(event.target.files)}
             />
-            <div className="drop-icon">
-              <UploadCloud size={25} />
-            </div>
-            <strong>Drop .torrent files here</strong>
-            <span>
-              They will be reviewed before anything is sent to Deluge.
-            </span>
-            {files.length > 0 && (
-              <div className="file-chips">
-                {files.map((file, index) => (
-                  <span key={`${file.name}-${index}`} className="add-file-chip">
-                    <input
-                      type="checkbox"
-                      checked={selectedAddFiles.has(file.name)}
-                      onClick={(event) => event.stopPropagation()}
-                      onChange={() =>
-                        setSelectedAddFiles((current) => {
-                          const next = new Set(current);
-                          if (next.has(file.name)) next.delete(file.name);
-                          else next.add(file.name);
-                          return next;
-                        })
-                      }
-                      aria-label={`Select ${file.name} for adding`}
-                    />
-                    <FileArchive size={13} />
-                    {file.name}
-                    <select
-                      className="add-file-priority"
-                      value={Number(addFilePriorities[file.name] ?? 4)}
-                      onChange={(event) =>
-                        setAddFilePriorities((current) => ({
-                          ...current,
-                          [file.name]: Number(event.target.value),
-                        }))
-                      }
-                      onClick={(event) => event.stopPropagation()}
-                      aria-label={`Priority for ${file.name}`}
-                    >
-                      <option value="0">Skip</option>
-                      <option value="1">Low</option>
-                      <option value="4">Normal</option>
-                      <option value="7">High</option>
-                    </select>
-                    <button
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setFiles((current) =>
-                          current.filter((_, item) => item !== index),
-                        );
-                        setSelectedAddFiles((current) => {
-                          const next = new Set(current);
-                          next.delete(file.name);
-                          return next;
-                        });
-                      }}
-                      aria-label={`Remove ${file.name}`}
-                    >
-                      <X size={12} />
-                    </button>
-                  </span>
-                ))}
+            <div className="add-review-toolbar">
+              <div className="drop-icon">
+                <UploadCloud size={20} />
               </div>
-            )}
-            {files.length > 0 && (
-              <div
-                className="torrent-payload-review"
-                onClick={(event) => event.stopPropagation()}
-                aria-label="Files to download"
+              <div className="add-review-intro">
+                <strong>
+                  {files.length ? 'Add more torrents' : 'Choose torrent files'}
+                </strong>
+                <span>Drop .torrent files anywhere in this panel</span>
+              </div>
+              {files.length > 0 && (
+                <span className="add-review-summary">
+                  {selectedTorrentCount} of {files.length} torrents · {selectedPayloadCount} files selected
+                </span>
+              )}
+              <button
+                type="button"
+                className="secondary-button choose-torrent-button"
+                onClick={() => input.current?.click()}
               >
-                <div className="payload-review-heading">
-                  <strong>Files to download</strong>
-                  <span>Uncheck anything you do not want from each torrent.</span>
-                </div>
-                {files.map((file) => {
-                  const payload = torrentPayloads[file.name];
-                  const selected = selectedPayloadFiles[file.name] || new Set();
-                  return (
-                    <div className="torrent-payload-group" key={`payload-${file.name}`}>
-                      <strong>{file.name}</strong>
-                      {payload?.status === 'loading' && <span>Reading torrent contents…</span>}
-                      {payload?.status === 'error' && (
-                        <span className="payload-error">{payload.error}</span>
-                      )}
-                      {payload?.files.map((entry) => (
-                        <label className="payload-file-row" key={`${file.name}-${entry.index}`}>
+                <Plus size={15} /> Browse
+              </button>
+            </div>
+
+            {files.length === 0 ? (
+              <button
+                type="button"
+                className="empty-torrent-drop"
+                onClick={() => input.current?.click()}
+              >
+                <FileArchive size={28} />
+                <strong>Drop .torrent files here</strong>
+                <span>You can review every file before anything is added.</span>
+              </button>
+            ) : (
+              <div className="add-review-grid">
+                <aside className="torrent-review-queue" aria-label="Torrents to add">
+                  <div className="review-pane-heading">
+                    <div>
+                      <span>TORRENTS</span>
+                      <strong>{files.length} queued</strong>
+                    </div>
+                    <div className="review-bulk-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSelectedAddFiles(new Set(files.map((file) => file.name)))
+                        }
+                      >
+                        All
+                      </button>
+                      <button type="button" onClick={() => setSelectedAddFiles(new Set())}>
+                        None
+                      </button>
+                    </div>
+                  </div>
+                  <div className="torrent-review-list">
+                    {files.map((file, index) => {
+                      const payload = torrentPayloads[file.name];
+                      const selectedCount = selectedPayloadFiles[file.name]?.size || 0;
+                      const isActive = activeTorrent?.name === file.name;
+                      return (
+                        <div
+                          key={`${file.name}-${index}`}
+                          className={`torrent-review-card ${isActive ? 'active' : ''} ${selectedAddFiles.has(file.name) ? '' : 'excluded'}`}
+                          onClick={() => setActiveTorrentName(file.name)}
+                        >
                           <input
                             type="checkbox"
-                            checked={selected.has(entry.index)}
+                            checked={selectedAddFiles.has(file.name)}
+                            onClick={(event) => event.stopPropagation()}
                             onChange={() =>
-                              setSelectedPayloadFiles((current) => {
-                                const next = new Set(current[file.name] || []);
-                                if (next.has(entry.index)) next.delete(entry.index);
-                                else next.add(entry.index);
-                                return { ...current, [file.name]: next };
+                              setSelectedAddFiles((current) => {
+                                const next = new Set(current);
+                                if (next.has(file.name)) next.delete(file.name);
+                                else next.add(file.name);
+                                return next;
                               })
                             }
-                            aria-label={`Download ${entry.path}`}
+                            aria-label={`Select ${file.name} for adding`}
                           />
-                          <span>{entry.path}</span>
-                          <small>{formatBytes(entry.size)}</small>
-                        </label>
-                      ))}
+                          <button
+                            type="button"
+                            className="torrent-review-name"
+                            title={file.name}
+                            onClick={() => setActiveTorrentName(file.name)}
+                          >
+                            <FileArchive size={14} />
+                            <span>
+                              <strong>{file.name}</strong>
+                              <small>
+                                {payload?.status === 'loading'
+                                  ? 'Reading contents…'
+                                  : payload?.status === 'error'
+                                    ? 'Could not read'
+                                    : `${selectedCount} of ${payload?.files.length || 0} files`}
+                              </small>
+                            </span>
+                          </button>
+                          <select
+                            className="add-file-priority"
+                            value={Number(addFilePriorities[file.name] ?? 4)}
+                            onChange={(event) =>
+                              setAddFilePriorities((current) => ({
+                                ...current,
+                                [file.name]: Number(event.target.value),
+                              }))
+                            }
+                            onClick={(event) => event.stopPropagation()}
+                            aria-label={`Priority for ${file.name}`}
+                          >
+                            <option value="0">Skip</option>
+                            <option value="1">Low</option>
+                            <option value="4">Normal</option>
+                            <option value="7">High</option>
+                          </select>
+                          <button
+                            type="button"
+                            className="remove-review-torrent"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              const remaining = files.filter((_, item) => item !== index);
+                              setFiles(remaining);
+                              setSelectedAddFiles((current) => {
+                                const next = new Set(current);
+                                next.delete(file.name);
+                                return next;
+                              });
+                              if (activeTorrent?.name === file.name)
+                                setActiveTorrentName(remaining[0]?.name || '');
+                            }}
+                            aria-label={`Remove ${file.name}`}
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {duplicateNames.length > 0 && (
+                    <div className="duplicate-warning" role="alert">
+                      <AlertTriangle size={14} />
+                      <span>Duplicate torrent name{duplicateNames.length === 1 ? '' : 's'}: {duplicateNames.length}</span>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-            {duplicateNames.length > 0 && (
-              <div className="duplicate-warning" role="alert">
-                <AlertTriangle size={14} />
-                Duplicate torrent name: {duplicateNames.join(', ')}
+                  )}
+                </aside>
+
+                <section className="torrent-payload-review" aria-label="Files to download">
+                  <div className="review-pane-heading payload-review-heading">
+                    <div>
+                      <span>FILES TO DOWNLOAD</span>
+                      <strong title={activeTorrent?.name}>{activeTorrent?.name}</strong>
+                      <small>
+                        {activePayload?.status === 'ready'
+                          ? `${activePayloadSelection.size} of ${activePayload.files.length} selected · ${formatBytes(activeSelectedBytes)}`
+                          : 'Reviewing torrent metadata'}
+                      </small>
+                    </div>
+                    {activePayload?.status === 'ready' && (
+                      <div className="review-bulk-actions">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedPayloadFiles((current) => ({
+                              ...current,
+                              [activeTorrent.name]: new Set(
+                                activePayload.files.map((entry) => entry.index),
+                              ),
+                            }))
+                          }
+                        >
+                          Select all
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedPayloadFiles((current) => ({
+                              ...current,
+                              [activeTorrent.name]: new Set(),
+                            }))
+                          }
+                        >
+                          Select none
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="payload-file-list">
+                    {activePayload?.status === 'loading' && (
+                      <div className="payload-state"><RefreshCw className="spin" size={18} /> Reading torrent contents…</div>
+                    )}
+                    {activePayload?.status === 'error' && (
+                      <div className="payload-state payload-error">
+                        <AlertTriangle size={18} /> {activePayload.error}
+                      </div>
+                    )}
+                    {activePayload?.files.map((entry) => (
+                      <label className="payload-file-row" key={`${activeTorrent.name}-${entry.index}`}>
+                        <input
+                          type="checkbox"
+                          checked={activePayloadSelection.has(entry.index)}
+                          onChange={() =>
+                            setSelectedPayloadFiles((current) => {
+                              const next = new Set(current[activeTorrent.name] || []);
+                              if (next.has(entry.index)) next.delete(entry.index);
+                              else next.add(entry.index);
+                              return { ...current, [activeTorrent.name]: next };
+                            })
+                          }
+                          aria-label={`Download ${entry.path}`}
+                        />
+                        <FileArchive size={14} />
+                        <span title={entry.path}>{entry.path}</span>
+                        <small>{formatBytes(entry.size)}</small>
+                      </label>
+                    ))}
+                  </div>
+                </section>
               </div>
             )}
           </div>
@@ -5580,6 +5844,18 @@ function App() {
           />
           <footer className="deck-status-rail" aria-label="Session status">
             <span><i className={refreshError ? 'status-dot' : 'status-dot live'} />{refreshError ? 'Connection interrupted' : 'Live sync'}</span>
+            <span
+              className="status-free-space"
+              title="Available free space on the Deluge server"
+            >
+              <HardDrive size={13} />
+              <span>Free</span>
+              <strong>
+                {stats.free_space == null
+                  ? 'Checking…'
+                  : formatBytes(stats.free_space)}
+              </strong>
+            </span>
             {Number(stats.dht_nodes) > 0 && <span><Network size={13} />{stats.dht_nodes} DHT nodes</span>}
             <span className="status-rail-spacer" />
             <span><ArrowDown size={13} />{rate(stats.download_rate)}</span>

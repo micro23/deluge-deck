@@ -63,6 +63,16 @@
 .deck-status-rail { display:flex; align-items:center; gap:18px; min-height:46px; margin-top:12px; padding:0 14px; border:1px solid var(--line); border-radius:12px; color:var(--muted); background:color-mix(in srgb,var(--surface) 88%,transparent); box-shadow:0 10px 30px color-mix(in srgb,var(--bg) 28%,transparent); font:500 10px/1 'DM Mono',monospace; }
 .deck-status-rail>span { display:flex; align-items:center; gap:7px; white-space:nowrap; }
 .deck-status-rail svg { color:var(--cyan); }
+.deck-status-rail .status-free-space {
+  gap:6px;
+  padding:7px 10px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--muted-2);
+  background:var(--surface-2);
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
+}
+.status-free-space strong { color:var(--text); font-weight:700; }
 .status-rail-spacer { flex:1; }
 .status-ip { padding:7px 9px; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); color:var(--text); }
 @media(max-width:760px) {
@@ -119,6 +129,103 @@
 }
 .table-shell thead th:last-child { width:52px; min-width:52px; padding-right:52px; }
 
+/* Content-aware column sizing. Metadata columns are measured from the widest
+   rendered value and bounded in JS; Torrent is the sole flexible column and
+   receives every remaining pixel. The calculated table minimum only creates
+   horizontal overflow when the viewport truly cannot hold readable columns. */
+.table-shell table.auto-sized-table {
+  width:100%;
+  table-layout:fixed;
+}
+.table-shell table.auto-sized-table .flexible-th,
+.table-shell table.auto-sized-table .name-cell {
+  width:auto;
+  min-width:0;
+  max-width:none;
+}
+.table-shell table.auto-sized-table .name-content,
+.table-shell table.auto-sized-table .torrent-name {
+  min-width:0;
+  max-width:none;
+}
+.table-shell table.auto-sized-table .torrent-name strong {
+  max-width:none;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.table-shell table.auto-sized-table .resizable-th {
+  position:relative;
+  overflow:visible;
+  resize:none;
+}
+.column-resize-handle {
+  position:absolute;
+  z-index:3;
+  top:5px;
+  right:-6px;
+  bottom:5px;
+  width:12px;
+  cursor:col-resize;
+  touch-action:none;
+}
+.column-resize-handle::after {
+  content:"";
+  position:absolute;
+  top:7px;
+  right:5px;
+  bottom:7px;
+  width:1px;
+  border-radius:999px;
+  background:transparent;
+  transition:background .14s ease,box-shadow .14s ease;
+}
+.column-resize-handle:hover::after,
+.column-resize-handle:focus-visible::after,
+body.resizing-table-column .column-resize-handle::after {
+  background:var(--cyan);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--cyan) 16%,transparent);
+}
+.column-resize-handle:focus-visible {
+  outline:2px solid var(--cyan);
+  outline-offset:-3px;
+}
+body.resizing-table-column,
+body.resizing-table-column * { cursor:col-resize!important; user-select:none!important; }
+
+/* The clone is laid out intrinsically so widths can shrink as well as grow.
+   It is never exposed visually or to assistive technology. */
+.table-shell table.column-measure-table {
+  position:absolute!important;
+  z-index:-1!important;
+  top:0!important;
+  left:0!important;
+  width:max-content!important;
+  min-width:0!important;
+  table-layout:auto!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  contain:layout style!important;
+}
+.table-shell table.column-measure-table th[data-column] {
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+}
+
+@media (max-width:760px) {
+  .table-shell table.auto-sized-table {
+    width:100%!important;
+    table-layout:fixed!important;
+  }
+  .table-shell table.auto-sized-table .flexible-th,
+  .table-shell table.auto-sized-table .name-cell {
+    min-width:0!important;
+    max-width:none!important;
+  }
+  .column-resize-handle { width:18px; right:-9px; }
+}
+
 /* v1.0.11: never let Deluge's stock ExtJS windows flash over Deck during a cold boot. */
 html.deluge-deck-loading body .x-window,
 html.deluge-deck-loading body [class*="x-window" i],
@@ -135,4 +242,259 @@ html.deluge-deck-loading body .ext-el-mask {
   .stats-grid .stat-card { min-height:132px; padding:14px 12px; }
   .list-heading { margin-bottom:5px; }
   .mobile-library-filters { margin-bottom:4px; }
+}
+
+/* Large add-torrent reviews live inside the viewport. The queue and payload
+   panes scroll independently while destination controls and confirmation stay
+   pinned in view. */
+.add-modal {
+  width:min(980px,calc(100vw - 32px));
+  max-height:min(900px,calc(100dvh - 32px));
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.add-modal>.modal-head,
+.add-modal>.add-tabs,
+.add-modal>.add-options,
+.add-modal>.modal-foot { flex:none; }
+.add-modal>.modal-head { padding:18px 22px 14px; }
+.add-modal>.add-tabs { padding:0 18px; }
+.add-modal>.add-options {
+  margin:0 22px 12px;
+  padding:12px 0;
+  gap:10px 18px;
+}
+.add-modal>.modal-foot { padding:0 22px 18px; }
+.add-files-panel {
+  min-height:0;
+  flex:1 1 560px;
+  margin:14px 22px 12px;
+  padding:0;
+  display:flex;
+  align-items:stretch;
+  justify-content:flex-start;
+  overflow:hidden;
+  cursor:default;
+  text-align:left;
+  border-style:solid;
+  background:color-mix(in srgb,var(--surface-2) 55%,transparent);
+}
+.add-files-panel:hover { background:color-mix(in srgb,var(--surface-2) 55%,transparent); }
+.add-files-panel.dragging {
+  border-color:var(--cyan);
+  box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--cyan) 18%,transparent);
+  background:var(--cyan-soft);
+}
+.add-review-toolbar {
+  min-height:64px;
+  flex:none;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:9px 12px;
+  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface) 72%,transparent);
+}
+.add-review-toolbar .drop-icon {
+  width:36px;
+  height:36px;
+  flex:none;
+  margin:0;
+  border-radius:9px;
+}
+.add-review-intro { display:flex; min-width:0; flex-direction:column; gap:3px; }
+.add-review-intro strong { font-size:11px; }
+.add-review-intro span { color:var(--muted-2); font-size:9px; }
+.add-review-summary {
+  margin-left:auto;
+  color:var(--muted-2)!important;
+  font:9px/1.3 'DM Mono',monospace;
+  white-space:nowrap;
+}
+.choose-torrent-button { min-height:34px; padding:0 11px; flex:none; }
+.empty-torrent-drop {
+  min-height:260px;
+  flex:1;
+  margin:18px;
+  display:grid;
+  place-content:center;
+  justify-items:center;
+  gap:8px;
+  border:1px dashed var(--line-strong);
+  border-radius:10px;
+  color:var(--cyan);
+  background:transparent;
+}
+.empty-torrent-drop strong { color:var(--text); font-size:13px; }
+.empty-torrent-drop span { color:var(--muted-2); font-size:10px; }
+.empty-torrent-drop:hover { border-color:var(--cyan); background:var(--cyan-soft); }
+.add-review-grid {
+  min-height:0;
+  flex:1;
+  display:grid;
+  grid-template-columns:minmax(240px,31%) minmax(0,1fr);
+}
+.torrent-review-queue,
+.torrent-payload-review {
+  min-width:0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.torrent-review-queue { border-right:1px solid var(--line); }
+.review-pane-heading {
+  min-height:65px;
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface-2) 70%,transparent);
+}
+.review-pane-heading>div:first-child { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.review-pane-heading>div:first-child>span {
+  color:var(--muted-2);
+  font:700 8px/1 'DM Mono',monospace;
+  letter-spacing:.12em;
+}
+.review-pane-heading>div:first-child>strong {
+  min-width:0;
+  overflow:hidden;
+  color:var(--text);
+  font:600 11px/1.35 'DM Mono',monospace;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.review-pane-heading>div:first-child>small { color:var(--muted-2); font:9px/1.2 'DM Mono',monospace; }
+.review-bulk-actions { display:flex; flex:none; gap:4px; }
+.review-bulk-actions button {
+  min-height:28px;
+  padding:0 8px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  color:var(--muted);
+  background:var(--surface);
+  font:600 9px/1 'DM Mono',monospace;
+}
+.review-bulk-actions button:hover { color:var(--cyan); border-color:var(--cyan); }
+.torrent-review-list,
+.payload-file-list {
+  min-height:0;
+  flex:1;
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:var(--line-strong) transparent;
+}
+.torrent-review-list { padding:6px; }
+.torrent-review-card {
+  min-width:0;
+  display:grid;
+  grid-template-columns:16px minmax(0,1fr) auto 26px;
+  align-items:center;
+  gap:7px;
+  padding:8px 6px;
+  border:1px solid transparent;
+  border-radius:8px;
+  cursor:pointer;
+}
+.torrent-review-card:hover { background:var(--surface-2); }
+.torrent-review-card.active { border-color:var(--cyan); background:var(--cyan-soft); }
+.torrent-review-card.excluded { opacity:.52; }
+.torrent-review-card>input { margin:0; accent-color:var(--cyan); }
+.torrent-review-name {
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:0;
+  border:0;
+  color:var(--text);
+  background:transparent;
+  text-align:left;
+}
+.torrent-review-name>svg { flex:none; color:var(--cyan); }
+.torrent-review-name>span { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.torrent-review-name strong { overflow:hidden; font:600 9px/1.3 'DM Mono',monospace; text-overflow:ellipsis; white-space:nowrap; }
+.torrent-review-name small { color:var(--muted-2); font:8px/1.2 'DM Mono',monospace; }
+.torrent-review-card .add-file-priority {
+  width:65px;
+  height:27px;
+  padding:0 4px;
+  border:1px solid var(--line);
+  border-radius:5px;
+  color:var(--muted);
+  background:var(--surface);
+  font:8px 'DM Mono',monospace;
+}
+.remove-review-torrent {
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  border-radius:6px;
+  color:var(--muted-2);
+  background:transparent;
+}
+.remove-review-torrent:hover { color:var(--danger); background:color-mix(in srgb,var(--danger) 10%,transparent); }
+.torrent-review-queue>.duplicate-warning { margin:6px; flex:none; }
+.payload-file-list { padding:7px; }
+.payload-file-list .payload-file-row {
+  min-height:36px;
+  display:grid;
+  grid-template-columns:16px 15px minmax(0,1fr) auto;
+  gap:8px;
+  margin-bottom:3px;
+  padding:6px 8px;
+}
+.payload-file-list .payload-file-row>svg { color:var(--muted-2); }
+.payload-file-list .payload-file-row span {
+  overflow:hidden;
+  overflow-wrap:normal;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.payload-file-list .payload-file-row small { padding-left:12px; }
+.payload-state {
+  min-height:180px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  color:var(--muted);
+  font:10px 'DM Mono',monospace;
+}
+
+@media(max-width:760px) {
+  .add-modal { width:100%; max-height:calc(100dvh - 20px); }
+  .add-modal>.modal-head { padding:14px 16px 10px; }
+  .add-modal>.add-tabs { padding:0 10px; }
+  .add-files-panel { flex-basis:520px; margin:10px 10px 8px; }
+  .add-review-toolbar { min-height:58px; }
+  .add-review-summary { display:none; }
+  .add-review-intro span { display:none; }
+  .add-review-grid { grid-template-columns:minmax(118px,36%) minmax(0,1fr); }
+  .review-pane-heading { min-height:59px; padding:8px; align-items:flex-start; }
+  .review-bulk-actions { flex-direction:column; }
+  .review-bulk-actions button { min-height:25px; }
+  .torrent-review-card { grid-template-columns:16px minmax(0,1fr) 26px; gap:5px; }
+  .torrent-review-card .add-file-priority { grid-column:2; justify-self:start; }
+  .torrent-review-card .remove-review-torrent { grid-column:3; grid-row:1; }
+  .torrent-review-name>svg { display:none; }
+  .payload-file-list .payload-file-row { grid-template-columns:16px minmax(0,1fr) auto; }
+  .payload-file-list .payload-file-row>svg { display:none; }
+  .payload-file-list .payload-file-row span { white-space:normal; overflow-wrap:anywhere; }
+  .payload-file-list .payload-file-row small { padding-left:3px; }
+  .add-modal>.add-options { margin:0 12px 8px; }
+  .add-modal>.modal-foot { padding:0 12px 12px; }
 }

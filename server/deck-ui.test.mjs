@@ -463,7 +463,6 @@ test('top bar exposes complete global daemon operations and account controls', a
   assert.match(ui, /max_upload_speed/);
   assert.match(ui, /max_connections_global/);
   assert.match(ui, /stats\.free_space/);
-  assert.match(ui, /stats\.has_incoming_connections/);
   assert.match(ui, /stats\.max_num_connections/);
   assert.match(ui, /function ConnectionManagerModal/);
   assert.match(ui, /web\.get_hosts/);
@@ -686,6 +685,18 @@ test('add torrent review supports per-file priorities', async () => {
   assert.match(css, /\.add-file-priority/);
 });
 
+test('add torrent review keeps large torrent and payload lists independently scrollable', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8')]);
+  assert.match(ui, /className="add-review-grid"/);
+  assert.match(ui, /className="torrent-review-list"/);
+  assert.match(ui, /className="payload-file-list"/);
+  assert.match(ui, /Select all/);
+  assert.match(ui, /Select none/);
+  assert.match(css, /\.add-files-panel\s*\{[\s\S]*min-height:0/);
+  assert.match(css, /\.torrent-review-list,[\s\S]*\.payload-file-list\s*\{[\s\S]*overflow:auto/);
+  assert.match(css, /\.add-modal\s*\{[\s\S]*max-height:min\(900px,calc\(100dvh - 32px\)\)/);
+});
+
 test('add torrent review supports full and compact storage allocation', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /const \[allocation, setAllocation\] = useState\('full'\)/);
@@ -733,11 +744,13 @@ test('torrent table supports sortable columns', async () => {
 });
 
 test('torrent table headers support horizontal resizing', async () => {
-  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
-  assert.match(ui, /className="resizable-th"/);
-  assert.match(ui, /data-column="name"/);
-  assert.match(css, /\.resizable-th \{ resize:horizontal/);
-  assert.match(css, /min-width:72px/);
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8')]);
+  assert.match(ui, /className="column-resize-handle"/);
+  assert.match(ui, /role="separator"/);
+  assert.match(ui, /aria-valuemin=\{MIN_COLUMN_WIDTHS\[key\]\}/);
+  assert.match(ui, /\['ArrowLeft', 'ArrowRight', 'Home'\]/);
+  assert.match(css, /\.column-resize-handle \{/);
+  assert.match(css, /cursor:col-resize/);
 });
 
 test('torrent table persists resized column widths', async () => {
@@ -745,8 +758,9 @@ test('torrent table persists resized column widths', async () => {
   assert.match(ui, /localStorage\.getItem\('deck-column-widths'/);
   assert.match(ui, /localStorage\.setItem\('deck-column-widths', JSON\.stringify\(columnWidths\)\)/);
   assert.match(ui, /const normalizeColumnWidths = \(savedWidths\)/);
-  assert.match(ui, /window\.addEventListener\('pointerup', saveManualResize\)/);
-  assert.match(ui, /style=\{\{ width: `\$\{columnWidths\[key\]\}px` \}\}/);
+  assert.match(ui, /window\.addEventListener\('pointermove', updateManualResize\)/);
+  assert.match(ui, /window\.addEventListener\('pointerup', finishManualResize\)/);
+  assert.match(ui, /width: `\$\{resolvedColumnWidths\[key\]\}px`/);
   assert.doesNotMatch(ui.slice(ui.indexOf('function TorrentTable')), /new ResizeObserver/);
 });
 
@@ -772,15 +786,19 @@ test('torrent table persists column visibility preferences', async () => {
   assert.match(ui, /localStorage\.setItem\(\s*'deck-column-visibility',\s*JSON\.stringify\(columnVisibility\),?\s*\)/);
 });
 
-test('torrent table uses one compact default layout across themes', async () => {
-  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
-  assert.match(ui, /const TABLE_LAYOUT_VERSION = '2026-09-stable-widths'/);
+test('torrent table gives the title remaining space after content-sized columns', async () => {
+  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8')]);
+  assert.match(ui, /const TABLE_LAYOUT_VERSION = '2026-09-content-aware-columns'/);
   assert.match(ui, /const DEFAULT_COLUMN_VISIBILITY = \{[\s\S]*added: false,[\s\S]*tracker: false,[\s\S]*queue: false/);
-  assert.match(ui, /const DEFAULT_COLUMN_WIDTHS = \{[\s\S]*name: 400,[\s\S]*progress: 156/);
+  assert.match(ui, /const AUTO_COLUMN_FALLBACKS = \{[\s\S]*progress: 154/);
+  assert.match(ui, /classList\.add\('column-measure-table'\)/);
+  assert.match(ui, /key === 'name'[\s\S]*\? undefined/);
+  assert.match(ui, /TABLE_NAME_MIN_WIDTH/);
   assert.match(ui, /localStorage\.getItem\('deck-table-layout-version'\)/);
   assert.match(ui, /localStorage\.setItem\('deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
   assert.match(ui, /'size',[\s\S]*'ratio',[\s\S]*'download'/);
-  assert.match(css, /@media \(min-width:761px\) \{[\s\S]*\.table-shell table \{ min-width:1400px; table-layout:fixed; \}/);
+  assert.match(css, /table\.auto-sized-table \{[\s\S]*width:100%;[\s\S]*table-layout:fixed/);
+  assert.match(css, /table\.column-measure-table \{[\s\S]*width:max-content!important/);
 });
 
 test('desktop torrent area fills the viewport and scrolls inside the table', async () => {
@@ -888,6 +906,9 @@ test('dashboard exposes the dream-loop telemetry hierarchy', async () => {
   assert.match(ui, /aria-label="Torrent filters"/);
   assert.match(ui, /className="deck-filter-summary"/);
   assert.match(ui, /aria-label="Session status"/);
+  assert.match(ui, /className="status-free-space"/);
+  assert.match(ui, /Available free space on the Deluge server/);
+  assert.match(ui, /formatBytes\(stats\.free_space\)/);
   assert.match(ui, /Current payload/);
   assert.match(ui, /telemetryHistory/);
   assert.match(ui, /\}, \[stats, torrents\.length\]\);/);
@@ -896,6 +917,7 @@ test('dashboard exposes the dream-loop telemetry hierarchy', async () => {
   assert.match(ui, /<polyline points=\{points\}/);
   assert.match(polish, /\.stats-grid \.stat-card>\.stat-spark \{ display:block!important/);
   assert.match(polish, /\.deck-status-rail/);
+  assert.match(polish, /\.deck-status-rail \.status-free-space/);
   assert.match(polish, /\.external-ip \{ display:none; \}/);
 });
 
