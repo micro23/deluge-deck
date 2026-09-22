@@ -54,3 +54,25 @@ plugin build. The workflow currently builds the distributable egg with Python
 Never publish a Mac-built egg for a Windows Deluge installation without testing
 the target Python ABI. Do not include passwords, cookies, production paths, or
 production configuration in logs or artifacts.
+
+## Privacy checks before making a repository public
+
+Scan both the current files and every branch and tag. Deleting a file from the
+latest commit does not remove it from older commits or release artifacts.
+With [Gitleaks](https://github.com/gitleaks/gitleaks) installed, run:
+
+```sh
+gitleaks git --log-opts=--all --redact
+npm audit
+```
+
+Also scan an unpacked copy of the release egg, inspect image metadata, and search
+for personal hostnames, email addresses, account names, and machine paths. A
+credential scanner does not identify every kind of personal information.
+Review Git author identities and remote release attachments separately.
+
+Publish tracked source or a Git-generated source archive, rather than a ZIP of
+the working directory. Ignored environments, browser captures, local Git
+metadata, caches, and logs can contain private data. Keep any audit reports
+containing actual private values outside the repository. Ignore rules prevent
+accidental additions; they do not remove files that are already tracked.

@@ -9,3 +9,24 @@ dist/
 *.log
 build/
 *.egg-info/
+
+# Local credentials, runtime data, and browser captures must stay private.
+.env
+.env.*
+!.env.example
+.npmrc
+.netrc
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pem
+*.key
+*.p12
+*.pfx
+cookies*.txt
+cookies*.json
+*.har
+*.torrent
+*.fastresume
+.deluge/

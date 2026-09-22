@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.30
+
+- Added public-release privacy guidance and stronger ignore rules for local credentials, browser captures, torrent metadata, and Deluge runtime state.
+- Audited tracked source, packaged plugin assets, Git branches and tags, and dangling Git objects for private hostnames and credential patterns before publication.
+
 ## 1.0.29
 
 - Replaced oversized mobile cards with a compact torrent list, with names, progress, rates, size, ratio, sorting, and selection always available.
