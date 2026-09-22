@@ -62,6 +62,7 @@ import './styles.css';
 import './theme-gallery.css';
 import './dashboard-polish.css';
 import './mobile-overrides.css';
+import './themes/terminal.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;

@@ -14,6 +14,10 @@ const source = async () => {
   ]);
   return `${main}\n${api}\n${themes}`;
 };
+const themeStyles = async () => (await Promise.all([
+  readFile(path.join(root, 'src/styles.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/terminal.css'), 'utf8'),
+])).join('\n');
 
 test('remove choices are in-app and pass Deluge the selected remove_data boolean', async () => {
   const ui = await source();
@@ -30,7 +34,7 @@ test('remove choices are in-app and pass Deluge the selected remove_data boolean
 });
 
 test('themes have persistent palette declarations and a desktop/mobile menu', async () => {
-  const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
+  const [ui, css] = await Promise.all([source(), themeStyles()]);
   for (const name of ['ocean', 'forest', 'sunset', 'christmas', 'halloween', 'valentine', 'st-patricks', 'independence', 'new-year', 'terminal']) {
     assert.match(ui, new RegExp(`'${name}'`));
     assert.match(css, new RegExp(`data-theme=\\"${name}\\"`));
@@ -406,7 +410,7 @@ test('portrait layout uses compact controls and a horizontally scrollable torren
 });
 
 test('every theme meets AAA text contrast and accessible component contrast', async () => {
-  const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+  const css = await themeStyles();
   assert.match(css, /\.add-button \{[^}]*color:var\(--accent-fg\)/);
   assert.match(css, /\.primary-button \{[^}]*color:var\(--accent-fg\)/);
   assert.match(css, /\.avatar \{[^}]*color:var\(--accent-fg\)[^}]*background:var\(--cyan\)/);

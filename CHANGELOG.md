@@ -5,6 +5,8 @@
 - Replaced oversized mobile cards with a compact torrent list, with names, progress, rates, size, ratio, sorting, and selection always available.
 - Rebuilt mobile details and action menus to fit portrait and landscape screens without hiding controls behind the header.
 - Simplified mobile navigation and summary statistics while preserving the desktop table and layout.
+- Moved Terminal into an isolated theme stylesheet and rebuilt it as a monochrome CLI console with bracketed controls, thin borders, ASCII-style progress bars, and matching dialogs.
+- Verified non-Terminal themes keep their existing computed styles while Terminal receives the new visual treatment.
 - Included the mobile rebuild in the versioned Deluge plugin assets and egg.
 
 ## 1.0.28
