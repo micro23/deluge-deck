@@ -520,3 +520,118 @@
   :root[data-theme="terminal"] .progress-track::before { content:"------------------------------------------------------------"; }
   :root[data-theme="terminal"] .deck-status-rail { font-size:12px; }
 }
+
+/* Reference terminal layout: the command line shares the top rail with the
+   title, while the workspace starts immediately with the four telemetry
+   boxes and the dense transfer table. These rules are deliberately scoped to
+   the terminal theme so the other palettes keep their existing geometry. */
+@media (min-width:1101px) {
+  :root[data-theme="terminal"] .sidebar {
+    width:214px;
+    padding:26px 12px 18px;
+  }
+
+  :root[data-theme="terminal"] .sidebar-top {
+    margin-inline:8px;
+  }
+
+  :root[data-theme="terminal"] .sidebar::before {
+    width:max-content;
+    margin:14px auto 23px;
+    font-size:15px;
+  }
+
+  :root[data-theme="terminal"] .sidebar .add-button {
+    width:max-content;
+    min-width:0;
+    margin-inline:auto;
+  }
+
+  :root[data-theme="terminal"] .nav-label {
+    margin-left:42px;
+  }
+
+  :root[data-theme="terminal"] .nav-item {
+    padding-left:42px;
+  }
+
+  :root[data-theme="terminal"] .topbar {
+    padding-inline:45px;
+    gap:18px;
+  }
+
+  :root[data-theme="terminal"] .topbar-heading h1 {
+    display:none;
+  }
+
+  :root[data-theme="terminal"] .topbar-heading::before {
+    content:"[ CLI TORRENT CLIENT v1.0 ]";
+    font-size:17px;
+  }
+
+  :root[data-theme="terminal"] .topbar-heading::after {
+    content:none;
+  }
+
+  :root[data-theme="terminal"] .workspace {
+    position:relative;
+    padding:48px 18px 52px;
+  }
+
+  :root[data-theme="terminal"] .workspace > .search-wrap {
+    position:fixed;
+    top:15px;
+    left:544px;
+    right:18px;
+    width:auto;
+    max-width:none;
+    margin:0;
+    height:34px;
+    padding-inline:0;
+    z-index:8;
+  }
+
+  :root[data-theme="terminal"] .stats-grid {
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:16px;
+    margin:0 0 17px 315px;
+  }
+
+  :root[data-theme="terminal"] .stats-grid .stat-card {
+    min-height:76px;
+    padding:10px 8px 6px;
+  }
+
+  :root[data-theme="terminal"] .stat-card span {
+    font-size:16px;
+  }
+
+  :root[data-theme="terminal"] .stat-card strong {
+    font-size:23px;
+  }
+
+  :root[data-theme="terminal"] .stat-card small {
+    font-size:14px;
+  }
+
+  :root[data-theme="terminal"] .table-shell th {
+    height:30px;
+    font-size:14px;
+  }
+
+  :root[data-theme="terminal"] .table-shell tbody td {
+    height:28px;
+    padding-block:2px;
+    font-size:14px;
+  }
+
+  :root[data-theme="terminal"] .table-shell .torrent-name strong,
+  :root[data-theme="terminal"] .state-badge {
+    font-size:14px;
+  }
+
+  :root[data-theme="terminal"] .deck-status-rail {
+    min-height:34px;
+    padding-block:4px;
+  }
+}
