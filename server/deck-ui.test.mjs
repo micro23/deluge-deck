@@ -65,8 +65,7 @@ test('themes use distinct seasonal artwork and menus keep one aligned action rai
     'new-year-rooftop-observatory.jpg',
   ]) assert.match(css, new RegExp(asset.replace('.', '\\.'), 's'));
   assert.match(css, /\.preferences-content\s*\{[\s\S]*grid-template-columns:1fr!important/);
-  assert.match(css, /\.x-window-bbar,[\s\S]*\.x-panel-fbar\s*\{\s*display:none!important/);
-  assert.match(css, /\.x-form-item\s*\{[\s\S]*grid-template-columns:minmax\(142px,190px\)/);
+  assert.doesNotMatch(css, /data-deluge-deck-native-window/); // native skin has one owner
 });
 
 test('Deluge Preferences is in-app first and browser popup APIs are absent from action paths', async () => {
@@ -81,8 +80,7 @@ test('Deluge Preferences is in-app first and browser popup APIs are absent from 
   const preferencesBlock = ui.slice(ui.indexOf('function PreferencesModal'), ui.indexOf('function DeckPreferences'));
   assert.doesNotMatch(preferencesBlock, /theme-grid|THEMES\.map/);
   assert.match(preferencesBlock, /<kbd>T<\/kbd> cycles themes/);
-  assert.match(css, /\[data-deluge-deck-native-window="true"\]\{[^}]*top:50%!important;left:50%!important;[^}]*transform:translate\(-50%,-50%\)!important/);
-  assert.match(css, /\[data-deluge-deck-native-window="true"\][^\{]*\{[^}]*background:var\(--surface\)!important/);
+  assert.match(ui, /import '.\/native-deluge.css'/);
   assert.doesNotMatch(ui, /const openPreferences[^\n]*preferences\.show/);
   assert.doesNotMatch(ui, /window\.(alert|confirm|prompt)\s*\(/);
   const modalRouter = ui.slice(ui.indexOf('function AddModal'), ui.indexOf('function AddTorrentModal'));
@@ -255,10 +253,9 @@ test('preferences trap keyboard focus inside the dialog', async () => {
 
 test('preferences checkboxes have a consistent field and an explicit checked mark', async () => {
   const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
-  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\] \{[\s\S]*background-color:var\(--surface-3\)!important[\s\S]*width:18px!important[\s\S]*height:18px!important/);
+  assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\] \{[\s\S]*width:18px!important[\s\S]*height:18px!important[\s\S]*background-color:var\(--surface-3\)!important/);
   assert.match(css, /\.preferences-modal \.path-check input\[type="checkbox"\]:checked \{[\s\S]*background-color:var\(--cyan\)!important/);
-  assert.match(css, /input\.x-form-checkbox \{[\s\S]*width:18px!important/);
-  assert.match(css, /input\.x-form-checkbox \{[\s\S]*background-color:var\(--surface-3\)!important/);
+
 });
 
 test('detail drawer is a focus-trapped dialog with focus restoration and outside dismissal', async () => {
@@ -352,29 +349,13 @@ test('rename dialog traps focus and restores it after dismissal', async () => {
   assert.match(rename, /role="dialog"\s+aria-modal="true"\s+aria-labelledby="rename-torrent-title"/);
 });
 
-test('classic ExtJS preferences are isolated from Deck table and form resets', async () => {
-  const [css, bridge, fixture] = await Promise.all([
-    readFile(path.join(root, 'src/styles.css'), 'utf8'),
-    readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8'),
-    readFile(path.join(root, 'server/hosted-layout-fixture.mjs'), 'utf8'),
-  ]);
-  assert.match(bridge, /Math\.min\(760,[\s\S]*Math\.min\(700,/);
-  assert.match(css, /\[data-deluge-deck-native-window="true"\] \* \{\s*box-sizing:content-box/);
-  assert.match(css, /\[data-deluge-deck-native-window="true"\] table \{[\s\S]*width:auto!important;[\s\S]*table-layout:auto!important/);
-  assert.match(css, /input\.x-form-checkbox,[\s\S]*width:16px!important;[\s\S]*height:16px!important/);
-  assert.match(css, /\.x-list-body \.x-list-selected \{[\s\S]*background:var\(--cyan-soft\)!important/);
-  assert.match(css, /\.x-form-trigger \{[\s\S]*width:22px!important;[\s\S]*height:28px!important/);
-  assert.match(css, /\.x-panel-btns>table \{[\s\S]*float:right!important/);
-  assert.match(css, /\.deck-native-preferences-close \{[\s\S]*position:absolute!important;[\s\S]*pointer-events:auto!important/);
-  assert.match(css, /\.deck-native-preferences-actions \{[\s\S]*bottom:0!important;[\s\S]*pointer-events:auto!important/);
-  assert.match(css, /grid-template-columns:168px minmax\(0,1fr\)!important/);
-  assert.match(css, /\.x-fieldset \{[\s\S]*border:1px solid var\(--line\)!important;[\s\S]*border-radius:10px!important/);
-  assert.match(css, /height:min\(585px,calc\(100dvh - 135px\)\)!important;[\s\S]*overflow:hidden!important/);
-  assert.match(css, /\.global-popover,.account-popover\{[\s\S]*animation:deck-popover \.15s ease/);
-  assert.match(css, /@keyframes deck-popover\{[\s\S]*transform:none/);
-  assert.doesNotMatch(css, /\.context-menu\{[^}]*animation:pop /);
-  assert.match(fixture, /classic-network/);
-  assert.match(fixture, /classic-bandwidth/);
+test('native skin preserves Ext geometry and plugin toolbars', async () => {
+  const css = await readFile(path.join(root, 'src/native-deluge.css'), 'utf8');
+  assert.match(css, /box-sizing:content-box/);
+  assert.doesNotMatch(css, /grid-template-columns/);
+  assert.doesNotMatch(css, /display:none/);
+  assert.doesNotMatch(css, /width:100%!important/);
+  assert.match(css, /\.x-combo-list,\.x-menu/);
 });
 
 test('global shortcuts are modal-aware, busy-aware, and ignore interactive controls', async () => {

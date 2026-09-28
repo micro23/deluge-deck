@@ -1,0 +1,127 @@
+/* ExtJS owns widget geometry. Keep this skin in one place: changing widths,
+   display modes or box sizing of its layout containers breaks nested plugins. */
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] {
+  z-index:2147482000!important;
+  background:var(--surface)!important;
+  color:var(--text);
+  border-radius:12px;
+  box-shadow:0 24px 80px #0008;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"],
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] * {
+  box-sizing:content-box;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(table, th, td) {
+  width:auto; min-width:0; height:auto; padding:0; border:0;
+  background:transparent; color:inherit; text-align:left; letter-spacing:normal;
+  white-space:normal; box-shadow:none; table-layout:auto;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] table { border-collapse:separate; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] tbody tr:hover td {
+  background:transparent; box-shadow:none;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-window-tl,.x-window-tr,.x-window-tc,.x-window-ml,.x-window-mr,.x-window-mc,.x-window-bl,.x-window-br,.x-window-bc) {
+  background:var(--surface)!important; border-color:var(--line)!important;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-header {
+  padding-top:6px; padding-bottom:6px;
+  color:var(--text); font:700 15px/20px system-ui,sans-serif;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-panel-body,.x-window-body,.x-tab-panel-body,.x-border-layout-ct) {
+  background:var(--surface)!important; color:var(--text); border-color:var(--line);
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-panel-header,.x-toolbar,.x-panel-bbar,.x-panel-fbar,.x-tab-strip-wrap) {
+  background:var(--surface-2)!important; color:var(--text); border-color:var(--line);
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-footer { padding-top:6px; padding-bottom:6px; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-item {
+  font:12px/18px system-ui,sans-serif; margin-bottom:9px;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-form-item-label,.x-form-cb-label) {
+  color:var(--text); font:12px/18px system-ui,sans-serif;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-fieldset {
+  border:1px solid var(--line)!important; border-radius:8px;
+  padding:12px 12px 8px; margin-bottom:14px!important;
+  background:var(--surface-2);
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-fieldset-header {
+  color:var(--cyan); font:700 11px/18px system-ui,sans-serif;
+  padding:0 6px; letter-spacing:.04em;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-form-text,textarea.x-form-field) {
+  color:var(--text); background:var(--surface-3); border-color:var(--line-strong);
+  border-radius:3px; font:12px/18px system-ui,sans-serif;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-text:focus {
+  border-color:var(--cyan); outline:2px solid var(--cyan-soft);
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(input.x-form-checkbox,input.x-form-radio) {
+  appearance:auto; accent-color:var(--cyan);
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-form-check-wrap {
+  height:auto!important; min-height:22px; white-space:normal;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-item-disabled { opacity:.55; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-btn td,.x-btn em) { background:transparent!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-btn {
+  border:1px solid var(--line-strong); border-radius:5px; background:var(--surface-3);
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-btn button {
+  color:var(--text); font:600 12px system-ui,sans-serif;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-btn-over { border-color:var(--cyan); background:var(--cyan-soft); }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-tool-close {
+  background:none; position:relative; width:20px; height:20px;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-tool-close:after {
+  content:'\00d7'; position:absolute; inset:0; text-align:center; color:var(--text); font:22px/20px system-ui;
+}
+/* Only the category list is navigation; plugin lists retain columns and headers. */
+html.deluge-deck-hosted .deck-preferences-nav .x-list-body dl { margin:3px 4px; border-radius:5px; }
+html.deluge-deck-hosted .deck-preferences-nav .x-list-body em {
+  padding:8px 9px; color:var(--muted); font:12px/18px system-ui,sans-serif;
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-list-selected,.x-list-over,.x-grid3-row-selected) {
+  background:var(--cyan-soft)!important; border-color:var(--cyan)!important; color:var(--text);
+}
+html.deluge-deck-hosted .deck-preferences-nav .x-list-selected em { color:var(--cyan); font-weight:700; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-list-header,.x-grid3-header,.x-grid3,.x-grid3-row) {
+  background:var(--surface-2); color:var(--text); border-color:var(--line);
+}
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] :is(.x-list-body em,.x-list-header-inner em,.x-grid3-cell-inner,.x-tab-strip-text) { color:var(--text); }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-deluge-plugins dl { color:var(--text); }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-deluge-plugins dd { overflow-wrap:anywhere; }
+/* Ext renders dropdowns beside the window, not within it. */
+html.deluge-deck-hosted :is(.x-combo-list,.x-menu) {
+  z-index:2147482100!important; background:var(--surface-2); color:var(--text); border-color:var(--line-strong);
+}
+html.deluge-deck-hosted :is(.x-combo-list-item,.x-menu-item) { color:var(--text); }
+html.deluge-deck-hosted :is(.x-combo-selected,.x-menu-item-active) { background:var(--cyan-soft)!important; border-color:var(--cyan)!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] * { scrollbar-width:thin; scrollbar-color:var(--line-strong) var(--surface); }
+/* Form pages can grow; nested border layouts (notably Plugins) stay with Ext. */
+html.deluge-deck-hosted .deck-preferences-page { min-width:330px; }
+
+html.deluge-deck-hosted .deck-preferences-page .x-fieldset { width:auto!important; }
+html.deluge-deck-hosted .deck-preferences-page .x-fieldset > .x-panel-body { width:auto!important; background:transparent!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-toggle-field .x-panel-body { background:transparent!important; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-panel-btns { width:auto; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-panel-btns > table { float:right; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-footer .x-btn { margin-left:8px; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-footer .x-btn button { height:21px; text-align:center; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-window-footer .x-toolbar-right-row > td:last-child .x-btn { border-color:var(--cyan); }
+
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-toolbar-ct { width:100%; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-toolbar-right { text-align:right; }
+html.deluge-deck-hosted [data-deluge-deck-native-window="true"] .x-toolbar-right-ct { margin-left:auto; }
+html.deluge-deck-hosted .deck-preferences-compact .deck-preferences-nav .x-list-body-inner {
+  display:flex; width:max-content!important; min-width:100%;
+}
+html.deluge-deck-hosted .deck-preferences-compact .deck-preferences-nav .x-list-body dl { flex:none; }
+html.deluge-deck-hosted .deck-preferences-compact .deck-preferences-nav .x-list-body dt { width:auto!important; }
+html.deluge-deck-hosted .deck-preferences-compact .deck-preferences-nav .x-list-body em { white-space:nowrap; }
+
+html.deluge-deck-hosted .deck-preferences-window .x-window-header { padding-top:14px; padding-bottom:14px; }
+html.deluge-deck-hosted .deck-preferences-window .x-window-footer { padding-top:12px; padding-bottom:12px; }
+html.deluge-deck-hosted .deck-preferences-window .x-window-footer .x-btn { min-width:72px; }
+html.deluge-deck-hosted .deck-preferences-window .x-window-footer .x-btn button { height:30px; }

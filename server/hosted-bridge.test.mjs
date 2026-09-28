@@ -23,13 +23,12 @@ test('hosted bridge narrowly suppresses an ExtJS login window and leaves an exis
   assert.match(bridge, /preferences\.setSize\?\.\(width, height\)/);
   assert.match(bridge, /preferences\.center\?\.\(\)/);
   assert.match(bridge, /preferences\.doLayout\?\.\(\)/);
-  assert.match(bridge, /ensureNativePreferencesControls\(preferences, element\)/);
-  assert.match(bridge, /data-action="apply"/);
-  assert.match(bridge, /preferences\.onApply\?\.\(\)/);
-  assert.match(bridge, /preferences\.onOk\?\.\(\)/);
+  assert.match(bridge, /afterlayout/);
+  assert.match(bridge, /layoutNativePreferences/);
+  assert.doesNotMatch(bridge, /deck-native-preferences-actions/);
   assert.match(bridge, /nativeWindowMarker/);
   assert.match(bridge, /\.x-window,\[class\*="x-window" i\],\.x-panel/);
-  assert.match(bridge, /const nativeWindow = node\.matches\?\.\(windowSelector\) && hasNativeWindowMarker\(node\)/);
+  assert.match(bridge, /const nativeWindow = node\.matches\?\.\(windowSelector\) && !hasLoginMarker\(node\) && !hasStockConnectionMarker\(node\)/);
   assert.match(bridge, /const containingNativeWindow = nativeWindow \? node : node\.closest\?\.\(windowSelector\)/);
   assert.match(bridge, /containingNativeWindow\.dataset\.delugeDeckNativeWindow = 'true'/);
   assert.match(bridge, /delete containingNativeWindow\.dataset\.delugeDeckLegacy/);

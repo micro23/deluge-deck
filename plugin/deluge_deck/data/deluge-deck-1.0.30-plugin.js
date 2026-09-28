@@ -20,7 +20,7 @@ earlyStyle.dataset.delugeDeck = 'preauth';
 earlyStyle.textContent = 'html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"],html.deluge-deck-hosted .x-window:has(.x-deluge-connect-window-icon),html.deluge-deck-hosted [class*="x-deluge-connect-window" i],html.deluge-deck-hosted [id*="connection-manager" i],html.deluge-deck-hosted [id*="connectionmanager" i] { display:none !important; visibility:hidden !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
 (document.head || document.documentElement).appendChild(earlyStyle);
 
-const windowSelector = '.x-window,[class*="x-window" i],[role="dialog"]';
+const windowSelector = '.x-window,[role="dialog"]';
 const nativeWindowMarker = /pref(erence)?|plugin|bandwidth|daemon/i;
 const markerText = (node) => `${node?.id || ''} ${node?.className || ''} ${node?.getAttribute?.('aria-label') || ''}`;
 const hasNativeWindowMarker = (node) => {
@@ -177,56 +177,61 @@ const scanStockConnectionWindows = () => {
   });
   disableStockConnectionManager();
 };
-const ensureNativePreferencesControls = (preferences, element) => {
-  if (!element || element.querySelector('.deck-native-preferences-controls')) return;
-  const controls = document.createElement('div');
-  controls.className = 'deck-native-preferences-controls';
-  controls.setAttribute('role', 'group');
-  controls.setAttribute('aria-label', 'Preferences actions');
-  controls.innerHTML = '<button type="button" class="deck-native-preferences-close" data-action="close" aria-label="Close Preferences">×</button><div class="deck-native-preferences-actions"><button type="button" data-action="close">Close</button><button type="button" data-action="apply">Apply</button><button type="button" data-action="ok">OK</button></div>';
-  const invokeNative = (action) => {
-    const handler = preferences?.[`on${action[0].toUpperCase()}${action.slice(1)}`];
-    if (typeof handler === 'function') handler.call(preferences);
-    else if (action === 'apply') preferences.onApply?.();
-    else if (action === 'ok') preferences.onOk?.();
-    else if (typeof preferences?.[action] === 'function') preferences[action]();
-    // ExtJS versions differ: some expose methods, others only wire the
-    // footer buttons. Trigger the native button when no API is available.
-    if (typeof handler !== 'function' && typeof preferences?.[action] !== 'function') {
-      const nativeButton = [...element.querySelectorAll('button')].find((button) => !controls.contains(button) && button.textContent.trim().toLowerCase() === action);
-      nativeButton?.click();
-    }
-    if (action === 'close') {
-      // Keep the close affordance reliable even when an older ExtJS build has
-      // a no-op hide/close implementation (or delays its visibility update).
-      element.hidden = true;
-      element.style.setProperty('display', 'none', 'important');
-    }
-  };
-  const close = () => invokeNative('close');
-  controls.querySelectorAll('[data-action="close"]').forEach((button) => button.addEventListener('click', close));
-  controls.querySelector('[data-action="apply"]')?.addEventListener('click', () => invokeNative('apply'));
-  controls.querySelector('[data-action="ok"]')?.addEventListener('click', () => invokeNative('ok'));
-  element.appendChild(controls);
+const layoutNativePreferences = (preferences) => {
+  const element = preferences.getEl?.()?.dom;
+  const navigation = preferences.items?.get?.(0);
+  const width = preferences.getWidth?.() || window.innerWidth;
+  if (width < 600 && preferences.body && navigation && preferences.configPanel) {
+    element?.classList.add('deck-preferences-compact');
+    const bodyWidth = preferences.body.getWidth(true);
+    const bodyHeight = preferences.body.getHeight(true);
+    navigation.setPosition?.(0, 0);
+    navigation.setSize?.(bodyWidth, 54);
+    preferences.list?.setSize?.(bodyWidth, 52);
+    preferences.configPanel.setPosition?.(0, 60);
+    preferences.configPanel.setSize?.(bodyWidth, Math.max(80, bodyHeight - 60));
+    preferences.configPanel.doLayout?.();
+  } else {
+    element?.classList.remove('deck-preferences-compact');
+    if (navigation?.body) preferences.list?.setSize?.(navigation.body.getWidth(true), navigation.body.getHeight(true));
+  }
 };
+const fittedPreferences = new WeakSet();
 const showNativePreferences = () => {
   const preferences = window.deluge?.preferences;
   if (typeof preferences?.show !== 'function') return false;
+  if (!fittedPreferences.has(preferences)) {
+    preferences.on?.('afterlayout', () => layoutNativePreferences(preferences));
+    fittedPreferences.add(preferences);
+  }
   const fitAndReveal = () => {
     const element = preferences.getEl?.()?.dom;
     if (element) {
       element.dataset.delugeDeckNativeWindow = 'true';
+      element.hidden = false;
+      element.classList.add('deck-preferences-window');
       delete element.dataset.delugeDeckLegacy;
       delete element.dataset.delugeDeckStockLogin;
       element.style.removeProperty('display');
       element.style.removeProperty('visibility');
-      ensureNativePreferencesControls(preferences, element);
+
     }
-    const width = Math.min(760, Math.max(320, window.innerWidth - 32));
-    const height = Math.min(700, Math.max(360, window.innerHeight - 32));
+    const width = Math.min(800, Math.max(240, window.innerWidth - 24));
+    const height = Math.min(720, Math.max(200, window.innerHeight - 24));
+    // Let Ext measure the same dimensions CSS paints, including nested plugin layouts.
+    const navigation = preferences.items?.get?.(0);
+    navigation?.setWidth?.(width < 600 ? 112 : 156);
+    navigation?.getEl?.()?.addClass?.('deck-preferences-nav');
+    preferences.configPanel?.getEl?.()?.setStyle?.('overflow', 'auto');
+    Object.values(preferences.pages || {}).forEach((page) => {
+      // A class on the page itself avoids treating nested plugin regions as navigation.
+      if (page.rendered) page.getEl?.()?.addClass?.('deck-preferences-page');
+      else if (!page.cls?.split(' ').includes('deck-preferences-page')) page.addClass?.('deck-preferences-page');
+    });
     preferences.setSize?.(width, height);
     preferences.center?.();
     preferences.doLayout?.();
+    layoutNativePreferences(preferences);
   };
   if (!preferences.rendered && typeof preferences.on === 'function') {
     preferences.on('afterrender', fitAndReveal, null, { single: true });
@@ -237,13 +242,23 @@ const showNativePreferences = () => {
   return true;
 };
 window.__DELUGE_DECK_SHOW_NATIVE_PREFERENCES__ = showNativePreferences;
+let nativeResizeFrame;
+window.addEventListener('resize', () => {
+  cancelAnimationFrame(nativeResizeFrame);
+  nativeResizeFrame = requestAnimationFrame(() => {
+    if (window.deluge?.preferences?.isVisible?.()) showNativePreferences();
+  });
+});
 // ExtJS's native Preferences window does not consistently wire dismissal on
 // touch layouts. Keep both Escape and clicks outside the panel reliable.
 const closeNativePreferences = (event) => {
   const preferences = window.deluge?.preferences;
   const element = preferences?.getEl?.()?.dom;
   if (!element || element.hidden || element.style.display === 'none' || element.dataset.delugeDeckNativeWindow !== 'true') return;
-  if (event.type === 'pointerdown' && element.contains(event.target)) return;
+  // ExtJS appends combo menus and child windows to body. They still belong to
+  // this settings interaction and must not trigger outside-click dismissal.
+  if (event.type === 'pointerdown' && (element.contains(event.target)
+    || event.target.closest?.('.x-combo-list,.x-menu,.x-window'))) return;
   event.preventDefault();
   event.stopPropagation();
   if (typeof preferences.hide === 'function') preferences.hide();
@@ -267,13 +282,13 @@ const ensureRoot = () => {
     suppressStockLogin(node);
     suppressStockConnectionWindow(node);
     const infrastructure = ['SCRIPT', 'STYLE', 'LINK'].includes(node.tagName);
-    const nativeWindow = node.matches?.(windowSelector) && hasNativeWindowMarker(node);
+    const nativeWindow = node.matches?.(windowSelector) && !hasLoginMarker(node) && !hasStockConnectionMarker(node);
     const containingNativeWindow = nativeWindow ? node : node.closest?.(windowSelector);
-    if (containingNativeWindow && hasNativeWindowMarker(containingNativeWindow)) {
+    if (containingNativeWindow && !hasLoginMarker(containingNativeWindow) && !hasStockConnectionMarker(containingNativeWindow)) {
       containingNativeWindow.dataset.delugeDeckNativeWindow = 'true';
       delete containingNativeWindow.dataset.delugeDeckLegacy;
     }
-    if (node.parentElement === body && !infrastructure && !nativeWindow && node.id !== window.__DELUGE_DECK_ROOT_ID__ && node.id !== window.__DELUGE_DECK_OVERLAY_ROOT_ID__) node.dataset.delugeDeckLegacy = 'true';
+    if (node.parentElement === body && !infrastructure && !nativeWindow && isLegacyShellNode(node) && node.id !== window.__DELUGE_DECK_ROOT_ID__ && node.id !== window.__DELUGE_DECK_OVERLAY_ROOT_ID__) node.dataset.delugeDeckLegacy = 'true';
   };
   Array.from(body.children).forEach(markLegacyNode);
   // The bridge may initialize just before Deluge assigns connectionManager,
@@ -290,8 +305,8 @@ const ensureRoot = () => {
     root.innerHTML = '<div class="deck-boot-splash" role="status" aria-label="Loading Deluge">Deluge</div>';
     body.appendChild(root);
   }
-  // Observe delayed generic Ext.Window only when it contains a login marker.
-  // A native Preferences Ext.Window has no marker and is left alone.
+  // Preserve body-level Ext menus and child windows; only the known stock
+  // shell, login and connection manager are suppressed.
   new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach(markLegacyNode))).observe(body, { childList: true, subtree: true });
   window.__DELUGE_DECK_BOOTSTRAP_READY__ = true;
   window.dispatchEvent(new Event('deluge-deck-bootstrap-ready'));
