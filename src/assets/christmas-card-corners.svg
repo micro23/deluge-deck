@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" fill="none">
+  <defs>
+    <g id="sprig" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 42C20 36 19 21 39 13c9-4 17-4 26-10M19 36c10 1 15 5 19 12m-8-19c8-1 14 1 20 6m-1-17c7 1 12 5 15 11" stroke="#d5b36f" stroke-width="1.8"/>
+      <path d="M27 31c-9-5-11-12-7-17 8 2 12 7 11 14m8-6c-7-9-6-16 0-19 7 5 8 11 4 18m7-2c-3-9 0-15 7-16 4 8 2 13-3 18" fill="#345b3c" stroke="#c5a267" stroke-width="1.2"/>
+      <circle cx="19" cy="39" r="3.5" fill="#a7383b" stroke="#f0cf83" stroke-width="1"/>
+      <circle cx="25" cy="44" r="3.5" fill="#b94443" stroke="#f0cf83" stroke-width="1"/>
+      <circle cx="14" cy="46" r="3.5" fill="#8e292f" stroke="#f0cf83" stroke-width="1"/>
+      <path d="M55 12v9m-4-9h8" stroke="#e8cf97" stroke-width="1.4"/>
+      <circle cx="55" cy="27" r="5.5" fill="#a83339" stroke="#ebcb83" stroke-width="1.5"/>
+      <path d="M53 24c1-2 4-2 5 0" stroke="#fff0c9" stroke-width="1" opacity=".8"/>
+    </g>
+  </defs>
+  <use href="#sprig"/>
+  <use href="#sprig" transform="translate(400 0) scale(-1 1)"/>
+  <use href="#sprig" transform="translate(0 180) scale(1 -1)"/>
+  <use href="#sprig" transform="translate(400 180) scale(-1 -1)"/>
+</svg>

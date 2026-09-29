@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.35
+
+- Added theme-specific ornamental card corners, stronger firework art, and clearer New Year rooftop imagery.
+- Refined Christmas card icons and revealed more of its winter forest scene through the torrent panel.
+- Centered seasonal stat cards at phone widths and prevented the New Year ribbon from overlapping them.
+
+
 ## 1.0.34
 
 - Added standalone Christmas, New Year’s, and Independence Day themes with isolated artwork, layouts, seasonal card treatments, and responsive styling.
