@@ -57,6 +57,12 @@
 :root[data-theme="new-year"] .table-shell th { height:32px!important; }
 :root[data-theme="new-year"] .table-shell tbody td { height:40px!important; padding-top:0!important; padding-bottom:0!important; }
 :root[data-theme="new-year"] .table-shell::after { background:url('../assets/new-year-fireworks.svg') center 56%/100% 100% no-repeat; opacity:.42; mix-blend-mode:screen; }
+:root[data-theme="new-year"] .table-shell::after { z-index:0; }
+:root[data-theme="new-year"] .table-shell>table { position:relative; z-index:1; }
+:root[data-theme="new-year"] .table-shell tbody tr td { background:#0b1b2e!important; }
+:root[data-theme="new-year"] .table-shell tbody tr:nth-child(even) td { background:#142538!important; }
+:root[data-theme="new-year"] .table-shell tbody tr:hover td { background:#293047f4!important; }
+:root[data-theme="new-year"] .table-shell tbody tr.selected td { background:#3a3144f4!important; }
 :root[data-theme="new-year"] .table-shell .state-icon { background:transparent!important; border:0!important; box-shadow:none!important; }
 :root[data-theme="new-year"] .table-shell .state-icon svg { display:none; }
 :root[data-theme="new-year"] .table-shell .state-icon::after { content:"🎁"; font:16px/1 "Apple Color Emoji","Segoe UI Emoji",sans-serif; }

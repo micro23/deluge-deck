@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.36
+
+- Refined all twelve themes with dedicated summary card details, richer table surfaces, and theme gallery previews.
+- Reworked Terminal's desktop header and dense table layout while preserving its isolated styling.
+- Improved Halloween and Valentine's Day cards and mobile layouts; kept seasonal ornaments behind readable torrent rows.
+- Added responsive tablet layouts and corrected St. Patrick's mobile summary contrast.
+- Replaced failed tracker favicons with a neutral fallback icon.
+- Embedded seasonal SVG artwork in the hosted plugin stylesheet.
+
 ## 1.0.35
 
 - Added theme-specific ornamental card corners, stronger firework art, and clearer New Year rooftop imagery.

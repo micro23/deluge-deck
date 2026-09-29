@@ -29,10 +29,11 @@ const cssAsset = findAsset('.css');
 // theme artwork into the final stylesheet. This keeps the seasonal frames
 // self-contained in the egg and equally reliable in hosted and standalone UI.
 const css = readFileSync(cssAsset, 'utf8');
-const embeddedCss = css.replace(/url\((['"]?)([^)'"?#]+\.(?:png|jpe?g|webp))\1\)/g, (match, quote, assetPath) => {
+const embeddedCss = css.replace(/url\((['"]?)([^)'"?#]+\.(?:png|jpe?g|webp|svg))\1\)/g, (match, quote, assetPath) => {
   const asset = path.join(builtAssets, path.basename(assetPath));
   if (!readdirSync(builtAssets).includes(path.basename(assetPath))) return match;
-  const mime = path.extname(asset).toLowerCase() === '.png' ? 'image/png' : path.extname(asset).toLowerCase() === '.webp' ? 'image/webp' : 'image/jpeg';
+  const extension = path.extname(asset).toLowerCase();
+  const mime = extension === '.png' ? 'image/png' : extension === '.webp' ? 'image/webp' : extension === '.svg' ? 'image/svg+xml' : 'image/jpeg';
   return `url("data:${mime};base64,${readFileSync(asset).toString('base64')}")`;
 });
 // Deluge Web and browsers can cache plugin resources by filename. Publish only

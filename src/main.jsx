@@ -69,6 +69,8 @@ import './themes/halloween.css';
 import './themes/christmas.css';
 import './themes/new-year.css';
 import './themes/independence.css';
+import './themes/core.css';
+import './themes/tablet.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -245,7 +247,6 @@ const trackerFaviconCandidates = (host = '') => {
     ),
   ];
 };
-const trackerFavicon = (host = '') => trackerFaviconCandidates(host)[0] || '';
 // Existing table renderers share this recovery path.  Browsers do not require
 // CORS permission to display an image, so this reaches the actual tracker icon
 // even though the tracker API itself is cross-origin.
@@ -260,7 +261,8 @@ if (
       const image = event.target;
       if (
         !(image instanceof HTMLImageElement) ||
-        !image.classList.contains('tracker-favicon-small')
+        !image.classList.contains('tracker-favicon-small') ||
+        image.classList.contains('tracker-favicon-controlled')
       )
         return;
       const host = image.alt.replace(/ favicon$/, '');
@@ -278,10 +280,10 @@ function TrackerFavicon({ host }) {
   const [candidateIndex, setCandidateIndex] = useState(0);
   useEffect(() => setCandidateIndex(0), [host]);
   const src = candidates[candidateIndex];
-  if (!src) return null;
+  if (!src) return <span className="tracker-favicon-small tracker-favicon-fallback" aria-label={`${host} tracker icon`}><Network size={12} /></span>;
   return (
     <img
-      className="tracker-favicon-small"
+      className="tracker-favicon-small tracker-favicon-controlled"
       src={src}
       alt={`${host} favicon`}
       onError={() => setCandidateIndex((index) => index + 1)}
@@ -1923,13 +1925,7 @@ function LegacyTorrentTable({
                       <div className={`state-icon ${stateKey(torrent.state)}`}>
                         <Icon size={15} />
                       </div>
-                      {torrent.tracker_host && (
-                        <img
-                          className="tracker-favicon-small"
-                          src={trackerFavicon(torrent.tracker_host)}
-                          alt={`${torrent.tracker_host} favicon`}
-                        />
-                      )}
+                      {torrent.tracker_host && <TrackerFavicon host={torrent.tracker_host} />}
                       <div className="torrent-name">
                         <strong title={torrent.name}>{torrent.name}</strong>
                       </div>
@@ -2437,13 +2433,7 @@ function TorrentTable({
             <div className={`state-icon ${stateKey(torrent.state)}`}>
               <Icon size={15} />
             </div>
-            {torrent.tracker_host && (
-              <img
-                className="tracker-favicon-small"
-                src={trackerFavicon(torrent.tracker_host)}
-                alt={`${torrent.tracker_host} favicon`}
-              />
-            )}
+            {torrent.tracker_host && <TrackerFavicon host={torrent.tracker_host} />}
             <div className="torrent-name">
               <strong title={torrent.name}>{torrent.name}</strong>
             </div>

@@ -20,7 +20,7 @@
 .theme-preview.christmas { --preview-bg:#04120e; --preview-panel:#18372c; --preview-accent:#ffb3bf; }
 .theme-preview.halloween { --preview-bg:#000000; --preview-panel:#1c1005; --preview-accent:#ff9d2e; }
 .theme-preview.valentine { --preview-bg:#fff3f6; --preview-panel:#f5d9e1; --preview-accent:#8a1442; }
-.theme-preview.st-patricks { --preview-bg:#f1f5e8; --preview-panel:#d7e4bd; --preview-accent:#004922; }
+.theme-preview.st-patricks { --preview-bg:#e8efdb; --preview-panel:#0d5136; --preview-accent:#e0c27a; }
 .theme-preview.independence { --preview-bg:#020b1b; --preview-panel:#153454; --preview-accent:#ffb6c0; }
 .theme-preview.new-year { --preview-bg:#030405; --preview-panel:#1e2530; --preview-accent:#f6d274; }
 .theme-preview.terminal {
@@ -34,9 +34,14 @@
   border-radius:2px;
 }
 .theme-preview.christmas { background:linear-gradient(#04120e55,#04120eb8),url('./assets/christmas-night-observatory.jpg') center/cover; }
+.theme-preview.dark { background:linear-gradient(#07182480,#071824c4),url('./assets/midnight-operations-bay.jpg') center/cover; }
+.theme-preview.light { background:linear-gradient(#f8fcf5a8,#eef5f0b0),url('./assets/paper-observatory-atrium.jpg') center/cover; }
+.theme-preview.ocean { background:linear-gradient(#061e2d80,#061e2dc4),url('./assets/ocean-deep-sea-habitat.jpg') center/cover; }
+.theme-preview.forest { background:linear-gradient(#ecf5e6a0,#e3f0dda6),url('./assets/forest-bioluminescent-conservatory.jpg') center/cover; }
+.theme-preview.sunset { background:linear-gradient(#2a284880,#2a2848c4),url('./assets/sunset-desert-observatory.jpg') center/cover; }
 .theme-preview.halloween { background:linear-gradient(#00000044,#000000c4),url('./assets/halloween-midnight-conservatory.jpg') center/cover; }
 .theme-preview.valentine { background:linear-gradient(#fff3f655,#fff3f6c4),url('./assets/valentine-art-deco-salon.jpg') center/cover; }
-.theme-preview.st-patricks { background:linear-gradient(#f1f5e855,#f1f5e8c4),url('./assets/st-patricks-botanical-conservatory.jpg') center/cover; }
+.theme-preview.st-patricks { background:linear-gradient(#d6e6c490,#d6e6c4bb),url('./assets/st-patricks-botanical-conservatory.jpg') center/cover; }
 .theme-preview.independence { background:linear-gradient(#020b1b55,#020b1bc4),url('./assets/independence-coastal-observatory.jpg') center/cover; }
 .theme-preview.new-year { background:linear-gradient(#03040544,#030405c4),url('./assets/new-year-rooftop-observatory.jpg') center/cover; }
 .theme-gallery-heading { position:sticky; top:-16px; z-index:2; margin:-4px -4px 0; padding:12px 6px; background:var(--surface); border-bottom:1px solid var(--line); }

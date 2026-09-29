@@ -28,6 +28,7 @@
 .file-row>.file-priority { grid-column:3; justify-self:start; }
 .file-row>.file-wanted-toggle { grid-column:4; }
 .file-row>small { grid-column:1/-1; white-space:normal; line-height:1.6; }
+.tracker-favicon-fallback { display:grid; place-items:center; color:var(--muted-2); border:1px solid var(--line); background:var(--surface-2); }
 .file-row>.inline-rename { grid-column:2/-1; }
 
 /* Dream-loop pass: a calm command-center hierarchy with useful live telemetry. */
