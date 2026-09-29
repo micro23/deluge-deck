@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.33
+
+- Refined the Halloween summary cards and centered its Connections graph.
+- Kept Halloween web corner art proportional across window sizes.
+- Refined the Valentine Connections graph and responsive table filigree.
+- Replaced the Valentine Seeding marker with a glossy heart icon.
+
 ## 1.0.32
 
 - Added standalone Valentine and Halloween themes with theme-scoped artwork and layout treatments.

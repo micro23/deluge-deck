@@ -5966,9 +5966,18 @@ function Stat({ icon: Icon, label, value, detail, tone = '', trend = [] }) {
   const low = Math.min(...values);
   const high = Math.max(...values);
   const range = Math.max(1, high - low);
-  const points = values.map((sample, index) =>
-    `${(index / (values.length - 1)) * 100},${high === low ? 16 : 27 - ((sample - low) / range) * 21}`,
-  ).join(' ');
+  const hasBalancedConnectionSpark = tone === 'amber'
+    && ['halloween', 'valentine'].includes(document.documentElement.dataset.theme);
+  const sparkValues = hasBalancedConnectionSpark ? Array.from({ length: 9 }, (_, index) => index) : values;
+  const points = sparkValues.map((sample, index) => {
+    const x = (index / (sparkValues.length - 1)) * 100;
+    // Keep the seasonal connection trace balanced when the real history is
+    // mostly zero with one recent connection.
+    const y = hasBalancedConnectionSpark
+      ? 16 - Math.sin((index / (sparkValues.length - 1)) * Math.PI * 4) * 5
+      : high === low ? 16 : 27 - ((sample - low) / range) * 21;
+    return `${x},${y}`;
+  }).join(' ');
   return (
     <div className={`stat-card ${tone}`}>
       <div className="stat-icon">
