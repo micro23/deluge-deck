@@ -381,7 +381,7 @@ function Login({ onConnect, mode, sessionMessage = '' }) {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Your Deluge Web password"
-              autoFocus
+              autoComplete="current-password"
             />
           </label>
           {(error || sessionMessage) && (

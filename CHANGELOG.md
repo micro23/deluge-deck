@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.31
+
+- Avoid opening the password manager automatically on first load so the Deluge Web password field is ready for deliberate input.
+
 ## 1.0.30
 
 - Added public-release privacy guidance and stronger ignore rules for local credentials, browser captures, torrent metadata, and Deluge runtime state.
