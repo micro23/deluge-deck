@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 88" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="10" y1="18" x2="118" y2="68" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0bd"/><stop offset=".28" stop-color="#bd8a45"/><stop offset=".54" stop-color="#f4d28b"/><stop offset=".78" stop-color="#966535"/><stop offset="1" stop-color="#f7dda0"/></linearGradient>
+    <linearGradient id="ruby" x1="52" y1="23" x2="76" y2="61" gradientUnits="userSpaceOnUse"><stop stop-color="#f69aa8"/><stop offset=".45" stop-color="#c34f6d"/><stop offset="1" stop-color="#87243e"/></linearGradient>
+    <filter id="shadow" x="8" y="12" width="112" height="72" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#633044" flood-opacity=".3"/></filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="url(#gold)" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M54 43C43 38 34 30 24 21 18 16 11 16 9 20c-2 4 4 8 8 11-7-2-12 0-11 4 1 4 8 5 14 6-6 1-9 4-7 7 2 4 10 3 17 1 8-2 14-1 22 2l6-8Z" fill="url(#gold)"/>
+    <path d="M74 43c11-5 20-13 30-22 6-5 13-5 15-1 2 4-4 8-8 11 7-2 12 0 11 4-1 4-8 5-14 6 6 1 9 4 7 7-2 4-10 3-17 1-8-2-14-1-22 2l-6-8Z" fill="url(#gold)"/>
+    <path d="M17 27c8 6 16 11 25 14M13 38c9 3 17 5 27 5M20 49c7-1 13-2 20-1M111 27c-8 6-16 11-25 14m29-3c-9 3-17 5-27 5m20 6c-7-1-13-2-20-1" stroke="#fff0c5" stroke-width="1.5"/>
+    <path d="M64 67 42 47c-11-11 5-26 17-15l5 5 5-5c12-11 28 4 17 15L64 67Z" fill="url(#ruby)" stroke="#8a4e36"/>
+    <path d="M50 34c4-3 9-2 12 1" stroke="#ffe3db" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

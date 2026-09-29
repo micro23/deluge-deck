@@ -485,10 +485,10 @@
   :root[data-theme="terminal"] .theme-trigger { width:auto!important; padding:0 4px!important; font-size:16px; }
   :root[data-theme="terminal"] .global-trigger svg,
   :root[data-theme="terminal"] .theme-trigger>svg { display:none; }
-  :root[data-theme="terminal"] .global-trigger::after { content:"[ Limits ]"; }
+  :root[data-theme="terminal"] .global-trigger::after { content:"[ Global Limit: -- ]"; }
   :root[data-theme="terminal"] .theme-trigger::after { content:"[ Theme ]"; }
   :root[data-theme="terminal"] .avatar { display:flex; align-items:center; gap:4px; width:auto; font-size:16px; }
-  :root[data-theme="terminal"] .avatar::before { content:"["; }
+  :root[data-theme="terminal"] .avatar::before { content:"[ (U)ser: "; }
   :root[data-theme="terminal"] .avatar::after { content:"]"; }
 }
 
@@ -633,5 +633,130 @@
   :root[data-theme="terminal"] .deck-status-rail {
     min-height:34px;
     padding-block:4px;
+  }
+}
+
+/* Desktop composition follows the supplied CRT screenshot: a tall command
+   header, no marketing/page heading, four compact fieldsets, and the dense
+   transfer list. Keep every override behind the Terminal theme gate. */
+@media (min-width:1101px) {
+  :root[data-theme="terminal"] .topbar {
+    height:96px;
+    min-height:96px;
+    padding-inline:45px;
+    align-items:flex-end;
+    border-bottom:0!important;
+  }
+
+  :root[data-theme="terminal"] .topbar-heading {
+    align-self:flex-end;
+    margin:0 0 10px;
+  }
+
+  :root[data-theme="terminal"] .topbar-heading::before {
+    content:"[ CLI TORRENT CLIENT v1.0 ]";
+    font-size:17px;
+  }
+
+  :root[data-theme="terminal"] .top-actions {
+    position:absolute;
+    top:64px;
+    right:30px;
+    left:440px;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  :root[data-theme="terminal"] .top-actions .mobile-preferences { display:none!important; }
+
+  :root[data-theme="terminal"] .workspace {
+    min-height:calc(100vh - 96px);
+    display:flex;
+    flex-direction:column;
+    padding:16px 18px 22px;
+  }
+
+  :root[data-theme="terminal"] .workspace > .page-heading,
+  :root[data-theme="terminal"] .workspace > .library-mobile-controls {
+    display:none!important;
+  }
+
+  :root[data-theme="terminal"] .workspace > .search-wrap {
+    position:fixed;
+    top:64px;
+    left:544px;
+    right:auto;
+    width:105px;
+    height:30px;
+    margin:0;
+    z-index:8;
+  }
+
+  :root[data-theme="terminal"] .stats-grid {
+    flex:none;
+    margin:0 0 12px 315px;
+    gap:16px;
+  }
+
+  :root[data-theme="terminal"] .stats-grid .stat-card {
+    min-height:89px;
+  }
+
+  :root[data-theme="terminal"] .table-shell {
+    flex:none;
+  }
+
+  :root[data-theme="terminal"] .table-shell table.auto-sized-table {
+    width:100%!important;
+    min-width:0!important;
+    table-layout:fixed;
+  }
+
+  :root[data-theme="terminal"] .table-shell th.check-cell,
+  :root[data-theme="terminal"] .table-shell td:first-child { width:3%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="name"],
+  :root[data-theme="terminal"] .table-shell td[data-column="name"] { width:38%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="state"],
+  :root[data-theme="terminal"] .table-shell td[data-column="state"] { width:8%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="progress"],
+  :root[data-theme="terminal"] .table-shell td[data-column="progress"] { width:12%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="size"],
+  :root[data-theme="terminal"] .table-shell td[data-column="size"] { width:6%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="ratio"],
+  :root[data-theme="terminal"] .table-shell td[data-column="ratio"] { width:5%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="download"],
+  :root[data-theme="terminal"] .table-shell td[data-column="download"],
+  :root[data-theme="terminal"] .table-shell th[data-column="upload"],
+  :root[data-theme="terminal"] .table-shell td[data-column="upload"] { width:6%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="eta"],
+  :root[data-theme="terminal"] .table-shell td[data-column="eta"] { width:5%!important; }
+  :root[data-theme="terminal"] .table-shell th[data-column="seeds"],
+  :root[data-theme="terminal"] .table-shell td[data-column="seeds"],
+  :root[data-theme="terminal"] .table-shell th[data-column="peers"],
+  :root[data-theme="terminal"] .table-shell td[data-column="peers"] { width:5.5%!important; }
+
+  :root[data-theme="terminal"] .table-shell .column-menu-trigger,
+  :root[data-theme="terminal"] .table-shell .column-resize-handle,
+  :root[data-theme="terminal"] .table-shell .name-content :is(.state-icon,.tracker-favicon-small) { display:none!important; }
+
+  :root[data-theme="terminal"] .table-shell th[data-column="name"] .sort-button {
+    font-size:0;
+  }
+
+  :root[data-theme="terminal"] .table-shell th[data-column="name"] .sort-button::before {
+    content:"NAME";
+    font-size:14px;
+  }
+
+  :root[data-theme="terminal"] .table-shell .resizable-th[draggable="true"] .sort-button::after {
+    content:none!important;
+  }
+
+  :root[data-theme="terminal"] .deck-status-rail {
+    margin-top:auto;
+  }
+
+  :root[data-theme="terminal"] .theme-trigger {
+    display:none!important;
   }
 }

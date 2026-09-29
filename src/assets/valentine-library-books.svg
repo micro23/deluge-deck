@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 88" fill="none">
+  <defs><linearGradient id="gold" x1="12" y1="15" x2="96" y2="78" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0bf"/><stop offset=".28" stop-color="#bb8642"/><stop offset=".58" stop-color="#f3d494"/><stop offset=".82" stop-color="#916239"/><stop offset="1" stop-color="#ffdfa0"/></linearGradient><linearGradient id="book" x1="20" y1="14" x2="45" y2="74" gradientUnits="userSpaceOnUse"><stop stop-color="#b74a58"/><stop offset="1" stop-color="#6e263c"/></linearGradient></defs>
+  <g stroke="url(#gold)" stroke-width="2.2" stroke-linejoin="round">
+    <path d="M20 20c7-4 16-5 24-3v51c-8-2-17-1-24 3V20Z" fill="url(#book)"/><path d="M25 25v39m14-45v51M25 31h14m-14 27h14"/>
+    <path d="M45 16c7-3 15-3 22 0v55c-7-3-15-3-22 0V16Z" fill="#d39a55"/><path d="M51 20v50m11-52v53M51 28h11m-11 32h11"/>
+    <path d="M68 22c7-4 15-4 22-2v49c-7-2-15-2-22 2V22Z" fill="#91354c"/><path d="M74 25v43m11-46v50M74 32h11m-11 29h11"/>
+    <path d="M13 70c28 4 55 4 83 0v7c-28 4-55 4-83 0v-7Z" fill="#e9c27d"/>
+  </g>
+  <path d="M55 34c-5-6-13 1 0 10 13-9 5-16 0-10Z" fill="#8f2b48" stroke="#f0d292" stroke-width="1.4"/>
+</svg>

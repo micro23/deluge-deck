@@ -64,6 +64,8 @@ import './dashboard-polish.css';
 import './mobile-overrides.css';
 import './themes/terminal.css';
 import './native-deluge.css';
+import './themes/valentine.css';
+import './themes/halloween.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -1398,12 +1400,16 @@ function Topbar({
   );
 }
 function Progress({ value = 0, state }) {
+  const progress = Math.max(0, Math.min(100, value));
   return (
     <div className="progress-wrap">
       <div className="progress-track">
         <div
           className={`progress-bar ${stateKey(state)}`}
-          style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
+          style={{
+            width: `${progress}%`,
+            '--halloween-potion-fill-width': `${progress * 0.7}%`,
+          }}
         />
       </div>
       <span>{Number(value).toFixed(value % 1 ? 1 : 0)}%</span>
@@ -2179,6 +2185,7 @@ function MobileTorrentList({ torrents, selected, setSelected, onOpen, onMenu, lo
 
 function TorrentTable({
   torrents,
+  theme,
   selected,
   setSelected,
   onOpen,
@@ -2194,14 +2201,28 @@ function TorrentTable({
   const mobile = useMobileLayout();
   const columnResizeStart = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
-    if (!hasCurrentTableLayout()) return DEFAULT_COLUMN_VISIBILITY;
+    const scopedTheme = theme === 'terminal' || theme === 'valentine' || theme === 'halloween';
+    const visibilityKey = scopedTheme
+      ? `deck-${theme}-column-visibility`
+      : 'deck-column-visibility';
+    const themeColumns = theme === 'terminal'
+      ? { progress: true }
+      : theme === 'valentine'
+        ? { progress: true, seedingTime: true }
+        : theme === 'halloween'
+          ? { progress: true, seedingTime: true }
+          : {};
+    if (!hasCurrentTableLayout())
+      return { ...DEFAULT_COLUMN_VISIBILITY, ...themeColumns };
     try {
+      const saved = JSON.parse(localStorage.getItem(visibilityKey) || '{}');
       return {
         ...DEFAULT_COLUMN_VISIBILITY,
-        ...JSON.parse(localStorage.getItem('deck-column-visibility') || '{}'),
+        ...themeColumns,
+        ...saved,
       };
     } catch {
-      return DEFAULT_COLUMN_VISIBILITY;
+      return { ...DEFAULT_COLUMN_VISIBILITY, ...themeColumns };
     }
   });
   const tableRef = useRef(null);
@@ -2238,10 +2259,12 @@ function TorrentTable({
   });
   useEffect(() => {
     localStorage.setItem(
-      'deck-column-visibility',
+      theme === 'terminal' || theme === 'valentine' || theme === 'halloween'
+        ? `deck-${theme}-column-visibility`
+        : 'deck-column-visibility',
       JSON.stringify(columnVisibility),
     );
-  }, [columnVisibility]);
+  }, [columnVisibility, theme]);
   useEffect(() => {
     localStorage.setItem('deck-column-widths', JSON.stringify(columnWidths));
   }, [columnWidths]);
@@ -4393,6 +4416,7 @@ function DeckPreferences({ onClose }) {
   }, []);
   const onPathChange = (key, value) => {
     if (key === 'celebrateCompletions') {
+      setCelebrateCompletions(Boolean(value));
       localStorage.setItem('deck-celebrations', String(value));
       window.dispatchEvent(
         new CustomEvent('deck-settings', {
@@ -5735,7 +5759,9 @@ function App() {
             </div>
           )}
           <TorrentTable
+            key={theme}
             torrents={filtered}
+            theme={theme}
             selected={selected}
             setSelected={setSelected}
             onOpen={setDetail}

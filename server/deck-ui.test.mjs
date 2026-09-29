@@ -142,6 +142,7 @@ test('completion celebrations are optional and reduced-motion aware', async () =
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /deck-celebrations/);
   assert.match(ui, /const \[celebrateCompletions, setCelebrateCompletions\] = useState/);
+  assert.match(ui, /if \(key === 'celebrateCompletions'\) \{\s*setCelebrateCompletions\(Boolean\(value\)\);\s*localStorage\.setItem\('deck-celebrations', String\(value\)\)/);
   assert.match(ui, /prefers-reduced-motion: reduce/);
   assert.match(ui, /completed! 🎉/);
   assert.match(ui, /celebration-preference/);

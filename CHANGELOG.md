@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.32
+
+- Added standalone Valentine and Halloween themes with theme-scoped artwork and layout treatments.
+- Recreated the Valentine dashboard with bespoke heart, book, filigree, and brocade artwork.
+- Added the Halloween graveyard dashboard, glass potion-vial progress meters, and an orange, copper, and black palette.
+- Expanded the isolated Terminal layout to follow its command-line reference more closely.
+- Fixed the completion-celebration preference so changes apply immediately and isolated seasonal table-column preferences by theme.
+
 ## 1.0.31
 
 - Avoid opening the password manager automatically on first load so the Deluge Web password field is ready for deliberate input.

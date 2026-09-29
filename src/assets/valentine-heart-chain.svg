@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 88" fill="none">
+  <defs><linearGradient id="gold" x1="10" y1="12" x2="105" y2="78" gradientUnits="userSpaceOnUse"><stop stop-color="#fff0bc"/><stop offset=".28" stop-color="#b57b35"/><stop offset=".54" stop-color="#f1d087"/><stop offset=".8" stop-color="#8d5b2e"/><stop offset="1" stop-color="#ffdfa2"/></linearGradient><linearGradient id="rose" x1="34" y1="18" x2="73" y2="61" gradientUnits="userSpaceOnUse"><stop stop-color="#fff5dc"/><stop offset="1" stop-color="#e7b8a6"/></linearGradient></defs>
+  <g stroke="url(#gold)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M54 71 22 42C4 25 30 5 48 25l7 8 7-8C80 5 106 25 88 42L54 71Z" fill="url(#rose)"/>
+    <path d="M73 66 54 49c-11-11 5-24 16-12l4 5 5-5c11-12 27 1 16 12L73 66Z" fill="#f0c79d"/>
+    <path d="M19 36c7 6 13 12 21 18m46-18c-7 6-13 12-21 18" stroke="#fff5d3" stroke-width="1.5"/>
+  </g>
+  <g fill="#dfb36c" stroke="#9f6c37" stroke-width=".7"><circle cx="15" cy="35" r="2.4"/><circle cx="23" cy="46" r="2.4"/><circle cx="34" cy="56" r="2.4"/><circle cx="44" cy="65" r="2.4"/><circle cx="93" cy="35" r="2.4"/><circle cx="85" cy="46" r="2.4"/><circle cx="74" cy="56" r="2.4"/><circle cx="64" cy="65" r="2.4"/></g>
+</svg>
