@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.34
+
+- Added standalone Christmas, New Year’s, and Independence Day themes with isolated artwork, layouts, seasonal card treatments, and responsive styling.
+- Centered and evenly spaced the Connections graph for all three themes.
+
+
 ## 1.0.33
 
 - Refined the Halloween summary cards and centered its Connections graph.

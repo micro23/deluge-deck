@@ -66,6 +66,9 @@ import './themes/terminal.css';
 import './native-deluge.css';
 import './themes/valentine.css';
 import './themes/halloween.css';
+import './themes/christmas.css';
+import './themes/new-year.css';
+import './themes/independence.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -5967,7 +5970,7 @@ function Stat({ icon: Icon, label, value, detail, tone = '', trend = [] }) {
   const high = Math.max(...values);
   const range = Math.max(1, high - low);
   const hasBalancedConnectionSpark = tone === 'amber'
-    && ['halloween', 'valentine'].includes(document.documentElement.dataset.theme);
+    && ['halloween', 'valentine', 'christmas', 'new-year', 'independence'].includes(document.documentElement.dataset.theme);
   const sparkValues = hasBalancedConnectionSpark ? Array.from({ length: 9 }, (_, index) => index) : values;
   const points = sparkValues.map((sample, index) => {
     const x = (index / (sparkValues.length - 1)) * 100;

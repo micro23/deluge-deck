@@ -6,11 +6,11 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.33.
+Current release: 1.0.34.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
-The current release keeps main-window `.torrent` drops in the review flow: a drop only preloads the normal Add to Deluge dialog, and nothing is uploaded or added until **Add to Deluge** is pressed. Removing one or many torrents opens a Deck dialog with separate **keep downloaded data** and **remove downloaded data** choices. Deck Preferences is an in-app panel for themes, refresh timing, keyboard help, and the centered native Deluge Preferences window. Desktop and mobile render the login immediately and transition to the correctly sized dashboard without a refresh. Terminal remains isolated in its own stylesheet, alongside new Valentine and Halloween themes with their own seasonal artwork and layouts.
+The current release keeps main-window `.torrent` drops in the review flow: a drop only preloads the normal Add to Deluge dialog, and nothing is uploaded or added until **Add to Deluge** is pressed. Removing one or many torrents opens a Deck dialog with separate **keep downloaded data** and **remove downloaded data** choices. Deck Preferences is an in-app panel for themes, refresh timing, keyboard help, and the centered native Deluge Preferences window. Desktop and mobile render the login immediately and transition to the correctly sized dashboard without a refresh. Terminal remains isolated in its own stylesheet, alongside isolated Valentine, Halloween, Christmas, New Year’s, and Independence Day themes with seasonal artwork and layouts.
 
 ## Windows quick start
 

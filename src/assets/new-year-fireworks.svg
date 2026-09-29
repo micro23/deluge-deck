@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" fill="none">
+  <g stroke="#edcf86" stroke-width="2" stroke-linecap="round" opacity=".44">
+    <g transform="translate(205 188)"><path d="M0-14V-112M10-10 76-76M14 0h102M10 10l73 73M0 14v103M-10 10l-73 73M-14 0h-105M-10-10l-73-73M0-14l-1-45M10-10l37-37M14 0h50M10 10l36 37M0 14v51M-10 10l-37 37M-14 0h-51M-10-10l-37-37"/><circle r="4" fill="#fff0bd" stroke="none"/><circle cx="0" cy="-112" r="3" fill="#fff0bd" stroke="none"/><circle cx="76" cy="-76" r="3" fill="#fff0bd" stroke="none"/><circle cx="116" r="3" fill="#fff0bd" stroke="none"/><circle cy="117" r="3" fill="#fff0bd" stroke="none"/><circle cx="-105" r="3" fill="#fff0bd" stroke="none"/></g>
+    <g transform="translate(930 170) scale(.82)"><path d="M0-14V-112M10-10 76-76M14 0h102M10 10l73 73M0 14v103M-10 10l-73 73M-14 0h-105M-10-10l-73-73M0-14l-1-45M10-10l37-37M14 0h50M10 10l36 37M0 14v51M-10 10l-37 37M-14 0h-51M-10-10l-37-37"/><circle r="4" fill="#fff0bd" stroke="none"/></g>
+    <g transform="translate(720 420) scale(.58)"><path d="M0-14V-112M10-10 76-76M14 0h102M10 10l73 73M0 14v103M-10 10l-73 73M-14 0h-105M-10-10l-73-73M0-14l-1-45M10-10l37-37M14 0h50M10 10l36 37M0 14v51M-10 10l-37 37M-14 0h-51M-10-10l-37-37"/></g>
+  </g>
+  <g fill="#fff0bd" opacity=".42"><path d="m387 107 5 13 13 5-13 5-5 13-5-13-13-5 13-5zM1092 337l4 11 11 4-11 4-4 11-4-11-11-4 11-4zM512 360l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></g>
+</svg>
