@@ -916,3 +916,11 @@
     margin-left:28%!important;
   }
 }
+
+/* Center the terminal title cards across the full workspace instead of
+   reserving an extra left gutter that pushes them to the right. */
+@media (min-width:761px) and (min-height:541px) {
+  :root[data-theme="terminal"] body .workspace .stats-grid {
+    margin-left:0!important;
+  }
+}
