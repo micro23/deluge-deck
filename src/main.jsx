@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import {
@@ -58,6 +58,7 @@ import {
 import { api, pluginMode, rpc } from './app/api.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES } from './app/themes.js';
+import { ThemeDetail } from './app/ThemeDetail.jsx';
 import './styles.css';
 import './theme-gallery.css';
 import './dashboard-polish.css';
@@ -72,6 +73,7 @@ import './themes/independence.css';
 import './themes/core.css';
 import './themes/tablet.css';
 import './themes/mobile.css';
+import './themes/signatures.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -574,10 +576,7 @@ function ThemeMenu({ theme, setTheme }) {
               aria-checked={theme === key}
               aria-label={`${label}: ${description}`}
             >
-              <span className={`theme-preview ${key}`} aria-hidden="true">
-                <span className="theme-preview-sidebar"><i /><i /><i /></span>
-                <span className="theme-preview-content"><i /><span><i /><i /><i /></span><i /><i /></span>
-              </span>
+              <span className={`theme-preview ${key}`} aria-hidden="true" />
               <span className="theme-gallery-caption"><strong>{label}</strong><small>{description}</small></span>
               {theme === key && <Check size={14} />}
             </button>
@@ -1407,6 +1406,7 @@ function Topbar({
 }
 function Progress({ value = 0, state }) {
   const progress = Math.max(0, Math.min(100, value));
+  const potionId = useId();
   return (
     <div className="progress-wrap">
       <div className="progress-track">
@@ -1414,9 +1414,56 @@ function Progress({ value = 0, state }) {
           className={`progress-bar ${stateKey(state)}${progress >= 99.95 ? ' complete' : ''}`}
           style={{
             width: `${progress}%`,
-            '--halloween-potion-fill-width': `${progress * 0.74}%`,
           }}
         />
+        <svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <clipPath id={`${potionId}-inside`}>
+              <path d="M22 11H133C137 11 138 6 145 6C152 6 156 10 156 16S152 26 145 26C138 26 137 21 133 21H22Z" />
+            </clipPath>
+            <linearGradient id={`${potionId}-glass`} x2="0" y2="1">
+              <stop stopColor="#e0e0e0" stopOpacity=".8" />
+              <stop offset=".45" stopColor="#737373" stopOpacity=".7" />
+              <stop offset="1" stopColor="#b6b6b6" stopOpacity=".8" />
+            </linearGradient>
+            <linearGradient id={`${potionId}-liquid`} x2="0" y2="1">
+              <stop stopColor="#ffd779" />
+              <stop offset=".45" stopColor="#f7a52e" />
+              <stop offset="1" stopColor="#ba4f13" />
+            </linearGradient>
+          </defs>
+          <path d="M17 8H132C137 8 137 3 145 3C154 3 159 8 159 16S154 29 145 29C137 29 137 24 132 24H17Z" fill="#252525" stroke={`url(#${potionId}-glass)`} strokeWidth="1.5" />
+          <g clipPath={`url(#${potionId}-inside)`}>
+            <rect x="22" y="6" width={134 * progress / 100} height="20" fill={`url(#${potionId}-liquid)`} />
+            {progress > 0 && <path d={`M22 12H${Math.min(133, 22 + 134 * progress / 100)}`} stroke="#ffe5a1" strokeOpacity=".65" />}
+          </g>
+          <path d="M23 9H132C138 9 140 5 145 5C149 5 152 7 153 9" fill="none" stroke="#f0f0f0" strokeOpacity=".55" strokeWidth="1" strokeLinecap="round" />
+          <path d="M23 23H132C137 23 140 27 145 27" fill="none" stroke="#9c9c9c" strokeOpacity=".5" strokeWidth="1" />
+          <rect x="3" y="10" width="12" height="12" rx="2" fill="#805029" stroke="#b88648" strokeWidth="1" />
+          <path d="M6 12V20M10 12V20" stroke="#d2a365" strokeOpacity=".35" />
+          <rect x="14" y="7" width="7" height="18" rx="2" fill="#353535" stroke={`url(#${potionId}-glass)`} strokeWidth="1.2" />
+          <path d="M16 9V22" stroke="#e6e6e6" strokeOpacity=".65" />
+        </svg>
+        <svg className="candy-cane" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <pattern id={`${potionId}-candy-stripes`} patternUnits="userSpaceOnUse" width="12" height="12" patternTransform="rotate(35)">
+              <rect width="12" height="12" fill="#fff5e9" />
+              <rect width="5" height="12" fill="#d93443" />
+            </pattern>
+          </defs>
+          <path d="M7 23H139C157 23 157 7 143 7H134" fill="none" stroke="#675553" strokeWidth="10" strokeLinecap="round" />
+          {progress > 0 && <path
+            className="candy-cane-fill"
+            d="M7 23H139C157 23 157 7 143 7H134"
+            pathLength="100"
+            fill="none"
+            stroke={`url(#${potionId}-candy-stripes)`}
+            strokeWidth="10"
+            strokeLinecap={progress >= 100 ? 'round' : 'butt'}
+            strokeDasharray={`${progress} 100`}
+          />}
+          <path d="M7 20H139C152 20 152 8 143 8H135" fill="none" stroke="#ffffff" strokeOpacity=".35" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
       </div>
       <span>{Number(value).toFixed(value % 1 ? 1 : 0)}%</span>
     </div>
@@ -1439,11 +1486,12 @@ const COLUMN_CHOOSER_COLUMNS = [
 ].map(([key, label]) => ({ key, label }));
 function ColumnChooser({ columns, visibility, onToggle, onClose }) {
   useRestoreFocus();
+  const overlayHost = useViewportOverlayHost();
   const dialogRef = useRef(null);
   useFocusTrap(dialogRef);
   useDialogDismiss(onClose, dialogRef);
   const visibleCount = columns.filter(({ key }) => visibility[key]).length;
-  return (
+  return createPortal(
     <div
       className="modal-backdrop column-chooser-backdrop"
       onMouseDown={(event) => event.target === event.currentTarget && onClose()}
@@ -1497,7 +1545,8 @@ function ColumnChooser({ columns, visibility, onToggle, onClose }) {
           </button>
         </footer>
       </section>
-    </div>
+    </div>,
+    overlayHost,
   );
 }
 function LegacyTorrentTable({
@@ -5700,6 +5749,7 @@ function App() {
           </div>
           <div className="stats-grid">
             <Stat
+              theme={theme}
               icon={Download}
               label="Download"
               value={rate(stats.download_rate)}
@@ -5707,6 +5757,7 @@ function App() {
               trend={telemetryHistory.download}
             />
             <Stat
+              theme={theme}
               icon={UploadCloud}
               label="Upload"
               value={rate(stats.upload_rate)}
@@ -5715,6 +5766,7 @@ function App() {
               trend={telemetryHistory.upload}
             />
             <Stat
+              theme={theme}
               icon={Network}
               label="Connections"
               value={stats.num_connections || 0}
@@ -5723,6 +5775,7 @@ function App() {
               trend={telemetryHistory.connections}
             />
             <Stat
+              theme={theme}
               icon={HardDriveDownload}
               label="Library"
               value={torrents.length}
@@ -5967,13 +6020,13 @@ function App() {
     </div>
   );
 }
-function Stat({ icon: Icon, label, value, detail, tone = '', trend = [] }) {
+function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }) {
   const values = trend.length > 1 ? trend : [trend[0] || 0, trend[0] || 0];
   const low = Math.min(...values);
   const high = Math.max(...values);
   const range = Math.max(1, high - low);
   const hasBalancedConnectionSpark = tone === 'amber'
-    && ['halloween', 'valentine', 'christmas', 'new-year', 'independence'].includes(document.documentElement.dataset.theme);
+    && ['halloween', 'valentine', 'christmas', 'new-year', 'independence'].includes(theme);
   const sparkValues = hasBalancedConnectionSpark ? Array.from({ length: 9 }, (_, index) => index) : values;
   const points = sparkValues.map((sample, index) => {
     const x = (index / (sparkValues.length - 1)) * 100;
@@ -5998,6 +6051,7 @@ function Stat({ icon: Icon, label, value, detail, tone = '', trend = [] }) {
         <polygon points={`0,30 ${points} 100,30`} />
         <polyline points={points} />
       </svg>
+      <ThemeDetail theme={theme} />
     </div>
   );
 }

@@ -39,7 +39,7 @@ test('hosted bridge narrowly suppresses an ExtJS login window and leaves an exis
   assert.match(bridge, /\.ext-el-mask/);
   assert.match(bridge, /isAssociatedLoginMask/);
   assert.match(bridge, /mask\.nextElementSibling === stockLoginWindow \|\| mask\.previousElementSibling === stockLoginWindow/);
-  assert.match(bridge, /if \(isAssociatedLoginMask\(mask\)\) mask\.dataset\.delugeDeckStockLogin/);
+  assert.match(bridge, /if \(isAssociatedLoginMask\(mask\)\) \{\s*mask\.dataset\.delugeDeckStockLogin/);
   assert.doesNotMatch(bridge, /querySelectorAll\('\.ext-el-mask'\)\.forEach\(\(mask\) => \{ mask\.dataset/);
   assert.doesNotMatch(bridge, /\.x-mask/);
   assert.doesNotMatch(bridge, /body > \*/);

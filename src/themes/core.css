@@ -37,17 +37,6 @@
     background:var(--core-table)!important;
     box-shadow:var(--core-table-shadow)!important;
   }
-  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) .table-shell::after {
-    content:"";
-    position:absolute;
-    right:3%;
-    bottom:4%;
-    width:min(23%,270px);
-    aspect-ratio:1;
-    background:var(--core-ornament) center/contain no-repeat;
-    opacity:var(--core-ornament-opacity,.22);
-    pointer-events:none;
-  }
   :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) .table-shell th {
     background:var(--core-head)!important;
     border-bottom:2px solid var(--core-border)!important;
@@ -73,8 +62,6 @@
   --core-head:linear-gradient(180deg,#102c3c,#0c202d);
   --core-rail:linear-gradient(90deg,#0d2736ed,#091b29f2 70%,#0a2534ed);
   --core-rail-shadow:inset 0 1px 0 #72e4e027,0 8px 21px #0108107d;
-  --core-ornament:url('../assets/core-midnight-radar.svg');
-  --core-ornament-opacity:.31;
 }
 :root[data-theme="dark"] .stats-grid .stat-card { border-radius:9px!important; }
 :root[data-theme="dark"] .table-shell { border-radius:10px!important; }
@@ -94,8 +81,6 @@
   --core-head:linear-gradient(180deg,#fdfdf9,#e4eff0);
   --core-rail:linear-gradient(90deg,#fffefaef,#edf5f4ef 68%,#fcf8f0ee);
   --core-rail-shadow:inset 0 1px 0 #fff,0 9px 20px #425f6c24;
-  --core-ornament:url('../assets/core-paper-compass.svg');
-  --core-ornament-opacity:.34;
 }
 :root[data-theme="light"] .stats-grid .stat-card span,
 :root[data-theme="light"] .table-shell th { font-family:Georgia,serif; letter-spacing:.025em; }
@@ -115,8 +100,6 @@
   --core-head:linear-gradient(180deg,#12435c,#0a3047);
   --core-rail:linear-gradient(90deg,#0a3349e8,#072639ef 68%,#0b344de8);
   --core-rail-shadow:inset 0 1px 0 #a5f0ff34,0 8px 24px #00121d9c;
-  --core-ornament:url('../assets/core-ocean-sonar.svg');
-  --core-ornament-opacity:.39;
 }
 :root[data-theme="ocean"] .stats-grid .stat-card { border-radius:22px!important; }
 :root[data-theme="ocean"] .stats-grid .stat-card::after { border-radius:16px; }
@@ -137,8 +120,6 @@
   --core-head:linear-gradient(180deg,#f6fbee,#dcebd2);
   --core-rail:linear-gradient(90deg,#fafdf2e8,#e5f1ddea 68%,#f8f5e8e8);
   --core-rail-shadow:inset 0 1px 0 #fff,0 8px 22px #294b2d32;
-  --core-ornament:url('../assets/core-forest-vine.svg');
-  --core-ornament-opacity:.43;
 }
 :root[data-theme="forest"] .stats-grid .stat-card { border-left:3px solid #3c875d!important; }
 :root[data-theme="forest"] .stats-grid .stat-card::after { border-left:0; }
@@ -160,8 +141,6 @@
   --core-head:linear-gradient(90deg,#51466c,#704966 56%,#524264);
   --core-rail:linear-gradient(90deg,#2e3654eb,#47324feb 60%,#3a2b49eb);
   --core-rail-shadow:inset 0 1px 0 #ffd8bf39,0 8px 22px #130e277a;
-  --core-ornament:url('../assets/core-sunset-horizon.svg');
-  --core-ornament-opacity:.43;
 }
 :root[data-theme="sunset"] .stats-grid .stat-card { border-top:2px solid #f1ab97!important; }
 :root[data-theme="sunset"] .stats-grid .stat-card::after { border-top:0; }
@@ -181,8 +160,6 @@
   --core-head:linear-gradient(180deg,#e7f1d6,#d2e2bb);
   --core-rail:linear-gradient(90deg,#e8f3dbef,#fffcefef 70%,#e6efdbef);
   --core-rail-shadow:inset 0 1px 0 #fff,0 8px 23px #24472c4d;
-  --core-ornament:url('../assets/core-st-patricks-knot.svg');
-  --core-ornament-opacity:.44;
 }
 :root[data-theme="st-patricks"] .stats-grid .stat-card { border-radius:13px!important; border-bottom:3px solid #d0b46f!important; }
 :root[data-theme="st-patricks"] .stats-grid .stat-card span,
@@ -210,4 +187,9 @@
     color:#173d29!important;
     text-shadow:none!important;
   }
+}
+
+/* Torrent data takes priority over decorative table watermarks at every size. */
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) .table-shell::after {
+  content:none!important;
 }

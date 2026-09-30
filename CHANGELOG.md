@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.44
+
+- Remove the square shadow around the Valentine Seeding heart.
+
+- Pin the table column menu to the table viewport during both horizontal and vertical scrolling in every theme.
+- Replace the Halloween status-rail ornament with pumpkins and candles in reserved space above the status text.
+- Replace Christmas progress bars with red-and-white striped candy canes; fill follows actual progress along the stem and curved hook.
+- Change Halloween potion bottle glass, outlines, and reflections to neutral grey while retaining the orange liquid.
+- Replace theme picker mockups with current dashboard screenshots for all twelve themes, using only the fictional demo library and larger previews.
+- Remove all six core-theme table watermarks and seasonal floating corner symbols; keep remaining table decoration beneath torrent data.
+- Add bespoke decorative seals to all twelve themes, with radar sweeps, drifting ocean details, botanical glimmers, and a monochrome Terminal cursor.
+- Give Midnight, Paper, Ocean, Forest, Sunset, and St. Patrick's distinct card materials, icon frames, and progress meters.
+- Refine seasonal navigation and Christmas, Independence Day, and New Year progress treatments.
+- Keep decorations out of the input layer, compact them on phones, and respect reduced-motion preferences.
+- Keep the theme picker above sticky table headers and reveal scrolled options below its heading.
+- Update stale favicon and hosted login-mask source assertions to match the existing implementation.
+
 ## 1.0.43
 
 - Replace the Halloween Seeding circle with an orange pumpkin badge and readable checkmark.

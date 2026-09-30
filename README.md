@@ -6,7 +6,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.43.
+Current release: 1.0.44.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -50,6 +50,7 @@ If the plugin is listed but the checkbox immediately clears, the egg was loaded 
 
 ## What’s included
 
+- Bespoke theme details: Midnight radar, Paper letterpress, Ocean portholes, Forest botanical plates, Sunset copper light, St. Patrick's gilt enamel, engraved seasonal seals, and a monochrome Terminal scan texture. Phone layouts use compact static ornaments, and ambient motion respects reduced-motion preferences.
 - Live `web.update_ui` polling with stale/reconnecting state
 - Downloading, seeding, paused, queued, completed, tracker, label, and search filters
 - Multi-select with a sticky bulk action bar and an explicit remove-data safety choice

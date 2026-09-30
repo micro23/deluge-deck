@@ -12,38 +12,21 @@
 .theme-gallery-caption { padding:9px 6px 7px; }
 .theme-gallery-caption strong { display:block; color:var(--text); font-size:12px; }
 .theme-gallery-caption small { display:block; margin-top:4px; color:var(--muted); font-size:10px; line-height:1.5; min-height:30px; }
-.theme-preview { --preview-bg:#060b10; --preview-panel:#17232e; --preview-accent:#72f7f1; display:flex; height:76px; gap:10px; padding:10px; border-radius:8px; background:radial-gradient(ellipse at top right,color-mix(in srgb,var(--preview-accent) 18%,transparent),transparent 80%),var(--preview-bg); }
-.theme-preview.light { --preview-bg:#f3f7f9; --preview-panel:#dfe9ee; --preview-accent:#004a50; }
-.theme-preview.ocean { --preview-bg:#03111e; --preview-panel:#123750; --preview-accent:#71ebff; }
-.theme-preview.forest { --preview-bg:#f0f3e8; --preview-panel:#d9e5c9; --preview-accent:#00482e; }
-.theme-preview.sunset { --preview-bg:#0d1425; --preview-panel:#2a3854; --preview-accent:#ffc0ab; }
-.theme-preview.christmas { --preview-bg:#04120e; --preview-panel:#18372c; --preview-accent:#ffb3bf; }
-.theme-preview.halloween { --preview-bg:#000000; --preview-panel:#1c1005; --preview-accent:#ff9d2e; }
-.theme-preview.valentine { --preview-bg:#fff3f6; --preview-panel:#f5d9e1; --preview-accent:#8a1442; }
-.theme-preview.st-patricks { --preview-bg:#e8efdb; --preview-panel:#0d5136; --preview-accent:#e0c27a; }
-.theme-preview.independence { --preview-bg:#020b1b; --preview-panel:#153454; --preview-accent:#ffb6c0; }
-.theme-preview.new-year { --preview-bg:#030405; --preview-panel:#1e2530; --preview-accent:#f6d274; }
-.theme-preview.terminal {
-  --preview-bg:#000000;
-  --preview-panel:#0b0b0b;
-  --preview-accent:#ffffff;
-  background:
-    repeating-linear-gradient(0deg,rgba(255,255,255,.055) 0 1px,transparent 1px 4px),
-    #000000;
-  border-color:#707070;
-  border-radius:2px;
-}
-.theme-preview.christmas { background:linear-gradient(#04120e55,#04120eb8),url('./assets/christmas-night-observatory.jpg') center/cover; }
-.theme-preview.dark { background:linear-gradient(#07182480,#071824c4),url('./assets/midnight-operations-bay.jpg') center/cover; }
-.theme-preview.light { background:linear-gradient(#f8fcf5a8,#eef5f0b0),url('./assets/paper-observatory-atrium.jpg') center/cover; }
-.theme-preview.ocean { background:linear-gradient(#061e2d80,#061e2dc4),url('./assets/ocean-deep-sea-habitat.jpg') center/cover; }
-.theme-preview.forest { background:linear-gradient(#ecf5e6a0,#e3f0dda6),url('./assets/forest-bioluminescent-conservatory.jpg') center/cover; }
-.theme-preview.sunset { background:linear-gradient(#2a284880,#2a2848c4),url('./assets/sunset-desert-observatory.jpg') center/cover; }
-.theme-preview.halloween { background:linear-gradient(#00000044,#000000c4),url('./assets/halloween-midnight-conservatory.jpg') center/cover; }
-.theme-preview.valentine { background:linear-gradient(#fff3f655,#fff3f6c4),url('./assets/valentine-art-deco-salon.jpg') center/cover; }
-.theme-preview.st-patricks { background:linear-gradient(#d6e6c490,#d6e6c4bb),url('./assets/st-patricks-botanical-conservatory.jpg') center/cover; }
-.theme-preview.independence { background:linear-gradient(#020b1b55,#020b1bc4),url('./assets/independence-coastal-observatory.jpg') center/cover; }
-.theme-preview.new-year { background:linear-gradient(#03040544,#030405c4),url('./assets/new-year-rooftop-observatory.jpg') center/cover; }
+/* Actual dashboard captures from the fictional demo library. The candidate
+   image remains independent of the currently selected theme. */
+.theme-preview { display:block; width:100%; height:auto; aspect-ratio:1456 / 900; flex:none; padding:0; border:1px solid #ffffff20; border-radius:7px; background-position:center; background-size:cover; background-repeat:no-repeat; }
+.theme-preview.dark { background-image:url('./assets/theme-previews/dark.webp'); }
+.theme-preview.light { background-image:url('./assets/theme-previews/light.webp'); }
+.theme-preview.ocean { background-image:url('./assets/theme-previews/ocean.webp'); }
+.theme-preview.forest { background-image:url('./assets/theme-previews/forest.webp'); }
+.theme-preview.sunset { background-image:url('./assets/theme-previews/sunset.webp'); }
+.theme-preview.christmas { background-image:url('./assets/theme-previews/christmas.webp'); }
+.theme-preview.halloween { background-image:url('./assets/theme-previews/halloween.webp'); }
+.theme-preview.valentine { background-image:url('./assets/theme-previews/valentine.webp'); }
+.theme-preview.st-patricks { background-image:url('./assets/theme-previews/st-patricks.webp'); }
+.theme-preview.independence { background-image:url('./assets/theme-previews/independence.webp'); }
+.theme-preview.new-year { background-image:url('./assets/theme-previews/new-year.webp'); }
+.theme-preview.terminal { background-image:url('./assets/theme-previews/terminal.webp'); }
 .theme-gallery-heading { position:sticky; top:-16px; z-index:2; margin:-4px -4px 0; padding:12px 6px; background:var(--surface); border-bottom:1px solid var(--line); }
 .theme-gallery-caption { font-family:system-ui,sans-serif; }
 .connection-recovery { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:14px 16px; border:1px solid var(--amber); border-radius:12px; color:var(--amber); background:var(--surface); }
@@ -52,14 +35,5 @@
 .connection-recovery span { display:block; margin-top:4px; color:var(--muted); font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
 .connection-recovery>svg { flex:none; }
 @media(max-width:480px) { .connection-recovery { flex-wrap:wrap; } .connection-recovery .secondary-button { margin-left:30px; } }
-.theme-preview-sidebar { width:22%; display:flex; flex-direction:column; gap:7px; padding:6px; background:var(--preview-panel); border-radius:4px; }
-.theme-preview i { display:block; border-radius:2px; background:var(--preview-panel); }
-.theme-preview-sidebar i { height:3px; background:var(--preview-accent); opacity:.4; }
-.theme-preview-sidebar i:first-child { opacity:1; margin-bottom:7px; }
-.theme-preview-content { flex:1; display:flex; flex-direction:column; gap:5px; padding-top:3px; }
-.theme-preview-content>i:first-child { width:45%; height:4px; background:var(--preview-accent); }
-.theme-preview-content>span { display:flex; gap:4px; margin:3px 0; }
-.theme-preview-content>span i { flex:1; height:15px; border-top:1px solid var(--preview-accent); }
-.theme-preview-content>i { height:5px; }
 @media(max-width:760px) { .theme-menu .theme-popover { position:fixed; top:66px; left:12px; right:12px; width:auto; max-height:calc(100dvh - 82px); padding:12px; } }
 @media(prefers-reduced-motion:no-preference) { .theme-gallery-option { transition:border-color .15s,background .15s; } }

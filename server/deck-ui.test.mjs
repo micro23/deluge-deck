@@ -849,7 +849,8 @@ test('torrent table supports tracker favicons, compact swarm counts, and seeding
   assert.match(ui, /funfile\.org/);
   assert.doesNotMatch(ui, /google\.com\/s2\/favicons/);
   assert.match(ui, /icons\.duckduckgo\.com\/ip3/);
-  assert.match(ui, /className="tracker-favicon-small"/);
+  assert.match(ui, /className="tracker-favicon-small tracker-favicon-controlled"/);
+  assert.match(ui, /className="tracker-favicon-small tracker-favicon-fallback"/);
   assert.match(ui, /seedingTime: 'Seeding time'/);
   assert.match(ui, /toggleSort\('seeding_time'\)/);
   assert.match(ui, /Number\(torrent\.num_seeds\) \|\| 0} \/ \$\{Number\(torrent\.total_seeds\)/);

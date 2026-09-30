@@ -209,20 +209,7 @@
 :root[data-theme="halloween"] .search-wrap input { color:#e3e5dc; font:10px "DM Mono",monospace; }
 :root[data-theme="halloween"] .search-wrap input::placeholder { color:#aab5b2; opacity:1; }
 :root[data-theme="halloween"] .search-shortcut { min-width:17px; border:1px solid #89643b; border-radius:3px; color:#f5b85d; background:#21160c; text-align:center; font-size:9px; }
-:root[data-theme="halloween"] .workspace>.search-wrap::before {
-  content:"";
-  position:absolute;
-  z-index:1;
-  top:-34px;
-  right:-57px;
-  width:68px;
-  height:68px;
-  border:1px solid #f0b04b50;
-  border-radius:50%;
-  background:radial-gradient(circle at 42% 39%,#ffe1a822 0 38%,#f2aa4b31 41%,#a45f2140 50%,transparent 71%);
-  box-shadow:0 0 21px #e9a24024;
-  pointer-events:none;
-}
+:root[data-theme="halloween"] .workspace>.search-wrap::before { content:none!important; }
 :root[data-theme="halloween"] .workspace>.search-wrap::after {
   content:"";
   position:absolute;
@@ -465,63 +452,20 @@
   background:transparent!important;
   box-shadow:none!important;
 }
-:root[data-theme="halloween"] .progress-track::before {
-  content:none!important;
-}
-:root[data-theme="halloween"] .progress-track::after {
-  content:"";
+.potion-vial { display:none; }
+:root[data-theme="halloween"] .progress-track::before,
+:root[data-theme="halloween"] .progress-track::after { content:none!important; }
+:root[data-theme="halloween"] .progress-track>.progress-bar { display:none; }
+:root[data-theme="halloween"] .potion-vial {
+  display:block;
   position:absolute;
-  z-index:4;
-  top:-4px;
-  left:0;
-  right:0;
-  height:24px;
-  background:url('../assets/halloween-potion-vial-empty.png') center / 100% 100% no-repeat;
-  pointer-events:none;
-}
-:root[data-theme="halloween"] .progress-bar {
-  position:absolute;
-  z-index:2;
-  left:22%;
-  top:42%;
-  width:var(--halloween-potion-fill-width)!important;
-  height:40%;
-  overflow:visible;
-  border-radius:0 99px 99px 0;
-  background:
-    radial-gradient(circle at 34% 52%,#fff1ba99 0 1px,transparent 1.7px),
-    radial-gradient(circle at 68% 63%,#ffe3a4bb 0 1px,transparent 1.7px),
-    linear-gradient(180deg,#ffe09a 0%,#ffb43e 24%,#f27812 72%,#a83d0a 100%)!important;
-  box-shadow:inset 0 1px #fff0bcaa,inset 0 -1px #64300c,0 0 5px #ff8b2a80!important;
-}
-:root[data-theme="halloween"] .progress-bar::before {
-  content:""!important;
-  position:absolute;
-  top:0;
-  left:2px;
-  right:3px;
-  height:1px;
-  border-radius:99px;
-  background:linear-gradient(90deg,#fff2c8c4,#fff2c833);
-  opacity:.95;
-}
-:root[data-theme="halloween"] .progress-bar::after {
-  content:none!important;
-  animation:none!important;
-}
-:root[data-theme="halloween"] .progress-bar.complete::after {
-  content:""!important;
-  position:absolute;
-  z-index:1;
   top:50%;
-  left:auto!important;
-  right:0;
-  width:16%;
-  height:13px;
-  border-radius:50%;
+  left:0;
+  width:100%;
+  height:22px;
+  overflow:visible;
   transform:translateY(-50%);
-  background:radial-gradient(ellipse at 54% 42%,#ffe8a7 0%,#ffac30 38%,#e86910 76%,transparent 96%)!important;
-  box-shadow:0 0 4px #ff8e2c88;
+  filter:drop-shadow(0 1px 2px #0008);
   pointer-events:none;
 }
 :root[data-theme="halloween"] .progress-wrap>span { flex:none; color:#dfe5de; font:8px "DM Mono",monospace; }
@@ -530,7 +474,7 @@
   position:relative;
   flex:none;
   min-height:29px;
-  margin-top:7px;
+  margin-top:30px;
   padding:4px 10px;
   border:1px solid #906b3f!important;
   border-radius:5px!important;
@@ -543,13 +487,12 @@
 :root[data-theme="halloween"] .deck-status-rail::after {
   content:"";
   position:absolute;
-  top:-10px;
+  top:-29px;
   left:50%;
   width:148px;
-  height:19px;
+  height:28px;
   transform:translateX(-50%);
-  background:linear-gradient(90deg,transparent,#9ca7a052 25%,#bb855a 48%,#9ca7a052 75%,transparent);
-  clip-path:polygon(0 100%,15% 63%,26% 80%,39% 38%,50% 100%,61% 38%,74% 80%,85% 63%,100% 100%);
+  background:url('../assets/halloween-pumpkins-candles.svg') center bottom/contain no-repeat;
   pointer-events:none;
 }
 :root[data-theme="halloween"] .deck-status-rail .status-dot { background:#81d392; box-shadow:0 0 0 2px #294638; }
@@ -587,7 +530,8 @@
   :root[data-theme="halloween"] .stats-grid .stat-card { height:104px; min-height:104px; padding:6px; }
   :root[data-theme="halloween"] .table-shell { min-height:240px; overflow:auto; }
   :root[data-theme="halloween"] .table-shell table.auto-sized-table { min-width:900px!important; }
-  :root[data-theme="halloween"] .deck-status-rail { gap:7px; overflow-x:auto; }
+  :root[data-theme="halloween"] .deck-status-rail { gap:7px; overflow-x:auto; margin-top:7px; }
+  :root[data-theme="halloween"] .deck-status-rail::after { content:none; }
 }
 @media (prefers-reduced-motion:reduce) {
   :root[data-theme="halloween"] *,

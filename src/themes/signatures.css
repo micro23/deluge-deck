@@ -1,0 +1,208 @@
+/* Theme signatures, layered after responsive layout. Decorations never take
+   layout space or intercept input; transfer widths still come from Deluge. */
+:root[data-theme] .stats-grid .stat-card > .theme-detail {
+  position:absolute;
+  right:15px;
+  top:16px;
+  width:68px;
+  height:68px;
+  color:var(--signature-ink,var(--cyan));
+  opacity:.22;
+  pointer-events:none;
+  z-index:0;
+}
+:root[data-theme] .stat-card > div,
+:root[data-theme] .stat-card > .stat-spark { position:relative; z-index:1; }
+:root[data-theme] { --signature-ink:var(--cyan); --signature-glow:var(--cyan-soft); }
+/* Sticky table headers use layer 8; picker controls must stay above them. */
+:root[data-theme] .topbar { z-index:20!important; }
+:root[data-theme] .theme-popover { scroll-padding-top:110px; }
+:root[data-theme] .theme-gallery-option { scroll-margin-top:10px; }
+/* Never float seasonal symbols over torrent values. Any remaining corner
+   frames or background artwork sit beneath the entire data table. */
+:root[data-theme] .table-shell { isolation:isolate; }
+:root[data-theme] .table-shell::before { content:none!important; }
+:root[data-theme] .table-shell::after { z-index:0!important; }
+:root[data-theme] .table-shell > table { position:relative; z-index:1; }
+/* A zero-height sticky anchor follows the table viewport on both axes, while
+   the data table keeps its existing header position and scrollable width. */
+:root[data-theme] .table-shell > .table-tools {
+  position:sticky!important;
+  top:0;
+  left:0;
+  width:100%!important;
+  height:0!important;
+  min-height:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  z-index:10;
+  pointer-events:none;
+}
+:root[data-theme] .table-tools .column-menu-trigger {
+  position:absolute;
+  pointer-events:auto;
+}
+:root[data-theme] .table-shell table thead th {
+  position:sticky!important;
+  top:0;
+  z-index:2;
+}
+:root[data-theme] .nav-item.active { border-inline-start-color:var(--signature-ink); }
+:root[data-theme] :is(button,input,select,a):focus-visible {
+  outline:2px solid var(--signature-ink);
+  outline-offset:3px;
+}
+:root[data-theme] .table-shell tbody tr.selected td:first-child {
+  box-shadow:inset 3px 0 var(--signature-ink);
+}
+:root[data-theme] .progress-bar:is(.paused,.error,.complete)::after { animation:none!important; }
+
+/* 01 — Midnight. Instrument-panel etching and segmented cyan light guides. */
+:root[data-theme="dark"] { --signature-ink:#7ce7ec; }
+:root[data-theme="dark"] .stats-grid .stat-card {
+  background:repeating-linear-gradient(0deg,#92e9ff03 0 1px,transparent 1px 5px),var(--core-card)!important;
+}
+:root[data-theme="dark"] .stat-card > .theme-detail { width:86px; height:86px; top:20px; right:16px; opacity:.25; }
+:root[data-theme="dark"] .detail-sweep { fill:#7ce7ec24; stroke:none; transform-origin:60px 60px; }
+:root[data-theme="dark"] .detail-light { fill:currentColor; }
+:root[data-theme="dark"] .progress-track { height:9px; border:1px solid #65cfd65e; border-radius:2px; }
+:root[data-theme="dark"] .progress-bar {
+  border-radius:1px;
+  background:repeating-linear-gradient(90deg,transparent 0 8px,#06182488 8px 10px),linear-gradient(180deg,#a2ffff,#39abbc)!important;
+}
+:root[data-theme="dark"] .topbar { box-shadow:inset 0 -1px #8eeafc40,0 7px 28px #0007!important; }
+:root[data-theme="dark"] .nav-item.active { background:linear-gradient(90deg,#55dfe123,transparent)!important; }
+
+/* 02 — Paper. Letterpress registration, engraved compass and ruled ink. */
+:root[data-theme="light"] { --signature-ink:#37666e; }
+:root[data-theme="light"] .stats-grid .stat-card {
+  border-radius:3px 15px 3px 3px!important;
+  background:repeating-linear-gradient(0deg,#416f7105 0 1px,transparent 1px 6px),var(--core-card)!important;
+}
+:root[data-theme="light"] .stat-card > .theme-detail { color:#8e783f; opacity:.3; }
+:root[data-theme="light"] .stats-grid .stat-card::after { border-style:double; border-width:3px; }
+:root[data-theme="light"] .progress-track { height:9px; padding:1px; border:1px solid #8aa5a6; border-radius:1px; }
+:root[data-theme="light"] .progress-bar { border-radius:0; background:repeating-linear-gradient(90deg,#315c65 0 3px,#56848b 3px 4px)!important; box-shadow:none!important; }
+:root[data-theme="light"] .table-shell th { font-family:Georgia,serif; letter-spacing:.04em; }
+:root[data-theme="light"] .nav-item.active { box-shadow:inset 3px 0 #426f75,inset 0 -1px #a8babb!important; }
+
+/* 03 — Ocean. Porthole reflections, drifting bubbles and fluid glass meters. */
+:root[data-theme="ocean"] { --signature-ink:#98edff; }
+:root[data-theme="ocean"] .stats-grid .stat-card {
+  background:radial-gradient(ellipse at 100% 0,#79edff35,transparent 54%),var(--core-card)!important;
+}
+:root[data-theme="ocean"] .stat-card > .theme-detail { width:92px; height:92px; right:9px; opacity:.26; }
+:root[data-theme="ocean"] .detail-light { fill:#a9f2ff33; }
+:root[data-theme="ocean"] .stats-grid .stat-card > .stat-icon { border-radius:50%; box-shadow:inset 0 0 0 3px #0c334d,0 0 0 1px #7be4ec55,0 0 20px #46d5ee38; }
+:root[data-theme="ocean"] .progress-track { height:10px; border:1px solid #7ddeee66; border-radius:999px; }
+:root[data-theme="ocean"] .progress-bar { background:linear-gradient(180deg,#d7fcff,#6cdeec 35%,#197fbd)!important; box-shadow:inset 0 1px 0 #fff9,0 0 9px #51d7ee88!important; }
+:root[data-theme="ocean"] .nav-item.active { background:linear-gradient(90deg,#4bc4ea28,#338cd808)!important; box-shadow:inset 3px 0 #7bdcec!important; }
+
+/* 04 — Forest. Botanical plates, leaf veins and a growing jade stem. */
+:root[data-theme="forest"] { --signature-ink:#3b714c; }
+:root[data-theme="forest"] .stat-card > .theme-detail { width:90px; height:90px; color:#42724c; opacity:.3; }
+:root[data-theme="forest"] .detail-light { fill:#92712b; stroke:#92712b; }
+:root[data-theme="forest"] .stats-grid .stat-card { border-radius:6px 25px 6px 25px!important; }
+:root[data-theme="forest"] .stats-grid .stat-card::after { border-radius:3px 20px 3px 20px; }
+:root[data-theme="forest"] .stats-grid .stat-card > .stat-icon { border-radius:4px 14px 4px 14px; }
+:root[data-theme="forest"] .progress-track { height:9px; border-radius:2px 8px 2px 8px; border:1px solid #719b69; }
+:root[data-theme="forest"] .progress-bar { border-radius:1px 7px 1px 7px; background:repeating-linear-gradient(135deg,transparent 0 7px,#e1f2b52a 7px 8px),linear-gradient(180deg,#719e5c,#2e704b)!important; box-shadow:inset 0 1px #cce7aa,0 1px 3px #23452155!important; }
+:root[data-theme="forest"] .nav-item.active { background:linear-gradient(90deg,#5d946c20,transparent)!important; box-shadow:inset 3px 0 #497e54!important; }
+
+/* 05 — Sunset. A copper horizon in violet glass, with a molten light meter. */
+:root[data-theme="sunset"] { --signature-ink:#ffd0aa; }
+:root[data-theme="sunset"] .stat-card > .theme-detail { width:86px; height:86px; color:#ffc29a; opacity:.28; }
+:root[data-theme="sunset"] .stats-grid .stat-card {
+  background:radial-gradient(ellipse at 100% 10%,#f9ae743b,transparent 62%),var(--core-card)!important;
+}
+:root[data-theme="sunset"] .stats-grid .stat-card > .stat-icon { background:linear-gradient(145deg,#b37073,#5b4578); border-radius:50% 50% 6px 6px; }
+:root[data-theme="sunset"] .progress-track { height:9px; border:1px solid #cc998866; }
+:root[data-theme="sunset"] .progress-bar { background:linear-gradient(90deg,#ac79ce,#eb927e 60%,#ffdb9b)!important; box-shadow:0 0 10px #f8ac7355,inset 0 1px #ffe9cc99!important; }
+:root[data-theme="sunset"] .topbar { border-bottom-color:#e5ae91!important; box-shadow:0 4px 25px #ffad7210!important; }
+:root[data-theme="sunset"] .nav-item.active { background:linear-gradient(90deg,#efad7827,#b674cc0d)!important; box-shadow:inset 3px 0 #efb18e!important; }
+
+/* 06 — St. Patrick's. Gilt clover engraving and emerald enamel. */
+:root[data-theme="st-patricks"] { --signature-ink:#b3954f; }
+:root[data-theme="st-patricks"] .stat-card > .theme-detail { color:#efd18a; width:82px; height:82px; opacity:.32; }
+:root[data-theme="st-patricks"] .stats-grid .stat-card {
+  background:repeating-linear-gradient(45deg,#d8b65f06 0 1px,transparent 1px 8px),var(--core-card)!important;
+}
+:root[data-theme="st-patricks"] .stats-grid .stat-card > .stat-icon { border-radius:50%; box-shadow:inset 0 0 0 2px #d9bb75,0 0 0 1px #94743e,0 4px 14px #00180f66; }
+:root[data-theme="st-patricks"] .progress-track { height:10px; border:1px solid #a28b4f; padding:1px; border-radius:3px; }
+:root[data-theme="st-patricks"] .progress-bar { border-radius:1px; background:linear-gradient(180deg,#7bb88c,#26724e 50%,#165035)!important; box-shadow:inset 0 1px #d8d9a9,0 0 5px #1d714755!important; }
+
+/* 07–11 — Seasonal artwork receives quiet, matching engraved seals. */
+:root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) .stat-card > .theme-detail {
+  width:46px; height:46px; right:12px; top:34px; opacity:.2;
+}
+:root[data-theme="christmas"] { --signature-ink:#dcc58b; }
+:root[data-theme="christmas"] .theme-detail { color:#e7cc8c!important; }
+:root[data-theme="christmas"] .detail-light { fill:currentColor; }
+:root[data-theme="christmas"] .nav-item.active { box-shadow:inset 3px 0 #d1b77a,0 0 16px #c5973a10!important; }
+:root[data-theme="halloween"] { --signature-ink:#ed9d48; }
+:root[data-theme="halloween"] .theme-detail { color:#f1a148!important; opacity:.15!important; }
+:root[data-theme="halloween"] .nav-item.active { box-shadow:inset 3px 0 #ed9d48,0 0 20px #cf701815!important; }
+:root[data-theme="valentine"] { --signature-ink:#a33e5b; }
+:root[data-theme="valentine"] .theme-detail { color:#a34862!important; }
+:root[data-theme="valentine"] .nav-item.active { box-shadow:inset 3px 0 #a33e5b,inset 0 -1px #d9aca0!important; }
+:root[data-theme="independence"] { --signature-ink:#a5d5ff; }
+:root[data-theme="independence"] .theme-detail { color:#c4dbfa!important; }
+:root[data-theme="independence"] .progress-bar { background:repeating-linear-gradient(90deg,transparent 0 12px,#061b4355 12px 14px),linear-gradient(180deg,#d5eeff,#5f96de)!important; }
+:root[data-theme="independence"] .nav-item.active { box-shadow:inset 3px 0 #ed8e84,inset 0 -1px #7595c742!important; }
+:root[data-theme="new-year"] { --signature-ink:#ddc58c; }
+:root[data-theme="new-year"] .theme-detail { color:#e7cd87!important; }
+:root[data-theme="new-year"] .progress-bar { background:linear-gradient(180deg,#fff0bd,#c7a45d 55%,#967137)!important; box-shadow:inset 0 1px #fff9,0 0 10px #d1aa5b44!important; }
+:root[data-theme="new-year"] .nav-item.active { box-shadow:inset 3px 0 #d7bb79,0 0 20px #b8944310!important; }
+
+/* 12 — Terminal. A monochrome monitor glyph and CRT scan texture. */
+:root[data-theme="terminal"] { --signature-ink:#fff; }
+:root[data-theme="terminal"] .stat-card > .theme-detail { width:54px; height:54px; right:9px; top:29px; color:#fff; opacity:.2; }
+:root[data-theme="terminal"] .stats-grid .stat-card {
+  background:repeating-linear-gradient(0deg,#ffffff05 0 1px,#000 1px 4px)!important;
+}
+:root[data-theme="terminal"] .nav-item.active { box-shadow:inset 2px 0 #fff!important; }
+:root[data-theme="terminal"] .progress-bar::after { content:none!important; }
+
+@media (hover:hover) and (pointer:fine) {
+  :root[data-theme] .stats-grid .stat-card { transition:border-color .25s ease,filter .25s ease; }
+  :root[data-theme] .stats-grid .stat-card:hover { border-color:var(--signature-ink)!important; filter:brightness(1.035); }
+  :root[data-theme] .stat-card:hover > .theme-detail { opacity:.4; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  :root[data-theme="dark"] .detail-sweep { animation:signature-radar 18s linear infinite; }
+  :root[data-theme="ocean"] .theme-detail { animation:signature-tide 9s ease-in-out infinite alternate; }
+  :root[data-theme="forest"] .detail-light,
+  :root[data-theme="christmas"] .detail-light { animation:signature-glimmer 5s ease-in-out infinite alternate; }
+  :root[data-theme="new-year"] .theme-detail { animation:signature-glimmer 6s ease-in-out infinite alternate; }
+  :root[data-theme="terminal"] .detail-light { animation:signature-cursor 1.4s steps(2,jump-none) infinite; }
+  :root[data-theme] .stat-card:nth-child(2) .theme-detail { animation-delay:-2s; }
+  :root[data-theme] .stat-card:nth-child(3) .theme-detail { animation-delay:-4s; }
+  :root[data-theme] .stat-card:nth-child(4) .theme-detail { animation-delay:-6s; }
+}
+@keyframes signature-radar { to { transform:rotate(360deg); } }
+@keyframes signature-tide { to { transform:translateY(5px); } }
+@keyframes signature-glimmer { to { opacity:.35; } }
+@keyframes signature-cursor { to { opacity:0; } }
+
+/* Small screens keep the same signatures, with compact seals and no ambient
+   motion. Specificity matches the phone layout without changing its grid. */
+@media (max-width:760px), (max-width:950px) and (max-height:540px) {
+  :root[data-theme] body .stats-grid .stat-card > .theme-detail {
+    width:34px; height:34px; right:7px; top:7px; opacity:.17!important;
+    animation:none!important;
+  }
+  :root[data-theme] body .stats-grid .stat-card .detail-light,
+  :root[data-theme] body .stats-grid .stat-card .detail-sweep { animation:none!important; }
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) body .mobile-transfer .progress-track { height:9px!important; }
+  :root[data-theme="st-patricks"] body .stats-grid .stat-card {
+    background:linear-gradient(135deg,#fffef2,#e7efd8)!important;
+    border-color:#aa935b!important;
+  }
+  :root[data-theme="st-patricks"] body .stat-card > .theme-detail { color:#57743b!important; }
+}
+@media (prefers-reduced-motion:reduce) {
+  :root[data-theme] .stats-grid .stat-card { transition:none; }
+  :root[data-theme] .theme-detail,
+  :root[data-theme] .theme-detail * { animation:none!important; }
+}

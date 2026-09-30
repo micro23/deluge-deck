@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 40" fill="none">
+  <defs>
+    <linearGradient id="pumpkin" x2="0" y2="1">
+      <stop stop-color="#cd843e"/>
+      <stop offset="1" stop-color="#733b20"/>
+    </linearGradient>
+    <linearGradient id="wax" x2="1" y2="0">
+      <stop stop-color="#88735d"/>
+      <stop offset=".5" stop-color="#e0c6a0"/>
+      <stop offset="1" stop-color="#92775b"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#ffbd65" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#ffbd65" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="90" cy="37" rx="77" ry="2" fill="#090705" opacity=".8"/>
+  <circle cx="58" cy="11" r="11" fill="url(#glow)"/>
+  <circle cx="122" cy="8" r="11" fill="url(#glow)"/>
+  <g stroke="#775c40" stroke-width=".8">
+    <path d="M54 17h8v19h-8z" fill="url(#wax)"/>
+    <path d="M118 13h8v23h-8z" fill="url(#wax)"/>
+    <path d="M54 18c1 5 3-2 4 2s3 2 4-2M118 14c1 4 2 0 3 3s3 3 3-2" stroke="#ead1ad"/>
+  </g>
+  <path d="M58 16v-3m64-1V9" stroke="#c7a578"/>
+  <path d="M58 5c-6 7-4 10 0 10s5-4 0-10Zm64-4c-5 7-4 10 0 10s5-4 0-10Z" fill="#eda959"/>
+  <path d="M58 10c-2 3-1 4 0 4s2-1 0-4Zm64-4c-2 3-1 4 0 4s2-1 0-4Z" fill="#ffe7b6"/>
+  <g fill="url(#pumpkin)" stroke="#9f602f" stroke-width=".8">
+    <path d="M90 17c-18-9-31 0-29 11s15 11 29 9c14 2 27 0 29-9s-11-20-29-11Z"/>
+    <path d="M35 23c-11-6-22 0-20 7s9 8 20 6c11 2 18-1 20-7s-9-12-20-6Z"/>
+    <path d="M145 24c-12-6-23 0-21 7s10 7 21 5c12 2 20 0 21-7s-10-11-21-5Z"/>
+  </g>
+  <g stroke="#4c321e" stroke-width="1.5" stroke-linecap="round">
+    <path d="M90 17c-2-5 0-7 3-8M35 23c-1-4 1-5 3-6m107 7c-2-3 0-5 2-6"/>
+    <path d="M80 18c-8 7-7 14-1 18m21-18c8 7 7 14 1 18M90 19v17M30 24c-5 4-4 8 0 12m10-12c5 4 4 8 0 12m100-11c-4 3-4 7 0 11m10-11c4 3 4 7 0 11" opacity=".5"/>
+  </g>
+  <g fill="#25180f">
+    <path d="m78 25 7-3-1 5Zm24 0-7-3 1 5ZM79 30l5 1 2-2 3 3 3-3 3 2 6-1-5 5H84Z"/>
+  </g>
+</svg>
