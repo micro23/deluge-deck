@@ -1,6 +1,7 @@
 import {
   authenticateAndConnectHosted,
   serializeRpcRequest,
+  readRpcResponse,
 } from '../../server/hosted-contracts.mjs';
 
 export const UI_KEYS = [
@@ -10,6 +11,8 @@ export const UI_KEYS = [
   'num_pieces', 'piece_length', 'tracker_host', 'tracker_status', 'save_path',
   'download_location', 'time_added', 'completed_time', 'active_time',
   'seeding_time', 'num_files', 'message',
+  'is_auto_managed', 'sequential_download', 'prioritize_first_last',
+  'max_download_speed', 'max_upload_speed', 'distributed_copies',
 ];
 
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
@@ -20,26 +23,25 @@ export const pluginMode = () => Boolean(window.__DELUGE_DECK_PLUGIN__);
 export const hostedUrl = (resource) =>
   new URL(resource, new URL('.', document.baseURI)).toString();
 export const endpoint = (resource) => (pluginMode() ? hostedUrl(resource) : resource);
+const request = (url, options = {}) => fetch(url, { signal: AbortSignal.timeout(60000), ...options });
 
 export async function rpc(method, params = []) {
-  const response = await fetch(endpoint(pluginMode() ? 'json' : '/api/rpc'), {
+  const response = await request(endpoint(pluginMode() ? 'json' : '/api/rpc'), {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'content-type': 'application/json' },
     body: serializeRpcRequest({ method, params, id: Date.now() }),
   });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok || payload.error)
-    throw new Error(
-      payload.error?.message || payload.error || 'Deluge request failed.',
-    );
-  return payload.result;
+  return readRpcResponse(response);
 }
 
 export const api = {
   session: async () => {
     if (!pluginMode())
-      return fetch('/api/session').then((response) => response.json());
+      return request('/api/session').then((response) => {
+        if (!response.ok) throw new Error('Unable to check your Deluge session.');
+        return response.json();
+      });
     const authenticated = await rpc('auth.check_session').catch(() => false);
     const connected = authenticated
       ? await rpc('web.connected').catch(() => false)
@@ -51,16 +53,21 @@ export const api = {
       delugeUrl: window.location.origin,
     };
   },
-  torrents: () =>
-    pluginMode()
+  torrents: async () => {
+    const data = await (pluginMode()
       ? rpc('web.update_ui', [UI_KEYS, {}]).then((result) => ({
           ...result,
           fetchedAt: Date.now(),
         }))
-      : fetch('/api/torrents').then((response) => {
-          if (!response.ok) throw new Error('Session expired');
-          return response.json();
-        }),
+      : request('/api/torrents').then(async (response) => {
+          const payload = await response.json().catch(() => null);
+          if (!response.ok) throw new Error(payload?.error?.message || payload?.error || (response.status === 401 ? 'Session expired' : 'Unable to reach Deluge.'));
+          return payload;
+        }));
+    if (!data || typeof data.torrents !== 'object' || !data.torrents || Array.isArray(data.torrents))
+      throw new Error(data?.connected === false ? 'Deluge daemon is disconnected. Open the connection manager to reconnect.' : 'Deluge returned an invalid torrent feed.');
+    return data;
+  },
   connect: async (url, password) => {
     if (pluginMode()) {
       await authenticateAndConnectHosted(rpc, password);
@@ -71,7 +78,7 @@ export const api = {
         );
       return result;
     }
-    const response = await fetch('/api/session/connect', {
+    const response = await request('/api/session/connect', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ url, password }),
@@ -84,11 +91,11 @@ export const api = {
   disconnect: () =>
     pluginMode()
       ? rpc('auth.delete_session').catch(() => undefined)
-      : fetch('/api/session/disconnect', { method: 'POST' }),
+      : request('/api/session/disconnect', { method: 'POST' }),
   upload: async (files) => {
     const form = new FormData();
     files.forEach((file) => form.append('file', file));
-    const response = await fetch(
+    const response = await request(
       endpoint(pluginMode() ? 'upload' : '/api/upload'),
       { method: 'POST', credentials: 'same-origin', body: form },
     );

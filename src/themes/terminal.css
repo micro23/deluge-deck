@@ -2,8 +2,8 @@
    theme; keep shared layout, components, column settings, and other palettes
    out of this file. The uniquely named font is bundled for offline/plugin use. */
 @font-face {
-  font-family:"Deck Terminal";
-  src:url('../assets/fonts/ShareTechMono-Regular.ttf?inline') format('truetype');
+  font-family:"Deck CRT Mono";
+  src:url('../assets/fonts/DeckCRTMono-Regular.ttf?inline') format('truetype');
   font-style:normal;
   font-weight:400;
   font-display:swap;
@@ -11,7 +11,7 @@
 
 :root[data-theme="terminal"] {
   color-scheme:dark;
-  --terminal-font:"Deck Terminal","SFMono-Regular",Consolas,monospace;
+  --terminal-font:"Deck CRT Mono","SFMono-Regular",Consolas,monospace;
   --bg:#000000;
   --surface:#000000;
   --surface-2:#0b0b0b;
@@ -521,273 +521,400 @@
   :root[data-theme="terminal"] .deck-status-rail { font-size:12px; }
 }
 
-/* Reference terminal layout: the command line shares the top rail with the
-   title, while the workspace starts immediately with the four telemetry
-   boxes and the dense transfer table. These rules are deliberately scoped to
-   the terminal theme so the other palettes keep their existing geometry. */
-@media (min-width:1101px) {
-  :root[data-theme="terminal"] .sidebar {
-    width:214px;
-    padding:26px 12px 18px;
-  }
 
-  :root[data-theme="terminal"] .sidebar-top {
-    margin-inline:8px;
-  }
+/* Terminal is a complete CRT composition. These final rules intentionally
+   override shared geometry only while this theme is active. */
+:root[data-theme="terminal"] body,
+:root[data-theme="terminal"].deluge-deck-hosted #deluge-deck-root {
+  background:linear-gradient(115deg,#b9bab8,#9b9c9a 52%,#b2b3b1);
+}
+:root[data-theme="terminal"] body::before,
+:root[data-theme="terminal"].deluge-deck-hosted #deluge-deck-root::before {
+  content:"";
+  position:fixed;
+  inset:29px 30px 25px;
+  z-index:0;
+  pointer-events:none;
+  border-radius:15px;
+  background:linear-gradient(180deg,#454642 0%,#8d8e89 40%,#d5d6d1 100%);
+  box-shadow:inset 0 1px 4px #ffffff8c,inset 0 -2px 4px #fff9,0 0 2px 1px #ffffff50;
+}
+:root[data-theme="terminal"] body::after,
+:root[data-theme="terminal"].deluge-deck-hosted #deluge-deck-root::after {
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:80;
+  pointer-events:none;
+  opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' opacity='.6' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+}
+:root[data-theme="terminal"] body .app-shell {
+  position:relative;
+  z-index:1;
+  margin:52px 56px 48px;
+  height:calc(100dvh - 100px);
+  min-height:0;
+  overflow:hidden;
+  border-radius:24px / 17px;
+  box-shadow:0 -8px 19px 4px #0008,0 6px 12px #0004,inset 0 0 28px #000;
+}
+:root[data-theme="terminal"] body .app-shell::before {
+  position:absolute;
+  inset:0;
+  z-index:70;
+  opacity:.22!important;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,#ffffff06 2px 3px)!important;
+}
+:root[data-theme="terminal"] body .app-shell::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:71;
+  border-radius:inherit;
+  pointer-events:none;
+  box-shadow:inset 0 0 22px 8px #0009;
+  background:radial-gradient(ellipse at center,transparent 58%,#0006);
+}
+:root[data-theme="terminal"] body .external-ip { display:none; }
+:root[data-theme="terminal"] body .terminal-add-command {
+  display:none;
+  border:0;
+  padding:0;
+  color:var(--text);
+  background:none;
+  width:max-content;
+  font-size:18px;
+}
+:root[data-theme="terminal"] body .terminal-add-command span { margin-right:8px; }
+:root[data-theme="terminal"] body .terminal-add-command i { display:inline-block; width:7px; height:19px; margin-left:2px; vertical-align:middle; background:#d9d9d5; }
+:root[data-theme="terminal"] body button:focus-visible { outline:1px dashed #deded8; outline-offset:3px; }
 
-  :root[data-theme="terminal"] .sidebar::before {
+@media (min-width:761px) {
+  :root[data-theme="terminal"] body .app-shell { --deck-sidebar-size:156px; }
+  :root[data-theme="terminal"] body .app-shell.sidebar-collapsed { --deck-sidebar-size:75px; }
+  :root[data-theme="terminal"] body .sidebar {
+    width:var(--deck-sidebar-size)!important;
+    padding:10px 8px 14px!important;
+    margin:10px 0 12px;
+    height:calc(100% - 22px);
+    max-height:none;
+    border-color:#8b8c85!important;
+    overflow:visible;
+  }
+  :root[data-theme="terminal"] body .sidebar::before {
+    content:"  ___  _    ___\A / __|| |  |_ _|\A| |__ | |__ | |\A \\___||____|___|"!important;
+    font:16px/0.76 var(--terminal-font);
+    letter-spacing:1px;
+    margin:10px auto 14px;
+    white-space:pre;
+    color:#c5c5be;
+    opacity:.85;
     width:max-content;
-    margin:14px auto 23px;
-    font-size:15px;
   }
-
-  :root[data-theme="terminal"] .sidebar .add-button {
-    width:max-content;
-    min-width:0;
-    margin-inline:auto;
-  }
-
-  :root[data-theme="terminal"] .nav-label {
-    margin-left:42px;
-  }
-
-  :root[data-theme="terminal"] .nav-item {
-    padding-left:42px;
-  }
-
-  :root[data-theme="terminal"] .topbar {
-    padding-inline:45px;
-    gap:18px;
-  }
-
-  :root[data-theme="terminal"] .topbar-heading h1 {
-    display:none;
-  }
-
-  :root[data-theme="terminal"] .topbar-heading::before {
-    content:"[ CLI TORRENT CLIENT v1.0 ]";
+  :root[data-theme="terminal"] body .sidebar-command-row { margin:0 0 22px!important; justify-content:flex-start; }
+  :root[data-theme="terminal"] body .sidebar .add-button {
+    width:auto!important;
+    height:28px!important;
+    justify-content:flex-start;
+    padding:0 9px!important;
+    gap:0;
     font-size:17px;
   }
-
-  :root[data-theme="terminal"] .topbar-heading::after {
-    content:none;
-  }
-
-  :root[data-theme="terminal"] .workspace {
-    position:relative;
-    padding:48px 18px 52px;
-  }
-
-  :root[data-theme="terminal"] .workspace > .search-wrap {
-    position:fixed;
-    top:15px;
-    left:544px;
-    right:18px;
-    width:auto;
-    max-width:none;
-    margin:0;
-    height:34px;
-    padding-inline:0;
-    z-index:8;
-  }
-
-  :root[data-theme="terminal"] .stats-grid {
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    gap:16px;
-    margin:0 0 17px 315px;
-  }
-
-  :root[data-theme="terminal"] .stats-grid .stat-card {
-    min-height:76px;
-    padding:10px 8px 6px;
-  }
-
-  :root[data-theme="terminal"] .stat-card span {
-    font-size:16px;
-  }
-
-  :root[data-theme="terminal"] .stat-card strong {
-    font-size:23px;
-  }
-
-  :root[data-theme="terminal"] .stat-card small {
-    font-size:14px;
-  }
-
-  :root[data-theme="terminal"] .table-shell th {
-    height:30px;
-    font-size:14px;
-  }
-
-  :root[data-theme="terminal"] .table-shell tbody td {
-    height:28px;
-    padding-block:2px;
-    font-size:14px;
-  }
-
-  :root[data-theme="terminal"] .table-shell .torrent-name strong,
-  :root[data-theme="terminal"] .state-badge {
-    font-size:14px;
-  }
-
-  :root[data-theme="terminal"] .deck-status-rail {
-    min-height:34px;
-    padding-block:4px;
-  }
-}
-
-/* Desktop composition follows the supplied CRT screenshot: a tall command
-   header, no marketing/page heading, four compact fieldsets, and the dense
-   transfer list. Keep every override behind the Terminal theme gate. */
-@media (min-width:1101px) {
-  :root[data-theme="terminal"] .topbar {
-    height:96px;
-    min-height:96px;
-    padding-inline:45px;
-    align-items:flex-end;
-    border-bottom:0!important;
-  }
-
-  :root[data-theme="terminal"] .topbar-heading {
-    align-self:flex-end;
-    margin:0 0 10px;
-  }
-
-  :root[data-theme="terminal"] .topbar-heading::before {
-    content:"[ CLI TORRENT CLIENT v1.0 ]";
+  :root[data-theme="terminal"] body .sidebar:not(.collapsed) :is(.add-button,.nav-item)>svg { display:none!important; }
+  :root[data-theme="terminal"] body .sidebar .nav-label {
+    margin:0 2px 1px!important;
+    text-align:left!important;
     font-size:17px;
+    line-height:23px;
   }
-
-  :root[data-theme="terminal"] .top-actions {
-    position:absolute;
-    top:64px;
-    right:30px;
-    left:440px;
-    justify-content:space-between;
-    gap:10px;
+  :root[data-theme="terminal"] body .sidebar>nav .nav-item {
+    display:flex!important;
+    justify-content:flex-start;
+    min-height:24px!important;
+    height:24px;
+    margin:0!important;
+    padding:0 2px!important;
+    gap:7px;
+    text-align:left;
   }
-
-  :root[data-theme="terminal"] .top-actions .mobile-preferences { display:none!important; }
-
-  :root[data-theme="terminal"] .workspace {
-    min-height:calc(100vh - 96px);
-    display:flex;
-    flex-direction:column;
-    padding:16px 18px 22px;
+  :root[data-theme="terminal"] body .sidebar .nav-item span { width:auto; text-align:left; font-size:17px; line-height:23px; }
+  :root[data-theme="terminal"] body .sidebar .nav-item b { width:auto; margin-left:auto; font-size:16px; }
+  :root[data-theme="terminal"] body .sidebar .nav-item.active { background:transparent!important; }
+  :root[data-theme="terminal"] body .sidebar>nav .nav-item::before { content:"●"!important; }
+  :root[data-theme="terminal"] body .sidebar>nav .nav-item:last-child::before { content:"◎"!important; }
+  :root[data-theme="terminal"] body .sidebar .add-button::before,
+  :root[data-theme="terminal"] body .sidebar-bottom .nav-item::before { content:"["!important; }
+  :root[data-theme="terminal"] body .sidebar .add-button::after,
+  :root[data-theme="terminal"] body .sidebar-bottom .nav-item::after { content:"]"!important; }
+  :root[data-theme="terminal"] body .sidebar-bottom { align-items:flex-start; flex-direction:column; gap:0; padding:0; background:#000; }
+  :root[data-theme="terminal"] body .sidebar-bottom .nav-item { width:auto; min-height:26px!important; margin:0; padding:0 0!important; gap:3px; }
+  :root[data-theme="terminal"] body .sidebar-bottom .nav-item span { font-size:16px; }
+  :root[data-theme="terminal"] body .sidebar-toggle { width:max-content!important; height:24px!important; font-size:17px; white-space:nowrap; }
+  :root[data-theme="terminal"] body .sidebar-toggle>svg { display:none; }
+  :root[data-theme="terminal"] body .sidebar-toggle::before { content:"[ (M)enu ]"!important; }
+  :root[data-theme="terminal"] body .sidebar.collapsed::before { content:">_"; font-size:22px; margin-bottom:25px; }
+  :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-toggle::before { content:"[ > ]"!important; }
+  :root[data-theme="terminal"] body .sidebar.collapsed>nav .nav-item { justify-content:center!important; height:32px; }
+  :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-bottom .nav-item::before,
+  :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-bottom .nav-item::after { content:none; }
+  :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-bottom .nav-item>svg { display:block!important; }
+  :root[data-theme="terminal"] body .main-content { padding:0 13px 0 18px; }
+  :root[data-theme="terminal"] body .topbar {
+    height:59px!important;
+    min-height:59px!important;
+    padding:0 0 0 22px!important;
+    border:0!important;
+    gap:14px;
+    background:#000!important;
+    z-index:10;
   }
-
-  :root[data-theme="terminal"] .workspace > .page-heading,
-  :root[data-theme="terminal"] .workspace > .library-mobile-controls {
-    display:none!important;
+  :root[data-theme="terminal"] body .topbar-heading {
+    display:block!important;
+    position:static;
+    transform:none;
+    margin:0 auto 0 0;
+    align-self:center;
+    white-space:nowrap;
   }
-
-  :root[data-theme="terminal"] .workspace > .search-wrap {
-    position:fixed;
-    top:64px;
-    left:544px;
-    right:auto;
-    width:105px;
-    height:30px;
-    margin:0;
-    z-index:8;
+  :root[data-theme="terminal"] body .topbar-heading h1 { display:none; }
+  :root[data-theme="terminal"] body .topbar-heading::after { content:none; }
+  :root[data-theme="terminal"] body .topbar-heading::before { content:"[ CLI TORRENT CLIENT v1.0 ]"; font-size:19px; }
+  :root[data-theme="terminal"] body .topbar .search-wrap {
+    flex:0 1 115px;
+    min-width:102px;
+    max-width:240px;
+    height:29px;
+    padding:0;
+    gap:3px;
+    overflow:visible;
   }
-
-  :root[data-theme="terminal"] .stats-grid {
-    flex:none;
-    margin:0 0 12px 315px;
-    gap:16px;
-  }
-
-  :root[data-theme="terminal"] .stats-grid .stat-card {
-    min-height:89px;
-  }
-
-  :root[data-theme="terminal"] .table-shell {
-    flex:none;
-  }
-
-  :root[data-theme="terminal"] .table-shell .column-menu-trigger,
-  :root[data-theme="terminal"] .table-shell .column-resize-handle,
-  :root[data-theme="terminal"] .table-shell .name-content :is(.state-icon,.tracker-favicon-small) { display:none!important; }
-
-  :root[data-theme="terminal"] .table-shell th[data-column="name"] .sort-button {
-    font-size:0;
-  }
-
-  :root[data-theme="terminal"] .table-shell th[data-column="name"] .sort-button::before {
-    content:"NAME";
-    font-size:14px;
-  }
-
-  :root[data-theme="terminal"] .table-shell .resizable-th[draggable="true"] .sort-button::after {
-    content:none!important;
-  }
-
-  :root[data-theme="terminal"] .deck-status-rail {
-    margin-top:auto;
-  }
-
-  :root[data-theme="terminal"] .theme-trigger {
-    display:none!important;
-  }
-}
-
-/* Keep command controls on one readable rail and reserve real cell width for
-   full states, progress, rates and the row menu. */
-@media (min-width:1101px) {
-  :root[data-theme="terminal"] .topbar {
-    height:66px;
-    min-height:66px;
-    padding:0 20px;
-    align-items:center;
-    gap:12px;
-  }
-  :root[data-theme="terminal"] .topbar-heading { align-self:center; margin:0; }
-  :root[data-theme="terminal"] .topbar-heading::before { font-size:15px; }
-  :root[data-theme="terminal"] .top-actions {
+  :root[data-theme="terminal"] body .topbar .search-wrap:focus-within { flex-basis:200px; box-shadow:none; }
+  :root[data-theme="terminal"] body .topbar .search-wrap::before { content:"[ Search:"!important; font-size:16px; }
+  :root[data-theme="terminal"] body .topbar .search-wrap::after { content:"]"!important; font-size:16px; }
+  :root[data-theme="terminal"] body .topbar .search-wrap>svg { display:none; }
+  :root[data-theme="terminal"] body .topbar .search-wrap input { font-size:16px; width:0; }
+  :root[data-theme="terminal"] body .topbar .search-shortcut { padding:0; font-size:16px; }
+  :root[data-theme="terminal"] body .top-actions {
     position:static!important;
     inset:auto!important;
-    width:auto;
-    margin-left:auto;
-    justify-content:flex-end;
-    gap:7px;
+    margin:0!important;
+    gap:7px!important;
+    width:auto!important;
   }
-  :root[data-theme="terminal"] .session-quick-actions { gap:4px; }
-  :root[data-theme="terminal"] .session-quick-actions button { font-size:14px; }
-  :root[data-theme="terminal"] .global-trigger,
-  :root[data-theme="terminal"] .theme-trigger,
-  :root[data-theme="terminal"] .avatar { font-size:14px; }
-  :root[data-theme="terminal"] .theme-trigger { display:flex!important; }
-  :root[data-theme="terminal"] .workspace {
-    min-height:calc(100vh - 66px);
-    padding:8px 18px 18px;
+  :root[data-theme="terminal"] body .topbar .session-quick-actions { gap:5px; padding:0; }
+  :root[data-theme="terminal"] body .topbar .session-quick-actions button { height:29px!important; padding:0!important; gap:4px; font-size:18px!important; white-space:nowrap; }
+  :root[data-theme="terminal"] body .topbar .session-quick-actions svg { display:none!important; }
+  :root[data-theme="terminal"] body .topbar .session-quick-actions button::before { content:"["!important; }
+  :root[data-theme="terminal"] body .topbar .session-quick-actions button::after { content:"]"!important; }
+  :root[data-theme="terminal"] body .topbar :is(.global-trigger,.theme-trigger,.avatar) {
+    display:flex!important;
+    width:auto!important;
+    min-width:0!important;
+    height:29px!important;
+    padding:0!important;
+    gap:3px;
+    white-space:nowrap;
+    font-size:18px!important;
   }
-  :root[data-theme="terminal"] .workspace>.search-wrap {
+  :root[data-theme="terminal"] body .topbar :is(.global-trigger,.theme-trigger)>svg,
+  :root[data-theme="terminal"] body .avatar-presence { display:none!important; }
+  :root[data-theme="terminal"] body .topbar .global-trigger::before { content:"[ Global Limit: -- ]"!important; color:var(--muted-2); }
+  :root[data-theme="terminal"] body .topbar .avatar::before { content:"[ (U)ser:"!important; color:var(--muted-2); }
+  :root[data-theme="terminal"] body .topbar .avatar::after { content:"]"!important; color:var(--muted-2); }
+  :root[data-theme="terminal"] body .topbar .theme-trigger::before { content:"[ T ]"!important; color:var(--muted-2); }
+  :root[data-theme="terminal"] body .topbar .mobile-preferences { display:none!important; }
+  :root[data-theme="terminal"] body .workspace { position:relative; padding:0 0 12px!important; min-height:0!important; gap:0; overflow:visible; }
+  :root[data-theme="terminal"] body .terminal-add-command { display:block; position:absolute; left:6px; top:10px; z-index:2; }
+  :root[data-theme="terminal"] body .workspace>.library-mobile-controls { display:none; }
+  :root[data-theme="terminal"] body .workspace .stats-grid {
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    margin:2px 4px 11px 32%!important;
+    gap:16px!important;
+  }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card {
     position:relative;
-    inset:auto;
-    width:min(360px,100%);
-    height:32px;
-    margin:0 auto 16px;
-    z-index:1;
+    height:86px!important;
+    padding:9px 6px 5px!important;
+    gap:6px!important;
+    overflow:visible;
+    border:1px solid #c2c2bb!important;
   }
-  :root[data-theme="terminal"] .stats-grid { margin:0 0 12px 315px; }
-  :root[data-theme="terminal"] .table-shell { overflow-x:auto; }
-
-  :root[data-theme="terminal"] .table-shell :is(th,td) { padding-inline:3px; font-size:12px; }
-  :root[data-theme="terminal"] .table-shell th { font-size:12px; }
-  :root[data-theme="terminal"] .table-shell .torrent-name strong { font-size:13px; }
-  :root[data-theme="terminal"] .table-shell .state-badge { font-size:12px; }
-  :root[data-theme="terminal"] .table-shell .rate-cell { font-size:12px; white-space:nowrap; }
-  :root[data-theme="terminal"] .table-shell .progress-track { width:8ch; font-size:12px; }
-  :root[data-theme="terminal"] .table-shell .progress-wrap { min-width:0; gap:4px; }
-  :root[data-theme="terminal"] .table-shell .progress-wrap>span { width:auto; font-size:12px; }
-  :root[data-theme="terminal"] .table-shell thead th:last-child {
-    width:6%!important;
-    min-width:0;
-    padding-right:3px;
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-icon { display:none!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>div:nth-child(2) { position:static!important; gap:0!important; overflow:visible; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card span {
+    position:absolute!important;
+    top:-10px;
+    left:24px;
+    padding:0 3px!important;
+    background:#000;
+    font-size:16px!important;
+    line-height:20px!important;
+    color:#e1e1db;
   }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card strong { margin:0!important; font-size:20px!important; line-height:23px!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card small { margin:0!important; font-size:16px!important; line-height:21px!important; color:#92938d; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { width:88%!important; height:18px!important; padding:0 4px!important; opacity:.75; }
+  :root[data-theme="terminal"] body .table-shell {
+    flex:0 1 auto!important;
+    min-height:0;
+    border:0!important;
+    border-inline:1px solid #bbbcb5!important;
+    margin-bottom:auto;
+  }
+  :root[data-theme="terminal"] body .table-shell table { width:100%; min-width:0; }
+  :root[data-theme="terminal"] body .table-shell .table-tools { height:0; min-height:0; }
+  :root[data-theme="terminal"] body .table-tools .column-menu-trigger { display:grid!important; top:-3px; right:0; width:18px; height:23px; opacity:.3; }
+  :root[data-theme="terminal"] body .table-tools .column-menu-trigger:hover { opacity:1; }
+  :root[data-theme="terminal"] body .table-shell th {
+    height:29px!important;
+    padding:0 3px!important;
+    border-bottom:0!important;
+    font-size:15px!important;
+    line-height:20px;
+  }
+  :root[data-theme="terminal"] body .table-shell th[data-column="name"] { position:relative; }
+  :root[data-theme="terminal"] body .table-shell th[data-column="name"]::after { content:""; position:absolute; top:50%; left:46px; right:8px; height:1px; background:#a6a79e; }
+  :root[data-theme="terminal"] body .table-shell .sort-button { width:auto!important; display:inline-flex!important; font-size:inherit!important; justify-content:flex-start; text-align:left; }
+  :root[data-theme="terminal"] body .table-shell .sort-button::before,
+  :root[data-theme="terminal"] body .table-shell .sort-button::after { content:none!important; }
+  :root[data-theme="terminal"] body .table-shell .column-resize-handle { display:block!important; opacity:0; }
+  :root[data-theme="terminal"] body .table-shell th:hover .column-resize-handle { opacity:.5; }
+  :root[data-theme="terminal"] body .table-shell td {
+    height:24px!important;
+    padding:0 3px!important;
+    font-size:16px!important;
+    line-height:20px;
+    white-space:nowrap;
+    color:#a7a8a0;
+  }
+  :root[data-theme="terminal"] body .table-shell .check-cell { width:27px!important; padding:0 3px!important; }
+  :root[data-theme="terminal"] body .table-shell :is(th,td):last-child { width:20px!important; padding:0!important; }
+  :root[data-theme="terminal"] body .table-shell .row-menu { width:18px; height:23px; min-width:0; opacity:.2; }
+  :root[data-theme="terminal"] body .table-shell tr:hover .row-menu { opacity:1; }
+  :root[data-theme="terminal"] body .table-shell .torrent-name strong { font-size:16px!important; line-height:20px; color:#cecec7; }
+  :root[data-theme="terminal"] body .table-shell .name-content { gap:0; }
+  :root[data-theme="terminal"] body .table-shell .name-content :is(.state-icon,.tracker-favicon-small) { display:none!important; }
+  :root[data-theme="terminal"] body .table-shell .state-badge { font-size:16px!important; gap:4px; }
+  :root[data-theme="terminal"] body .table-shell .state-badge i { width:7px; height:7px; }
+  :root[data-theme="terminal"] body .table-shell .progress-wrap { gap:4px!important; }
+  :root[data-theme="terminal"] body .table-shell .progress-track { width:68px!important; flex:0 0 68px; font-size:12px; }
+  :root[data-theme="terminal"] body .table-shell .progress-wrap>span { width:36px!important; font-size:16px!important; }
+  :root[data-theme="terminal"] body .deck-status-rail {
+    height:35px;
+    min-height:35px!important;
+    padding:7px 0 0!important;
+    margin-top:auto!important;
+    gap:8px;
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    border-top:1px solid #a6a79e;
+    font-size:16px!important;
+    line-height:22px;
+  }
+  :root[data-theme="terminal"] body .deck-status-rail svg,
+  :root[data-theme="terminal"] body .deck-status-rail .status-rail-spacer,
+  :root[data-theme="terminal"] body .deck-status-rail>span:nth-child(n+3):not(.status-ip) { display:none; }
+  :root[data-theme="terminal"] body .status-free-space>span { display:none; }
+  :root[data-theme="terminal"] body .status-free-space::before { content:"DISK:"; }
+  :root[data-theme="terminal"] body .status-free-space::after { content:"FREE /"; }
+  :root[data-theme="terminal"] body .status-free-space strong { font:inherit; }
+  :root[data-theme="terminal"] body .deck-status-rail>span:nth-child(2) { flex-direction:row-reverse; gap:5px; }
+  :root[data-theme="terminal"] body .deck-status-rail .status-dot { width:auto; height:auto; border-radius:0; background:none; }
+  :root[data-theme="terminal"] body .deck-status-rail .status-dot::before { content:"[ ] /"; }
+  :root[data-theme="terminal"] body .deck-status-rail .status-dot.live::before { content:"[✓] /"; }
+  :root[data-theme="terminal"] body .status-ip::before { content:"IP:"; }
 }
-@media (min-width:1101px) and (max-width:1300px) {
-  :root[data-theme="terminal"] .topbar-heading::before { content:"[ CLI ]"; }
-
+@media (min-width:761px) and (max-width:1200px) {
+  :root[data-theme="terminal"] body .topbar { padding-left:0!important; gap:8px; }
+  :root[data-theme="terminal"] body .topbar-heading::before { content:"[ CLI TORRENT v1.0 ]"; font-size:15px; }
+  :root[data-theme="terminal"] body .topbar .session-quick-actions button,
+  :root[data-theme="terminal"] body .topbar :is(.global-trigger,.theme-trigger,.avatar) { font-size:14px!important; }
+  :root[data-theme="terminal"] body .topbar .global-trigger::before { content:"[ Limit: -- ]"!important; }
+}
+@media (min-width:761px) and (max-width:1000px) {
+  :root[data-theme="terminal"] body .app-shell { margin:30px; height:calc(100dvh - 60px); }
+  :root[data-theme="terminal"] body::before,
+:root[data-theme="terminal"].deluge-deck-hosted #deluge-deck-root::before { inset:16px; }
+  :root[data-theme="terminal"] body .app-shell { --deck-sidebar-size:142px; }
+  :root[data-theme="terminal"] body .topbar-heading::before { content:"[ CLI ]"; }
+  :root[data-theme="terminal"] body .topbar .avatar::before { content:"["!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid { margin-left:0!important; margin-top:53px!important; }
+}
+@media (max-width:760px) {
+  :root[data-theme="terminal"] body::before,
+:root[data-theme="terminal"].deluge-deck-hosted #deluge-deck-root::before { inset:6px; border-radius:15px; }
+  :root[data-theme="terminal"] body .app-shell { margin:16px; height:calc(100dvh - 32px); min-height:0; border-radius:14px; }
+  :root[data-theme="terminal"] body .topbar .search-wrap { display:none; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-icon { display:none!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card { border:1px solid #a3a49c!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card span { font-size:12px!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card strong { font-size:18px!important; }
+  :root[data-theme="terminal"] body .mobile-brand::before { content:"[ CLI TORRENT ]"; font-size:17px; }
+  :root[data-theme="terminal"] body .mobile-brand .brand { display:none; }
+  :root[data-theme="terminal"] body .workspace { overflow:auto; }
+}
+:root[data-theme="terminal"] body .stat-card>.theme-detail { display:none!important; }
+:root[data-theme="terminal"] body .app-shell::before { background-size:auto!important; }
+:root[data-theme="terminal"] body .stat-card span,
+:root[data-theme="terminal"] body .stat-card strong,
+:root[data-theme="terminal"] body .table-shell th,
+:root[data-theme="terminal"] body .session-quick-actions button { font-weight:400!important; }
+:root[data-theme="terminal"] body .sidebar-toggle { overflow:visible; }
+/* Character-based telemetry stays crisp at the same scale as the reference. */
+:root[data-theme="terminal"] body .terminal-stat-trace { display:none; }
+@media (min-width:761px) {
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { display:none; }
+  :root[data-theme="terminal"] body .terminal-stat-trace {
+    display:block;
+    font-size:18px;
+    line-height:19px;
+    color:#a3a49c;
+    white-space:nowrap;
+  }
+  :root[data-theme="terminal"] body .table-shell th { text-align:left!important; }
+  :root[data-theme="terminal"] body .table-shell th[data-column="name"]::after { left:46px; }
+  :root[data-theme="terminal"] body .sidebar::before { margin-top:2px; margin-bottom:18px; }
+  :root[data-theme="terminal"] body .sidebar .nav-item.active { box-shadow:none!important; }
+  :root[data-theme="terminal"] body .sidebar-toggle { display:block; }
+  :root[data-theme="terminal"] body .table-shell input[type="checkbox"] {
+    width:21px;
+    height:20px;
+    margin:0;
+    border:0;
+    background:none;
+    position:relative;
+  }
+  :root[data-theme="terminal"] body .table-shell input[type="checkbox"]::before {
+    content:"[ ]";
+    position:absolute;
+    inset:0;
+    font:18px/20px var(--terminal-font);
+    color:#a3a49c;
+  }
+  :root[data-theme="terminal"] body .table-shell input[type="checkbox"]:checked::before { content:"[✓]"; color:#dddcd6; }
+  :root[data-theme="terminal"] body .table-shell input[type="checkbox"]:indeterminate::before { content:"[−]"; }
+  :root[data-theme="terminal"] body .table-shell input[type="checkbox"]::after { content:none; }
+  :root[data-theme="terminal"] body .table-shell .progress-track { border:0; }
+  :root[data-theme="terminal"] body .table-shell .progress-track::before { content:"[----------"; }
+  :root[data-theme="terminal"] body .table-shell .progress-track::after {
+    content:"]";
+    position:absolute;
+    right:0;
+    top:0;
+    line-height:16px;
+    color:#aaa;
+    background:#000;
+  }
+  :root[data-theme="terminal"] body .table-shell .progress-bar::before { content:"[##########"; }
+}
+@media (min-width:761px) {
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { display:none!important; }
+  :root[data-theme="terminal"] body .deck-status-rail { font-size:18px!important; }
+  :root[data-theme="terminal"] body .topbar .global-trigger::before { content:"[ Global Limit: -- ]"!important; }
+}
+@media (max-width:760px) {
+  :root[data-theme="terminal"] body .app-shell { width:calc(100% - 32px)!important; }
+  :root[data-theme="terminal"] body .main-content { width:100%; max-width:100%; min-width:0; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-icon { display:none!important; }
 }

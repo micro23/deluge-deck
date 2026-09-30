@@ -2,6 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { connectHostedDaemon, readRpcResponse } from './hosted-contracts.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PACKAGE = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8'));
@@ -35,15 +36,15 @@ function send(res, status, body, headers = {}) {
   res.end(payload);
 }
 function error(res, status, message, detail) { send(res, status, { error: message, ...(detail ? { detail } : {}) }); }
-async function bodyBuffer(req) {
+async function bodyBuffer(req, limit = MAX_BODY) {
   const chunks = []; let size = 0;
-  for await (const chunk of req) { size += chunk.length; if (size > MAX_BODY) throw new Error('Request is too large.'); chunks.push(chunk); }
+  for await (const chunk of req) { size += chunk.length; if (size > limit) throw new Error('Request is too large.'); chunks.push(chunk); }
   return Buffer.concat(chunks);
 }
 async function bodyJson(req) {
-  const raw = await bodyBuffer(req);
+  const raw = await bodyBuffer(req, 1024 * 1024);
   if (!raw.length) return {};
-  try { return JSON.parse(raw.toString('utf8')); } catch { throw new Error('Request body must be valid JSON.'); }
+  try { return JSON.parse(raw.toString('utf8')); } catch { throw Object.assign(new Error('Request body must be valid JSON.'), { status: 400 }); }
 }
 function normalizeUrl(value) {
   const candidate = String(value || '').trim();
@@ -57,33 +58,41 @@ function delugeEndpoint(baseUrl, resource) {
   return new URL(resource, `${baseUrl}/`).toString();
 }
 function safeOrigin(req) {
-  const origin = req.headers.origin;
-  if (!origin) return true;
-  try { const u = new URL(origin); return ['127.0.0.1', 'localhost', '[::1]', '::1'].includes(u.hostname); } catch { return false; }
+  try {
+    const authority = new URL(`http://${req.headers.host || ''}`);
+    // Loopback listeners must reject DNS rebinding hosts even without Origin.
+    const loopback = ['127.0.0.1', 'localhost', '[::1]', '::1'];
+    if (loopback.includes(HOST) && !loopback.includes(authority.hostname)) return false;
+    if (req.headers['sec-fetch-site'] === 'cross-site') return false;
+    if (!req.headers.origin) return true;
+    const origin = new URL(req.headers.origin);
+    return ['http:', 'https:'].includes(origin.protocol) && origin.host === authority.host;
+  } catch { return false; }
 }
 
 class DelugeClient {
   constructor() { this.baseUrl = normalizeUrl(process.env.DELUGE_URL || 'http://127.0.0.1:8112'); this.cookie = ''; this.connected = false; this.host = null; this.methods = []; this.requestId = 1; }
   async rpc(method, params = []) {
     if (!ALLOWED_METHODS.has(method) && !method.startsWith('label.')) throw new Error(`RPC method is not enabled: ${method}`);
-    const response = await fetch(delugeEndpoint(this.baseUrl, 'json'), { method: 'POST', headers: { 'content-type': 'application/json', ...(this.cookie ? { cookie: this.cookie } : {}) }, body: json({ method, params, id: this.requestId++ }) });
+    const response = await fetch(delugeEndpoint(this.baseUrl, 'json'), { method: 'POST', headers: { 'content-type': 'application/json', ...(this.cookie ? { cookie: this.cookie } : {}) }, body: json({ method, params, id: this.requestId++ }), signal: AbortSignal.timeout(30000), redirect: 'error' });
     const setCookie = response.headers.getSetCookie?.() || [];
     if (setCookie.length) this.cookie = setCookie.map((item) => item.split(';')[0]).join('; ');
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok || payload.error) throw new Error(payload.error?.message || `Deluge returned HTTP ${response.status}.`);
-    return payload.result;
+    return readRpcResponse(response);
   }
   async login(password, hostId) {
     if (!password) throw new Error('Enter your Deluge Web password.');
     const ok = await this.rpc('auth.login', [password]).catch((e) => { throw new Error(`Could not reach Deluge Web: ${e.message}`); });
     if (!ok) throw new Error('Deluge rejected that password.');
-    const connected = await this.rpc('web.connected', []);
-    if (!connected) {
-      const hosts = await this.rpc('web.get_hosts', []);
-      const host = hosts?.find((item) => !hostId || item[0] === hostId) || hosts?.[0];
-      if (!host) throw new Error('No Deluge daemon hosts are configured.');
-      await this.rpc('web.connect', [host[0]]);
+    if (hostId) {
+      if (await this.rpc('web.connected')) await this.rpc('web.disconnect');
+      const hosts = await this.rpc('web.get_hosts');
+      const host = hosts?.find((item) => item[0] === hostId);
+      if (!host) throw new Error('The selected Deluge daemon host is not configured.');
+      await this.rpc('web.connect', [hostId]);
+      if (!await this.rpc('web.connected')) throw new Error('Deluge Web could not connect to the selected daemon host.');
       this.host = { id: host[0], host: host[1], port: host[2], status: 'Connected' };
+    } else {
+      await connectHostedDaemon((method, params) => this.rpc(method, params));
     }
     this.connected = true;
     this.methods = await this.rpc('system.listMethods', []).catch(() => []);
@@ -97,7 +106,7 @@ class DelugeClient {
   }
   async upload(req) {
     const raw = await bodyBuffer(req);
-    const response = await fetch(delugeEndpoint(this.baseUrl, 'upload'), { method: 'POST', headers: { 'content-type': req.headers['content-type'] || 'multipart/form-data', ...(this.cookie ? { cookie: this.cookie } : {}) }, body: raw });
+    const response = await fetch(delugeEndpoint(this.baseUrl, 'upload'), { method: 'POST', headers: { 'content-type': req.headers['content-type'] || 'multipart/form-data', ...(this.cookie ? { cookie: this.cookie } : {}) }, body: raw, signal: AbortSignal.timeout(30000), redirect: 'error' });
     const text = await response.text();
     if (!response.ok) throw new Error(`Deluge upload failed with HTTP ${response.status}.`);
     try { return JSON.parse(text); } catch { throw new Error('Deluge upload returned an invalid response.'); }
@@ -110,7 +119,7 @@ const demoTorrents = new Map([
   ['d1c4a2f7e8894b70a6f4a8e2cf1200aa99887766', { name: 'Open Source Design Systems 2025', state: 'Paused', progress: 24.1, total_size: 952000000, total_done: 229000000, total_uploaded: 0, download_payload_rate: 0, upload_payload_rate: 0, eta: 0, ratio: 0, num_seeds: 15, total_seeds: 31, num_peers: 0, total_peers: 14, num_pieces: 908, piece_length: 1048576, active_time: 2380, seeding_time: 0, queue: 3, tracker_host: 'academictorrents.com', tracker_status: 'Error', save_path: 'D:\\Media\\Reference', time_added: 1717700400, label: 'Learning', message: '' }],
   ['e8c2a33d91b84714ac2a99e7f5b05c0a11aa8822', { name: 'Sundown Circuit — Live at Primavera', state: 'Queued', progress: 0, total_size: 7360000000, total_done: 0, total_uploaded: 0, download_payload_rate: 0, upload_payload_rate: 0, eta: 0, ratio: 0, num_seeds: 4, total_seeds: 12, num_peers: 0, total_peers: 8, num_pieces: 1755, piece_length: 4194304, active_time: 0, seeding_time: 0, queue: 4, tracker_host: 'tracker.example.net', tracker_status: 'Queued', save_path: 'D:\\Media\\Music', time_added: 1718129000, label: 'Music', message: '' }],
 ]);
-const demoConfig = { max_download_speed: 25000, max_upload_speed: 5000, max_connections_global: 200, download_location: 'D:\\Torrents', move_completed: false, move_completed_path: 'D:\\Completed', listen_ports: [6881, 6881], random_port: false, proxy: { enabled: false, hostname: '', port: 8080, type: 'http' }, cache_size: 512, cache_expiry: 60 };
+const demoConfig = { max_download_speed: 25000, max_upload_speed: 5000, max_connections_global: 200, download_location: 'D:\\Torrents', move_completed: false, move_completed_path: 'D:\\Completed', listen_ports: [6881, 6881], random_port: false, proxy: { hostname: '', port: 8080, type: 0, username: '', password: '', proxy_hostnames: true, proxy_peer_connections: true, proxy_tracker_connections: true, force_proxy: false, anonymous_mode: false }, cache_size: 512, cache_expiry: 60 };
 let demoDaemonConnected = true;
 let demoSessionPaused = false;
 const demoFilePriorities = new Map();
@@ -133,9 +142,9 @@ function demoRpc(method, params) {
   if (method === 'web.disconnect') { demoDaemonConnected = false; return true; }
   if (method === 'web.connect') { demoDaemonConnected = true; return true; }
   if (method === 'web.get_hosts') return [['demo-local', '127.0.0.1', 58846, demoDaemonConnected ? 'Connected' : 'Offline'], ['demo-archive', '192.168.1.24', 58846, 'Online']];
-  if (method === 'web.add_host') return `demo-${String(params[0] || 'host')}-${Number(params[1] || 58846)}`;
+  if (method === 'web.add_host') return [true, `demo-${String(params[0] || 'host')}-${Number(params[1] || 58846)}`];
   if (method === 'web.remove_host') return true;
-  if (method === 'web.get_host_status') return [params[0] === 'demo-local' && demoDaemonConnected ? 'Connected' : 'Online', '2.1.1'];
+  if (method === 'web.get_host_status') return [params[0], params[0] === 'demo-local' && demoDaemonConnected ? 'Connected' : 'Online', '2.1.1'];
   if (method === 'web.get_plugins') return { enabled_plugins: ['Label', 'Scheduler', 'WebUi'], available_plugins: ['AutoAdd', 'Blocklist', 'Extractor', 'Label', 'Notifications', 'Scheduler', 'WebUi'] };
   if (method === 'core.get_config') return { ...demoConfig };
   if (method === 'core.set_config') { Object.assign(demoConfig, params[0] || {}); return true; }
@@ -157,18 +166,25 @@ function demoRpc(method, params) {
   if (method === 'core.add_torrent_magnet') { const id = `demo-${Date.now()}`; demoTorrents.set(id, { name: String(params[0]).slice(0, 52), state: 'Downloading', progress: 0, total_size: 0, total_done: 0, total_uploaded: 0, download_payload_rate: 0, upload_payload_rate: 0, eta: 0, ratio: 0, num_seeds: 0, total_seeds: 0, num_peers: 0, total_peers: 0, queue: demoTorrents.size + 1, tracker_host: 'magnet', save_path: 'D:\\Media', time_added: Math.floor(Date.now() / 1000), label: '', message: '' }); return id; }
   return true;
 }
-const client = DEMO ? null : new DelugeClient();
+let client = DEMO ? null : new DelugeClient();
 let demoSession = DEMO;
 
 async function route(req, res) {
   if (!safeOrigin(req)) return error(res, 403, 'Origin not allowed.');
-  const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`); const pathname = parsed.pathname;
   try {
+    const parsed = new URL(req.url, `http://${req.headers.host || 'localhost'}`); const pathname = parsed.pathname;
     if (req.method === 'GET' && pathname === '/api/health') return send(res, 200, { ok: true, mode: DEMO ? 'demo' : 'live', version: VERSION });
     if (req.method === 'GET' && pathname === '/api/session') return send(res, 200, DEMO ? { mode: 'demo', authenticated: demoSession, connected: demoSession && demoDaemonConnected, delugeUrl: 'demo://local', host: { id: 'demo-local', host: 'Demo daemon', port: 58846 }, methods: [] } : await client.session());
     if (req.method === 'POST' && pathname === '/api/session/connect') {
       if (DEMO) { demoSession = true; demoDaemonConnected = true; return send(res, 200, { mode: 'demo', authenticated: true, connected: true, delugeUrl: 'demo://local', host: { id: 'demo-local', host: 'Demo daemon', port: 58846 } }); }
-      const input = await bodyJson(req); client.baseUrl = normalizeUrl(input.url); return send(res, 200, await client.login(input.password, input.hostId));
+      const input = await bodyJson(req);
+      if (!input || typeof input !== 'object' || Array.isArray(input)) return error(res, 400, 'Connection settings must be an object.');
+      // Authenticate a fresh client so a changed endpoint never receives the old cookie.
+      const candidate = new DelugeClient();
+      candidate.baseUrl = normalizeUrl(input.url || client.baseUrl);
+      const session = await candidate.login(input.password, input.hostId);
+      client = candidate;
+      return send(res, 200, session);
     }
     if (req.method === 'POST' && pathname === '/api/session/disconnect') {
       if (!DEMO) { await client.rpc('auth.delete_session', []).catch(() => {}); client.cookie = ''; client.connected = false; } else demoSession = false;
@@ -179,7 +195,7 @@ async function route(req, res) {
       const result = await client.rpc('web.update_ui', [UI_KEYS, {}]); return send(res, 200, { ...result, fetchedAt: Date.now() });
     }
     if (req.method === 'POST' && pathname === '/api/rpc') {
-      const input = await bodyJson(req); if (!input.method || !Array.isArray(input.params)) return error(res, 400, 'RPC method and params are required.');
+      const input = await bodyJson(req); if (!input || typeof input.method !== 'string' || !input.method || !Array.isArray(input.params)) return error(res, 400, 'RPC method and params are required.');
       if (!ALLOWED_METHODS.has(input.method) && !input.method.startsWith('label.')) return error(res, 400, `RPC method is not enabled: ${input.method}`);
       if (DEMO) return send(res, 200, { result: demoRpc(input.method, input.params) });
       return send(res, 200, { result: await client.rpc(input.method, input.params) });
@@ -189,15 +205,29 @@ async function route(req, res) {
       const session = await client.session(); if (!session.authenticated) return error(res, 401, 'Your Deluge session expired. Sign in again.');
       return send(res, 200, await client.upload(req));
     }
-    if (req.method === 'GET' && pathname.startsWith('/api/')) return error(res, 404, 'API route not found.');
+    if (pathname.startsWith('/api/')) return error(res, 404, 'API route not found.');
+    if (req.method !== 'GET') return error(res, 405, 'Method not allowed.');
     return serveStatic(pathname, res);
-  } catch (e) { return error(res, e.message?.includes('too large') ? 413 : 500, e.message || 'Unexpected server error.'); }
+  } catch (e) { return error(res, e.status || (e.message?.includes('too large') ? 413 : 500), e.message || 'Unexpected server error.'); }
 }
 async function serveStatic(pathname, res) {
   const candidate = path.resolve(ROOT, 'dist', pathname === '/' ? 'index.html' : pathname.slice(1));
-  if (!candidate.startsWith(path.resolve(ROOT, 'dist'))) return error(res, 403, 'Invalid path.');
-  try { const info = await stat(candidate); if (!info.isFile()) throw new Error('not file'); const ext = path.extname(candidate); const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' }; res.writeHead(200, { 'content-type': types[ext] || 'application/octet-stream', 'cache-control': ext === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable' }); res.end(await readFile(candidate)); } catch { if (pathname !== '/') return serveStatic('/', res); error(res, 404, 'Build the frontend first with npm run build.'); }
+  if (!candidate.startsWith(path.resolve(ROOT, 'dist') + path.sep)) return error(res, 403, 'Invalid path.');
+  try {
+    const info = await stat(candidate);
+    if (!info.isFile()) throw new Error('not file');
+    const content = await readFile(candidate);
+    const ext = path.extname(candidate);
+    const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ttf': 'font/ttf', '.woff2': 'font/woff2', '.ico': 'image/x-icon' };
+    res.writeHead(200, { 'content-type': types[ext] || 'application/octet-stream', 'cache-control': ext === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable' });
+    res.end(content);
+  } catch {
+    if (pathname !== '/' && !path.extname(pathname) && !pathname.startsWith('/assets/')) return serveStatic('/', res);
+    error(res, 404, pathname === '/' ? 'Build the frontend first with npm run build.' : 'File not found.');
+  }
 }
 
 const server = http.createServer((req, res) => route(req, res));
-server.listen(PORT, HOST, () => console.log(`Deluge listening at http://${HOST}:${PORT}${DEMO ? ' (demo mode)' : ''}`));
+export { DelugeClient, safeOrigin, server };
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) server.listen(PORT, HOST, () => console.log(`Deluge listening at http://${HOST}:${PORT}${DEMO ? ' (demo mode)' : ''}`));

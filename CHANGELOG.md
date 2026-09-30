@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.46
+
+- Reject malformed or truncated torrent metadata promptly instead of freezing the browser; validate payload sizes and UTF-8 paths and report unsupported pure-v2 previews clearly.
+- Correct Deluge host status and add-host response handling, verify daemon connections, and retain visible host-removal errors.
+- Save numeric Deluge proxy types while preserving existing credentials and routing flags, including authenticated proxies, SOCKS4, and I2P.
+- Reject invalid RPC responses, bound network waits, preserve useful authentication errors, and align hosted torrent option fields with companion mode.
+- Prevent stale refreshes from replacing newer data, clear library and overlay state on logout, and remove obsolete selections.
+- Keep operation dialogs open while actions are pending; prevent empty magnet/URL tabs from submitting local files and preserve parent paths during nested-folder rename.
+- Keep preferences usable when browser storage is unavailable and validate saved refresh timing.
+- Tighten loopback origin and hostname validation, isolate cookies when changing Deluge endpoints, validate RPC inputs, and correct static asset responses.
+- Refine Terminal with a dedicated narrow CRT font, compact console layout, theme-specific table settings, search controls, and responsive styling.
+- Fix hosted fixture resource filenames, improve Windows startup failures, enable pull-request CI, and generate release checksums automatically.
+- Add 26 behavior tests and isolated standalone/hosted browser reliability checks. The suite now contains 136 passing tests.
+
 ## 1.0.45
 
 - Make the top Pause and Resume controls act on checked torrents, with selection counts in their labels. Disable selected-torrent controls while a request runs, preserve selection on failure, and show session errors and confirmations outside the closed session panel.

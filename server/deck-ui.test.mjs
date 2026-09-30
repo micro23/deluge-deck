@@ -756,9 +756,9 @@ test('torrent table headers support horizontal resizing', async () => {
 
 test('torrent table persists resized column widths', async () => {
   const ui = await source();
-  assert.match(ui, /localStorage\.getItem\('deck-column-widths'/);
-  assert.match(ui, /localStorage\.setItem\('deck-column-widths', JSON\.stringify\(columnWidths\)\)/);
-  assert.match(ui, /const normalizeColumnWidths = \(savedWidths\)/);
+  assert.match(ui, /localStorage\.getItem\(('deck-column-widths'|tableStorageKey\(theme, 'widths'\))/);
+  assert.match(ui, /localStorage\.setItem\(('deck-column-widths'|tableStorageKey\(theme, 'widths'\)), JSON\.stringify\(columnWidths\)\)/);
+  assert.match(ui, /const normalizeColumnWidths = \(savedWidths(?:, clampWidth = clampColumnWidth)?\)/);
   assert.match(ui, /window\.addEventListener\('pointermove', updateManualResize\)/);
   assert.match(ui, /window\.addEventListener\('pointerup', finishManualResize\)/);
   assert.match(ui, /width: `\$\{resolvedColumnWidths\[key\]\}px`/);
@@ -795,8 +795,8 @@ test('torrent table keeps every content-sized column resizable and aligned', asy
   assert.match(ui, /classList\.add\('column-measure-table'\)/);
   assert.match(ui, /style=\{\{ width: `\$\{resolvedColumnWidths\[key\]\}px` \}\}/);
   assert.match(ui, /data-column=\{key\}/);
-  assert.match(ui, /localStorage\.getItem\('deck-table-layout-version'\)/);
-  assert.match(ui, /localStorage\.setItem\('deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
+  assert.match(ui, /localStorage\.getItem\((?:theme === 'terminal' \? 'deck-terminal-table-layout-version' : )?'deck-table-layout-version'\)/);
+  assert.match(ui, /localStorage\.setItem\((?:theme === 'terminal' \? 'deck-terminal-table-layout-version' : )?'deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
   assert.match(ui, /'size',[\s\S]*'ratio',[\s\S]*'download'/);
   assert.match(css, /table\.auto-sized-table \{[\s\S]*width:100%;[\s\S]*table-layout:fixed/);
   assert.match(css, /table\.column-measure-table \{[\s\S]*width:max-content!important/);
@@ -932,7 +932,7 @@ test('top bar overlays stay dismissible and inside the viewport', async () => {
   assert.match(ui, /document\.addEventListener\('keydown', dismiss, true\)/);
   assert.match(ui, /open \? 'Close global session controls' : 'Open global session controls'/);
   assert.match(ui, /function useDialogDismiss/);
-  assert.match(ui, /useDialogDismiss\(onClose, modalRef\)/);
+  assert.match(ui, /useDialogDismiss\(onClose, modalRef(?:, Boolean\(busy\))?\)/);
   assert.match(ui, /function ensureViewportOverlayHost/);
   assert.match(ui, /function useViewportOverlayHost\(\)/);
   assert.match(ui, /document\.getElementById\('deluge-deck-viewport-overlay'\)/);
@@ -950,7 +950,7 @@ test('every Deck overlay supports Escape and outside-pointer dismissal', async (
   for (const name of ['ConnectionManagerModal', 'DetailDrawer', 'RemoveModal', 'MoveStorageModal', 'RenameTorrentModal', 'PreferencesModal', 'AddTorrentModal']) {
     const start = ui.indexOf(`function ${name}`);
     const end = ui.indexOf('\nfunction ', start + 1);
-    assert.match(ui.slice(start, end < 0 ? undefined : end), /useDialogDismiss\(onClose, (modalRef|drawerRef|dialogRef)\)/, `${name} should use shared dismissal`);
+    assert.match(ui.slice(start, end < 0 ? undefined : end), /useDialogDismiss\(onClose, (modalRef|drawerRef|dialogRef)(?:, Boolean\(busy\))?\)/, `${name} should use shared dismissal`);
   }
   assert.match(ui, /function ThemeMenu[\s\S]*usePopoverDismiss\(open, setOpen, menuRef\)/);
   assert.match(ui, /function ColumnChooser[\s\S]*useDialogDismiss\(onClose, dialogRef\)/);

@@ -2,6 +2,7 @@ import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSy
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
@@ -71,4 +72,6 @@ const egg = path.join(pluginRoot, 'dist', eggs[0]);
 const inspect = spawnSync(python, ['-c', "import os, zipfile; z=zipfile.ZipFile(os.environ['EGG']); n=set(z.namelist()); required={'deluge_deck/core.py','deluge_deck/gtk3ui.py','deluge_deck/webui.py','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'-style.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'-plugin.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'.css'}; missing=required-n; assert not missing, missing; assert not any(x in n for x in ('deluge_deck/data/deluge-deck-style.js','deluge_deck/data/deluge-deck.css')); meta=[x for x in n if x.endswith('EGG-INFO/PKG-INFO')][0]; info=z.read(meta).decode(); assert 'Version: '+os.environ['VERSION'] in info; entries=z.read([x for x in n if x.endswith('EGG-INFO/entry_points.txt')][0]).decode(); assert 'deluge.plugin.core' in entries and 'deluge.plugin.gtk3ui' in entries and 'deluge.plugin.web' in entries"], { env: { ...process.env, EGG: egg, VERSION: version }, stdio: 'inherit' });
 if (inspect.error) throw inspect.error;
 if (inspect.status !== 0) process.exit(inspect.status || 1);
+const checksum = createHash('sha256').update(readFileSync(egg)).digest('hex');
+writeFileSync(`${egg}.sha256`, `${checksum}  ${eggs[0]}\n`);
 console.log(`\nPlugin ready: ${egg}`);

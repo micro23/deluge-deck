@@ -6,7 +6,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.45.
+Current release: 1.0.46.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -14,7 +14,7 @@ The current release keeps main-window `.torrent` drops in the review flow: a dro
 
 ## Windows quick start
 
-1. Install Node.js 20+ on the Windows machine that runs Deluge Web.
+1. Install Node.js 20.19+ or 22.12+ on the Windows machine that runs Deluge Web.
 2. Open PowerShell in this folder and run `npm ci`, then `npm run build`.
 3. Double-click `start-windows.cmd` (or run `npm start`).
 4. Open [http://127.0.0.1:8118](http://127.0.0.1:8118) and enter your Deluge Web password.
@@ -30,7 +30,7 @@ npm install
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.22-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.46-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
 
 ### Using port 8888 (plugin mode)
 
@@ -69,6 +69,8 @@ npm run check
 ```
 
 After building, run `node scripts/verify-torrent-controls.mjs` to check selected and bulk pause/resume, pending controls, and visible errors in both UI modes. Set `CHROME_PATH` to an installed Chrome executable if Playwright’s browser is unavailable.
+
+Run `node scripts/verify-reliability.mjs` for isolated browser checks of proxy settings, malformed torrent metadata, Add dialog protection during uploads, payload priorities, and mobile bounds. Both browser scripts use fictional fixtures and do not contact your Deluge daemon.
 
 Dependencies are pinned in `package.json` and locked in `package-lock.json`; use `npm ci` for reproducible installs. Release builds also run the automated version, test, and plugin checks described in [docs/RELEASE.md](docs/RELEASE.md).
 

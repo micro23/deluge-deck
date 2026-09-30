@@ -56,14 +56,18 @@ import {
   normalizeTorrentFiles,
 } from '../server/hosted-contracts.mjs';
 import { api, pluginMode, rpc } from './app/api.js';
+import { decodeTorrentMetadata } from './app/torrent-metadata.js';
+import { daemonHostStatus, addedHostId } from '../server/hosted-contracts.mjs';
+import { proxyFormValues, proxyConfig } from './app/preferences.js';
+import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES } from './app/themes.js';
+import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { ThemeDetail } from './app/ThemeDetail.jsx';
 import './styles.css';
 import './theme-gallery.css';
 import './dashboard-polish.css';
 import './mobile-overrides.css';
-import './themes/terminal.css';
 import './native-deluge.css';
 import './themes/valentine.css';
 import './themes/halloween.css';
@@ -76,6 +80,8 @@ import './themes/mobile.css';
 import './themes/signatures.css';
 import './themes/sidebar.css';
 import './themes/sizing.css';
+// Terminal owns its geometry as well as its palette; load after shared sizing.
+import './themes/terminal.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -104,56 +110,6 @@ const eta = (value = 0) => {
     : `${Math.floor(n / 3600)}h ${Math.floor((n % 3600) / 60)}m`;
 };
 
-// Read the small bencoded metadata header from a local .torrent so the add
-// review can expose the payload files before anything is sent to Deluge.
-const decodeTorrentMetadata = (buffer) => {
-  const bytes = new Uint8Array(buffer);
-  const text = new TextDecoder();
-  let offset = 0;
-  const read = () => {
-    const marker = bytes[offset];
-    if (marker === 105) {
-      offset += 1;
-      const end = bytes.indexOf(101, offset);
-      const value = Number(new TextDecoder().decode(bytes.slice(offset, end)));
-      offset = end + 1;
-      return value;
-    }
-    if (marker === 108) {
-      offset += 1;
-      const value = [];
-      while (bytes[offset] !== 101) value.push(read());
-      offset += 1;
-      return value;
-    }
-    if (marker === 100) {
-      offset += 1;
-      const value = {};
-      while (bytes[offset] !== 101) {
-        const key = read();
-        value[key] = read();
-      }
-      offset += 1;
-      return value;
-    }
-    const colon = bytes.indexOf(58, offset);
-    const length = Number(text.decode(bytes.slice(offset, colon)));
-    offset = colon + 1;
-    const value = text.decode(bytes.slice(offset, offset + length));
-    offset += length;
-    return value;
-  };
-  const metadata = read();
-  const info = metadata?.info;
-  if (!info) throw new Error('This torrent is missing its info metadata.');
-  if (Array.isArray(info.files))
-    return info.files.map((entry, index) => ({
-      index,
-      path: [...(entry.path || entry['path.utf-8'] || [])].join('/'),
-      size: Number(entry.length || 0),
-    }));
-  return [{ index: 0, path: String(info.name || 'Torrent payload'), size: Number(info.length || 0) }];
-};
 // Google S2 serves a generic globe whenever it cannot find an icon, which made
 // unrelated trackers appear to have the same fake favicon.  Prefer each
 // tracker's own icon and keep a curated list of commonly used tracker roots so
@@ -642,7 +598,6 @@ function usePopoverDismiss(open, setOpen, ref) {
 function useDialogDismiss(onClose, ref, blocked = false) {
   useEffect(() => {
     const dismiss = (event) => {
-      if (blocked) return;
       const escape = event.type === 'keydown' && event.key === 'Escape';
       const outside =
         event.type === 'pointerdown' &&
@@ -651,7 +606,7 @@ function useDialogDismiss(onClose, ref, blocked = false) {
       if (!escape && !outside) return;
       event.preventDefault();
       event.stopPropagation();
-      onClose();
+      if (!blocked) onClose();
     };
     document.addEventListener('keydown', dismiss, true);
     document.addEventListener('pointerdown', dismiss, true);
@@ -970,6 +925,7 @@ function ConnectionManagerModal({ onClose, onConnected }) {
   useFocusTrap(modalRef);
   const [hosts, setHosts] = useState([]);
   const [busy, setBusy] = useState('load');
+  useDialogDismiss(onClose, modalRef, Boolean(busy));
   const [error, setError] = useState('');
   const [adding, setAdding] = useState(false);
   const [removingHost, setRemovingHost] = useState(null);
@@ -979,7 +935,6 @@ function ConnectionManagerModal({ onClose, onConnected }) {
     username: '',
     password: '',
   });
-  useDialogDismiss(onClose, modalRef);
   useEffect(() => {
     let active = true;
     const load = async () => {
@@ -987,14 +942,12 @@ function ConnectionManagerModal({ onClose, onConnected }) {
         const result = await rpc('web.get_hosts');
         const enriched = await Promise.all(
           (result || []).map(async (host) => {
-            const status =
-              host[3] ||
-              (await rpc('web.get_host_status', [host[0]]).catch(() => null));
+            const status = await rpc('web.get_host_status', [host[0]]).catch(() => null);
             return {
               id: host[0],
               host: host[1],
               port: host[2],
-              status: Array.isArray(status) ? status[0] : status || 'Unknown',
+              status: daemonHostStatus(status, host[0]),
             };
           }),
         );
@@ -1017,7 +970,7 @@ function ConnectionManagerModal({ onClose, onConnected }) {
       const connected = await rpc('web.connected').catch(() => false);
       if (connected) await rpc('web.disconnect');
       const result = await rpc('web.connect', [host.id]);
-      if (result === false)
+      if (result === false || !await rpc('web.connected'))
         throw new Error(`Deluge could not connect to ${host.host}.`);
       await onConnected(host);
       onClose();
@@ -1038,15 +991,16 @@ function ConnectionManagerModal({ onClose, onConnected }) {
     setBusy('add');
     setError('');
     try {
-      const id = await rpc('web.add_host', [
+      const result = await rpc('web.add_host', [
         host,
         port,
         newHost.username.trim(),
         newHost.password,
       ]);
+      const id = addedHostId(result);
       setHosts((current) => [
         ...current,
-        { id: id || `${host}:${port}`, host, port, status: 'Offline' },
+        { id, host, port, status: 'Offline' },
       ]);
       setNewHost({ host: '', port: '58846', username: '', password: '' });
       setAdding(false);
@@ -1060,7 +1014,8 @@ function ConnectionManagerModal({ onClose, onConnected }) {
     setBusy(`remove:${host.id}`);
     setError('');
     try {
-      await rpc('web.remove_host', [host.id]);
+      if (!await rpc('web.remove_host', [host.id]))
+        throw new Error('Deluge could not remove this host.');
       setHosts((current) => current.filter((item) => item.id !== host.id));
       setRemovingHost(null);
     } catch (reason) {
@@ -1350,6 +1305,8 @@ function AccountMenu({ session, onLogout }) {
   );
 }
 function Topbar({
+  search,
+  setSearch,
   stats,
   torrents,
   selectedCount,
@@ -1366,6 +1323,7 @@ function Topbar({
   onConnectionChanged,
 }) {
   const [connectionsOpen, setConnectionsOpen] = useState(false);
+  const mobile = useMobileLayout();
   const viewportOverlayHost = useViewportOverlayHost();
   return (
     <>
@@ -1376,6 +1334,7 @@ function Topbar({
         <div className="topbar-heading">
           <h1>Deluge</h1>
         </div>
+        {theme === 'terminal' && !mobile && <SearchField search={search} setSearch={setSearch} />}
         <div className="top-actions">
           <GlobalControls
             stats={stats}
@@ -1612,7 +1571,7 @@ function LegacyTorrentTable({
   });
   const [columnWidths, setColumnWidths] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('deck-column-widths') || '{}');
+      return JSON.parse(localStorage.getItem(tableStorageKey(theme, 'widths')) || '{}');
     } catch {
       return {};
     }
@@ -1624,8 +1583,8 @@ function LegacyTorrentTable({
     );
   }, [columnVisibility]);
   useEffect(() => {
-    localStorage.setItem('deck-column-widths', JSON.stringify(columnWidths));
-  }, [columnWidths]);
+    localStorage.setItem(tableStorageKey(theme, 'widths'), JSON.stringify(columnWidths));
+  }, [columnWidths, theme]);
   useEffect(() => {
     const table = tableRef.current;
     if (!table || !window.ResizeObserver) return undefined;
@@ -2088,9 +2047,8 @@ const TABLE_COLUMN_ORDER = [
   'tracker',
   'queue',
 ];
-// This is intentionally theme-independent. Themes may change the table's
-// colors and surface treatment, but never which information is presented or
-// how comfortably the default table scans across a desktop screen.
+// Shared defaults remain independent of the palette. Terminal owns a compact
+// width preset and separate storage; the other themes retain this layout.
 const TABLE_LAYOUT_VERSION = '2026-09-content-aware-columns';
 const DEFAULT_COLUMN_VISIBILITY = {
   state: true,
@@ -2164,17 +2122,17 @@ const clampColumnWidth = (key, width) =>
     MAX_COLUMN_WIDTHS[key],
     Math.max(MIN_COLUMN_WIDTHS[key], Math.round(width)),
   );
-const normalizeColumnWidths = (savedWidths) =>
+const normalizeColumnWidths = (savedWidths, clampWidth = clampColumnWidth) =>
   Object.fromEntries(
     Object.entries(AUTO_COLUMN_FALLBACKS).flatMap(([key]) => {
       const width = Number(savedWidths?.[key]);
       return Number.isFinite(width)
-        ? [[key, clampColumnWidth(key, width)]]
+        ? [[key, clampWidth(key, width)]]
         : [];
     }),
   );
-const hasCurrentTableLayout = () =>
-  localStorage.getItem('deck-table-layout-version') === TABLE_LAYOUT_VERSION;
+const hasCurrentTableLayout = (theme) =>
+  localStorage.getItem(theme === 'terminal' ? 'deck-terminal-table-layout-version' : 'deck-table-layout-version') === TABLE_LAYOUT_VERSION;
 const TABLE_COLUMN_LABELS = {
   name: 'Torrent',
   state: 'State',
@@ -2270,6 +2228,9 @@ function TorrentTable({
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const [draggingColumn, setDraggingColumn] = useState(null);
   const mobile = useMobileLayout();
+  const clampWidth = (key, width) => theme === 'terminal'
+    ? Math.min(MAX_COLUMN_WIDTHS[key], Math.max(key === 'name' ? 180 : Math.min(terminalColumnWidths[key], MIN_COLUMN_WIDTHS[key]), Math.round(width)))
+    : clampColumnWidth(key, width);
   const columnResizeStart = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const scopedTheme = theme === 'terminal' || theme === 'valentine' || theme === 'halloween';
@@ -2283,7 +2244,7 @@ function TorrentTable({
         : theme === 'halloween'
           ? { progress: true, seedingTime: true }
           : {};
-    if (!hasCurrentTableLayout())
+    if (!hasCurrentTableLayout(theme))
       return { ...DEFAULT_COLUMN_VISIBILITY, ...themeColumns };
     try {
       const saved = JSON.parse(localStorage.getItem(visibilityKey) || '{}');
@@ -2301,20 +2262,21 @@ function TorrentTable({
     AUTO_COLUMN_FALLBACKS,
   );
   const [columnWidths, setColumnWidths] = useState(() => {
-    if (!hasCurrentTableLayout()) return {};
+    if (!hasCurrentTableLayout(theme)) return {};
     try {
       return normalizeColumnWidths(
-        JSON.parse(localStorage.getItem('deck-column-widths') || '{}'),
+        JSON.parse(localStorage.getItem(tableStorageKey(theme, 'widths')) || '{}'),
+        clampWidth,
       );
     } catch {
       return {};
     }
   });
   const [columnOrder, setColumnOrder] = useState(() => {
-    if (!hasCurrentTableLayout()) return TABLE_COLUMN_ORDER;
+    if (!hasCurrentTableLayout(theme)) return TABLE_COLUMN_ORDER;
     try {
       const stored = JSON.parse(
-        localStorage.getItem('deck-column-order') || '[]',
+        localStorage.getItem(tableStorageKey(theme, 'order')) || '[]',
       );
       const valid = stored.filter(
         (key, index) =>
@@ -2337,14 +2299,14 @@ function TorrentTable({
     );
   }, [columnVisibility, theme]);
   useEffect(() => {
-    localStorage.setItem('deck-column-widths', JSON.stringify(columnWidths));
-  }, [columnWidths]);
+    localStorage.setItem(tableStorageKey(theme, 'widths'), JSON.stringify(columnWidths));
+  }, [columnWidths, theme]);
   useEffect(() => {
-    localStorage.setItem('deck-column-order', JSON.stringify(columnOrder));
-  }, [columnOrder]);
+    localStorage.setItem(tableStorageKey(theme, 'order'), JSON.stringify(columnOrder));
+  }, [columnOrder, theme]);
   useEffect(() => {
-    localStorage.setItem('deck-table-layout-version', TABLE_LAYOUT_VERSION);
-  }, []);
+    localStorage.setItem(theme === 'terminal' ? 'deck-terminal-table-layout-version' : 'deck-table-layout-version', TABLE_LAYOUT_VERSION);
+  }, [theme]);
   useEffect(() => {
     const close = () => setColumnMenuOpen(false);
     window.addEventListener('deluge-deck:close-popovers', close);
@@ -2355,7 +2317,7 @@ function TorrentTable({
     const updateManualResize = (event) => {
       const resize = columnResizeStart.current;
       if (!resize) return;
-      const width = clampColumnWidth(
+      const width = clampWidth(
         resize.key,
         resize.startWidth + event.clientX - resize.startX,
       );
@@ -2422,15 +2384,15 @@ function TorrentTable({
     [torrents, sort],
   );
   const resolvedColumnWidths = useMemo(
-    () => ({ ...autoColumnWidths, ...columnWidths }),
-    [autoColumnWidths, columnWidths],
+    () => ({ ...(theme === 'terminal' ? terminalColumnWidths : autoColumnWidths), ...columnWidths }),
+    [autoColumnWidths, columnWidths, theme],
   );
   const tableMinimumWidth = useMemo(
     () =>
-      TABLE_FIXED_CHROME_WIDTH +
+      (theme === 'terminal' ? 47 : TABLE_FIXED_CHROME_WIDTH) +
       visibleColumns
         .reduce((total, key) => total + resolvedColumnWidths[key], 0),
-    [resolvedColumnWidths, visibleColumns],
+    [resolvedColumnWidths, visibleColumns, theme],
   );
 
   // Measure an unconstrained clone so auto widths can both grow and shrink as
@@ -2438,7 +2400,7 @@ function TorrentTable({
   // its already assigned width and would slowly ratchet columns larger.
   useLayoutEffect(() => {
     const table = tableRef.current;
-    if (!table || loading) return undefined;
+    if (!table || loading || theme === 'terminal') return undefined;
     let cancelled = false;
     let frame = 0;
     const measure = () => {
@@ -2479,7 +2441,7 @@ function TorrentTable({
       cancelled = true;
       cancelAnimationFrame(frame);
     };
-  }, [loading, sortedTorrents, visibleColumns, mobile]);
+  }, [loading, sortedTorrents, visibleColumns, mobile, theme]);
   const sortLabel =
     (Object.entries(TABLE_SORT_KEYS).find(
       ([, sortKey]) => sortKey === sort.key,
@@ -2668,7 +2630,9 @@ function TorrentTable({
                   className="sort-button"
                   onClick={() => toggleSort(TABLE_SORT_KEYS[key])}
                 >
-                  {key === 'download'
+                  {theme === 'terminal' && terminalColumnLabels[key]
+                    ? terminalColumnLabels[key]
+                    : key === 'download'
                     ? '↓ Download'
                     : key === 'upload'
                       ? '↑ Upload'
@@ -2722,9 +2686,9 @@ function TorrentTable({
                       (event.key === 'ArrowRight' ? 1 : -1);
                     setColumnWidths((current) => ({
                       ...current,
-                      [key]: clampColumnWidth(
+                      [key]: clampWidth(
                         key,
-                        (current[key] ?? autoColumnWidths[key]) + delta,
+                        (current[key] ?? resolvedColumnWidths[key]) + delta,
                       ),
                     }));
                   }}
@@ -3131,7 +3095,10 @@ function DetailDrawer({ torrent, onClose, onAction }) {
     setRenameState({ busy: true, error: '' });
     try {
       if (entry.type === 'folder')
-        await rpc('core.rename_folder', [torrent.hash, entry.folder, trimmed]);
+        await rpc('core.rename_folder', [
+          torrent.hash, entry.folder,
+          `${entry.folder.slice(0, entry.folder.lastIndexOf('/') + 1)}${trimmed}`,
+        ]);
       else {
         const path = entry.file.path;
         const parent = path.includes('/')
@@ -3570,8 +3537,8 @@ function RemoveModal({ targets, onClose, onRemove, onModalState }) {
   useRestoreFocus();
   const modalRef = useRef(null);
   useFocusTrap(modalRef);
-  useDialogDismiss(onClose, modalRef);
   const [busy, setBusy] = useState(false);
+  useDialogDismiss(onClose, modalRef, Boolean(busy));
   const [error, setError] = useState('');
   useEffect(() => {
     const locked = busy || Boolean(error);
@@ -3681,11 +3648,11 @@ function MoveStorageModal({ torrent, onClose, onMoved, onModalState }) {
   useRestoreFocus();
   const modalRef = useRef(null);
   useFocusTrap(modalRef);
-  useDialogDismiss(onClose, modalRef);
   const [destination, setDestination] = useState(
     torrent.save_path || torrent.download_location || '',
   );
   const [busy, setBusy] = useState(false);
+  useDialogDismiss(onClose, modalRef, Boolean(busy));
   const [error, setError] = useState('');
   useEffect(() => {
     deckModalState.locked = busy;
@@ -3798,10 +3765,10 @@ function RenameTorrentModal({ torrent, onClose, onRenamed, onModalState }) {
   useRestoreFocus();
   const modalRef = useRef(null);
   useFocusTrap(modalRef);
-  useDialogDismiss(onClose, modalRef);
   const [target, setTarget] = useState(null);
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
+  useDialogDismiss(onClose, modalRef, Boolean(busy));
   const [error, setError] = useState('');
   useEffect(() => {
     let current = true;
@@ -4226,6 +4193,10 @@ function PreferencesModal({
                 >
                   <option value="HTTP">HTTP</option>
                   <option value="SOCKS5">SOCKS5</option>
+                  <option value="SOCKS4">SOCKS4</option>
+                  <option value="SOCKS5_AUTH">SOCKS5 with authentication</option>
+                  <option value="HTTP_AUTH">HTTP with authentication</option>
+                  <option value="I2P">I2P</option>
                 </select>
               </label>
               <label className="path-setting">
@@ -4411,9 +4382,13 @@ function PreferencesModal({
 }
 function DeckPreferences({ onClose }) {
   const [refreshMs, setRefreshMs] = useState(
-    () => Number(localStorage.getItem('deck-refresh-ms')) || 1500,
+    () => {
+      const saved = Number(localStorage.getItem('deck-refresh-ms'));
+      return REFRESH_OPTIONS.some(([value]) => value === saved) ? saved : 1500;
+    },
   );
   const [plugins, setPlugins] = useState({ enabled: [], available: [] });
+  const proxySettings = useRef(null);
   const [celebrateCompletions, setCelebrateCompletions] = useState(
     () => localStorage.getItem('deck-celebrations') === 'true',
   );
@@ -4457,20 +4432,19 @@ function DeckPreferences({ onClose }) {
     let active = true;
     rpc('core.get_config')
       .then((config) => {
-        if (active)
+        if (active) {
+          proxySettings.current = config?.proxy || {};
           setPaths({
             downloadLocation: config?.download_location || '',
             completedPath: config?.move_completed_path || '',
             moveCompleted: Boolean(config?.move_completed),
             networkPort: String(config?.listen_ports?.[0] || 6881),
             randomPort: Boolean(config?.random_port),
-            proxyEnabled: Boolean(config?.proxy?.enabled),
-            proxyHost: config?.proxy?.hostname || '',
-            proxyPort: String(config?.proxy?.port || 8080),
-            proxyType: config?.proxy?.type === 'socks5' ? 'SOCKS5' : 'HTTP',
+            ...proxyFormValues(config?.proxy),
             cacheSize: String(config?.cache_size ?? 512),
             cacheExpiry: String(config?.cache_expiry ?? 60),
           });
+        }
       })
       .catch(() => {
         if (active) setPathsMessage('Unable to load Deluge paths.');
@@ -4556,12 +4530,7 @@ function DeckPreferences({ onClose }) {
     try {
       await rpc('core.set_config', [
         {
-          proxy: {
-            enabled: paths.proxyEnabled,
-            hostname: paths.proxyHost.trim(),
-            port,
-            type: paths.proxyType.toLowerCase(),
-          },
+          proxy: proxyConfig(proxySettings.current, paths),
         },
       ]);
       setProxyMessage('Proxy settings saved.');
@@ -4697,7 +4666,6 @@ function AddTorrentModal({
   useRestoreFocus();
   const modalRef = useRef(null);
   useFocusTrap(modalRef);
-  useDialogDismiss(onClose, modalRef);
   const [tab, setTab] = useState('files');
   const [files, setFiles] = useState(initialFiles);
   const [selectedAddFiles, setSelectedAddFiles] = useState(
@@ -4723,6 +4691,7 @@ function AddTorrentModal({
   const [paused, setPaused] = useState(false);
   const [sequential, setSequential] = useState(false);
   const [busy, setBusy] = useState(false);
+  useDialogDismiss(onClose, modalRef, Boolean(busy));
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState('');
   const input = useRef();
@@ -4742,6 +4711,7 @@ function AddTorrentModal({
         [file.name]: { status: 'loading', files: [] },
       }));
       try {
+        if (file.size > 64 * 1024 * 1024) throw new Error('This torrent metadata file is too large.');
         const payloadFiles = decodeTorrentMetadata(await file.arrayBuffer());
         setTorrentPayloads((current) => ({
           ...current,
@@ -4767,9 +4737,12 @@ function AddTorrentModal({
     if (initialFiles.length) inspectTorrentFiles(initialFiles);
   }, []);
   const addFiles = (items) => {
-    const next = Array.from(items || []).filter((file) =>
-      file.name?.toLowerCase().endsWith('.torrent'),
-    );
+    const names = new Set(files.map((file) => file.name));
+    const next = Array.from(items || []).filter((file) => {
+      if (!file.name?.toLowerCase().endsWith('.torrent') || names.has(file.name)) return false;
+      names.add(file.name);
+      return true;
+    });
     setFiles((current) => [...current, ...next]);
     setSelectedAddFiles(
       (current) => new Set([...current, ...next.map((file) => file.name)]),
@@ -4857,7 +4830,7 @@ function AddTorrentModal({
             compact_allocation: allocation === 'compact',
           },
         ]);
-      else if (files.length && selectedAddFiles.size) {
+      else if (tab === 'files' && files.length && selectedAddFiles.size) {
         const selected = files.filter((file) =>
           selectedAddFiles.has(file.name),
         );
@@ -4959,7 +4932,7 @@ function AddTorrentModal({
   return (
     <div
       className="modal-backdrop"
-      onMouseDown={(event) => event.target === event.currentTarget && onClose()}
+      onMouseDown={(event) => event.target === event.currentTarget && !busy && onClose()}
     >
       <section
         ref={modalRef}
@@ -4977,6 +4950,7 @@ function AddTorrentModal({
             className="icon-button"
             onClick={onClose}
             aria-label="Close add torrent"
+            disabled={busy}
           >
             <X size={18} />
           </button>
@@ -5379,7 +5353,10 @@ function App() {
     },
   );
   const [refreshMs, setRefreshMs] = useState(
-    () => Number(localStorage.getItem('deck-refresh-ms')) || 1500,
+    () => {
+      const saved = Number(localStorage.getItem('deck-refresh-ms'));
+      return REFRESH_OPTIONS.some(([value]) => value === saved) ? saved : 1500;
+    },
   );
   const [notice, setNotice] = useState('');
   const [refreshError, setRefreshError] = useState('');
@@ -5390,6 +5367,7 @@ function App() {
   const [celebration, setCelebration] = useState('');
   const previousStates = useRef(new Map());
   const refreshFailures = useRef(0);
+  const refreshGate = useRef(createRequestGate());
   const removalFocusPending = useRef(false);
   useEffect(() => {
     if (!menuTorrent) return undefined;
@@ -5411,8 +5389,11 @@ function App() {
     };
   }, [menuTorrent]);
   const refresh = async () => {
+    const token = refreshGate.current.begin();
     try {
       const data = await api.torrents();
+      if (!refreshGate.current.isCurrent(token)) return;
+      if (data.connected === false) throw new Error('Deluge daemon is disconnected. Open the connection manager to reconnect.');
       refreshFailures.current = 0;
       const next = mapTorrents(data);
       setRefreshError('');
@@ -5435,6 +5416,8 @@ function App() {
         next.map((torrent) => [torrent.hash, torrent.state]),
       );
       setTorrents(next);
+      const liveHashes = new Set(next.map((torrent) => torrent.hash));
+      setSelected((current) => new Set([...current].filter((hash) => liveHashes.has(hash))));
       setStats(data.stats || {});
       setDetail(
         (current) =>
@@ -5442,6 +5425,7 @@ function App() {
           (next.find((torrent) => torrent.hash === current.hash) || null),
       );
     } catch (reason) {
+      if (!refreshGate.current.isCurrent(token)) return;
       refreshFailures.current = Math.min(refreshFailures.current + 1, 5);
       setRefreshError(reason?.message || 'Unable to reach Deluge.');
       if (
@@ -5458,7 +5442,7 @@ function App() {
         setConnected(false);
       }
     } finally {
-      setLoading(false);
+      if (refreshGate.current.isCurrent(token)) setLoading(false);
     }
   };
   useEffect(() => {
@@ -5718,6 +5702,8 @@ function App() {
       />
       <main className="main-content">
         <Topbar
+          search={search}
+          setSearch={setSearch}
           stats={stats}
           torrents={torrents}
           selectedCount={selected.size}
@@ -5740,8 +5726,19 @@ function App() {
           }}
           disconnect={async () => {
             await api.disconnect();
+            refreshGate.current.cancel();
             setSessionData(null);
             setConnected(false);
+            setTorrents([]);
+            setStats({});
+            setSelected(new Set());
+            setDetail(null);
+            setAddFiles(null);
+            setMenuTorrent(null);
+            setCommandPaletteOpen(false);
+            setRefreshError('');
+            setNotice('');
+            previousStates.current.clear();
           }}
         />
         <section className="workspace">
@@ -5765,7 +5762,7 @@ function App() {
               </button>
             </div>
           )}
-          <SearchField search={search} setSearch={setSearch} />
+          {(theme !== 'terminal' || mobileLayout) && <SearchField search={search} setSearch={setSearch} />}
           <div className="page-heading">
             <div>
               <h1>
@@ -5777,6 +5774,7 @@ function App() {
               <Plus size={17} /> Add torrent
             </button>
           </div>
+          {theme === 'terminal' && <button className="terminal-add-command" onClick={() => setAddFiles([])}><span aria-hidden="true">&gt;</span> [Add torrent]<i aria-hidden="true" /></button>}
           <div className="stats-grid">
             <Stat
               theme={theme}
@@ -5919,6 +5917,7 @@ function App() {
       )}
       {detail && mobileOverlay(
         <DetailDrawer
+          key={detail.hash}
           torrent={detail}
           onClose={() => setDetail(null)}
           onAction={(action) => act(action, [detail.hash])}
@@ -6073,14 +6072,15 @@ function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }
         <Icon size={17} />
       </div>
       <div>
-        <span>{label}</span>
+        <span>{theme === 'terminal' ? ({ Connections: 'Conns', Library: 'Lib' }[label] || label) : label}</span>
         <strong>{value}</strong>
-        {detail && <small>{detail}</small>}
+        {(detail || theme === 'terminal') && <small>{theme === 'terminal' ? (label === 'Connections' ? 'Active' : label === 'Library' ? detail.replace(/(\d+) seeding/, 'Seeding:$1') : 'Payload') : detail}</small>}
       </div>
       <svg className="stat-spark" aria-hidden="true" viewBox="0 0 100 30" preserveAspectRatio="none">
         <polygon points={`0,30 ${points} 100,30`} />
         <polyline points={points} />
       </svg>
+      {theme === 'terminal' && <div className="terminal-stat-trace" aria-hidden="true">{label === 'Connections' ? '[---/\\---]' : '[------------]'}</div>}
       <ThemeDetail theme={theme} />
     </div>
   );
