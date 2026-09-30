@@ -96,6 +96,13 @@
 :root[data-theme] body .stats-grid .stat-card > .theme-detail {
   width:46px; height:46px; right:12px; top:34px;
 }
+:root[data-theme] body .stats-grid .stat-card > .theme-detail-left {
+  right:auto!important;
+  left:12px;
+}
+@media (max-width:760px), (max-width:950px) and (max-height:540px) {
+  :root[data-theme] body .stats-grid .stat-card > .theme-detail-left { left:7px; }
+}
 
 @media (min-width:761px) {
   :root[data-theme] body .topbar {

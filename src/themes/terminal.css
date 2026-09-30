@@ -854,7 +854,7 @@
   :root[data-theme="terminal"] body .mobile-brand .brand { display:none; }
   :root[data-theme="terminal"] body .workspace { overflow:auto; }
 }
-:root[data-theme="terminal"] body .stat-card>.theme-detail { display:none!important; }
+:root[data-theme="terminal"] body .stat-card>.theme-detail { display:block!important; }
 :root[data-theme="terminal"] body .app-shell::before { background-size:auto!important; }
 :root[data-theme="terminal"] body .stat-card span,
 :root[data-theme="terminal"] body .stat-card strong,

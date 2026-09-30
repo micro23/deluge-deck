@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Decorative SVG only: the adjacent values and sparklines remain real telemetry.
-export function ThemeDetail({ theme }) {
+export function ThemeDetail({ theme, side = 'right' }) {
   const art = {
     dark: <><circle cx="60" cy="60" r="44" /><circle cx="60" cy="60" r="30" /><circle cx="60" cy="60" r="15" /><path d="M60 7v18m0 70v18M7 60h18m70 0h18M29 29l62 62M29 91l62-62" /><path className="detail-sweep" d="M60 60V16a44 44 0 0 1 44 44Z" /><circle className="detail-light" cx="82" cy="38" r="3" /></>,
     light: <><path d="M18 24h84v72H18zM24 32h72M24 88h72M60 24v72" /><circle cx="60" cy="60" r="23" /><path d="m60 32 7 21 21 7-21 7-7 21-7-21-21-7 21-7Z" /><path d="M11 24v72m98-72v72M18 18h84M18 102h84" /><circle cx="60" cy="60" r="3" /></>,
@@ -16,5 +16,5 @@ export function ThemeDetail({ theme }) {
     'new-year': <><path d="M60 12v23m0 50v23M12 60h23m50 0h23M26 26l16 16m36 36 16 16M26 94l16-16m36-36 16-16M42 16l8 21m20 46 8 21M16 42l21 8m46 20 21 8M16 78l21-8m46-20 21-8M42 104l8-21m20-46 8-21" /><path d="m60 43 5 12 12 5-12 5-5 12-5-12-12-5 12-5Z" /></>,
     terminal: <><path d="M14 24h92v72H14zM14 39h92M25 30h2m6 0h2m6 0h2M28 53l11 9-11 9m21 0h22" /><path className="detail-light" d="M78 71h15" /></>,
   }[theme];
-  return <svg className="theme-detail" aria-hidden="true" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">{art}</svg>;
+  return <svg className={`theme-detail theme-detail-${side}`} aria-hidden="true" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">{art}</svg>;
 }

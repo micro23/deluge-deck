@@ -6082,6 +6082,7 @@ function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }
       </svg>
       {theme === 'terminal' && <div className="terminal-stat-trace" aria-hidden="true">{label === 'Connections' ? '[---/\\---]' : '[------------]'}</div>}
       <ThemeDetail theme={theme} />
+      <ThemeDetail theme={theme} side="left" />
     </div>
   );
 }
