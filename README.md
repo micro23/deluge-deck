@@ -6,7 +6,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.50.
+Current release: 1.0.51.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -30,7 +30,7 @@ npm install
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.50-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.51-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
 
 ### Using port 8888 (plugin mode)
 

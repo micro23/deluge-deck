@@ -1,5 +1,5 @@
-/* Independence alone owns these finishes and proportions. Loaded after shared
-   geometry, like Terminal. Artwork is local, static, and never captures input. */
+/* Independence finishes retain the shared navigation geometry.
+   Artwork is local, static, and never captures input. */
 :root[data-theme="independence"] {
   --bg:#030d25; --surface:#07152e; --surface-2:#102447; --surface-3:#1d3555;
   --text:#fff7e8; --muted:#dededc; --muted-2:#c5cddd;
@@ -37,24 +37,30 @@
 :root[data-theme="independence"] body .table-shell tbody tr.selected td { background:#4a3b65ed!important; }
 :root[data-theme="independence"] body .torrent-name strong { font-size:11px!important; }
 :root[data-theme="independence"] body .state-badge i { background:#ffe2a4!important; box-shadow:0 0 7px #ffd585!important; }
-:root[data-theme="independence"] body .progress-track { height:9px!important; border:1px solid #d3b5cb!important; border-radius:6px!important; background:#122653!important; }
-:root[data-theme="independence"] body .progress-bar { background:radial-gradient(circle at 3px 3px,#fff 0 1px,transparent 1.3px) 0 0/7px 6px,linear-gradient(90deg,#184cbd 0 40%,#ede3df 60%,#e84866)!important; box-shadow:0 0 6px #ed7ba9,inset 0 1px 2px #fff!important; }
+.independence-flag { display:none; }
+:root[data-theme="independence"] body .progress-track {
+  position:relative; height:22px!important; overflow:hidden;
+  border:1px solid #d3b5cb!important; border-radius:3px!important;
+  background:#122653!important;
+}
+:root[data-theme="independence"] body .progress-bar { display:none; }
+:root[data-theme="independence"] body .independence-flag {
+  display:block; width:100%; height:100%;
+}
 :root[data-theme="independence"] body .deck-status-rail { position:relative; min-height:32px; border-radius:5px!important; border-color:#814354!important; background:#06122d!important; }
 :root[data-theme="independence"] body .deck-status-rail::after { content:""; position:absolute; left:50%; bottom:-3px; width:67px; height:58px; background:url('../assets/independence-eagle.svg') center/contain no-repeat; transform:translateX(-50%); pointer-events:none; }
 :root[data-theme="independence"] body .session-quick-actions button { box-shadow:0 0 7px #ef52674d!important; }
 :root[data-theme="independence"] body .session-quick-actions button:nth-child(2) { background:linear-gradient(#17689e,#08416e)!important; box-shadow:0 0 7px #51b7ff55!important; }
-@media(min-width:761px) {
-  :root[data-theme="independence"] body .app-shell { --deck-sidebar-size:78px!important; }
-  :root[data-theme="independence"] body .sidebar { width:78px!important; padding:78px 7px 10px!important; background:linear-gradient(90deg,#09152c 0 9%,#a63347 10% 14%,#cbbfaa 15% 19%,#163768 20% 84%,#cbbfaa 85% 89%,#a63347 90% 94%,#07132c 95%)!important; border-right:1px solid #a58e84!important; }
-  :root[data-theme="independence"] body .sidebar::before { content:""!important; position:absolute; inset:3px 3px auto; height:72px; background:url('../assets/independence-eagle.svg') center/contain no-repeat; pointer-events:none; }
-  :root[data-theme="independence"] body .sidebar-command-row { margin-bottom:9px!important; }
-  :root[data-theme="independence"] body .sidebar .add-button { width:100%!important; height:30px!important; padding:0!important; }
-  :root[data-theme="independence"] body .sidebar :is(.add-button,.nav-item) :is(span,b,kbd) { display:none!important; }
-  :root[data-theme="independence"] body .sidebar .nav-label { font-size:8px!important; margin:2px 0 8px!important; letter-spacing:.06em; }
-  :root[data-theme="independence"] body .sidebar > nav .nav-item,:root[data-theme="independence"] body .sidebar-bottom .nav-item { display:flex!important; justify-content:center!important; width:100%!important; min-height:34px!important; padding:0!important; margin:2px 0!important; }
-  :root[data-theme="independence"] body .sidebar .nav-item svg { color:#f4dfda; filter:drop-shadow(0 0 4px #e37a9b); }
-  :root[data-theme="independence"] body .sidebar .nav-item.active { background:linear-gradient(90deg,#ac2948,#153668)!important; border-radius:4px!important; }
-  :root[data-theme="independence"] body .sidebar-bottom { flex-direction:column; }
+/* Colors only: expanded, collapsed, and drawer sizes come from shared rules. */
+:root[data-theme="independence"] body .sidebar {
+  background:linear-gradient(90deg,#09152c,#163768 50%,#07132c)!important;
+  border-right:1px solid #a58e84!important;
+}
+:root[data-theme="independence"] body .sidebar .nav-item svg {
+  color:#f4dfda; filter:drop-shadow(0 0 4px #e37a9b);
+}
+:root[data-theme="independence"] body .sidebar .nav-item.active {
+  background:linear-gradient(90deg,#ac2948,#153668)!important;
 }
 @media(max-width:760px) {
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card { height:112px!important; }

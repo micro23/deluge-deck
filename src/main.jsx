@@ -1393,6 +1393,28 @@ function Progress({ value = 0, state }) {
             width: `${progress}%`,
           }}
         />
+        <svg className="independence-flag" viewBox="0 0 190 100" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <clipPath id={`${potionId}-flag-fill`}>
+              <rect width={190 * progress / 100} height="100" />
+            </clipPath>
+            <path id={`${potionId}-flag-star`} d="M0-3L.67-.93L2.85-.93L1.09.35L1.76 2.43L0 1.15L-1.76 2.43L-1.09.35L-2.85-.93L-.67-.93Z" />
+          </defs>
+          <g clipPath={`url(#${potionId}-flag-fill)`}>
+            <rect width="190" height="100" fill="#fff8ed" />
+            {Array.from({ length: 7 }, (_, stripe) => (
+              <rect key={stripe} y={stripe * 200 / 13} width="190" height={100 / 13} fill="#bf263c" />
+            ))}
+            <rect width="76" height={700 / 13} fill="#183b78" />
+            {Array.from({ length: 9 }, (_, row) => (
+              Array.from({ length: row % 2 ? 5 : 6 }, (_, column) => (
+                <use key={`${row}-${column}`} href={`#${potionId}-flag-star`}
+                  transform={`translate(${(column + (row % 2 ? 1 : .5)) * 76 / 6},${(row + 1) * 70 / 13})`}
+                  fill="#fff8ed" />
+              ))
+            ))}
+          </g>
+        </svg>
         <svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-inside`}>

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.51
+
+- Restore Independence Day navigation expansion, labels, sizing, and spacing using the shared sidebar layout.
+- Reveal an American flag with thirteen stripes and fifty stars as actual torrent progress fills from 0 to 100 percent, including mobile meters.
+- Add browser regression checks for sidebar toggling, persisted expansion, shared geometry, and flag fill levels.
+
 ## 1.0.50
 
 - Remove the duplicate embedded artwork from the plugin's companion CSS resource, reducing the Python 3.9 egg from about 11.26 MB to 5.78 MB.
