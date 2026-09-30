@@ -608,9 +608,9 @@
     overflow:visible;
   }
   :root[data-theme="terminal"] body .sidebar::before {
-    content:"  ___  _    ___\A / __|| |  |_ _|\A| |__ | |__ | |\A \\___||____|___|"!important;
-    font:16px/0.76 var(--terminal-font);
-    letter-spacing:1px;
+    content:"  ____ _     ___\A / ___| |   |_ _|\A| |   | |    | |\A| |___| |___ | |\A \\____|_____|___|"!important;
+    font:15px/0.82 var(--terminal-font);
+    letter-spacing:.5px;
     margin:10px auto 14px;
     white-space:pre;
     color:#c5c5be;
