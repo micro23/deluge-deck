@@ -74,6 +74,8 @@ import './themes/core.css';
 import './themes/tablet.css';
 import './themes/mobile.css';
 import './themes/signatures.css';
+import './themes/sidebar.css';
+import './themes/sizing.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -674,7 +676,7 @@ function useViewportOverlayHost() {
   if (!host.current) host.current = ensureViewportOverlayHost();
   return host.current;
 }
-function GlobalControls({ stats, torrents, onRefresh, onOpenConnections }) {
+function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentAction, onFeedback, onError, onRefresh, onOpenConnections }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
@@ -720,9 +722,11 @@ function GlobalControls({ stats, torrents, onRefresh, onOpenConnections }) {
     try {
       for (const [method, params = []] of operations) await rpc(method, params);
       setMessage(label);
+      if (!open) onFeedback(label);
       await onRefresh();
     } catch (reason) {
       setError(reason.message);
+      if (!open) onError(reason.message || 'Deluge could not complete that action.');
     } finally {
       setBusy('');
     }
@@ -917,29 +921,31 @@ function GlobalControls({ stats, torrents, onRefresh, onOpenConnections }) {
       <div
         className="session-quick-actions"
         role="group"
-        aria-label="Entire session controls"
+        aria-label={selectedCount ? 'Selected torrent controls' : 'Entire session controls'}
       >
         <button
           type="button"
-          disabled={Boolean(busy)}
+          disabled={Boolean(busy || actionBusy)}
           onClick={() =>
-            operate('core.pause_session', 'Entire session paused.')
+            selectedCount
+              ? onTorrentAction('pause')
+              : operate('core.pause_session', 'Entire session paused.')
           }
-          title="Pause every torrent in the session"
-          aria-label="Pause entire session"
+          title={selectedCount ? `Pause ${selectedCount} selected torrents` : 'Pause every torrent in the session'}
+          aria-label={selectedCount ? 'Pause selected torrents' : 'Pause entire session'}
         >
           <Pause size={14} />
-          <span>Pause all</span>
+          <span>{selectedCount ? `Pause (${selectedCount})` : 'Pause all'}</span>
         </button>
         <button
           type="button"
-          disabled={Boolean(busy)}
-          onClick={resumeAll}
-          title="Resume every torrent in the session"
-          aria-label="Resume entire session"
+          disabled={Boolean(busy || actionBusy)}
+          onClick={() => selectedCount ? onTorrentAction('resume') : resumeAll()}
+          title={selectedCount ? `Resume ${selectedCount} selected torrents` : 'Resume every torrent in the session'}
+          aria-label={selectedCount ? 'Resume selected torrents' : 'Resume entire session'}
         >
           <Play size={14} />
-          <span>Resume all</span>
+          <span>{selectedCount ? `Resume (${selectedCount})` : 'Resume all'}</span>
         </button>
       </div>
       <button
@@ -1346,6 +1352,11 @@ function AccountMenu({ session, onLogout }) {
 function Topbar({
   stats,
   torrents,
+  selectedCount,
+  actionBusy,
+  onTorrentAction,
+  onFeedback,
+  onError,
   theme,
   setTheme,
   session,
@@ -1369,6 +1380,11 @@ function Topbar({
           <GlobalControls
             stats={stats}
             torrents={torrents}
+            selectedCount={selectedCount}
+            actionBusy={actionBusy}
+            onTorrentAction={onTorrentAction}
+            onFeedback={onFeedback}
+            onError={onError}
             onRefresh={onRefresh}
             onOpenConnections={() => setConnectionsOpen(true)}
           />
@@ -5351,6 +5367,7 @@ function App() {
   );
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(new Set());
+  const [actionBusy, setActionBusy] = useState('');
   const [detail, setDetail] = useState(null);
   const [addFiles, setAddFiles] = useState(null);
   const [menuTorrent, setMenuTorrent] = useState(null);
@@ -5609,7 +5626,7 @@ function App() {
     }
   };
   const act = async (action, target = [...selected]) => {
-    if (!target.length) return;
+    if (!target.length || actionBusy) return;
     if (action === 'remove') {
       removalFocusPending.current = true;
       setMenuTorrent(null);
@@ -5636,6 +5653,8 @@ function App() {
       queueDown: 'Moved down',
       queueBottom: 'Moved to bottom',
     };
+    setActionBusy(action);
+    setNotice('');
     try {
       if (methods[action]) await rpc(methods[action], [target]);
       setSelected(new Set());
@@ -5646,6 +5665,8 @@ function App() {
       );
     } catch (reason) {
       setNotice(reason.message || 'Deluge could not complete that action.');
+    } finally {
+      setActionBusy('');
     }
   };
   const openPreferences = () => setAddFiles({ kind: 'preferences' });
@@ -5674,6 +5695,10 @@ function App() {
   return (
     <div
       className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
+      onContextMenuCapture={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
       onDragOver={(event) => {
         if (Array.from(event.dataTransfer?.types || []).includes('Files'))
           event.preventDefault();
@@ -5695,6 +5720,11 @@ function App() {
         <Topbar
           stats={stats}
           torrents={torrents}
+          selectedCount={selected.size}
+          actionBusy={actionBusy}
+          onTorrentAction={act}
+          onFeedback={setCopied}
+          onError={setNotice}
           theme={theme}
           setTheme={setTheme}
           session={sessionData}
@@ -5867,21 +5897,21 @@ function App() {
         </section>
       </main>
       {selected.size > 0 && (
-        <div className="bulk-bar">
+        <div className="bulk-bar" aria-busy={Boolean(actionBusy)}>
           <div className="bulk-count">
             <span>{selected.size}</span> selected
           </div>
           <div className="bulk-actions">
-            <button onClick={() => act('resume')}>
+            <button disabled={Boolean(actionBusy)} onClick={() => act('resume')}>
               <Play size={15} /> Resume
             </button>
-            <button onClick={() => act('pause')}>
+            <button disabled={Boolean(actionBusy)} onClick={() => act('pause')}>
               <Pause size={15} /> Pause
             </button>
-            <button onClick={() => act('recheck')}>
+            <button disabled={Boolean(actionBusy)} onClick={() => act('recheck')}>
               <RotateCcw size={15} /> Recheck
             </button>
-            <button className="danger" onClick={() => act('remove')}>
+            <button className="danger" disabled={Boolean(actionBusy)} onClick={() => act('remove')}>
               <Trash2 size={15} /> Remove
             </button>
           </div>

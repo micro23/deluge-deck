@@ -706,35 +706,6 @@
     flex:none;
   }
 
-  :root[data-theme="terminal"] .table-shell table.auto-sized-table {
-    width:100%!important;
-    min-width:0!important;
-    table-layout:fixed;
-  }
-
-  :root[data-theme="terminal"] .table-shell th.check-cell,
-  :root[data-theme="terminal"] .table-shell td:first-child { width:3%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="name"],
-  :root[data-theme="terminal"] .table-shell td[data-column="name"] { width:38%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="state"],
-  :root[data-theme="terminal"] .table-shell td[data-column="state"] { width:8%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="progress"],
-  :root[data-theme="terminal"] .table-shell td[data-column="progress"] { width:12%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="size"],
-  :root[data-theme="terminal"] .table-shell td[data-column="size"] { width:6%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="ratio"],
-  :root[data-theme="terminal"] .table-shell td[data-column="ratio"] { width:5%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="download"],
-  :root[data-theme="terminal"] .table-shell td[data-column="download"],
-  :root[data-theme="terminal"] .table-shell th[data-column="upload"],
-  :root[data-theme="terminal"] .table-shell td[data-column="upload"] { width:6%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="eta"],
-  :root[data-theme="terminal"] .table-shell td[data-column="eta"] { width:5%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="seeds"],
-  :root[data-theme="terminal"] .table-shell td[data-column="seeds"],
-  :root[data-theme="terminal"] .table-shell th[data-column="peers"],
-  :root[data-theme="terminal"] .table-shell td[data-column="peers"] { width:5.5%!important; }
-
   :root[data-theme="terminal"] .table-shell .column-menu-trigger,
   :root[data-theme="terminal"] .table-shell .column-resize-handle,
   :root[data-theme="terminal"] .table-shell .name-content :is(.state-icon,.tracker-favicon-small) { display:none!important; }
@@ -801,11 +772,7 @@
   }
   :root[data-theme="terminal"] .stats-grid { margin:0 0 12px 315px; }
   :root[data-theme="terminal"] .table-shell { overflow-x:auto; }
-  :root[data-theme="terminal"] .table-shell table.auto-sized-table {
-    width:100%!important;
-    min-width:0!important;
-    table-layout:fixed;
-  }
+
   :root[data-theme="terminal"] .table-shell :is(th,td) { padding-inline:3px; font-size:12px; }
   :root[data-theme="terminal"] .table-shell th { font-size:12px; }
   :root[data-theme="terminal"] .table-shell .torrent-name strong { font-size:13px; }
@@ -814,28 +781,6 @@
   :root[data-theme="terminal"] .table-shell .progress-track { width:8ch; font-size:12px; }
   :root[data-theme="terminal"] .table-shell .progress-wrap { min-width:0; gap:4px; }
   :root[data-theme="terminal"] .table-shell .progress-wrap>span { width:auto; font-size:12px; }
-  :root[data-theme="terminal"] .table-shell th.check-cell,
-  :root[data-theme="terminal"] .table-shell td:first-child { width:3%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="name"],
-  :root[data-theme="terminal"] .table-shell td[data-column="name"] { width:26%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="state"],
-  :root[data-theme="terminal"] .table-shell td[data-column="state"] { width:10%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="progress"],
-  :root[data-theme="terminal"] .table-shell td[data-column="progress"] { width:13%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="size"],
-  :root[data-theme="terminal"] .table-shell td[data-column="size"] { width:6%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="ratio"],
-  :root[data-theme="terminal"] .table-shell td[data-column="ratio"] { width:5%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="download"],
-  :root[data-theme="terminal"] .table-shell td[data-column="download"],
-  :root[data-theme="terminal"] .table-shell th[data-column="upload"],
-  :root[data-theme="terminal"] .table-shell td[data-column="upload"] { width:8%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="eta"],
-  :root[data-theme="terminal"] .table-shell td[data-column="eta"] { width:5%!important; }
-  :root[data-theme="terminal"] .table-shell th[data-column="seeds"],
-  :root[data-theme="terminal"] .table-shell td[data-column="seeds"],
-  :root[data-theme="terminal"] .table-shell th[data-column="peers"],
-  :root[data-theme="terminal"] .table-shell td[data-column="peers"] { width:5%!important; }
   :root[data-theme="terminal"] .table-shell thead th:last-child {
     width:6%!important;
     min-width:0;
@@ -844,5 +789,5 @@
 }
 @media (min-width:1101px) and (max-width:1300px) {
   :root[data-theme="terminal"] .topbar-heading::before { content:"[ CLI ]"; }
-  :root[data-theme="terminal"] .table-shell table.auto-sized-table { min-width:1120px!important; }
+
 }

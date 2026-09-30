@@ -1,0 +1,249 @@
+/* Christmas supplies the dashboard scale. Palettes own their materials and
+   illustrations; this final layer owns geometry, including responsive sizes.
+   Sidebar geometry remains in sidebar.css. */
+:root[data-theme] {
+  --deck-stat-height:clamp(108px,14vh,124px);
+  --deck-stat-label-size:9px;
+  --deck-stat-value-size:21px;
+  --deck-stat-detail-size:9px;
+  --deck-table-row-height:40px;
+  --deck-table-head-height:32px;
+}
+:root[data-theme] body .workspace .stats-grid {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  flex:none;
+  gap:9px!important;
+  padding:0!important;
+  margin:0 0 9px!important;
+}
+:root[data-theme] body .workspace .stats-grid .stat-card {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  flex:initial!important;
+  width:auto!important;
+  min-width:0;
+  height:var(--deck-stat-height)!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:7px 10px 6px!important;
+  gap:6px 0!important;
+  border-width:1px!important;
+  overflow:hidden;
+  text-align:center!important;
+}
+:root[data-theme] body .workspace .stats-grid .stat-card > .stat-icon {
+  display:grid!important;
+  place-items:center;
+  width:36px!important;
+  height:32px!important;
+  min-height:0!important;
+  margin:0!important;
+}
+:root[data-theme] body .workspace .stats-grid .stat-icon svg { width:16px!important; height:16px!important; }
+:root[data-theme] body .workspace .stats-grid .stat-icon::before { max-width:36px; max-height:32px; font-size:30px; }
+:root[data-theme] body .workspace .stats-grid .stat-card > div:nth-child(2) {
+  display:flex!important;
+  position:static!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  min-width:0;
+  gap:0!important;
+  text-align:center!important;
+}
+:root[data-theme] body .workspace .stats-grid .stat-card span {
+  display:block!important;
+  position:static!important;
+  width:auto!important;
+  max-width:100%;
+  padding:0!important;
+  margin:0!important;
+  font-size:var(--deck-stat-label-size)!important;
+  line-height:1.3!important;
+  text-align:center!important;
+}
+:root[data-theme] body .workspace .stats-grid .stat-card strong {
+  display:block;
+  width:auto!important;
+  max-width:100%!important;
+  margin:1px 0 0!important;
+  font-size:var(--deck-stat-value-size)!important;
+  line-height:1.06!important;
+  text-align:center!important;
+  white-space:nowrap;
+}
+:root[data-theme] body .workspace .stats-grid .stat-card small {
+  display:block!important;
+  margin:1px 0 0!important;
+  font-size:var(--deck-stat-detail-size)!important;
+  line-height:1.2!important;
+  text-align:center!important;
+}
+:root[data-theme] body .workspace .stats-grid .stat-card > .stat-spark {
+  position:relative!important;
+  inset:auto!important;
+  align-self:center!important;
+  width:min(72%,190px)!important;
+  min-width:0!important;
+  height:17px!important;
+  margin:0!important;
+  padding:0!important;
+}
+:root[data-theme] body .stats-grid .stat-card > .theme-detail {
+  width:46px; height:46px; right:12px; top:34px;
+}
+
+@media (min-width:761px) {
+  :root[data-theme] body .topbar {
+    position:relative!important;
+    height:1px!important;
+    min-height:0!important;
+    padding:0!important;
+    border-bottom-width:1px!important;
+  }
+  :root[data-theme] body .topbar-heading,
+  :root[data-theme] body .topbar::before { display:none!important; }
+  :root[data-theme] body .top-actions {
+    position:absolute!important;
+    inset:10px 14px auto auto!important;
+    width:auto!important;
+    margin:0!important;
+    justify-content:flex-end!important;
+    align-items:center;
+    gap:2px!important;
+  }
+  :root[data-theme] body .topbar .session-quick-actions { padding:3px; gap:0; }
+  :root[data-theme] body .topbar .session-quick-actions button {
+    height:29px!important; min-height:29px!important; padding:0 8px!important;
+    gap:6px; font-size:9px!important; line-height:1.2;
+  }
+  :root[data-theme] body .topbar .session-quick-actions svg { display:block!important; width:14px; height:14px; }
+  :root[data-theme] body .topbar :is(.global-trigger,.theme-trigger,.avatar,.mobile-preferences) {
+    display:grid!important; place-items:center;
+    width:28px!important; min-width:28px!important; height:28px!important; min-height:0!important;
+    padding:0!important; font-size:10px!important;
+  }
+  :root[data-theme] body .topbar :is(.global-trigger,.theme-trigger,.mobile-preferences) > svg {
+    display:block!important; width:17px; height:17px;
+  }
+  :root[data-theme] body .topbar .theme-name { display:none!important; }
+  :root[data-theme] body .workspace {
+    min-height:0!important; padding:7px 12px 17px!important; margin:0!important;
+  }
+  :root[data-theme] body .workspace > .page-heading { display:none!important; }
+  :root[data-theme] body .workspace > .search-wrap {
+    position:relative!important; inset:auto!important;
+    flex:none!important; width:min(100%,430px)!important; max-width:430px!important;
+    height:31px!important; margin:0 auto 16px!important; padding:0 14px!important;
+    gap:9px;
+  }
+  :root[data-theme] body .workspace > .search-wrap input { font-size:13px!important; }
+  :root[data-theme] body .workspace > .search-wrap > svg { display:block!important; width:17px; height:17px; }
+  :root[data-theme] body .search-shortcut { font-size:10px; }
+  :root[data-theme] body .table-shell {
+    flex:1 1 auto!important; min-height:260px; overflow:auto!important; border-width:1px!important;
+  }
+  :root[data-theme] body .table-shell th {
+    height:var(--deck-table-head-height)!important; padding:0 12px!important; font-size:10px!important; line-height:1.2;
+  }
+  :root[data-theme] body .table-shell td {
+    height:var(--deck-table-row-height)!important; padding:0 12px!important; font-size:11px!important; line-height:1.2;
+  }
+  :root[data-theme] body .table-shell .check-cell { width:44px!important; padding-right:6px!important; }
+  :root[data-theme] body .table-shell :is(th,td):last-child { width:52px!important; }
+  :root[data-theme] body .table-shell .name-content { gap:10px; }
+  :root[data-theme] body .table-shell .torrent-name strong { font-size:12px!important; line-height:15px; }
+  :root[data-theme] body .table-shell .name-content .state-icon { display:grid!important; width:29px; height:29px; }
+  :root[data-theme] body .table-shell .name-content .tracker-favicon-small { display:block!important; width:18px; height:18px; }
+  :root[data-theme] body .table-shell .state-badge { font-size:10px!important; gap:6px; }
+  :root[data-theme] body .table-shell .progress-wrap { min-width:0; gap:8px!important; }
+  :root[data-theme] body .table-shell .progress-track { width:88px!important; min-width:0; flex:0 0 88px; }
+  :root[data-theme] body .table-shell .progress-wrap > span { width:33px!important; font-size:10px!important; line-height:12px; }
+  :root[data-theme] body .table-shell .row-menu { width:28px; height:28px; }
+  :root[data-theme] body .table-tools .column-menu-trigger { display:grid!important; top:5px; right:6px; }
+  /* Keep the full resize target inside its sticky header, where the next
+     header cannot cover half of the pointer hit area. */
+  :root[data-theme] body .table-shell .column-resize-handle { display:block!important; right:0; }
+  :root[data-theme] body .deck-status-rail {
+    height:46px; min-height:46px!important; padding:0 14px!important; gap:18px;
+    margin-top:12px!important; font-size:10px!important; line-height:1;
+  }
+  /* The pumpkin/candle ornament already has its own reserved footer gap. */
+  :root[data-theme="halloween"] body .deck-status-rail { margin-top:30px!important; }
+  :root[data-theme="terminal"] body .topbar :is(button,.avatar)::before,
+  :root[data-theme="terminal"] body .topbar :is(button,.avatar)::after,
+  :root[data-theme="terminal"] body .workspace > .search-wrap::before,
+  :root[data-theme="terminal"] body .workspace > .search-wrap::after,
+  :root[data-theme="terminal"] body .table-shell .sort-button::before { content:none!important; }
+  :root[data-theme="terminal"] body .table-shell .sort-button { font-size:inherit!important; }
+}
+@media (min-width:761px) and (max-width:1100px) {
+  :root[data-theme] { --deck-stat-height:clamp(104px,14vh,118px); }
+}
+@media (min-width:761px) and (max-width:900px) {
+  :root[data-theme] { --deck-stat-height:114px; }
+  :root[data-theme] body .workspace .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+  :root[data-theme] body .workspace > .search-wrap {
+    width:min(330px,calc(100% - 165px))!important; margin-left:0!important; margin-right:0!important;
+  }
+}
+
+/* Progress artwork varies in shape; its slot and percentage share a scale. */
+:root[data-theme] body :is(.table-shell,.mobile-transfer,.drawer-progress) .progress-track { height:9px; }
+:root[data-theme="terminal"] body :is(.table-shell,.mobile-transfer,.drawer-progress) .progress-track { height:16px; }
+:root:is([data-theme="christmas"],[data-theme="halloween"]) body :is(.table-shell,.mobile-transfer,.drawer-progress) .progress-track { height:24px!important; }
+
+@media (max-width:760px), (max-width:950px) and (max-height:540px) {
+  :root[data-theme] { --deck-stat-label-size:10px; --deck-stat-value-size:clamp(15px,4.6vw,20px); }
+  :root[data-theme] body .topbar { min-height:58px!important; }
+  :root[data-theme] body .topbar .top-actions :is(.global-trigger,.theme-trigger,.avatar,.mobile-preferences) {
+    display:grid!important; place-items:center;
+    width:40px!important; min-width:40px!important; height:44px!important; min-height:44px!important;
+    padding:0!important; font-size:10px!important;
+  }
+  :root[data-theme] body .topbar .top-actions :is(.global-trigger,.theme-trigger,.mobile-preferences) > svg { display:block!important; width:17px; height:17px; }
+  :root[data-theme] body .workspace { padding:7px 9px calc(28px + env(safe-area-inset-bottom))!important; }
+  :root[data-theme] body .workspace > .search-wrap {
+    width:100%!important; max-width:none!important; height:44px!important; min-height:44px;
+    flex:none!important; margin:0 0 8px!important; padding:0 14px!important;
+  }
+  :root[data-theme] body .workspace .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:7px!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(-n+2) {
+    justify-content:center!important; height:72px!important; min-height:72px!important; padding:6px 7px!important; gap:0!important;
+  }
+  :root[data-theme] body .workspace .stats-grid .stat-card > .stat-icon { width:25px!important; height:23px!important; margin-bottom:1px!important; flex:none; }
+  :root[data-theme] body .workspace .stats-grid .stat-icon svg { width:15px!important; height:15px!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-icon::before { max-width:25px; max-height:23px; font-size:23px; }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3) {
+    display:flex!important; flex-direction:row!important; height:34px!important; min-height:34px!important; padding:4px 8px!important;
+  }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3) > div:nth-child(2) { flex-direction:row!important; gap:5px!important; justify-content:center!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3) > .stat-icon,
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3)::before,
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3)::after,
+  :root[data-theme] body .workspace .stats-grid .stat-card small,
+  :root[data-theme] body .workspace .stats-grid .stat-card > .stat-spark { display:none!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3) :is(span,strong) { margin:0!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card > div:nth-child(2) { grid-column:auto!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card :is(span,strong) { white-space:nowrap; }
+  :root[data-theme] body .workspace > .search-wrap input { font-size:16px!important; }
+  :root[data-theme] body .mobile-transfer-name { font-size:13.5px; }
+  :root[data-theme] body .mobile-transfer .progress-wrap { min-height:24px; gap:7px; }
+  :root[data-theme] body .mobile-transfer .state-badge { font-size:10.5px; line-height:1.4; }
+  :root[data-theme] body .mobile-transfer .progress-wrap > span { width:33px; flex:none; font-size:10px!important; line-height:12px; }
+  :root[data-theme] body .deck-status-rail { min-height:0!important; height:auto; padding:12px 0!important; margin:0!important; gap:10px; font-size:10px!important; line-height:1; border-width:1px!important; }
+  :root[data-theme] body .deck-status-rail .status-free-space { height:29px; min-height:29px; padding:7px 10px!important; border-width:1px!important; }
+}
+@media (min-width:660px) and (max-width:760px) and (min-height:541px) {
+  :root[data-theme] body .workspace .stats-grid { grid-template-columns:repeat(4,minmax(0,1fr))!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3) { flex-direction:column!important; height:72px!important; min-height:72px!important; padding:6px 7px!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3) > .stat-icon { display:grid!important; }
+  :root[data-theme] body .workspace .stats-grid .stat-card:nth-child(n+3) > div:nth-child(2) { flex-direction:column!important; gap:0!important; }
+}
+@media (max-width:950px) and (max-height:540px) {
+  :root[data-theme] body .workspace .stats-grid { display:none!important; }
+}

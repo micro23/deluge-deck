@@ -1,0 +1,99 @@
+/* Geometry is shared by every palette. Theme styles still own the colors,
+   artwork, typefaces and finishes, but cannot override the compact rail. */
+@media (min-width:761px) {
+  :root[data-theme] .app-shell { --deck-sidebar-size:250px; }
+  :root[data-theme] .app-shell.sidebar-collapsed { --deck-sidebar-size:120px; }
+  :root[data-theme] body .sidebar {
+    width:var(--deck-sidebar-size)!important;
+    flex:0 0 auto!important;
+    min-width:0;
+    padding:12px 12px 16px!important;
+    border-right-width:1px!important;
+    overflow:hidden;
+  }
+  :root[data-theme] body .sidebar-command-row {
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    margin:0 0 16px!important;
+  }
+  :root[data-theme] body .sidebar .add-button {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 1 auto;
+    width:150px!important;
+    min-width:0!important;
+    height:39px!important;
+    margin:0!important;
+    padding:0 14px!important;
+    gap:8px;
+    font-size:14px;
+    letter-spacing:normal;
+    white-space:nowrap;
+  }
+  :root[data-theme] body .sidebar :is(.add-button,.nav-item) > svg {
+    display:block!important;
+    width:17px;
+    height:17px;
+    flex:none;
+  }
+  :root[data-theme] body .sidebar .nav-label {
+    margin:0 10px 10px!important;
+    font-size:10px;
+    line-height:12px;
+    text-align:center!important;
+  }
+  :root[data-theme] body .sidebar > nav .nav-item {
+    display:grid!important;
+    grid-template-columns:20px minmax(0,1fr) 20px;
+    align-items:center;
+    justify-items:center;
+    min-height:39px!important;
+    margin:2px 0!important;
+    padding:0 10px!important;
+    gap:8px;
+    text-align:center;
+  }
+  :root[data-theme] body .sidebar .nav-item span {
+    font-size:13px;
+    line-height:15px;
+    text-align:center;
+  }
+  :root[data-theme] body .sidebar .nav-item b { margin:0; font-size:11px; }
+  :root[data-theme] body .sidebar-bottom {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding-top:8px;
+  }
+  :root[data-theme] body .sidebar-bottom .nav-item {
+    display:flex!important;
+    align-items:center;
+    justify-content:center!important;
+    flex:none;
+    width:121px;
+    min-height:39px!important;
+    margin:2px 0;
+    padding:0 10px!important;
+    gap:11px;
+  }
+  :root[data-theme] body .sidebar.collapsed .add-button { width:100%!important; padding:12px!important; }
+  :root[data-theme] body .sidebar.collapsed :is(.add-button,.nav-item) :is(span,b,kbd) { display:none!important; }
+  :root[data-theme] body .sidebar.collapsed .nav-label { margin-inline:0!important; }
+  :root[data-theme] body .sidebar.collapsed .nav-item {
+    display:flex!important;
+    justify-content:center!important;
+    min-height:40px!important;
+    margin:1px 0!important;
+  }
+  :root[data-theme] body .sidebar.collapsed .sidebar-bottom .nav-item { width:37px; }
+  /* CLI bracket/bullet decorations otherwise consume space beside the icons. */
+  :root[data-theme="terminal"] body .sidebar::before,
+  :root[data-theme="terminal"] body .sidebar :is(.add-button,.nav-item)::before,
+  :root[data-theme="terminal"] body .sidebar :is(.add-button,.nav-item)::after { content:none!important; }
+}
+@media (min-width:761px) and (max-width:1100px) {
+  :root[data-theme] .app-shell:not(.sidebar-collapsed) { --deck-sidebar-size:220px; }
+}

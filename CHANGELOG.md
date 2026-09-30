@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.45
+
+- Make the top Pause and Resume controls act on checked torrents, with selection counts in their labels. Disable selected-torrent controls while a request runs, preserve selection on failure, and show session errors and confirmations outside the closed session panel.
+- Suppress right-click menus throughout the main dashboard.
+- Add browser regression checks for selected and bulk pause/resume, pending requests, visible errors, and session actions in companion and hosted-plugin modes.
+- Refresh all twelve theme previews to match the shared dashboard sizing.
+- Use Midnight's shared expanded and collapsed sidebar sizing, centered icons, and control spacing in all twelve themes.
+- Use Christmas's shared dashboard scale across all twelve themes: compact metric cards, consistent text and controls, and 40px desktop table rows. Preserve measured and manually resized columns across palettes.
+
 ## 1.0.44
 
 - Remove the square shadow around the Valentine Seeding heart.

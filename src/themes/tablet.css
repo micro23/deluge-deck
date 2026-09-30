@@ -5,10 +5,6 @@
     overflow-x:auto!important;
     scrollbar-width:thin;
   }
-  :root:is([data-theme="christmas"],[data-theme="independence"],[data-theme="new-year"]) .table-shell table.auto-sized-table { min-width:1050px!important; }
-  :root[data-theme="halloween"] .table-shell table.auto-sized-table { min-width:1120px!important; }
-  :root[data-theme="valentine"] .table-shell table.auto-sized-table { min-width:1180px!important; }
-  :root[data-theme="terminal"] .table-shell table.auto-sized-table { min-width:1140px!important; }
 }
 
 @media (min-width:761px) and (max-width:900px) {

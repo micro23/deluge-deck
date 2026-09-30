@@ -378,33 +378,9 @@
   border:1px solid #89663f!important; border-radius:4px!important; color:#e7c697!important;
   background:linear-gradient(180deg,#302214,#120d08)!important;
 }
-:root[data-theme="halloween"] .table-shell table.auto-sized-table { width:100%!important; min-width:0!important; table-layout:fixed; }
+
 :root[data-theme="halloween"] .table-shell th,
 :root[data-theme="halloween"] .table-shell td { box-sizing:border-box; }
-:root[data-theme="halloween"] .table-shell th.check-cell,
-:root[data-theme="halloween"] .table-shell td:first-child { width:3%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="name"],
-:root[data-theme="halloween"] .table-shell td[data-column="name"] { width:34%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="state"],
-:root[data-theme="halloween"] .table-shell td[data-column="state"] { width:8%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="progress"],
-:root[data-theme="halloween"] .table-shell td[data-column="progress"] { width:10%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="size"],
-:root[data-theme="halloween"] .table-shell td[data-column="size"] { width:6%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="ratio"],
-:root[data-theme="halloween"] .table-shell td[data-column="ratio"] { width:5%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="download"],
-:root[data-theme="halloween"] .table-shell td[data-column="download"],
-:root[data-theme="halloween"] .table-shell th[data-column="upload"],
-:root[data-theme="halloween"] .table-shell td[data-column="upload"] { width:7%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="eta"],
-:root[data-theme="halloween"] .table-shell td[data-column="eta"] { width:4%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="seeds"],
-:root[data-theme="halloween"] .table-shell td[data-column="seeds"],
-:root[data-theme="halloween"] .table-shell th[data-column="peers"],
-:root[data-theme="halloween"] .table-shell td[data-column="peers"] { width:4%!important; }
-:root[data-theme="halloween"] .table-shell th[data-column="seedingTime"],
-:root[data-theme="halloween"] .table-shell td[data-column="seedingTime"] { width:8%!important; }
 :root[data-theme="halloween"] .table-shell th {
   height:28px;
   padding:3px 4px;
@@ -529,7 +505,7 @@
   :root[data-theme="halloween"] .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:7px; }
   :root[data-theme="halloween"] .stats-grid .stat-card { height:104px; min-height:104px; padding:6px; }
   :root[data-theme="halloween"] .table-shell { min-height:240px; overflow:auto; }
-  :root[data-theme="halloween"] .table-shell table.auto-sized-table { min-width:900px!important; }
+
   :root[data-theme="halloween"] .deck-status-rail { gap:7px; overflow-x:auto; margin-top:7px; }
   :root[data-theme="halloween"] .deck-status-rail::after { content:none; }
 }

@@ -435,34 +435,9 @@
   background:linear-gradient(180deg,#fff2df,#e9cbb0)!important;
   box-shadow:inset 0 1px #fff,0 1px 2px #592d2440!important;
 }
-:root[data-theme="valentine"] .table-shell table.auto-sized-table { width:100%!important; min-width:0!important; table-layout:fixed; }
+
 :root[data-theme="valentine"] .table-shell th,
 :root[data-theme="valentine"] .table-shell td { box-sizing:border-box; }
-:root[data-theme="valentine"] .table-shell th.check-cell,
-:root[data-theme="valentine"] .table-shell td:first-child { width:3%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="name"],
-:root[data-theme="valentine"] .table-shell td[data-column="name"] { width:34%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="state"],
-:root[data-theme="valentine"] .table-shell td[data-column="state"] { width:8%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="progress"],
-:root[data-theme="valentine"] .table-shell td[data-column="progress"] { width:10%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="size"],
-:root[data-theme="valentine"] .table-shell td[data-column="size"] { width:6%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="ratio"],
-:root[data-theme="valentine"] .table-shell td[data-column="ratio"] { width:5%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="download"],
-:root[data-theme="valentine"] .table-shell td[data-column="download"],
-:root[data-theme="valentine"] .table-shell th[data-column="upload"],
-:root[data-theme="valentine"] .table-shell td[data-column="upload"] { width:7%!important; }
-:root[data-theme="valentine"] .table-shell td[data-column="download"] { width:7%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="eta"],
-:root[data-theme="valentine"] .table-shell td[data-column="eta"] { width:4%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="seeds"],
-:root[data-theme="valentine"] .table-shell td[data-column="seeds"],
-:root[data-theme="valentine"] .table-shell th[data-column="peers"],
-:root[data-theme="valentine"] .table-shell td[data-column="peers"] { width:4%!important; }
-:root[data-theme="valentine"] .table-shell th[data-column="seedingTime"],
-:root[data-theme="valentine"] .table-shell td[data-column="seedingTime"] { width:8%!important; }
 
 :root[data-theme="valentine"] .table-shell th {
   height:33px;
@@ -640,7 +615,7 @@
   :root[data-theme="valentine"] .stats-grid .stat-card:nth-child(n+3) { display:flex!important; }
   :root[data-theme="valentine"] .stats-grid .stat-card strong { font-size:22px; }
   :root[data-theme="valentine"] .table-shell { min-height:240px; overflow:auto; }
-  :root[data-theme="valentine"] .table-shell table.auto-sized-table { min-width:900px!important; }
+
   :root[data-theme="valentine"] .deck-status-rail { gap:8px; overflow-x:auto; }
 }
 
