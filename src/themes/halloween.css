@@ -448,8 +448,9 @@
 :root[data-theme="halloween"] .state-badge { display:inline-flex; align-items:center; gap:4px; padding:0; border:0; border-radius:0!important; color:#d8d9ce; background:transparent; font:8px "DM Mono",monospace; }
 :root[data-theme="halloween"] .state-badge.seeding { color:#ffbb69; }
 :root[data-theme="halloween"] .state-badge i { position:relative; width:12px; height:12px; border:1px solid #c78b53; background:linear-gradient(145deg,#e6bb82,#93552b); box-shadow:0 0 5px #d5792b66,inset 0 1px #ffe6c1; clip-path:none; }
-:root[data-theme="halloween"] .state-badge.seeding i { border-color:#f7ad54; background:linear-gradient(145deg,#ffe09a,#ff9e29 53%,#bd5510); box-shadow:0 0 7px #ff902fa8,inset 0 1px #fff1c8; }
+:root[data-theme="halloween"] .state-badge.seeding i { width:17px; height:17px; flex:none; border:0; border-radius:0; background:url('../assets/halloween-seeding-pumpkin.svg') center/contain no-repeat; box-shadow:none; filter:drop-shadow(0 0 3px #ff902fa8); }
 :root[data-theme="halloween"] .state-badge i::after { content:""; position:absolute; left:3px; top:2px; width:5px; height:3px; border-left:1px solid #512906; border-bottom:1px solid #512906; transform:rotate(-45deg); }
+:root[data-theme="halloween"] .state-badge.seeding i::after { content:none!important; }
 :root[data-theme="halloween"] .progress-wrap { gap:5px; color:#e0e2d8; font:8px "DM Mono",monospace; }
 :root[data-theme="halloween"] .progress-track {
   position:relative;

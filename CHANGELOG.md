@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.43
+
+- Replace the Halloween Seeding circle with an orange pumpkin badge and readable checkmark.
+
 ## 1.0.42
 
 - Remove the small bordered graph boxes from the Halloween Download, Upload, and Library cards.
