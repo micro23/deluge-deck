@@ -451,9 +451,11 @@
 :root[data-theme="halloween"] .name-content { gap:6px; }
 :root[data-theme="halloween"] .tracker-favicon-small { width:13px; height:13px; border-radius:3px; }
 :root[data-theme="halloween"] .table-shell input[type="checkbox"] { accent-color:#e28a32; }
-:root[data-theme="halloween"] .state-badge { display:inline-flex; align-items:center; gap:4px; padding:0; border:0; border-radius:0!important; color:#91d49a; background:transparent; font:8px "DM Mono",monospace; }
-:root[data-theme="halloween"] .state-badge i { position:relative; width:12px; height:12px; border:1px solid #74bd83; background:linear-gradient(145deg,#9ae7a5,#368f5b); box-shadow:0 0 6px #5bc77b80,inset 0 1px #e1ffe2; clip-path:none; }
-:root[data-theme="halloween"] .state-badge i::after { content:""; position:absolute; left:3px; top:2px; width:5px; height:3px; border-left:1px solid #143e29; border-bottom:1px solid #143e29; transform:rotate(-45deg); }
+:root[data-theme="halloween"] .state-badge { display:inline-flex; align-items:center; gap:4px; padding:0; border:0; border-radius:0!important; color:#d8d9ce; background:transparent; font:8px "DM Mono",monospace; }
+:root[data-theme="halloween"] .state-badge.seeding { color:#ffbb69; }
+:root[data-theme="halloween"] .state-badge i { position:relative; width:12px; height:12px; border:1px solid #c78b53; background:linear-gradient(145deg,#e6bb82,#93552b); box-shadow:0 0 5px #d5792b66,inset 0 1px #ffe6c1; clip-path:none; }
+:root[data-theme="halloween"] .state-badge.seeding i { border-color:#f7ad54; background:linear-gradient(145deg,#ffe09a,#ff9e29 53%,#bd5510); box-shadow:0 0 7px #ff902fa8,inset 0 1px #fff1c8; }
+:root[data-theme="halloween"] .state-badge i::after { content:""; position:absolute; left:3px; top:2px; width:5px; height:3px; border-left:1px solid #512906; border-bottom:1px solid #512906; transform:rotate(-45deg); }
 :root[data-theme="halloween"] .progress-wrap { gap:5px; color:#e0e2d8; font:8px "DM Mono",monospace; }
 :root[data-theme="halloween"] .progress-track {
   position:relative;
@@ -492,10 +494,10 @@
   overflow:visible;
   border-radius:0 99px 99px 0;
   background:
-    radial-gradient(circle at 34% 52%,#d5ffe777 0 1px,transparent 1.7px),
-    radial-gradient(circle at 68% 63%,#d5ffe799 0 1px,transparent 1.7px),
-    linear-gradient(180deg,#a7fa88 0%,#4de237 24%,#08b821 72%,#08772b 100%)!important;
-  box-shadow:inset 0 1px #dbffc699,inset 0 -1px #063f20,0 0 4px #20ed5d60!important;
+    radial-gradient(circle at 34% 52%,#fff1ba99 0 1px,transparent 1.7px),
+    radial-gradient(circle at 68% 63%,#ffe3a4bb 0 1px,transparent 1.7px),
+    linear-gradient(180deg,#ffe09a 0%,#ffb43e 24%,#f27812 72%,#a83d0a 100%)!important;
+  box-shadow:inset 0 1px #fff0bcaa,inset 0 -1px #64300c,0 0 5px #ff8b2a80!important;
 }
 :root[data-theme="halloween"] .progress-bar::before {
   content:""!important;
@@ -505,7 +507,7 @@
   right:3px;
   height:1px;
   border-radius:99px;
-  background:linear-gradient(90deg,#efffe7a8,#efffe725);
+  background:linear-gradient(90deg,#fff2c8c4,#fff2c833);
   opacity:.95;
 }
 :root[data-theme="halloween"] .progress-bar::after {
@@ -523,8 +525,8 @@
   height:13px;
   border-radius:50%;
   transform:translateY(-50%);
-  background:radial-gradient(ellipse at 54% 42%,#c8ff9b 0%,#55ed3c 38%,#0aaf27 76%,transparent 96%)!important;
-  box-shadow:0 0 3px #26d94866;
+  background:radial-gradient(ellipse at 54% 42%,#ffe8a7 0%,#ffac30 38%,#e86910 76%,transparent 96%)!important;
+  box-shadow:0 0 4px #ff8e2c88;
   pointer-events:none;
 }
 :root[data-theme="halloween"] .progress-wrap>span { flex:none; color:#dfe5de; font:8px "DM Mono",monospace; }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.41
+
+- Change Halloween Seeding labels and checkmark badges to orange.
+- Change the Halloween potion liquid, highlights, glow, and completed bulb to orange on desktop and mobile.
+
 ## 1.0.40
 
 - Remove the decorative sidebar key and lower-right table star from the Halloween theme.
