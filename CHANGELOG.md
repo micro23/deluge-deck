@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.40
+
+- Remove the decorative sidebar key and lower-right table star from the Halloween theme.
+
 ## 1.0.39
 
 - Fill the Halloween potion vial's round end at 100% progress on desktop and mobile.
