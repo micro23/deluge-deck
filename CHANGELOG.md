@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.50
+
+- Remove the duplicate embedded artwork from the plugin's companion CSS resource, reducing the Python 3.9 egg from about 11.26 MB to 5.78 MB.
+- Preserve the existing synchronous style loader, all artwork, and the optional stylesheet path for Deluge compatibility.
+- Add visual package checks for all twelve themes on desktop and phone, including both stylesheet registration orders.
+
 ## 1.0.49
 
 - Match the Independence Day theme to the reference flag, parchment, fireworks, and eagle treatment without adding a July 4th banner.

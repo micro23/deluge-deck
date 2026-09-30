@@ -51,10 +51,13 @@ const embeddedCss = `:root{${assetDeclarations.join(';')}}${cssWithAssets}`;
 // old compatibility copies prevents the embedded artwork stylesheet from
 // being duplicated inside the egg.
 copyFileSync(findAsset('.js'), path.join(dataDir, `deluge-deck-${version}.js`));
-writeFileSync(path.join(dataDir, `deluge-deck-${version}.css`), embeddedCss);
+// WebUI always loads the synchronous style script below. Keep the optional
+// stylesheet resource for older hosts, but let it reuse the artwork variables
+// supplied by that script rather than storing every image a second time.
+writeFileSync(path.join(dataDir, `deluge-deck-${version}.css`), cssWithAssets);
 // Deluge 2.2's WebUI plugin manager registers JavaScript resources but does
 // not register the WebPluginBase.stylesheets attribute. Inject the compiled
-// CSS from a tiny JS resource so hosted plugin mode is styled as well.
+// CSS from a synchronous JS resource so hosted plugin mode is styled as well.
 writeFileSync(
   path.join(dataDir, `deluge-deck-${version}-style.js`),
   `(() => { if (!document.documentElement.classList.contains('deluge-deck-ready')) document.documentElement.classList.add('deluge-deck-loading'); const style = document.createElement('style'); style.dataset.delugeDeck = 'true'; style.textContent = ${JSON.stringify(embeddedCss)}; document.head.appendChild(style); })();\n`,
@@ -69,7 +72,7 @@ if (result.status !== 0) process.exit(result.status || 1);
 const eggs = readdirSync(path.join(pluginRoot, 'dist')).filter((file) => /^DelugeDeck-.*\.egg$/.test(file));
 if (eggs.length !== 1 || !eggs[0].startsWith(`DelugeDeck-${version}-`)) throw new Error(`Expected exactly one DelugeDeck-${version} egg; found: ${eggs.join(', ') || 'none'}`);
 const egg = path.join(pluginRoot, 'dist', eggs[0]);
-const inspect = spawnSync(python, ['-c', "import os, zipfile; z=zipfile.ZipFile(os.environ['EGG']); n=set(z.namelist()); required={'deluge_deck/core.py','deluge_deck/gtk3ui.py','deluge_deck/webui.py','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'-style.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'-plugin.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'.css'}; missing=required-n; assert not missing, missing; assert not any(x in n for x in ('deluge_deck/data/deluge-deck-style.js','deluge_deck/data/deluge-deck.css')); meta=[x for x in n if x.endswith('EGG-INFO/PKG-INFO')][0]; info=z.read(meta).decode(); assert 'Version: '+os.environ['VERSION'] in info; entries=z.read([x for x in n if x.endswith('EGG-INFO/entry_points.txt')][0]).decode(); assert 'deluge.plugin.core' in entries and 'deluge.plugin.gtk3ui' in entries and 'deluge.plugin.web' in entries"], { env: { ...process.env, EGG: egg, VERSION: version }, stdio: 'inherit' });
+const inspect = spawnSync(python, ['-c', "import os, zipfile; z=zipfile.ZipFile(os.environ['EGG']); n=set(z.namelist()); required={'deluge_deck/core.py','deluge_deck/gtk3ui.py','deluge_deck/webui.py','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'-style.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'-plugin.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'.js','deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'.css'}; missing=required-n; assert not missing, missing; assert z.testzip() is None; css_name='deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'.css'; style_name='deluge_deck/data/deluge-deck-'+os.environ['VERSION']+'-style.js'; assert z.getinfo(css_name).file_size < z.getinfo(style_name).file_size/2, 'Optional CSS duplicates the artwork payload'; assert not any(x in n for x in ('deluge_deck/data/deluge-deck-style.js','deluge_deck/data/deluge-deck.css')); meta=[x for x in n if x.endswith('EGG-INFO/PKG-INFO')][0]; info=z.read(meta).decode(); assert 'Version: '+os.environ['VERSION'] in info; entries=z.read([x for x in n if x.endswith('EGG-INFO/entry_points.txt')][0]).decode(); assert 'deluge.plugin.core' in entries and 'deluge.plugin.gtk3ui' in entries and 'deluge.plugin.web' in entries"], { env: { ...process.env, EGG: egg, VERSION: version }, stdio: 'inherit' });
 if (inspect.error) throw inspect.error;
 if (inspect.status !== 0) process.exit(inspect.status || 1);
 const checksum = createHash('sha256').update(readFileSync(egg)).digest('hex');

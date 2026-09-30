@@ -20,5 +20,7 @@ class WebUI(WebPluginBase):
         resource(f'deluge-deck-{__version__}.js'),
     ]
     debug_scripts = scripts
+    # The style script supplies artwork variables and all rules synchronously.
+    # Hosts that also register stylesheets reuse those variables here.
     stylesheets = [resource(f'deluge-deck-{__version__}.css')]
     debug_stylesheets = stylesheets
