@@ -51,8 +51,10 @@ plugin build. The workflow currently builds the distributable egg with Python
 8. Commit the source and generated release artifact, then create a version tag.
 9. Publish the egg with a checksum and retain the CI artifact.
 
-Never publish a Mac-built egg for a Windows Deluge installation without testing
-the target Python ABI. Do not include passwords, cookies, production paths, or
+Local builds may be published when CI is unavailable. Match the egg's Python
+major/minor to the target Deluge installation, verify package integrity and the
+checksum, and state the build environment and any untested platforms in the
+release notes. Do not include passwords, cookies, production paths, or
 production configuration in logs or artifacts.
 
 ## Privacy checks before making a repository public
