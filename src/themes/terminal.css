@@ -466,7 +466,7 @@
 :root[data-theme="terminal"] ::-webkit-scrollbar-track { background:#000; }
 :root[data-theme="terminal"] ::-webkit-scrollbar-thumb { border:2px solid #000; background:#777; }
 
-@media (min-width:761px) {
+@media (min-width:761px) and (min-height:541px), (min-width:951px) {
   :root[data-theme="terminal"] .topbar-heading {
     display:flex!important;
     position:static;
@@ -590,7 +590,7 @@
 :root[data-theme="terminal"] body .terminal-add-command i { display:inline-block; width:7px; height:19px; margin-left:2px; vertical-align:middle; background:#d9d9d5; }
 :root[data-theme="terminal"] body button:focus-visible { outline:1px dashed #deded8; outline-offset:3px; }
 
-@media (min-width:761px) {
+@media (min-width:761px) and (min-height:541px), (min-width:951px) {
   :root[data-theme="terminal"] body .app-shell { --deck-sidebar-size:156px; }
   :root[data-theme="terminal"] body .app-shell.sidebar-collapsed { --deck-sidebar-size:75px; }
   :root[data-theme="terminal"] body .sidebar {
@@ -754,7 +754,7 @@
   }
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card strong { margin:0!important; font-size:20px!important; line-height:23px!important; }
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card small { margin:0!important; font-size:16px!important; line-height:21px!important; color:#92938d; }
-  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { width:88%!important; height:18px!important; padding:0 4px!important; opacity:.75; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { display:none!important; }
   :root[data-theme="terminal"] body .table-shell {
     flex:0 1 auto!important;
     min-height:0;
@@ -809,7 +809,7 @@
     flex-wrap:nowrap;
     justify-content:flex-start;
     border-top:1px solid #a6a79e;
-    font-size:16px!important;
+    font-size:18px!important;
     line-height:22px;
   }
   :root[data-theme="terminal"] body .deck-status-rail svg,
@@ -841,7 +841,7 @@
   :root[data-theme="terminal"] body .topbar .avatar::before { content:"["!important; }
   :root[data-theme="terminal"] body .workspace .stats-grid { margin-left:0!important; margin-top:53px!important; }
 }
-@media (max-width:760px) {
+@media (max-width:760px), (max-width:950px) and (max-height:540px) {
   :root[data-theme="terminal"] body::before,
 :root[data-theme="terminal"].deluge-deck-hosted #deluge-deck-root::before { inset:6px; border-radius:15px; }
   :root[data-theme="terminal"] body .app-shell { margin:16px; height:calc(100dvh - 32px); min-height:0; border-radius:14px; }
@@ -863,8 +863,7 @@
 :root[data-theme="terminal"] body .sidebar-toggle { overflow:visible; }
 /* Character-based telemetry stays crisp at the same scale as the reference. */
 :root[data-theme="terminal"] body .terminal-stat-trace { display:none; }
-@media (min-width:761px) {
-  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { display:none; }
+@media (min-width:761px) and (min-height:541px), (min-width:951px) {
   :root[data-theme="terminal"] body .terminal-stat-trace {
     display:block;
     font-size:18px;
@@ -908,12 +907,7 @@
   }
   :root[data-theme="terminal"] body .table-shell .progress-bar::before { content:"[##########"; }
 }
-@media (min-width:761px) {
-  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { display:none!important; }
-  :root[data-theme="terminal"] body .deck-status-rail { font-size:18px!important; }
-  :root[data-theme="terminal"] body .topbar .global-trigger::before { content:"[ Global Limit: -- ]"!important; }
-}
-@media (max-width:760px) {
+@media (max-width:760px), (max-width:950px) and (max-height:540px) {
   :root[data-theme="terminal"] body .app-shell { width:calc(100% - 32px)!important; }
   :root[data-theme="terminal"] body .main-content { width:100%; max-width:100%; min-width:0; }
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-icon { display:none!important; }

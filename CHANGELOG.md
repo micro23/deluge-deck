@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.47
+
+- Finish the isolated Terminal CRT theme with a beveled monitor frame, dedicated narrow font, CLI logo, compact telemetry, and responsive mobile layout.
+- Keep Terminal column widths, ordering, and layout storage separate from every other theme.
+- Refresh the Terminal preview and packaged plugin assets.
+
 ## 1.0.46
 
 - Reject malformed or truncated torrent metadata promptly instead of freezing the browser; validate payload sizes and UTF-8 paths and report unsupported pure-v2 previews clearly.
