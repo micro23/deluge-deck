@@ -6,7 +6,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.47.
+Current release: 1.0.48.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -30,7 +30,7 @@ npm install
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.47-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.48-py3.9.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Deluge plugin eggs are Python-version-specific, so build this artifact on the Windows machine running Deluge rather than copying a Mac-built egg.
 
 ### Using port 8888 (plugin mode)
 
@@ -67,6 +67,8 @@ If the plugin is listed but the checkbox immediately clears, the egg was loaded 
 npm test
 npm run check
 ```
+
+For theme layout checks, start `npm run demo` in another terminal, then run `npm run verify:themes`. This checks all twelve themes at five screen widths, paired card artwork, large speed values, and each column's pointer and keyboard resizing. It requires Chrome and uses only the fictional demo library. Set `DECK_PREVIEW_URL` for a different demo server address; screenshots and measurements are saved under `/tmp/deck-theme-review` by default (`SCREENSHOT_DIR` overrides this).
 
 After building, run `node scripts/verify-torrent-controls.mjs` to check selected and bulk pause/resume, pending controls, and visible errors in both UI modes. Set `CHROME_PATH` to an installed Chrome executable if Playwright’s browser is unavailable.
 

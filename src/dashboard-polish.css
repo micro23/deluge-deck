@@ -480,22 +480,23 @@
 .column-resize-handle::after {
   content:"";
   position:absolute;
-  top:7px;
+  top:3px;
   right:5px;
-  bottom:7px;
-  width:1px;
+  bottom:3px;
+  width:3px;
   border-radius:999px;
-  background:transparent;
+  background:currentColor;
+  box-shadow:0 0 0 1px var(--surface);
   transition:background .14s ease,box-shadow .14s ease;
 }
 .column-resize-handle:hover::after,
 .column-resize-handle:focus-visible::after,
 body.resizing-table-column .column-resize-handle::after {
-  background:var(--cyan);
-  box-shadow:0 0 0 2px color-mix(in srgb,var(--cyan) 16%,transparent);
+  background:currentColor;
+  box-shadow:0 0 0 2px color-mix(in srgb,currentColor 25%,transparent);
 }
 .column-resize-handle:focus-visible {
-  outline:2px solid var(--cyan);
+  outline:2px solid currentColor;
   outline-offset:-3px;
 }
 body.resizing-table-column,

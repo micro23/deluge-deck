@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.48
+
+- Keep every column resize handle visible with a contrasting marker and a wider pointer target in all twelve themes, including Terminal.
+- Improve card label readability and contrast, reserve space for paired theme seals, and keep large speed values readable on small screens.
+- Use real telemetry history for seasonal Connections graphs and Terminal sparklines instead of decorative traces.
+- Unify shared artwork sizing and responsive card layout, refine Terminal tablet spacing, and refresh all twelve theme previews.
+- Add browser verification at five screen widths for paired artwork, large speed values, and every column's pointer, keyboard, and reset controls.
+
 ## 1.0.47
 
 - Finish the isolated Terminal CRT theme with a beveled monitor frame, dedicated narrow font, CLI logo, compact telemetry, and responsive mobile layout.

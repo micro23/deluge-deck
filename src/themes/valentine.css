@@ -338,7 +338,7 @@
 :root[data-theme="valentine"] .stats-grid .stat-card strong {
   display:block;
   margin-top:1px;
-  color:#a27a3f;
+  color:#795323;
   font:500 29px/1.05 Georgia,serif;
   letter-spacing:0;
   text-shadow:0 1px #fff2d5,0 2px #80582f50;
@@ -667,7 +667,7 @@
     text-align:center!important;
   }
   :root[data-theme="valentine"] body .workspace .stats-grid .stat-card span { font:600 13px/1.25 Georgia,serif!important; color:#4d1d26!important; }
-  :root[data-theme="valentine"] body .workspace .stats-grid .stat-card strong { font:500 24px/1.05 Georgia,serif!important; color:#a27a3f!important; }
+  :root[data-theme="valentine"] body .workspace .stats-grid .stat-card strong { font:500 24px/1.05 Georgia,serif!important; color:#795323!important; }
   :root[data-theme="valentine"] body .workspace .stats-grid .stat-card small { display:block!important; font:11px/1.2 Georgia,serif!important; }
   :root[data-theme="valentine"] body .workspace .stats-grid .stat-card>.stat-spark { display:block!important; width:70%!important; min-width:0; height:21px; }
 }
