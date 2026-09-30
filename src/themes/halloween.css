@@ -323,36 +323,30 @@
 }
 :root[data-theme="halloween"] .stats-grid .stat-card small { margin-top:1px; color:#d2b28b; font:8px/1.2 "DM Mono",monospace; }
 :root[data-theme="halloween"] .stats-grid .stat-card>.stat-spark {
-  position:relative;
-  align-self:center!important;
-  width:56%;
-  min-width:85px;
-  height:18px;
-  margin-top:auto;
-  padding:0;
-  border:1px solid #704d2b;
-  border-radius:3px;
-  background:linear-gradient(180deg,#120e09ed,#21160de8);
-  box-shadow:inset 0 1px #f9c87325,0 2px 4px #0008;
+  position:absolute!important;
+  inset:auto 0 2px!important;
+  align-self:auto!important;
+  width:100%!important;
+  min-width:0!important;
+  height:34px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  opacity:.9!important;
+  overflow:visible!important;
 }
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(1)>.stat-spark,
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(2)>.stat-spark,
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(4)>.stat-spark { width:72%; }
 :root[data-theme="halloween"] .stats-grid .stat-spark polyline {
   fill:none;
-  stroke:#ef982f;
-  stroke-width:2.4;
+  stroke:#ffac49;
+  stroke-width:2.5;
   stroke-linecap:round;
   stroke-linejoin:round;
   filter:drop-shadow(0 0 3px #f3913288);
 }
 :root[data-theme="halloween"] .stats-grid .stat-spark polygon { fill:#f08b2c40; stroke:none; }
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(1) .stat-spark polyline,
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(4) .stat-spark polyline { stroke:#ffb44d; stroke-width:3.2; }
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(1) .stat-spark polygon,
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(4) .stat-spark polygon { fill:#ed7f229c; }
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(3) .stat-spark { width:76%; height:27px; border:0; background:transparent; box-shadow:none; overflow:visible; }
-:root[data-theme="halloween"] .stats-grid .stat-card:nth-child(3) .stat-spark polyline { stroke:#ffac49; stroke-width:2.5; }
 
 :root[data-theme="halloween"] .table-shell {
   position:relative;

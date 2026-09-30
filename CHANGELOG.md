@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.42
+
+- Remove the small bordered graph boxes from the Halloween Download, Upload, and Library cards.
+- Give all four Halloween card graphs the same transparent, full-width treatment as Connections.
+
 ## 1.0.41
 
 - Change Halloween Seeding labels and checkmark badges to orange.
