@@ -8,10 +8,51 @@
     margin-bottom:9px!important;
   }
   :root[data-theme] body .workspace .mobile-library-filters {
-    scroll-snap-type:x proximity;
+    display:grid!important;
+    grid-template-columns:.78fr 1fr 1.58fr 1.14fr 1fr;
+    gap:1px!important;
+    overflow:hidden!important;
+    scroll-snap-type:none;
+    width:100%;
   }
   :root[data-theme] body .workspace .mobile-library-filters button {
-    scroll-snap-align:start;
+    min-width:0!important;
+    width:100%;
+    flex:none!important;
+    gap:2px!important;
+    padding:0 2px!important;
+    justify-content:center;
+    white-space:nowrap;
+    font-size:clamp(9px,2.9vw,10.5px)!important;
+    scroll-snap-align:none;
+  }
+  :root[data-theme] body .workspace .mobile-library-filters b {
+    min-width:11px!important;
+    padding:1px 2px!important;
+    font-size:8px!important;
+  }
+  :root[data-theme] body .workspace>.search-wrap {
+    align-self:stretch!important;
+    box-sizing:border-box;
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+  :root[data-theme="halloween"] body .mobile-transfer .progress-track {
+    height:16px!important;
+    min-height:16px!important;
+  }
+  :root[data-theme="halloween"] body .mobile-transfer .progress-bar.complete::after {
+    content:""!important;
+    position:absolute;
+    top:-2px;
+    right:0;
+    width:16px;
+    height:11px;
+    border-radius:50%;
+    background:radial-gradient(ellipse at 38% 38%,#b4ff98,#39d737 60%,#08792e 88%,transparent)!important;
+    box-shadow:0 0 5px #4af06055;
   }
   :root[data-theme] body .mobile-transfer-name {
     font-size:13.5px;

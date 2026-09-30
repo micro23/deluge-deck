@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.38
+
+- Hide Deluge's legacy `mainPanel` behind the hosted dashboard so mobile overscroll cannot expose the old interface.
+- Center the phone search bar and fit all five library filters on one row without horizontal scrolling.
+- Restore the Halloween potion fill height on phones and fill the vial bulb when a torrent reaches 100%.
+
 ## 1.0.37
 
 - Fixed the hosted mobile login blocker by suppressing Deluge's remaining legacy login mask and shadow, so the password field receives touch input.

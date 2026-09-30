@@ -1411,10 +1411,10 @@ function Progress({ value = 0, state }) {
     <div className="progress-wrap">
       <div className="progress-track">
         <div
-          className={`progress-bar ${stateKey(state)}`}
+          className={`progress-bar ${stateKey(state)}${progress >= 99.95 ? ' complete' : ''}`}
           style={{
             width: `${progress}%`,
-            '--halloween-potion-fill-width': `${progress * 0.7}%`,
+            '--halloween-potion-fill-width': `${progress * 0.74}%`,
           }}
         />
       </div>

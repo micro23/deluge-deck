@@ -17,7 +17,7 @@ viewport.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
 if (!viewport.parentNode) document.head.appendChild(viewport);
 const earlyStyle = document.createElement('style');
 earlyStyle.dataset.delugeDeck = 'preauth';
-earlyStyle.textContent = 'html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login-shadow="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"],html.deluge-deck-hosted .x-window:has(.x-deluge-connect-window-icon),html.deluge-deck-hosted [class*="x-deluge-connect-window" i],html.deluge-deck-hosted [id*="connection-manager" i],html.deluge-deck-hosted [id*="connectionmanager" i] { display:none !important; visibility:hidden !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
+earlyStyle.textContent = 'html.deluge-deck-hosted #mainPanel,html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login-shadow="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"],html.deluge-deck-hosted .x-window:has(.x-deluge-connect-window-icon),html.deluge-deck-hosted [class*="x-deluge-connect-window" i],html.deluge-deck-hosted [id*="connection-manager" i],html.deluge-deck-hosted [id*="connectionmanager" i] { display:none !important; visibility:hidden !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
 (document.head || document.documentElement).appendChild(earlyStyle);
 
 const windowSelector = '.x-window,[role="dialog"]';
@@ -59,6 +59,7 @@ const loginWindowFor = (node) => {
 };
 const isLegacyShellNode = (node) => {
   if (!(node instanceof Element) || node.id === window.__DELUGE_DECK_ROOT_ID__ || node.id === window.__DELUGE_DECK_OVERLAY_ROOT_ID__) return false;
+  if (node.id === 'mainPanel') return true;
   // Do not hide an existing ExtJS window/panel while Deck is enabled live.
   if (node.matches?.('.x-window,[class*="x-window" i],.x-panel,[class*="x-panel" i]') || hasNativeWindowMarker(node)) return false;
   return node.id === 'main-viewport' || node.id === 'deluge-web' || node.classList.contains('x-viewport')
