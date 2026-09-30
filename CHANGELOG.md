@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.37
+
+- Fixed the hosted mobile login blocker by suppressing Deluge's remaining legacy login mask and shadow, so the password field receives touch input.
+- Reworked phone summary cards, torrent rows, details, preferences, and seasonal theme controls for narrow screens.
+- Reduced repeated torrent refresh failures with retry backoff on unstable mobile connections.
+- Reduced hosted plugin stylesheet size by embedding each theme artwork asset once.
+
 ## 1.0.36
 
 - Refined all twelve themes with dedicated summary card details, richer table surfaces, and theme gallery previews.

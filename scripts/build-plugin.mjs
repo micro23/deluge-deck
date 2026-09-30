@@ -29,13 +29,22 @@ const cssAsset = findAsset('.css');
 // theme artwork into the final stylesheet. This keeps the seasonal frames
 // self-contained in the egg and equally reliable in hosted and standalone UI.
 const css = readFileSync(cssAsset, 'utf8');
-const embeddedCss = css.replace(/url\((['"]?)([^)'"?#]+\.(?:png|jpe?g|webp|svg))\1\)/g, (match, quote, assetPath) => {
+const embeddedAssets = new Map();
+const assetDeclarations = [];
+const cssWithAssets = css.replace(/url\((['"]?)([^)'"?#]+\.(?:png|jpe?g|webp|svg))\1\)/g, (match, quote, assetPath) => {
   const asset = path.join(builtAssets, path.basename(assetPath));
   if (!readdirSync(builtAssets).includes(path.basename(assetPath))) return match;
+  if (embeddedAssets.has(assetPath)) return `var(${embeddedAssets.get(assetPath)})`;
   const extension = path.extname(asset).toLowerCase();
   const mime = extension === '.png' ? 'image/png' : extension === '.webp' ? 'image/webp' : extension === '.svg' ? 'image/svg+xml' : 'image/jpeg';
-  return `url("data:${mime};base64,${readFileSync(asset).toString('base64')}")`;
+  const variable = `--deluge-deck-art-${embeddedAssets.size}`;
+  embeddedAssets.set(assetPath, variable);
+  assetDeclarations.push(`${variable}:url("data:${mime};base64,${readFileSync(asset).toString('base64')}")`);
+  return `var(${variable})`;
 });
+// Each raster used to be encoded once per CSS occurrence. Reuse one encoded
+// value per file so hosted mobile clients do not parse megabytes of duplicates.
+const embeddedCss = `:root{${assetDeclarations.join(';')}}${cssWithAssets}`;
 // Deluge Web and browsers can cache plugin resources by filename. Publish only
 // versioned names: WebUI references these exact resources, and omitting the
 // old compatibility copies prevents the embedded artwork stylesheet from

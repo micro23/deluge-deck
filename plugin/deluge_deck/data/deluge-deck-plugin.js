@@ -17,7 +17,7 @@ viewport.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
 if (!viewport.parentNode) document.head.appendChild(viewport);
 const earlyStyle = document.createElement('style');
 earlyStyle.dataset.delugeDeck = 'preauth';
-earlyStyle.textContent = 'html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"],html.deluge-deck-hosted .x-window:has(.x-deluge-connect-window-icon),html.deluge-deck-hosted [class*="x-deluge-connect-window" i],html.deluge-deck-hosted [id*="connection-manager" i],html.deluge-deck-hosted [id*="connectionmanager" i] { display:none !important; visibility:hidden !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
+earlyStyle.textContent = 'html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login="true"],html.deluge-deck-hosted [data-deluge-deck-stock-login-shadow="true"],html.deluge-deck-hosted [data-deluge-deck-stock-connection="true"],html.deluge-deck-hosted .x-window:has(.x-deluge-connect-window-icon),html.deluge-deck-hosted [class*="x-deluge-connect-window" i],html.deluge-deck-hosted [id*="connection-manager" i],html.deluge-deck-hosted [id*="connectionmanager" i] { display:none !important; visibility:hidden !important; } html.deluge-deck-hosted #deluge-deck-root { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; overflow:auto !important; }';
 (document.head || document.documentElement).appendChild(earlyStyle);
 
 const windowSelector = '.x-window,[role="dialog"]';
@@ -73,11 +73,17 @@ const isAssociatedLoginMask = (mask) => {
   if (loginId && relation.includes(loginId)) return true;
   const parent = stockLoginWindow.parentElement;
   if (!parent || mask.parentElement !== parent) return false;
-  return mask.nextElementSibling === stockLoginWindow || mask.previousElementSibling === stockLoginWindow;
+  return mask.nextElementSibling === stockLoginWindow || mask.previousElementSibling === stockLoginWindow
+    || (mask.nextElementSibling?.matches('.x-shadow') && mask.nextElementSibling.nextElementSibling === stockLoginWindow);
 };
 const hideAssociatedLoginMasks = () => {
   document.querySelectorAll('.ext-el-mask').forEach((mask) => {
-    if (isAssociatedLoginMask(mask)) mask.dataset.delugeDeckStockLogin = 'true';
+    if (isAssociatedLoginMask(mask)) {
+      mask.dataset.delugeDeckStockLogin = 'true';
+      const shadow = mask.nextElementSibling;
+      if (shadow?.matches('.x-shadow') && shadow.nextElementSibling === stockLoginWindow)
+        shadow.dataset.delugeDeckStockLoginShadow = 'true';
+    }
   });
 };
 const suppressStockLogin = (node) => {

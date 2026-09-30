@@ -71,6 +71,7 @@ import './themes/new-year.css';
 import './themes/independence.css';
 import './themes/core.css';
 import './themes/tablet.css';
+import './themes/mobile.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -2144,13 +2145,19 @@ const TABLE_SORT_KEYS = {
 
 const MOBILE_QUERY = '(max-width:760px), (max-width:950px) and (max-height:540px)';
 function useMobileLayout() {
-  const [mobile, setMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches);
+  const [mobile, setMobile] = useState(() => window.matchMedia?.(MOBILE_QUERY)?.matches ?? window.innerWidth <= 760);
   useEffect(() => {
-    const query = window.matchMedia(MOBILE_QUERY);
-    const update = () => setMobile(query.matches);
-    query.addEventListener('change', update);
+    const query = window.matchMedia?.(MOBILE_QUERY);
+    const update = () => setMobile(query?.matches ?? window.innerWidth <= 760);
+    if (query?.addEventListener) query.addEventListener('change', update);
+    else if (query?.addListener) query.addListener(update);
+    else window.addEventListener('resize', update);
     update();
-    return () => query.removeEventListener('change', update);
+    return () => {
+      if (query?.removeEventListener) query.removeEventListener('change', update);
+      else if (query?.removeListener) query.removeListener(update);
+      else window.removeEventListener('resize', update);
+    };
   }, []);
   return mobile;
 }
@@ -5316,6 +5323,7 @@ function App() {
   );
   const [celebration, setCelebration] = useState('');
   const previousStates = useRef(new Map());
+  const refreshFailures = useRef(0);
   const removalFocusPending = useRef(false);
   useEffect(() => {
     if (!menuTorrent) return undefined;
@@ -5339,6 +5347,7 @@ function App() {
   const refresh = async () => {
     try {
       const data = await api.torrents();
+      refreshFailures.current = 0;
       const next = mapTorrents(data);
       setRefreshError('');
       if (
@@ -5367,6 +5376,7 @@ function App() {
           (next.find((torrent) => torrent.hash === current.hash) || null),
       );
     } catch (reason) {
+      refreshFailures.current = Math.min(refreshFailures.current + 1, 5);
       setRefreshError(reason?.message || 'Unable to reach Deluge.');
       if (
         /(session expired|not authenticated|unauthorized|authentication)/i.test(
@@ -5412,9 +5422,12 @@ function App() {
     const poller = createPoller({
       refresh: () => pollState.current.refresh(),
       visible: () => !document.hidden,
-      delay: () => pollState.current.torrents.some((torrent) =>
+      delay: () => {
+        const base = pollState.current.torrents.some((torrent) =>
         ['Downloading', 'Seeding'].includes(torrent.state),
-      ) ? refreshMs : Math.max(refreshMs * 2, 5000),
+        ) ? refreshMs : Math.max(refreshMs * 2, 5000);
+        return refreshFailures.current ? Math.min(base * 2 ** refreshFailures.current, 30000) : base;
+      },
     });
     const onVisibility = () => { void poller.wake(); };
     void poller.wake();

@@ -1,0 +1,282 @@
+/* A compact phone dashboard: torrent actions and names stay above the fold.
+   All rules are confined to the same mobile breakpoint as the React list. */
+@media (max-width:760px), (max-width:950px) and (max-height:540px) {
+  :root[data-theme] body .workspace {
+    padding-bottom:calc(28px + env(safe-area-inset-bottom))!important;
+  }
+  :root[data-theme] body .workspace .stats-grid {
+    margin-bottom:9px!important;
+  }
+  :root[data-theme] body .workspace .mobile-library-filters {
+    scroll-snap-type:x proximity;
+  }
+  :root[data-theme] body .workspace .mobile-library-filters button {
+    scroll-snap-align:start;
+  }
+  :root[data-theme] body .mobile-transfer-name {
+    font-size:13.5px;
+    line-height:1.38;
+  }
+  :root[data-theme] body .mobile-transfer-meta,
+  :root[data-theme] body .mobile-transfer-rates {
+    font-size:10.5px;
+  }
+  :root[data-theme] body .drawer-tabs button { font-size:11px; }
+  :root[data-theme] body .detail-item span { font-size:11px; line-height:1.35; }
+  :root[data-theme] body .detail-item strong { font-size:13px; line-height:1.4; }
+  :root[data-theme] body .section-label { font-size:11px; }
+  :root[data-theme] body .path-box { font-size:12px; line-height:1.45; }
+  :root[data-theme] body .option-toggle strong { font-size:13px; line-height:1.35; }
+  :root[data-theme] body .option-toggle small { font-size:11px; line-height:1.4; }
+  :root[data-theme] body .tracker-row strong { font-size:12px; }
+  :root[data-theme] body .tracker-row span { font-size:11px; }
+  :root[data-theme] body .preferences-modal {
+    width:calc(100vw - 16px)!important;
+    height:calc(100dvh - 16px)!important;
+    max-height:calc(100dvh - 16px)!important;
+    padding:0 10px!important;
+  }
+  :root[data-theme] body .preferences-head { min-height:62px; }
+  :root[data-theme] body .preferences-heading h2 {
+    font-size:19px!important;
+    line-height:1.15;
+    white-space:normal;
+  }
+  :root[data-theme] body .preferences-content { gap:9px; padding:0 2px 3px; }
+  :root[data-theme] body .preferences-content>section.preferences-card {
+    grid-template-columns:32px minmax(0,1fr)!important;
+    align-items:start;
+    gap:8px 10px;
+    padding:12px!important;
+  }
+  :root[data-theme] body .preferences-card-icon {
+    width:32px;
+    height:32px;
+  }
+  :root[data-theme] body .preferences-card-icon svg { width:18px; height:18px; }
+  :root[data-theme] body .preferences-card-copy { grid-column:2; min-width:0; }
+  :root[data-theme] body .preferences-card-copy strong { font-size:13px; line-height:1.25; }
+  :root[data-theme] body .preferences-card-copy span { font-size:11px; line-height:1.4; }
+  :root[data-theme] body .preferences-card>.preferences-select,
+  :root[data-theme] body .preferences-card>.secondary-button,
+  :root[data-theme] body .preferences-card>.shortcut-keys {
+    grid-column:1/-1!important;
+    width:100%!important;
+    margin:0!important;
+  }
+  :root[data-theme] body .preferences-card>.preferences-select {
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+  }
+  :root[data-theme] body .preferences-card>.preferences-select select { width:min(170px,65%)!important; }
+  :root[data-theme] body .preferences-card>.secondary-button { min-height:40px; }
+  :root[data-theme] body .preferences-card .path-setting {
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:4px;
+  }
+  :root[data-theme] body .preferences-card .path-setting span { min-width:0; }
+  :root[data-theme] body .preferences-card .path-setting input,
+  :root[data-theme] body .preferences-card .path-setting select {
+    width:100%;
+    min-width:0;
+  }
+  :root[data-theme] body .preferences-footer {
+    min-height:64px;
+    margin-top:5px;
+    gap:9px;
+  }
+  :root[data-theme] body .preferences-footer>span { font-size:10px; line-height:1.35; }
+  :root[data-theme="halloween"] body .mobile-transfer-name {
+    font-family:system-ui,sans-serif!important;
+    font-size:14px;
+    font-weight:700;
+  }
+  :root[data-theme="halloween"] body .detail-drawer :is(.drawer-head h2,.detail-item strong,.option-toggle strong) {
+    font-family:system-ui,sans-serif!important;
+  }
+  :root[data-theme="halloween"] body .workspace>.search-wrap::before,
+  :root[data-theme="halloween"] body .workspace>.search-wrap::after,
+  :root[data-theme="valentine"] body .workspace>.search-wrap::before,
+  :root[data-theme="valentine"] body .workspace>.search-wrap::after {
+    display:none!important;
+  }
+  :root[data-theme="halloween"] body .topbar .top-actions .mobile-preferences,
+  :root[data-theme="valentine"] body .topbar .top-actions .mobile-preferences {
+    display:grid!important;
+  }
+
+  /* Seasonal artwork remains on the cards, while each metric gets a stable,
+     readable footprint at 320px and above. */
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+    padding:0!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card {
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:72px!important;
+    min-height:72px!important;
+    padding:6px 7px!important;
+    gap:0!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3) {
+    display:flex!important;
+    flex-direction:row!important;
+    height:34px!important;
+    min-height:34px!important;
+    padding:4px 8px!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3)::before,
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3)::after,
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3)>.stat-icon {
+    display:none!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3)>div:nth-child(2) {
+    flex-direction:row!important;
+    gap:5px!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3) span,
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3) strong {
+    width:auto!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card>div:nth-child(2) {
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:0!important;
+    text-align:center!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-icon {
+    display:grid!important;
+    place-items:center!important;
+    flex:none!important;
+    width:25px!important;
+    height:23px!important;
+    min-height:0!important;
+    margin:0 0 1px!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-icon svg {
+    width:15px!important;
+    height:15px!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card span {
+    width:100%!important;
+    max-width:100%!important;
+    font-size:10px!important;
+    line-height:1.2!important;
+    text-align:center!important;
+    white-space:nowrap;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card strong {
+    width:100%!important;
+    max-width:100%!important;
+    margin:1px 0 0!important;
+    font-size:clamp(15px,4.6vw,20px)!important;
+    line-height:1.08!important;
+    text-align:center!important;
+    white-space:nowrap;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card small,
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card>.stat-spark {
+    display:none!important;
+  }
+  :root[data-theme="valentine"] body .workspace .stats-grid .stat-icon::before {
+    width:29px!important;
+    height:25px!important;
+  }
+  :root[data-theme="valentine"] body .workspace .stats-grid .stat-card span::before,
+  :root[data-theme="valentine"] body .workspace .stats-grid .stat-card span::after {
+    display:none!important;
+  }
+  :root[data-theme="halloween"] body .workspace .stats-grid .stat-icon {
+    width:26px!important;
+    height:22px!important;
+  }
+
+  /* The six everyday palettes use two compact rate tiles, as their library
+     count and connection status already appear in the controls and status. */
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) body .workspace .stats-grid {
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:7px!important;
+    padding:0!important;
+  }
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) body .workspace .stats-grid .stat-card:nth-child(-n+2) {
+    display:flex!important;
+    align-items:center!important;
+    min-width:0!important;
+    height:53px!important;
+    min-height:53px!important;
+    padding:6px 8px!important;
+    border:1px solid var(--line)!important;
+    border-radius:10px!important;
+    background:var(--surface)!important;
+    box-shadow:inset 0 1px color-mix(in srgb,var(--text) 5%,transparent)!important;
+  }
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) body .workspace .stats-grid .stat-card>.stat-icon {
+    display:grid!important;
+    place-items:center!important;
+    flex:none!important;
+    width:24px!important;
+    height:27px!important;
+    margin:0!important;
+  }
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) body .workspace .stats-grid .stat-card>div:nth-child(2) {
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:0!important;
+    min-width:0!important;
+  }
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) body .workspace .stats-grid .stat-card span {
+    font-size:10px!important;
+    line-height:1.1!important;
+  }
+  :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) body .workspace .stats-grid .stat-card strong {
+    font-size:clamp(12px,3.7vw,16px)!important;
+    line-height:1.2!important;
+    white-space:nowrap;
+  }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card {
+    height:52px!important;
+    min-height:52px!important;
+    padding:6px 8px!important;
+  }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card strong {
+    font-size:clamp(13px,4vw,17px)!important;
+  }
+}
+
+@media (min-width:660px) and (max-width:760px) and (min-height:541px) {
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid {
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3) {
+    flex-direction:column!important;
+    height:72px!important;
+    min-height:72px!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3)>.stat-icon {
+    display:grid!important;
+  }
+  :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) body .workspace .stats-grid .stat-card:nth-child(n+3)>div:nth-child(2) {
+    flex-direction:column!important;
+    gap:0!important;
+  }
+}
+
+@media (max-width:950px) and (max-height:540px) {
+  :root[data-theme] body .workspace .stats-grid { display:none!important; }
+}
