@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.49
+
+- Match the Independence Day theme to the reference flag, parchment, fireworks, and eagle treatment without adding a July 4th banner.
+- Keep Independence styling isolated from every other theme, including responsive card and sidebar layouts.
+- Raise the Terminal selected-torrent command bar above the bottom status rail so it no longer clips or collides.
+
 ## 1.0.48
 
 - Keep every column resize handle visible with a contrasting marker and a wider pointer target in all twelve themes, including Terminal.

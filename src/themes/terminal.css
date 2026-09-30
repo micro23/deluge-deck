@@ -446,6 +446,11 @@
 :root[data-theme="terminal"] .status-dot { background:var(--muted-2); box-shadow:none; }
 :root[data-theme="terminal"] .status-dot.live { background:var(--text); box-shadow:none; }
 
+/* Keep the selected-torrent command bar clear of the bottom status rail. */
+@media (min-width:761px) {
+  :root[data-theme="terminal"] .bulk-bar { bottom:58px!important; }
+}
+
 /* Dialogs and overlays inherit the same console treatment, including portals. */
 :root[data-theme="terminal"] :is(.modal-card,.add-modal,.theme-popover,.context-menu,.detail-drawer,.global-popover,.account-popover,.bulk-bar,.login-card) {
   border:1px solid var(--line-strong)!important;

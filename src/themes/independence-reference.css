@@ -1,0 +1,76 @@
+/* Independence alone owns these finishes and proportions. Loaded after shared
+   geometry, like Terminal. Artwork is local, static, and never captures input. */
+:root[data-theme="independence"] {
+  --bg:#030d25; --surface:#07152e; --surface-2:#102447; --surface-3:#1d3555;
+  --text:#fff7e8; --muted:#dededc; --muted-2:#c5cddd;
+  --line:#536282; --line-strong:#ac9b99;
+  --deck-stat-height:108px; --deck-stat-label-size:11px;
+  --deck-stat-detail-size:10px; --deck-table-row-height:29px;
+  --theme-texture:none; --theme-wash-one:transparent; --theme-wash-two:transparent;
+}
+:root[data-theme="independence"] body .app-shell { background:#030d25!important; }
+:root[data-theme="independence"] body .app-shell::before { background:none!important; }
+:root[data-theme="independence"] body .topbar { background:#040e27!important; border-bottom:0!important; box-shadow:none!important; }
+:root[data-theme="independence"] body .workspace { padding:7px 10px 10px!important; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card {
+  height:108px!important; gap:1px!important; padding:6px 10px!important;
+  border:4px double #c8b7a2!important; border-radius:3px!important;
+  background:radial-gradient(ellipse at 20% 40%,#bb965325,transparent 50%),radial-gradient(ellipse at 80% 75%,#ad844326,transparent 50%),linear-gradient(110deg,#e8d7ad,#faf0d6 45%,#e9d8b1)!important;
+  box-shadow:inset 0 0 0 2px #8e2339,inset 0 0 22px #b7955755,0 0 0 1px #294a79!important;
+}
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card::before { inset:5px; border:1px solid #253e6d; border-radius:0; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card>.stat-icon { width:24px!important; height:22px!important; background:none!important; border:0!important; box-shadow:none!important; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card>div:nth-child(2) { width:calc(100% - 72px)!important; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card :is(span,strong,small) { color:#171d2d!important; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card strong { font-size:20px!important; }
+:root[data-theme="independence"] body .stats-grid .stat-card>.theme-detail { color:#263d67!important; opacity:.2!important; width:32px!important; height:32px!important; top:35px!important; }
+:root[data-theme="independence"] body .stats-grid .stat-card>.stat-spark { margin-top:auto!important; height:13px!important; width:44%!important; }
+:root[data-theme="independence"] body .table-shell {
+  background:#040e28!important; border:1px solid #826271!important; border-radius:5px!important;
+  box-shadow:inset 0 0 0 1px #223d67!important;
+}
+:root[data-theme="independence"] body .table-shell::after { background:url('../assets/independence-celebration.svg') center center/cover no-repeat!important; opacity:1!important; mix-blend-mode:normal!important; }
+:root[data-theme="independence"] body .table-shell thead th { height:29px!important; color:#f2e5d6!important; background:#06112b!important; border-bottom:1px solid #a4364b!important; }
+:root[data-theme="independence"] body .table-shell tbody td { height:29px!important; background:#082349b8!important; border-bottom:1px solid #ffffff0b!important; font-size:10px!important; }
+:root[data-theme="independence"] body .table-shell tbody tr:nth-child(even) td { background:#820d25a8!important; }
+:root[data-theme="independence"] body .table-shell tbody tr:hover td { background:#304b70ed!important; }
+:root[data-theme="independence"] body .table-shell tbody tr.selected td { background:#4a3b65ed!important; }
+:root[data-theme="independence"] body .torrent-name strong { font-size:11px!important; }
+:root[data-theme="independence"] body .state-badge i { background:#ffe2a4!important; box-shadow:0 0 7px #ffd585!important; }
+:root[data-theme="independence"] body .progress-track { height:9px!important; border:1px solid #d3b5cb!important; border-radius:6px!important; background:#122653!important; }
+:root[data-theme="independence"] body .progress-bar { background:radial-gradient(circle at 3px 3px,#fff 0 1px,transparent 1.3px) 0 0/7px 6px,linear-gradient(90deg,#184cbd 0 40%,#ede3df 60%,#e84866)!important; box-shadow:0 0 6px #ed7ba9,inset 0 1px 2px #fff!important; }
+:root[data-theme="independence"] body .deck-status-rail { position:relative; min-height:32px; border-radius:5px!important; border-color:#814354!important; background:#06122d!important; }
+:root[data-theme="independence"] body .deck-status-rail::after { content:""; position:absolute; left:50%; bottom:-3px; width:67px; height:58px; background:url('../assets/independence-eagle.svg') center/contain no-repeat; transform:translateX(-50%); pointer-events:none; }
+:root[data-theme="independence"] body .session-quick-actions button { box-shadow:0 0 7px #ef52674d!important; }
+:root[data-theme="independence"] body .session-quick-actions button:nth-child(2) { background:linear-gradient(#17689e,#08416e)!important; box-shadow:0 0 7px #51b7ff55!important; }
+@media(min-width:761px) {
+  :root[data-theme="independence"] body .app-shell { --deck-sidebar-size:78px!important; }
+  :root[data-theme="independence"] body .sidebar { width:78px!important; padding:78px 7px 10px!important; background:linear-gradient(90deg,#09152c 0 9%,#a63347 10% 14%,#cbbfaa 15% 19%,#163768 20% 84%,#cbbfaa 85% 89%,#a63347 90% 94%,#07132c 95%)!important; border-right:1px solid #a58e84!important; }
+  :root[data-theme="independence"] body .sidebar::before { content:""!important; position:absolute; inset:3px 3px auto; height:72px; background:url('../assets/independence-eagle.svg') center/contain no-repeat; pointer-events:none; }
+  :root[data-theme="independence"] body .sidebar-command-row { margin-bottom:9px!important; }
+  :root[data-theme="independence"] body .sidebar .add-button { width:100%!important; height:30px!important; padding:0!important; }
+  :root[data-theme="independence"] body .sidebar :is(.add-button,.nav-item) :is(span,b,kbd) { display:none!important; }
+  :root[data-theme="independence"] body .sidebar .nav-label { font-size:8px!important; margin:2px 0 8px!important; letter-spacing:.06em; }
+  :root[data-theme="independence"] body .sidebar > nav .nav-item,:root[data-theme="independence"] body .sidebar-bottom .nav-item { display:flex!important; justify-content:center!important; width:100%!important; min-height:34px!important; padding:0!important; margin:2px 0!important; }
+  :root[data-theme="independence"] body .sidebar .nav-item svg { color:#f4dfda; filter:drop-shadow(0 0 4px #e37a9b); }
+  :root[data-theme="independence"] body .sidebar .nav-item.active { background:linear-gradient(90deg,#ac2948,#153668)!important; border-radius:4px!important; }
+  :root[data-theme="independence"] body .sidebar-bottom { flex-direction:column; }
+}
+@media(max-width:760px) {
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card { height:112px!important; }
+  :root[data-theme="independence"] body .deck-status-rail::after { content:none; }
+  :root[data-theme="independence"] body .table-shell::after { background-size:auto 100%!important; }
+}
+@media(max-width:760px) {
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card>div:nth-child(2) { width:100%!important; }
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card strong { font-size:clamp(14px,4.3vw,20px)!important; }
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card small { font-size:9px!important; }
+  :root[data-theme="independence"] body .stats-grid .stat-card>.theme-detail { top:8px!important; width:20px!important; height:20px!important; }
+}
+@media(max-width:760px) {
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card:nth-child(n) { height:108px!important; min-height:108px!important; flex-direction:column!important; justify-content:flex-start!important; gap:1px!important; padding:6px 7px!important; }
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card:nth-child(n)>div:nth-child(2) { flex-direction:column!important; width:100%!important; gap:0!important; }
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card:nth-child(n)>.stat-icon { display:grid!important; }
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card:nth-child(n) small { display:block!important; }
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card:nth-child(n) strong { font-size:clamp(14px,4.3vw,20px)!important; }
+}

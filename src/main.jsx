@@ -82,6 +82,8 @@ import './themes/sidebar.css';
 import './themes/sizing.css';
 // Terminal owns its geometry as well as its palette; load after shared sizing.
 import './themes/terminal.css';
+// Independence owns its reference styling without changing shared geometry.
+import './themes/independence-reference.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
