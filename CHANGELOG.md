@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.39
+
+- Fill the Halloween potion vial's round end at 100% progress on desktop and mobile.
+
 ## 1.0.38
 
 - Hide Deluge's legacy `mainPanel` behind the hosted dashboard so mobile overscroll cannot expose the old interface.

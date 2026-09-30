@@ -43,17 +43,6 @@
     height:16px!important;
     min-height:16px!important;
   }
-  :root[data-theme="halloween"] body .mobile-transfer .progress-bar.complete::after {
-    content:""!important;
-    position:absolute;
-    top:-2px;
-    right:0;
-    width:16px;
-    height:11px;
-    border-radius:50%;
-    background:radial-gradient(ellipse at 38% 38%,#b4ff98,#39d737 60%,#08792e 88%,transparent)!important;
-    box-shadow:0 0 5px #4af06055;
-  }
   :root[data-theme] body .mobile-transfer-name {
     font-size:13.5px;
     line-height:1.38;

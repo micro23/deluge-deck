@@ -535,6 +535,21 @@
   content:none!important;
   animation:none!important;
 }
+:root[data-theme="halloween"] .progress-bar.complete::after {
+  content:""!important;
+  position:absolute;
+  z-index:1;
+  top:50%;
+  left:auto!important;
+  right:0;
+  width:16%;
+  height:13px;
+  border-radius:50%;
+  transform:translateY(-50%);
+  background:radial-gradient(ellipse at 54% 42%,#c8ff9b 0%,#55ed3c 38%,#0aaf27 76%,transparent 96%)!important;
+  box-shadow:0 0 3px #26d94866;
+  pointer-events:none;
+}
 :root[data-theme="halloween"] .progress-wrap>span { flex:none; color:#dfe5de; font:8px "DM Mono",monospace; }
 
 :root[data-theme="halloween"] .deck-status-rail {
