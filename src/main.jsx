@@ -5798,7 +5798,6 @@ function App() {
               <Plus size={17} /> Add torrent
             </button>
           </div>
-          {theme === 'terminal' && <button className="terminal-add-command" onClick={() => setAddFiles([])}><span aria-hidden="true">&gt;</span> [Add torrent]<i aria-hidden="true" /></button>}
           <div className="stats-grid">
             <Stat
               theme={theme}
@@ -6089,7 +6088,7 @@ function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }
         <Icon size={17} />
       </div>
       <div>
-        <span>{theme === 'terminal' ? ({ Connections: 'Conns', Library: 'Lib' }[label] || label) : label}</span>
+        <span>{label}</span>
         <strong>{value}</strong>
         {(detail || theme === 'terminal') && <small>{theme === 'terminal' ? (label === 'Connections' ? 'Active' : label === 'Library' ? detail.replace(/(\d+) seeding/, 'Seeding:$1') : 'Payload') : detail}</small>}
       </div>

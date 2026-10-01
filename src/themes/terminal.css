@@ -582,17 +582,6 @@
   background:radial-gradient(ellipse at center,transparent 58%,#0006);
 }
 :root[data-theme="terminal"] body .external-ip { display:none; }
-:root[data-theme="terminal"] body .terminal-add-command {
-  display:none;
-  border:0;
-  padding:0;
-  color:var(--text);
-  background:none;
-  width:max-content;
-  font-size:18px;
-}
-:root[data-theme="terminal"] body .terminal-add-command span { margin-right:8px; }
-:root[data-theme="terminal"] body .terminal-add-command i { display:inline-block; width:7px; height:19px; margin-left:2px; vertical-align:middle; background:#d9d9d5; }
 :root[data-theme="terminal"] body button:focus-visible { outline:1px dashed #deded8; outline-offset:3px; }
 
 @media (min-width:761px) and (min-height:541px), (min-width:951px) {
@@ -730,7 +719,6 @@
   :root[data-theme="terminal"] body .topbar .theme-trigger::before { content:"[ T ]"!important; color:var(--muted-2); }
   :root[data-theme="terminal"] body .topbar .mobile-preferences { display:none!important; }
   :root[data-theme="terminal"] body .workspace { position:relative; padding:0 0 12px!important; min-height:0!important; gap:0; overflow:visible; }
-  :root[data-theme="terminal"] body .terminal-add-command { display:none!important; }
   :root[data-theme="terminal"] body .workspace>.library-mobile-controls { display:none; }
   :root[data-theme="terminal"] body .workspace .stats-grid {
     grid-template-columns:repeat(4,minmax(0,1fr))!important;
@@ -749,9 +737,9 @@
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>div:nth-child(2) { position:static!important; gap:0!important; overflow:visible; width:calc(100% - 56px)!important; }
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card span {
     position:absolute!important;
-    top:-7px;
+    top:3px;
     left:24px;
-    padding:0 3px!important;
+    padding:0 6px!important;
     background:#000;
     font-size:16px!important;
     line-height:20px!important;
