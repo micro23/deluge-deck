@@ -597,8 +597,8 @@
     overflow:visible;
   }
   :root[data-theme="terminal"] body .sidebar::before {
-    content:" C   L  III\A/ \\  L   I\A|   | L   I\A \\_/  L  III"!important;
-    font:16px/0.9 var(--terminal-font);
+    content:"  ####  #      ###\A #      #       #\A #      #       #\A #      #       #\A  ####  #####  ###"!important;
+    font:700 11px/1.15 "Courier New",monospace!important;
     letter-spacing:0;
     margin:10px auto 14px;
     white-space:pre;
