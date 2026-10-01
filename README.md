@@ -2,6 +2,8 @@
 
 Just download the .egg in the release and add it via the ui to plugins. Make sure WEBUI is enabled! Once you have webui enabled and add this plugin it will appear on first refresh of the webui. 
 
+Please provide any feedback or requests to micro23@gmail.com
+
 Deluge Deck is a modern, keyboard-friendly companion WebUI for Deluge 2.1+ and 2.2+. It runs as a small localhost service beside Deluge Web, keeps the Deluge session cookie server-side, and gives you a focused torrent workspace with drag-and-drop `.torrent` files, magnets, URL adds, live rates, filters, bulk actions, and a detail drawer.
 
 It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialog shown in your screenshot. USE THE PLUGIN! IT'S REALLY EASY. JUST ADD IT TO YOUR PLUGINS FOLDER OR GO INTO SETTINGS AND ADD THIS PLUGIN. The plugin entry points include Core, GTK3, and WebUI; enabling the WebUI entry injects the same SPA into Deluge Web and switches the API calls to Deluge’s native `/json` and `/upload` endpoints. In this mode it uses the exact same host, port, password, cookies, and SSL settings as Deluge Web.
