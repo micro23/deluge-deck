@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.52
+
+- Restore the Terminal dashboard's full Download, Upload, Connections, and Library card labels and keep their legends clear of the card borders.
+- Remove the duplicate workspace Add torrent command while retaining the sidebar Add torrent control.
+- Render a legible ASCII CLI mark in the Terminal sidebar with stable spacing at desktop sizes.
+
 ## 1.0.51
 
 - Restore Independence Day navigation expansion, labels, sizing, and spacing using the shared sidebar layout.
