@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" fill="none">
+  <defs>
+    <radialGradient id="halo"><stop stop-color="#fff4cf" stop-opacity=".32"/><stop offset=".35" stop-color="#557ec0" stop-opacity=".09"/><stop offset="1" stop-color="#081538" stop-opacity="0"/></radialGradient>
+    <g id="spray" stroke-linecap="round">
+      <path d="M0-8Q-5-47-24-132" stroke="#eee8d8" stroke-width="2.4"/>
+      <path d="M5-8Q23-49 41-122" stroke="#ae3954" stroke-width="2.5"/>
+      <path d="M-4-5Q1-61 5-151" stroke="#416da8" stroke-width="2.1"/>
+      <path d="M9-13Q36-55 58-102" stroke="#e2cdb0" stroke-width="1.4"/>
+      <path d="M-10-9Q-31-40-48-93" stroke="#376196" stroke-width="1.8"/>
+      <path d="M-24-132l-3-8m68 18 4-9M5-151l2-7" stroke="#ece7d9" stroke-width="1"/>
+      <circle cx="-25" cy="-136" r="2" fill="#f9efd9"/><circle cx="41" cy="-124" r="2" fill="#b44760"/><circle cx="5" cy="-152" r="2" fill="#76a0da"/>
+    </g>
+    <g id="burst">
+      <circle r="145" fill="url(#halo)"/>
+      <g opacity=".84"><use href="#spray"/><use href="#spray" transform="rotate(45)"/><use href="#spray" transform="rotate(90)"/><use href="#spray" transform="rotate(135)"/><use href="#spray" transform="rotate(180)"/><use href="#spray" transform="rotate(225)"/><use href="#spray" transform="rotate(270)"/><use href="#spray" transform="rotate(315)"/></g>
+      <circle r="5" fill="#f0dabb" opacity=".75"/>
+      <circle r="92" stroke="#d7d8db" stroke-width="1" stroke-dasharray="1 15" opacity=".6"/>
+    </g>
+    <path id="star" d="M0-6 1.6-1.7 6 0 1.6 1.7 0 6-1.6 1.7-6 0-1.6-1.7Z"/>
+  </defs>
+  <g opacity=".55">
+  <use href="#burst" transform="translate(146 383) scale(1.14)"/>
+  <use href="#burst" transform="translate(332 100) scale(.88)"/>
+  <use href="#burst" transform="translate(465 495) scale(1.02)"/>
+  <use href="#burst" transform="translate(893 392) scale(1.18)"/>
+  <use href="#burst" transform="translate(1114 125) scale(.98)"/>
+  <use href="#burst" transform="translate(1066 290) scale(.53)" opacity=".82"/>
+  <use href="#burst" transform="translate(1190 475) scale(.62)" opacity=".72"/>
+  <g opacity=".72"><use href="#star" transform="translate(42 284) scale(.75)" fill="#f7efe0"/><use href="#star" transform="translate(251 284) scale(.55)" fill="#4778b8"/><use href="#star" transform="translate(273 440) scale(.65)" fill="#b04660"/><use href="#star" transform="translate(536 331) scale(.6)" fill="#f7efe0"/><use href="#star" transform="translate(683 448) scale(.72)" fill="#b04660"/><use href="#star" transform="translate(742 283) scale(.65)" fill="#4778b8"/><use href="#star" transform="translate(996 472) scale(.8)" fill="#f7efe0"/><use href="#star" transform="translate(1146 367) scale(.7)" fill="#b04660"/><use href="#star" transform="translate(1047 66) scale(.55)" fill="#f7efe0"/></g>
+  </g>
+</svg>

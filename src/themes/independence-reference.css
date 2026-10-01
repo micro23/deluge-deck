@@ -29,7 +29,7 @@
   background:#040e28!important; border:1px solid #826271!important; border-radius:5px!important;
   box-shadow:inset 0 0 0 1px #223d67!important;
 }
-:root[data-theme="independence"] body .table-shell::after { background:url('../assets/independence-celebration.svg') center center/cover no-repeat!important; opacity:1!important; mix-blend-mode:normal!important; }
+:root[data-theme="independence"] body .table-shell::after { background:url('../assets/independence-fireworks-extra.svg') center center/cover no-repeat,url('../assets/independence-celebration.svg') center center/cover no-repeat!important; opacity:1!important; mix-blend-mode:normal!important; }
 :root[data-theme="independence"] body .table-shell thead th { height:29px!important; color:#f2e5d6!important; background:#06112b!important; border-bottom:1px solid #a4364b!important; }
 :root[data-theme="independence"] body .table-shell tbody td { height:29px!important; background:#082349b8!important; border-bottom:1px solid #ffffff0b!important; font-size:10px!important; }
 :root[data-theme="independence"] body .table-shell tbody tr:nth-child(even) td { background:#820d25a8!important; }
@@ -48,13 +48,24 @@
   display:block; width:100%; height:100%;
 }
 :root[data-theme="independence"] body .deck-status-rail { position:relative; min-height:32px; border-radius:5px!important; border-color:#814354!important; background:#06122d!important; }
-:root[data-theme="independence"] body .deck-status-rail::after { content:""; position:absolute; left:50%; bottom:-3px; width:67px; height:58px; background:url('../assets/independence-eagle.svg') center/contain no-repeat; transform:translateX(-50%); pointer-events:none; }
+:root[data-theme="independence"] body .deck-status-rail::after { content:""; position:absolute; left:50%; bottom:-3px; width:82px; height:70px; background:url('../assets/independence-eagle.svg') center/contain no-repeat; transform:translateX(-50%); pointer-events:none; }
 :root[data-theme="independence"] body .session-quick-actions button { box-shadow:0 0 7px #ef52674d!important; }
 :root[data-theme="independence"] body .session-quick-actions button:nth-child(2) { background:linear-gradient(#17689e,#08416e)!important; box-shadow:0 0 7px #51b7ff55!important; }
 /* Colors only: expanded, collapsed, and drawer sizes come from shared rules. */
 :root[data-theme="independence"] body .sidebar {
   background:linear-gradient(90deg,#09152c,#163768 50%,#07132c)!important;
   border-right:1px solid #a58e84!important;
+}
+:root[data-theme="independence"] body .sidebar::before {
+  content:"";
+  display:block;
+  flex:none;
+  align-self:flex-start;
+  width:78px;
+  height:72px;
+  margin:-8px 0 6px;
+  background:url('../assets/independence-eagle.svg') center/contain no-repeat;
+  pointer-events:none;
 }
 :root[data-theme="independence"] body .sidebar .nav-item svg {
   color:#f4dfda; filter:drop-shadow(0 0 4px #e37a9b);
@@ -65,7 +76,7 @@
 @media(max-width:760px) {
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card { height:112px!important; }
   :root[data-theme="independence"] body .deck-status-rail::after { content:none; }
-  :root[data-theme="independence"] body .table-shell::after { background-size:auto 100%!important; }
+  :root[data-theme="independence"] body .table-shell::after { background-size:auto 100%,auto 100%!important; }
 }
 @media(max-width:760px) {
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card>div:nth-child(2) { width:100%!important; }

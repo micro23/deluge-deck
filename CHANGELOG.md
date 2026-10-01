@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.53
+
+- Add fuller red, white, and blue fireworks to the Independence Day dashboard background.
+- Replace the top-left and bottom-center Independence Day eagle artwork with a more detailed matching illustration.
+
 ## 1.0.52
 
 - Restore the Terminal dashboard's full Download, Upload, Connections, and Library card labels and keep their legends clear of the card borders.
