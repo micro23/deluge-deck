@@ -2,7 +2,7 @@
 
 Deluge Deck is a modern, keyboard-friendly companion WebUI for Deluge 2.1+ and 2.2+. It runs as a small localhost service beside Deluge Web, keeps the Deluge session cookie server-side, and gives you a focused torrent workspace with drag-and-drop `.torrent` files, magnets, URL adds, live rates, filters, bulk actions, and a detail drawer.
 
-It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialog shown in your screenshot. The plugin entry points include Core, GTK3, and WebUI; enabling the WebUI entry injects the same SPA into Deluge Web and switches the API calls to Deluge’s native `/json` and `/upload` endpoints. In this mode it uses the exact same host, port, password, cookies, and SSL settings as Deluge Web.
+It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialog shown in your screenshot. USE THE PLUGIN! IT'S REALLY EASY. JUST ADD IT TO YOUR PLUGINS FOLDER OR GO INTO SETTINGS AND ADD THIS PLUGIN. The plugin entry points include Core, GTK3, and WebUI; enabling the WebUI entry injects the same SPA into Deluge Web and switches the API calls to Deluge’s native `/json` and `/upload` endpoints. In this mode it uses the exact same host, port, password, cookies, and SSL settings as Deluge Web.
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
