@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.54
+
+- Replace Python 3.9 CI builds with separate eggs for Python 3.11, 3.12, 3.13, and 3.14.
+- Automatically attach all eggs and SHA-256 checksums when a matching GitHub release is published.
+- Pin GitHub actions and legacy egg packaging tools, keep build jobs read-only, and restrict release write access to the upload job.
+- Reject mismatched release tags and check every packaged Python source file for syntax errors under the build interpreter.
+- Document current Python build targets and local build instructions. Packaging checks do not establish live Deluge runtime compatibility.
+
 ## 1.0.53
 
 - Add fuller red, white, and blue fireworks to the Independence Day dashboard background.

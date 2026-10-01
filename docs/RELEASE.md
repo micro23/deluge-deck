@@ -30,13 +30,33 @@ PYTHON=python3 npm run build:plugin
 ```
 
 The build verifies the required entry points, versioned resources, package
-metadata, and egg contents. The output is written to `plugin/dist/`.
+metadata, egg contents, and Python source syntax under the build interpreter.
+The output is written to `plugin/dist/`.
+Install the pinned packaging tools first with
+`python3 -m pip install -r plugin/build-requirements.txt` in a virtual environment.
+Use that same environment's interpreter for `PYTHON`.
 
 ## CI expectations
 
 Pull requests and pushes to `main` should run tests, production checks, and the
-plugin build. The workflow currently builds the distributable egg with Python
-3.9; test the target Deluge/Python combination separately before publishing.
+plugin build with Python 3.11, 3.12, 3.13, and 3.14. Each matrix job retains a
+separate artifact containing its version-labelled egg and SHA-256 checksum.
+Packaging tools and GitHub actions are pinned; update these pins deliberately.
+Successful packaging does not establish runtime compatibility: test the target
+Deluge/Python combination separately before publishing.
+
+Publishing a GitHub release runs the same checks against the release tag. The
+tag must equal the package version, with an optional `v` prefix. Only after all
+matrix jobs pass does a separate job verify checksums and attach all four eggs
+and their checksums using GitHub CLI. Builds have read-only repository access;
+only the upload job has `contents: write`. It does not install dependencies or
+execute repository code. Uploads preserve the egg's Python version and do not
+overwrite existing assets; a duplicate filename fails instead of replacing a
+previously published download.
+
+Manual workflow runs create CI artifacts only. Python 3.9 is no longer used by
+CI; users of older Deluge environments can build locally with their interpreter,
+but should move to a supported Python runtime where possible.
 
 ## Publishing checklist
 
@@ -49,7 +69,8 @@ plugin build. The workflow currently builds the distributable egg with Python
 7. Test login, daemon switching, add, remove-with-data, file priorities, and
    session expiry.
 8. Commit the source and generated release artifact, then create a version tag.
-9. Publish the egg with a checksum and retain the CI artifact.
+9. Publish the GitHub release and wait for CI to attach the eggs and checksums.
+   Keep those filenames free for CI uploads and retain the CI artifacts.
 
 Local builds may be published when CI is unavailable. Match the egg's Python
 major/minor to the target Deluge installation, verify package integrity and the
