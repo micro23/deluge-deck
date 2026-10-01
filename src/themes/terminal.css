@@ -75,11 +75,19 @@
 }
 
 :root[data-theme="terminal"] .sidebar::before {
-  content:"  ___ _    ___\A / __| |  |_ _|\A| (__| |__ | |\A \\___|____|___|";
+  content:none!important;
+  display:none!important;
+}
+
+:root[data-theme="terminal"] .terminal-cli-logo {
   display:block;
-  margin:14px 10px 24px;
+  width:max-content;
+  max-width:100%;
+  margin:10px auto 14px;
   color:var(--text);
-  font:14px/1.05 var(--terminal-font);
+  font:700 13px/1.05 "Courier New",monospace!important;
+  letter-spacing:0;
+  text-align:left!important;
   white-space:pre;
 }
 
@@ -596,16 +604,8 @@
     border-color:#8b8c85!important;
     overflow:visible;
   }
-  :root[data-theme="terminal"] body .sidebar::before {
-    content:"  ####  #      ###\A #      #       #\A #      #       #\A #      #       #\A  ####  #####  ###"!important;
-    font:700 11px/1.15 "Courier New",monospace!important;
-    letter-spacing:0;
-    margin:10px auto 14px;
-    white-space:pre;
-    color:#c5c5be;
-    opacity:.85;
-    width:max-content;
-  }
+  :root[data-theme="terminal"] body .terminal-cli-logo { color:#eeeae0; }
+  :root[data-theme="terminal"] body .sidebar.collapsed .terminal-cli-logo { display:none; }
   :root[data-theme="terminal"] body .sidebar-command-row { margin:0 0 22px!important; justify-content:flex-start; }
   :root[data-theme="terminal"] body .sidebar .add-button {
     width:auto!important;
@@ -825,6 +825,7 @@
   :root[data-theme="terminal"] body .topbar .global-trigger::before { content:"[ Limit: -- ]"!important; }
 }
 @media (min-width:761px) and (max-width:1000px) {
+  :root[data-theme="terminal"] body .terminal-cli-logo { font-size:12px!important; }
   :root[data-theme="terminal"] body .app-shell { margin:30px; height:calc(100dvh - 60px); }
   :root[data-theme="terminal"] body::before,
 :root[data-theme="terminal"].deluge-deck-hosted #deluge-deck-root::before { inset:16px; }
@@ -858,7 +859,7 @@
 
   :root[data-theme="terminal"] body .table-shell th { text-align:left!important; }
   :root[data-theme="terminal"] body .table-shell th[data-column="name"]::after { left:46px; }
-  :root[data-theme="terminal"] body .sidebar::before { margin-top:2px; margin-bottom:18px; }
+  :root[data-theme="terminal"] body .terminal-cli-logo { margin-top:2px; margin-bottom:18px; }
   :root[data-theme="terminal"] body .sidebar .nav-item.active { box-shadow:none!important; }
   :root[data-theme="terminal"] body .sidebar-toggle { display:block; }
   :root[data-theme="terminal"] body .table-shell input[type="checkbox"] {

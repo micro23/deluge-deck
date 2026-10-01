@@ -381,6 +381,7 @@ function Login({ onConnect, mode, sessionMessage = '' }) {
   );
 }
 function Sidebar({
+  theme,
   filter,
   setFilter,
   counts,
@@ -402,6 +403,7 @@ function Sidebar({
       <aside
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
+        {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
         <div className="sidebar-command-row">
           <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
             <Plus size={18} />
@@ -5714,6 +5716,7 @@ function App() {
       onDrop={drop}
     >
       <Sidebar
+        theme={theme}
         filter={filter}
         setFilter={setFilter}
         torrents={torrents}
