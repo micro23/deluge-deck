@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.63
+
+- Center Terminal's desktop sidebar commands, Library heading, filter labels, and bottom controls, with balanced dot and count columns.
+- Refresh the Terminal theme preview.
+
 ## 1.0.62
 
 - Move Terminal's Live sync and IP status to the right side of the desktop footer.

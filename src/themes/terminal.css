@@ -604,13 +604,13 @@
     border-color:#8b8c85!important;
     overflow:visible;
   }
-  :root[data-theme="terminal"] body .terminal-cli-logo { color:#eeeae0; }
+  :root[data-theme="terminal"] body .terminal-cli-logo { color:#eeeae0; margin-inline:auto; }
   :root[data-theme="terminal"] body .sidebar.collapsed .terminal-cli-logo { display:none; }
-  :root[data-theme="terminal"] body .sidebar-command-row { margin:0 0 22px!important; justify-content:flex-start; }
+  :root[data-theme="terminal"] body .sidebar-command-row { margin:0 0 22px!important; justify-content:center; }
   :root[data-theme="terminal"] body .sidebar .add-button {
     width:auto!important;
     height:28px!important;
-    justify-content:flex-start;
+    justify-content:center;
     padding:0 9px!important;
     gap:0;
     font-size:17px;
@@ -618,22 +618,24 @@
   :root[data-theme="terminal"] body .sidebar:not(.collapsed) :is(.add-button,.nav-item)>svg { display:none!important; }
   :root[data-theme="terminal"] body .sidebar .nav-label {
     margin:0 2px 1px!important;
-    text-align:left!important;
+    text-align:center!important;
     font-size:17px;
     line-height:23px;
   }
-  :root[data-theme="terminal"] body .sidebar>nav .nav-item {
-    display:flex!important;
-    justify-content:flex-start;
+  :root[data-theme="terminal"] body .sidebar:not(.collapsed)>nav .nav-item {
+    display:grid!important;
+    grid-template-columns:18px minmax(0,1fr) 18px;
+    align-items:center;
     min-height:24px!important;
     height:24px;
     margin:0!important;
     padding:0 2px!important;
-    gap:7px;
-    text-align:left;
+    gap:3px;
+    text-align:center;
   }
-  :root[data-theme="terminal"] body .sidebar .nav-item span { width:auto; text-align:left; font-size:17px; line-height:23px; }
-  :root[data-theme="terminal"] body .sidebar .nav-item b { width:auto; margin-left:auto; font-size:16px; }
+  :root[data-theme="terminal"] body .sidebar .nav-item span { width:auto; text-align:center; font-size:17px; line-height:23px; }
+  :root[data-theme="terminal"] body .sidebar .nav-item b { width:auto; margin-left:0; justify-self:end; font-size:16px; }
+  :root[data-theme="terminal"] body .sidebar:not(.collapsed)>nav .nav-item::before { justify-self:start; }
   :root[data-theme="terminal"] body .sidebar .nav-item.active { background:transparent!important; }
   :root[data-theme="terminal"] body .sidebar>nav .nav-item::before { content:"●"!important; }
   :root[data-theme="terminal"] body .sidebar>nav .nav-item:last-child::before { content:"◎"!important; }
@@ -641,7 +643,7 @@
   :root[data-theme="terminal"] body .sidebar-bottom .nav-item::before { content:"["!important; }
   :root[data-theme="terminal"] body .sidebar .add-button::after,
   :root[data-theme="terminal"] body .sidebar-bottom .nav-item::after { content:"]"!important; }
-  :root[data-theme="terminal"] body .sidebar-bottom { align-items:flex-start; flex-direction:column; gap:0; padding:0; background:#000; }
+  :root[data-theme="terminal"] body .sidebar-bottom { align-items:center; flex-direction:column; gap:0; padding:0; background:#000; }
   :root[data-theme="terminal"] body .sidebar-bottom .nav-item { width:auto; min-height:26px!important; margin:0; padding:0 0!important; gap:3px; }
   :root[data-theme="terminal"] body .sidebar-bottom .nav-item span { font-size:16px; }
   :root[data-theme="terminal"] body .sidebar-toggle { width:max-content!important; height:24px!important; font-size:17px; white-space:nowrap; }
@@ -650,6 +652,7 @@
   :root[data-theme="terminal"] body .sidebar.collapsed::before { content:">_"; font-size:22px; margin-bottom:25px; }
   :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-toggle::before { content:"[ > ]"!important; }
   :root[data-theme="terminal"] body .sidebar.collapsed>nav .nav-item { justify-content:center!important; height:32px; }
+  :root[data-theme="terminal"] body .sidebar.collapsed>nav .nav-item::before { content:none!important; }
   :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-bottom .nav-item::before,
   :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-bottom .nav-item::after { content:none; }
   :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-bottom .nav-item>svg { display:block!important; }
