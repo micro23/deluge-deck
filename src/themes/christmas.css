@@ -72,7 +72,6 @@
   filter:drop-shadow(0 1px 1px #0008);
 }
 :root[data-theme="christmas"] .deck-status-rail { border:1px solid #9d8355!important; background:linear-gradient(90deg,#0d2119,#1b3225 48%,#0b1b14)!important; }
-:root[data-theme="christmas"] .deck-status-rail::after { content:"✦  ❄  ✦"; color:#d5bd7b; text-shadow:0 0 8px #dcc77c66; }
 @media (max-width:1100px) { :root[data-theme="christmas"] .stats-grid .stat-card { height:clamp(104px,14vh,118px)!important; } }
 @media (max-width:760px) { :root[data-theme="christmas"] .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; } }
 

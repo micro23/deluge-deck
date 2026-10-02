@@ -38,7 +38,6 @@
 :root[data-theme="new-year"] .progress-track { height:9px; border:1px solid #92815f!important; border-radius:3px!important; background:#07101b!important; }
 :root[data-theme="new-year"] .progress-bar { background:linear-gradient(90deg,#9f8248,#f1d27c)!important; box-shadow:inset 0 1px #fff2c078,0 0 8px #cfae5b53; }
 :root[data-theme="new-year"] .deck-status-rail { border:1px solid #a49268!important; background:linear-gradient(90deg,#091726,#1a2b3b 48%,#091522)!important; }
-:root[data-theme="new-year"] .deck-status-rail::after { content:"✧  ✦  ✧"; color:#e6d39a; text-shadow:0 0 8px #e4c57677; }
 @media (max-width:1100px) { :root[data-theme="new-year"] .stats-grid .stat-card { height:clamp(104px,14vh,118px)!important; } }
 @media (max-width:760px) { :root[data-theme="new-year"] .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; } }
 

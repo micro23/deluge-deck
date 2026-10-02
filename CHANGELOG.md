@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.64
+
+- Remove the decorative symbols at the right end of the Christmas and New Year status bars, and refresh their theme previews.
+
 ## 1.0.63
 
 - Center Terminal's desktop sidebar commands, Library heading, filter labels, and bottom controls, with balanced dot and count columns.
