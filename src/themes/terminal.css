@@ -761,14 +761,13 @@
   :root[data-theme="terminal"] body .table-tools .column-menu-trigger:hover { opacity:1; }
   :root[data-theme="terminal"] body .table-shell th {
     height:29px!important;
-    padding:0 16px 0 3px!important;
+    padding:0 8px!important;
     border-bottom:0!important;
     font-size:15px!important;
     line-height:20px;
   }
   :root[data-theme="terminal"] body .table-shell th[data-column="name"] { position:relative; }
-  :root[data-theme="terminal"] body .table-shell th[data-column="name"]::after { content:""; position:absolute; top:50%; left:46px; right:8px; height:1px; background:#a6a79e; }
-  :root[data-theme="terminal"] body .table-shell .sort-button { width:auto!important; display:inline-flex!important; font-size:inherit!important; justify-content:flex-start; text-align:left; }
+  :root[data-theme="terminal"] body .table-shell .sort-button { width:100%!important; display:inline-flex!important; font-size:inherit!important; justify-content:center; text-align:center; }
   :root[data-theme="terminal"] body .table-shell .sort-button::before,
   :root[data-theme="terminal"] body .table-shell .sort-button::after { content:none!important; }
   :root[data-theme="terminal"] body .table-shell .column-resize-handle { display:block!important; opacity:1; }
@@ -811,7 +810,7 @@
   :root[data-theme="terminal"] body .status-free-space::before { content:"DISK:"; }
   :root[data-theme="terminal"] body .status-free-space::after { content:"FREE /"; }
   :root[data-theme="terminal"] body .status-free-space strong { font:inherit; }
-  :root[data-theme="terminal"] body .deck-status-rail>span:nth-child(2) { flex-direction:row-reverse; gap:5px; }
+  :root[data-theme="terminal"] body .deck-status-rail>span:nth-child(2) { margin-inline-start:auto; flex-direction:row-reverse; gap:5px; }
   :root[data-theme="terminal"] body .deck-status-rail .status-dot { width:auto; height:auto; border-radius:0; background:none; }
   :root[data-theme="terminal"] body .deck-status-rail .status-dot::before { content:"[ ] /"; }
   :root[data-theme="terminal"] body .deck-status-rail .status-dot.live::before { content:"[✓] /"; }
@@ -857,8 +856,7 @@
 :root[data-theme="terminal"] body .sidebar-toggle { overflow:visible; }
 @media (min-width:761px) and (min-height:541px), (min-width:951px) {
 
-  :root[data-theme="terminal"] body .table-shell th { text-align:left!important; }
-  :root[data-theme="terminal"] body .table-shell th[data-column="name"]::after { left:46px; }
+  :root[data-theme="terminal"] body .table-shell th { text-align:center!important; }
   :root[data-theme="terminal"] body .terminal-cli-logo { margin-top:2px; margin-bottom:18px; }
   :root[data-theme="terminal"] body .sidebar .nav-item.active { box-shadow:none!important; }
   :root[data-theme="terminal"] body .sidebar-toggle { display:block; }

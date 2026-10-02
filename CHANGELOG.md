@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.62
+
+- Move Terminal's Live sync and IP status to the right side of the desktop footer.
+- Remove the line beside Name and center Terminal's column headings while keeping the resize controls available.
+- Refresh the Terminal theme preview.
+
 ## 1.0.61
 
 - Make the New Year banner year-independent by displaying "HAPPY NEW YEAR" without a date, and refresh its theme preview.
