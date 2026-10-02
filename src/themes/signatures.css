@@ -20,6 +20,10 @@
 :root[data-theme] .table-shell::before { content:none!important; }
 :root[data-theme] .table-shell::after { z-index:0!important; }
 :root[data-theme] .table-shell > table { position:relative; z-index:1; }
+/* Clean seasonal torrent lists keep decorative artwork outside the table. */
+:root:is([data-theme="christmas"],[data-theme="valentine"],[data-theme="new-year"]) .table-shell::after {
+  content:none!important;
+}
 /* A zero-height sticky anchor follows the table viewport on both axes, while
    the data table keeps its existing header position and scrollable width. */
 :root[data-theme] .table-shell > .table-tools {

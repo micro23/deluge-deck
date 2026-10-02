@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.59
+
+- Give Midnight, Paper, Ocean, Forest, Sunset, Christmas, Valentine's, and New Year opaque torrent table surfaces without background artwork or decorative overlays.
+- Preserve the existing clean St. Patrick's table and the Terminal, Halloween, and Independence Day designs.
+
 ## 1.0.58
 
 - Remove the conservatory artwork from the St. Patrick's torrent table body for a cleaner, distraction-free list.

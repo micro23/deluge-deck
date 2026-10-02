@@ -57,7 +57,7 @@
   --core-icon-border:#55bdc75e;
   --core-icon-bg:linear-gradient(150deg,#174c59,#0a2b38);
   --core-icon-shadow:#39c9d836;
-  --core-table:linear-gradient(180deg,#071b28dc,#061724e8 38%,#05131fe8),url('../assets/midnight-operations-bay.jpg') center/cover;
+  --core-table:linear-gradient(180deg,#071b28,#061724 38%,#05131f);
   --core-table-shadow:inset 0 1px 0 #a3f6f22e,0 18px 38px #010811ad;
   --core-head:linear-gradient(180deg,#102c3c,#0c202d);
   --core-rail:linear-gradient(90deg,#0d2736ed,#091b29f2 70%,#0a2534ed);
@@ -76,7 +76,7 @@
   --core-icon-border:#8eb1b980;
   --core-icon-bg:linear-gradient(145deg,#eef6f5,#d6e7e8);
   --core-icon-shadow:#3e777c2a;
-  --core-table:linear-gradient(180deg,#f9fcf9fa 0%,#f7faf7f4 52%,#eef3efdf 100%),url('../assets/paper-observatory-atrium.jpg') center/cover;
+  --core-table:linear-gradient(180deg,#f9fcf9 0%,#f7faf7 52%,#eef3ef 100%);
   --core-table-shadow:inset 0 1px 0 #fff,0 16px 30px #47647430;
   --core-head:linear-gradient(180deg,#fdfdf9,#e4eff0);
   --core-rail:linear-gradient(90deg,#fffefaef,#edf5f4ef 68%,#fcf8f0ee);
@@ -95,7 +95,7 @@
   --core-icon-border:#79d6eb77;
   --core-icon-bg:linear-gradient(145deg,#1e7186,#12425c);
   --core-icon-shadow:#28b9d556;
-  --core-table:linear-gradient(180deg,#071e2de0,#082335df 46%,#041625eb),url('../assets/ocean-deep-sea-habitat.jpg') center/cover;
+  --core-table:linear-gradient(180deg,#071e2d,#082335 46%,#041625);
   --core-table-shadow:inset 0 1px 0 #b9f3ff32,0 18px 38px #00121fc2;
   --core-head:linear-gradient(180deg,#12435c,#0a3047);
   --core-rail:linear-gradient(90deg,#0a3349e8,#072639ef 68%,#0b344de8);
@@ -115,7 +115,7 @@
   --core-icon-border:#a7c49c;
   --core-icon-bg:linear-gradient(145deg,#edf7e7,#cfe4c5);
   --core-icon-shadow:#4384522c;
-  --core-table:linear-gradient(180deg,#f6faeff9 0%,#eff5e9f2 52%,#e7eee1d9 100%),url('../assets/forest-bioluminescent-conservatory.jpg') center/cover;
+  --core-table:linear-gradient(180deg,#f6faef 0%,#eff5e9 52%,#e7eee1 100%);
   --core-table-shadow:inset 0 1px 0 #fff,0 17px 31px #284a2c3d;
   --core-head:linear-gradient(180deg,#f6fbee,#dcebd2);
   --core-rail:linear-gradient(90deg,#fafdf2e8,#e5f1ddea 68%,#f8f5e8e8);
@@ -136,7 +136,7 @@
   --core-icon-border:#e7acaa70;
   --core-icon-bg:linear-gradient(145deg,#9c657e,#604d7b);
   --core-icon-shadow:#ef857557;
-  --core-table:linear-gradient(180deg,#20253df2 0%,#22253ce8 52%,#191b30d8 100%),url('../assets/sunset-desert-observatory.jpg') center/cover;
+  --core-table:linear-gradient(180deg,#20253d 0%,#22253c 52%,#191b30 100%);
   --core-table-shadow:inset 0 1px 0 #ffdbc138,0 18px 34px #120d2799;
   --core-head:linear-gradient(90deg,#51466c,#704966 56%,#524264);
   --core-rail:linear-gradient(90deg,#2e3654eb,#47324feb 60%,#3a2b49eb);
