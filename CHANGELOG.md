@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.56
+
+- Publish one source-only Python 3.14-built egg and its checksum instead of four equivalent builds.
+- Verify that the exact same artifact loads all five plugin entry points and WebUI resources on Python 3.11–3.14 using Deluge 2.2 base classes.
+- Reject native extensions and Python bytecode in the shared egg, and gate release uploads on all compatibility checks.
+- Explain that Deluge 2 accepts eggs built with another Python version; the filename suffix identifies the build interpreter.
+
 ## 1.0.55
 
 - Replace Independence Day vector eagle decorations and fireworks with generated cinematic wildlife and realistic pyrotechnic artwork.

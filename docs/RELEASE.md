@@ -22,8 +22,7 @@ npm run verify:release
 git diff --check
 ```
 
-For a plugin release, build with the Python major/minor used by the target
-Deluge installation:
+For a plugin release, build the single source-only egg with Python 3.14:
 
 ```sh
 PYTHON=python3 npm run build:plugin
@@ -38,42 +37,44 @@ Use that same environment's interpreter for `PYTHON`.
 
 ## CI expectations
 
-Pull requests and pushes to `main` should run tests, production checks, and the
-plugin build with Python 3.11, 3.12, 3.13, and 3.14. Each matrix job retains a
-separate artifact containing its version-labelled egg and SHA-256 checksum.
-Packaging tools and GitHub actions are pinned; update these pins deliberately.
-Successful packaging does not establish runtime compatibility: test the target
-Deluge/Python combination separately before publishing.
+Pull requests and pushes to `main` run tests, production checks, and one
+plugin build with Python 3.14. The resulting artifact contains one egg and its
+SHA-256 checksum. Separate Python 3.11–3.14 jobs download that exact artifact,
+reject native extensions and bytecode, verify its checksum, and load all five
+entry points using real Deluge 2.2 plugin base classes. Isolated RPC registrars
+allow resource and lifecycle checks without a running daemon or GTK display.
+These checks establish cross-version plugin loading, not end-to-end daemon or
+Windows compatibility. Packaging tools and GitHub actions are pinned.
+
+Deluge 2 disables Python-version filtering during egg discovery. The `py3.14`
+filename suffix identifies the build interpreter; users do not need a different
+egg for each supported Python version. Keep that standard setuptools filename
+rather than merely renaming it. See [Deluge's plugin compatibility guide](https://deluge.readthedocs.io/en/latest/devguide/how-to/update-1.3-plugin.html).
 
 Publishing a GitHub release runs the same checks against the release tag. The
-tag must equal the package version, with an optional `v` prefix. Only after all
-matrix jobs pass does a separate job verify checksums and attach all four eggs
-and their checksums using GitHub CLI. Builds have read-only repository access;
-only the upload job has `contents: write`. It does not install dependencies or
-execute repository code. Uploads preserve the egg's Python version and do not
-overwrite existing assets; a duplicate filename fails instead of replacing a
-previously published download.
-
-Manual workflow runs create CI artifacts only. Python 3.9 is no longer used by
-CI; users of older Deluge environments can build locally with their interpreter,
-but should move to a supported Python runtime where possible.
+tag must equal the package version, with an optional `v` prefix. After the build
+and all load checks pass, a separate job verifies the checksum and attaches the
+single egg and checksum using GitHub CLI. Builds and load checks have read-only
+repository access; only the upload job has `contents: write`. It does not install
+dependencies or execute repository code. Duplicate asset filenames fail rather
+than replacing an existing download. Manual runs create CI artifacts only.
 
 ## Publishing checklist
 
 1. Update `package.json` and `package-lock.json` together.
 2. Add release notes to `CHANGELOG.md`.
 3. Run the pre-release checks above.
-4. Build the egg using the target Python runtime.
+4. Build the egg once with Python 3.14 and run the same-artifact loader checks.
 5. Inspect the egg filename and contents.
 6. Test standalone and hosted/plugin modes with a real Deluge instance.
 7. Test login, daemon switching, add, remove-with-data, file priorities, and
    session expiry.
 8. Commit the source and generated release artifact, then create a version tag.
-9. Publish the GitHub release and wait for CI to attach the eggs and checksums.
+9. Publish the GitHub release and wait for CI to attach the egg and checksum.
    Keep those filenames free for CI uploads and retain the CI artifacts.
 
-Local builds may be published when CI is unavailable. Match the egg's Python
-major/minor to the target Deluge installation, verify package integrity and the
+Local builds may be published when CI is unavailable. Run the loader check
+with the target Deluge/Python environment, verify package integrity and the
 checksum, and state the build environment and any untested platforms in the
 release notes. Do not include passwords, cookies, production paths, or
 production configuration in logs or artifacts.

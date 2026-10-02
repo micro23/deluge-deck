@@ -33,7 +33,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.55.
+Current release: 1.0.56.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -50,7 +50,7 @@ Deluge Web normally listens on `http://127.0.0.1:8112`. Set `DELUGE_URL` in the 
 
 ## Install through Deluge Preferences (plugin mode)
 
-Build the plugin on the same Python major/minor version used by your Deluge installation:
+Download the single egg from the latest release, or build from source with Python 3.14 in a virtual environment:
 
 ```powershell
 npm install
@@ -58,7 +58,7 @@ python -m pip install -r plugin/build-requirements.txt
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.55-py3.12.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Prefer an egg matching the Python major/minor used by your Deluge installation. CI builds eggs for Python 3.11–3.14; other environments can build locally using their Deluge Python interpreter. The egg contains Python source and UI assets, not a bundled Python interpreter.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.56-py3.14.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Download the single release egg. It contains Python source and UI assets, with no native extensions or bundled interpreter. Deluge 2 accepts eggs built with a different Python version; the `py3.14` suffix identifies the build interpreter, not a requirement to run Python 3.14. CI loads the same egg on Python 3.11–3.14 before publishing.
 
 ### Using port 8888 (plugin mode)
 
@@ -70,7 +70,7 @@ deluge-web.exe -p 8888
 
 Open `http://127.0.0.1:8888/`. If Deluge Web is already configured to use 8888, no Deluge Deck setting is needed—the plugin follows it automatically. The standalone companion (`npm start`) is separate and defaults to 8118; set `$env:PORT=8888` only when using that companion instead of the installed plugin.
 
-If the plugin is listed but the checkbox immediately clears, the egg was loaded but one of its entry points failed during startup. Rebuild it with the Python that ships with your Windows Deluge install, reinstall the new egg, and restart both Deluge and `deluge-web`. For the exact cause, launch `deluge-debug.exe` from a Command Prompt and toggle the plugin; the traceback will identify an incompatible Python/Deluge version or a missing dependency. Deluge 1.x (Python 2) is not supported by this build; use Deluge 2.x (Python 3).
+If the plugin is listed but the checkbox immediately clears, the egg was loaded but one of its entry points failed during startup. For the exact cause, launch `deluge-debug.exe` from a Command Prompt and toggle the plugin; the traceback will identify an incompatible Python/Deluge version or a missing dependency. Deluge 1.x (Python 2) is not supported by this build; use Deluge 2.x (Python 3).
 
 ## Demo mode
 

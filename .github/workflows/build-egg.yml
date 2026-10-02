@@ -16,10 +16,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ['3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -30,7 +26,7 @@ jobs:
           cache: npm
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: ${{ matrix.python }}
+          python-version: '3.14'
       - name: Check release tag matches package version
         if: github.event_name == 'release'
         env:
@@ -47,7 +43,7 @@ jobs:
       - run: npm test
       - run: npm run check
       # Deluge and this plugin still use pkg_resources; newer setuptools may
-      # remove it. Keep the legacy egg builder reproducible across the matrix.
+      # remove it. Keep the legacy egg builder reproducible for the source-only egg.
       - run: python -m pip install -r plugin/build-requirements.txt
       - run: npm run build:plugin
         env:
@@ -55,15 +51,44 @@ jobs:
       - run: npm run verify:release
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: DelugeDeck-egg-py${{ matrix.python }}
+          name: DelugeDeck-egg
           path: |
             plugin/dist/*.egg
             plugin/dist/*.egg.sha256
           if-no-files-found: error
 
+  load-check:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - run: rm -rf plugin/dist
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DelugeDeck-egg
+          path: plugin/dist
+      - name: Install isolated Deluge loader dependencies
+        run: |
+          python -m pip install -r plugin/build-requirements.txt
+          python -m pip install --no-deps -r plugin/load-test-requirements.txt
+          python -m pip install Twisted==25.5.0
+      - run: python scripts/verify-plugin-load.py
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+
   publish:
     if: github.event_name == 'release'
-    needs: build
+    needs: [build, load-check]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -71,18 +96,17 @@ jobs:
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          pattern: DelugeDeck-egg-py*
-          merge-multiple: true
+          name: DelugeDeck-egg
           path: release-assets
-      - name: Verify all release checksums
+      - name: Verify the release checksum
         working-directory: release-assets
         run: |
           eggs=(*.egg)
           checksums=(*.egg.sha256)
-          test "${#eggs[@]}" -eq 4
-          test "${#checksums[@]}" -eq 4
+          test "${#eggs[@]}" -eq 1
+          test "${#checksums[@]}" -eq 1
           sha256sum --check --strict *.egg.sha256
-      - name: Attach eggs and checksums to the published release
+      - name: Attach the egg and checksum to the published release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

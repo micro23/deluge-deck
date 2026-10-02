@@ -1,0 +1,3 @@
+# Only the modules imported by Deluge's real plugin base classes are needed.
+deluge==2.2.0
+Twisted==25.5.0
