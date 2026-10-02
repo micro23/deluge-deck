@@ -61,7 +61,8 @@ import { daemonHostStatus, addedHostId } from '../server/hosted-contracts.mjs';
 import { proxyFormValues, proxyConfig } from './app/preferences.js';
 import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
-import { REFRESH_OPTIONS, THEMES } from './app/themes.js';
+import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES } from './app/themes.js';
+import { SportsIdentity } from './app/SportsIdentity.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { ThemeDetail } from './app/ThemeDetail.jsx';
 import './styles.css';
@@ -84,6 +85,7 @@ import './themes/sizing.css';
 import './themes/terminal.css';
 // Independence owns its reference styling without changing shared geometry.
 import './themes/independence-reference.css';
+import './themes/sports.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -403,6 +405,7 @@ function Sidebar({
       <aside
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
+        <SportsIdentity theme={theme} />
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
         <div className="sidebar-command-row">
           <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
@@ -472,8 +475,9 @@ function ThemeMenu({ theme, setTheme }) {
         restoreTriggerFocus();
       }
     };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
+    // Restore focus before the shared document-level dismissal unmounts the menu.
+    window.addEventListener('keydown', closeOnEscape, true);
+    return () => window.removeEventListener('keydown', closeOnEscape, true);
   }, [open]);
   useEffect(() => {
     const close = (event) => {
@@ -522,26 +526,33 @@ function ThemeMenu({ theme, setTheme }) {
           <div className="theme-gallery-heading" role="presentation">
             <span>MAKE IT YOURS</span>
             <strong>A different atmosphere.</strong>
-            <p>Twelve palettes. One familiar workspace.</p>
+            <p>{THEMES.length} palettes. One familiar workspace.</p>
           </div>
-          {THEMES.map(([key, label, description]) => (
-            <button
-              key={key}
-              className={`theme-gallery-option ${theme === key ? 'active' : ''}`}
-              onKeyDown={navigateMenu}
-              onClick={() => {
-                setTheme(key);
-                setOpen(false);
-                restoreTriggerFocus();
-              }}
-              role="menuitemradio"
-              aria-checked={theme === key}
-              aria-label={`${label}: ${description}`}
-            >
-              <span className={`theme-preview ${key}`} aria-hidden="true" />
-              <span className="theme-gallery-caption"><strong>{label}</strong><small>{description}</small></span>
-              {theme === key && <Check size={14} />}
-            </button>
+          {THEME_CATEGORIES.map((category) => (
+            <div key={category.id} className="theme-category" role="group" aria-labelledby={`theme-category-${category.id}`}>
+              <div className="theme-category-heading" id={`theme-category-${category.id}`}>
+                <strong>{category.label}</strong><span aria-hidden="true">{category.themes.length}</span>
+              </div>
+              {category.themes.map((id) => THEMES.find(([key]) => key === id)).map(([key, label, description]) => (
+                <button
+                  key={key}
+                  className={`theme-gallery-option ${theme === key ? 'active' : ''}`}
+                  onKeyDown={navigateMenu}
+                  onClick={() => {
+                    setTheme(key);
+                    setOpen(false);
+                    restoreTriggerFocus();
+                  }}
+                  role="menuitemradio"
+                  aria-checked={theme === key}
+                  aria-label={`${label}: ${description}`}
+                >
+                  <span className={`theme-preview ${key}`} aria-hidden="true" />
+                  <span className="theme-gallery-caption"><strong>{label}</strong><small>{description}</small></span>
+                  {theme === key && <Check size={14} />}
+                </button>
+              ))}
+            </div>
           ))}
         </div>
       )}
@@ -1333,7 +1344,7 @@ function Topbar({
     <>
       <header className="topbar">
         <div className="mobile-brand">
-          <Brand />
+          <SportsIdentity theme={theme} compact fallback={<Brand />} />
         </div>
         <div className="topbar-heading">
           <h1>Deluge</h1>

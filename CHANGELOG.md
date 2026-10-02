@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.65
+
+- Organize the theme picker into Regular, Holiday, and Sports categories, preserving keyboard navigation and saved selections.
+- Add New York Yankees, Giants, and Knicks themes with team marks, cinematic stadium backdrops, and baseball, football, and basketball card artwork.
+- Give Yankees cards an ivory pinstripe finish, Giants cards blue and red framing, and Knicks cards cobalt and orange detailing. Keep the four shared telemetry cards and clean torrent surfaces.
+- Add compact team branding on phones, actual demo previews, AAA palette/card contrast checks, and grouped-menu browser verification.
+- Restore theme-button focus on Escape before the shared menu dismissal runs. Existing theme styling remains unchanged.
+- Bundle the new artwork in the versioned plugin resources and release egg; record image-generation prompts and official logo sources.
+
 ## 1.0.64
 
 - Remove the decorative symbols at the right end of the Christmas and New Year status bars, and refresh their theme previews.

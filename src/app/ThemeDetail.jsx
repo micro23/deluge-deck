@@ -6,6 +6,9 @@ export function ThemeDetail({ theme, side = 'right' }) {
     return <span className={`theme-detail theme-detail-${side}`} aria-hidden="true" />;
   }
   const art = {
+    yankees: <><circle cx="60" cy="60" r="43" /><path d="M30 29c31 13 31 49 0 62m60-62c-31 13-31 49 0 62" /><path d="m31 35 8-5m-1 14 8-5m-4 15 8-3m-6 13 8-1m-8 12 8 2m-11 9 8 4m30-43-8-5m1 14-8-5m4 15-8-3m6 13-8-1m8 12-8 2m11 9-8 4" /></>,
+    giants: <><path d="M17 98C12 45 44 13 102 18c5 57-27 90-85 80Z" /><path d="m32 87 55-55M46 59l15 15m-7-24 15 15m-6-24 15 15M24 63l33 33m6-72 33 33" /></>,
+    knicks: <><circle cx="60" cy="60" r="43" /><path d="M17 60h86M60 17v86M29 30c31 15 31 45 0 60m62-60c-31 15-31 45 0 60" /></>,
     dark: <><circle cx="60" cy="60" r="44" /><circle cx="60" cy="60" r="30" /><circle cx="60" cy="60" r="15" /><path d="M60 7v18m0 70v18M7 60h18m70 0h18M29 29l62 62M29 91l62-62" /><path className="detail-sweep" d="M60 60V16a44 44 0 0 1 44 44Z" /><circle className="detail-light" cx="82" cy="38" r="3" /></>,
     light: <><path d="M18 24h84v72H18zM24 32h72M24 88h72M60 24v72" /><circle cx="60" cy="60" r="23" /><path d="m60 32 7 21 21 7-21 7-7 21-7-21-21-7 21-7Z" /><path d="M11 24v72m98-72v72M18 18h84M18 102h84" /><circle cx="60" cy="60" r="3" /></>,
     ocean: <><path d="M12 42c16-17 32 17 48 0s32 17 48 0M12 61c16-17 32 17 48 0s32 17 48 0M12 80c16-17 32 17 48 0s32 17 48 0" /><circle cx="60" cy="60" r="47" strokeDasharray="2 7" /><circle className="detail-light" cx="24" cy="24" r="4" /><circle cx="92" cy="95" r="6" /><circle cx="100" cy="21" r="2" /></>,

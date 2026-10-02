@@ -11,6 +11,15 @@ export const THEMES = [
   ['independence', 'Independence', 'Midnight navy, signal red, and star blue.', '⭐'],
   ['new-year', 'New Year', 'Midnight black, champagne, and warm gold.', '✨'],
   ['terminal', 'Terminal', 'A high-contrast operator console in pure black, white, and hard-edged mono.', '📟'],
+  ['yankees', 'NY Yankees', 'Pinstripe precision. Midnight navy and stadium silver.', '⚾'],
+  ['giants', 'NY Giants', 'Big Blue under the lights. Royal blue and red.', '🏈'],
+  ['knicks', 'NY Knicks', 'Garden nights. Electric blue, orange, and hardwood.', '🏀'],
+];
+
+export const THEME_CATEGORIES = [
+  { id: 'regular', label: 'Regular themes', themes: ['dark', 'light', 'ocean', 'forest', 'sunset', 'terminal'] },
+  { id: 'holiday', label: 'Holiday themes', themes: ['christmas', 'halloween', 'valentine', 'st-patricks', 'independence', 'new-year'] },
+  { id: 'sports', label: 'Sports themes', themes: ['yankees', 'giants', 'knicks'] },
 ];
 
 export const REFRESH_OPTIONS = [

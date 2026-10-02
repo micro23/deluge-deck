@@ -27,8 +27,14 @@
 .theme-preview.independence { background-image:url('./assets/theme-previews/independence.webp'); }
 .theme-preview.new-year { background-image:url('./assets/theme-previews/new-year.webp'); }
 .theme-preview.terminal { background-image:url('./assets/theme-previews/terminal.webp'); }
+.theme-preview.yankees { background-image:url('./assets/theme-previews/yankees.webp'); }
+.theme-preview.giants { background-image:url('./assets/theme-previews/giants.webp'); }
+.theme-preview.knicks { background-image:url('./assets/theme-previews/knicks.webp'); }
 .theme-gallery-heading { position:sticky; top:-16px; z-index:2; margin:-4px -4px 0; padding:12px 6px; background:var(--surface); border-bottom:1px solid var(--line); }
 .theme-gallery-caption { font-family:system-ui,sans-serif; }
+.theme-category { grid-column:1/-1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.theme-category-heading { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; margin-top:8px; padding:7px 2px; border-bottom:1px solid var(--line); color:var(--text); font:700 12px/1.4 system-ui,sans-serif; }
+.theme-category-heading>span { color:var(--muted); font-size:10px; font-weight:500; }
 .connection-recovery { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:14px 16px; border:1px solid var(--amber); border-radius:12px; color:var(--amber); background:var(--surface); }
 .connection-recovery>div { flex:1; min-width:0; }
 .connection-recovery strong { display:block; font-size:13px; }

@@ -1,6 +1,6 @@
 {
   "name": "deluge-deck",
-  "version": "1.0.64",
+  "version": "1.0.65",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,6 +11,7 @@
     "demo": "DELUGE_DEMO=1 node server/index.mjs",
     "verify:deluge": "node scripts/verify-deluge.mjs",
     "verify:themes": "node scripts/verify-theme-layout.mjs",
+    "verify:theme-menu": "node scripts/verify-theme-menu.mjs",
     "verify:package-styles": "node scripts/verify-package-styles.mjs",
     "verify:release": "node scripts/verify-release.mjs",
     "release:check": "npm test && npm run check && npm run verify:release",

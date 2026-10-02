@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { contrastRatio, themeAccentPairs, themePalettes } from './theme-contrast.mjs';
+import { THEMES, THEME_CATEGORIES } from '../src/app/themes.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = async () => {
@@ -17,7 +18,48 @@ const source = async () => {
 const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/styles.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/terminal.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/sports.css'), 'utf8'),
 ])).join('\n');
+
+test('theme categories cover every persistent theme once with stable sports identities', async () => {
+  assert.deepEqual(THEME_CATEGORIES.map(({ label }) => label), ['Regular themes', 'Holiday themes', 'Sports themes']);
+  const grouped = THEME_CATEGORIES.flatMap(({ themes }) => themes);
+  assert.equal(new Set(grouped).size, grouped.length);
+  assert.deepEqual([...grouped].sort(), THEMES.map(([id]) => id).sort());
+  assert.deepEqual(THEME_CATEGORIES.find(({ id }) => id === 'sports').themes, ['yankees', 'giants', 'knicks']);
+  const ui = await source();
+  assert.match(ui, /role="group" aria-labelledby=\{`theme-category-\$\{category.id\}`\}/);
+  assert.match(ui, /querySelectorAll\(\s*'\[role="menuitemradio"\]'/);
+  const sports = await readFile(path.join(root, 'src/themes/sports.css'), 'utf8');
+  assert.doesNotMatch(sports, /data-theme="(?:dark|light|ocean|forest|sunset|terminal|christmas|halloween|valentine|st-patricks|independence|new-year)"/);
+  for (const team of THEME_CATEGORIES.find(({ id }) => id === 'sports').themes) {
+    const logo = await readFile(path.join(root, `src/assets/sports/${team}-logo.svg`), 'utf8');
+    assert.match(logo, /<svg/);
+    assert.doesNotMatch(logo, /<script|<foreignObject|(?:href|src)="https?:/i);
+    const backdrop = await readFile(path.join(root, `src/assets/sports/${team}-stadium.webp`));
+    assert.equal(backdrop.subarray(8, 12).toString(), 'WEBP');
+  }
+});
+
+test('sports card text meets AAA against the gradients and decorative stripes', async () => {
+  const css = await readFile(path.join(root, 'src/themes/sports.css'), 'utf8');
+  for (const team of ['yankees', 'giants', 'knicks']) {
+    const declarations = css.match(new RegExp(`:root\\[data-theme="${team}"\\]\\s*\\{([^}]*)\\}`))[1];
+    const variable = name => declarations.match(new RegExp(`--${name}:([^;]+);`))[1];
+    const backgrounds = [...variable('club-card').matchAll(/#[a-f\d]{6}/gi)].map(([color]) => color);
+    const stripes = [...variable('club-pattern').matchAll(/#[a-f\d]{8}/gi)].map(([color]) => color);
+    const composite = (overlay, base) => {
+      const alpha = parseInt(overlay.slice(7, 9), 16) / 255;
+      const channels = [1, 3, 5].map(index => Math.round(parseInt(overlay.slice(index, index + 2), 16) * alpha + parseInt(base.slice(index, index + 2), 16) * (1 - alpha)));
+      return `#${channels.map(value => value.toString(16).padStart(2, '0')).join('')}`;
+    };
+    const surfaces = [...backgrounds, ...backgrounds.flatMap(base => stripes.map(stripe => composite(stripe, base)))];
+    for (const role of ['club-card-ink', 'club-card-muted']) {
+      const minimum = Math.min(...surfaces.map(background => contrastRatio(variable(role), background)));
+      assert.ok(minimum >= 7, `${team} ${role} card contrast ${minimum.toFixed(2)}:1`);
+    }
+  }
+});
 
 test('remove choices are in-app and pass Deluge the selected remove_data boolean', async () => {
   const ui = await source();
@@ -35,7 +77,7 @@ test('remove choices are in-app and pass Deluge the selected remove_data boolean
 
 test('themes have persistent palette declarations and a desktop/mobile menu', async () => {
   const [ui, css] = await Promise.all([source(), themeStyles()]);
-  for (const name of ['ocean', 'forest', 'sunset', 'christmas', 'halloween', 'valentine', 'st-patricks', 'independence', 'new-year', 'terminal']) {
+  for (const [name] of THEMES.filter(([name]) => name !== 'dark')) {
     assert.match(ui, new RegExp(`'${name}'`));
     assert.match(css, new RegExp(`data-theme=\\"${name}\\"`));
   }
@@ -397,7 +439,7 @@ test('every theme meets AAA text contrast and accessible component contrast', as
   assert.match(css, /\.primary-button \{[^}]*color:var\(--accent-fg\)/);
   assert.match(css, /\.avatar \{[^}]*color:var\(--accent-fg\)[^}]*background:var\(--cyan\)/);
   const pairs = themeAccentPairs(css);
-  assert.equal(pairs.length, 12);
+  assert.equal(pairs.length, THEMES.length);
   for (const { theme, cyan, foreground } of pairs) {
     assert.ok(cyan && foreground, `${theme} declares cyan and accent foreground`);
     assert.ok(contrastRatio(cyan, foreground) >= 7, `${theme} primary control contrast is at least 7:1`);

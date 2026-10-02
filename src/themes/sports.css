@@ -1,0 +1,128 @@
+/* Three independent club palettes. Shared responsive geometry remains the
+   owner of navigation, card sizing, and torrent columns. */
+:root[data-theme="yankees"] {
+  color-scheme:dark;
+  --bg:#060d1b; --surface:#0b1527; --surface-2:#101e33; --surface-3:#152640;
+  --text:#ffffff; --muted:#d2dce9; --muted-2:#c2cede;
+  --cyan:#e2ebf8; --accent-fg:#071326; --violet:#cddaff; --amber:#ffe0aa;
+  --green:#a8efc3; --danger:#ffbac4; --line:#455d7c; --line-strong:#8297b2;
+  --club-primary:#132448; --club-secondary:#c4cedd; --club-edge:#8ea4c5;
+  --club-art:url('../assets/sports/yankees-stadium.webp');
+  --club-pattern:repeating-linear-gradient(90deg,#1324481b 0 1px,transparent 1px 12px);
+  --club-card:linear-gradient(145deg,#ffffff,#e8edf5);
+  --club-card-ink:#10213c; --club-card-muted:#283750;
+  --club-card-icon:#f7f9fc; --club-card-line:#7c8da6;
+  --theme-radius:10px; --theme-control-radius:7px;
+}
+:root[data-theme="giants"] {
+  color-scheme:dark;
+  --bg:#050d1d; --surface:#0a162a; --surface-2:#0f2038; --surface-3:#152941;
+  --text:#ffffff; --muted:#d3e0f2; --muted-2:#c1d0e6;
+  --cyan:#b9d7ff; --accent-fg:#071528; --violet:#d0d9ff; --amber:#ffe1a9;
+  --green:#a5edc5; --danger:#ffb7c2; --line:#49658a; --line-strong:#819bbd;
+  --club-primary:#0b2265; --club-secondary:#a71930; --club-edge:#86b5ff;
+  --club-art:url('../assets/sports/giants-stadium.webp');
+  --club-pattern:repeating-linear-gradient(90deg,transparent 0 31px,#a4caff0a 31px 32px);
+  --club-card:linear-gradient(145deg,#0b2265,#091a3d 75%);
+  --club-card-ink:#ffffff; --club-card-muted:#d3e0f2;
+  --club-card-icon:#091a3d; --club-card-line:#819bbd;
+  --theme-radius:8px; --theme-control-radius:6px;
+}
+:root[data-theme="knicks"] {
+  color-scheme:dark;
+  --bg:#070f1b; --surface:#0c1728; --surface-2:#102035; --surface-3:#172a40;
+  --text:#fffaf3; --muted:#e6dbd1; --muted-2:#d4ceca;
+  --cyan:#ffc18b; --accent-fg:#231105; --violet:#c3d9ff; --amber:#ffe1a5;
+  --green:#a5efc1; --danger:#ffb9b4; --line:#6a6770; --line-strong:#a49d9a;
+  --club-primary:#006bb6; --club-secondary:#f58426; --club-edge:#ffac6e;
+  --club-art:url('../assets/sports/knicks-stadium.webp');
+  --club-pattern:repeating-linear-gradient(0deg,#ef9c4507 0 1px,transparent 1px 8px);
+  --club-card:linear-gradient(145deg,#102b50,#0c1c33 75%);
+  --club-card-ink:#fffaf3; --club-card-muted:#e6dbd1;
+  --club-card-icon:#0c1c33; --club-card-line:#a49d9a;
+  --theme-radius:12px; --theme-control-radius:8px;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) {
+  --theme-texture:none; --theme-wash-one:transparent; --theme-wash-two:transparent;
+  --theme-edge:var(--club-edge); --theme-rule:var(--line-strong);
+  --signature-ink:var(--cyan); --deck-seal-size:38px;
+  --theme-glow-a:transparent; --theme-glow-b:transparent;
+  --shadow:0 20px 50px #00000080;
+  --theme-card-shadow:inset 0 1px 0 #ffffff12,0 8px 24px #00000050;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .app-shell {
+  background:linear-gradient(180deg,#050d1bd9,#050d1b99),var(--club-art) center bottom/cover fixed!important;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .app-shell::before { content:none; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .topbar {
+  background:var(--surface)!important; border-bottom-color:var(--club-edge)!important;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .sidebar {
+  position:relative; isolation:isolate;
+  background:linear-gradient(180deg,var(--surface),#060e1dee 50%,#060e1b99),var(--club-art) center bottom/auto 65% no-repeat!important;
+  border-right:1px solid var(--line-strong)!important;
+}
+.sports-identity { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; flex:none; padding:15px 5px 22px; margin-bottom:14px; border-bottom:1px solid var(--line); text-align:center; }
+.sports-identity img { display:block; width:88px; height:88px; object-fit:contain; filter:drop-shadow(0 4px 12px #00000070); }
+.sports-identity-yankees img { filter:brightness(0) invert(1) drop-shadow(0 4px 12px #00000070); width:66px; }
+.sports-identity strong { color:var(--text); font-size:15px; line-height:1.3; letter-spacing:-.025em; }
+.sports-club-motto { color:var(--cyan); font:700 9px/1.4 'DM Mono',monospace; letter-spacing:.18em; }
+.sports-club-sport { color:var(--muted); font-size:10px; letter-spacing:.02em; }
+.sports-mobile-brand { display:flex; align-items:center; gap:7px; color:var(--text); }
+.sports-mobile-brand img { width:32px; height:32px; object-fit:contain; }
+.sports-mobile-brand strong { font:800 15px/1.2 Manrope,system-ui,sans-serif; letter-spacing:-.03em; }
+.sports-mobile-brand-yankees img { filter:brightness(0) invert(1); }
+.sidebar.collapsed .sports-identity { padding:8px 0 15px; }
+.sidebar.collapsed .sports-identity img { width:58px; height:58px; }
+.sidebar.collapsed .sports-identity :is(strong,span) { display:none; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .stats-grid .stat-card {
+  background:var(--club-pattern),var(--club-card)!important;
+  border:1px solid var(--line-strong)!important;
+  border-top:3px solid var(--club-edge)!important;
+  box-shadow:inset 0 0 0 4px #050c192e,0 8px 22px #00000060!important;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .stats-grid .stat-card::before {
+  content:""; position:absolute; inset:6px; border:1px solid #ffffff12; border-radius:calc(var(--theme-radius) - 4px); pointer-events:none;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .stats-grid .stat-card::after { content:none; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .stats-grid .stat-card > .stat-icon {
+  color:var(--club-card-ink)!important; border:1px solid var(--club-card-line); border-radius:7px;
+  background:var(--club-card-icon)!important; box-shadow:inset 0 1px 0 #ffffff14;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .stats-grid .stat-card > .theme-detail { opacity:.4; color:var(--club-card-ink); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .stats-grid .stat-card :is(span,strong,small) { color:var(--club-card-ink); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .stats-grid .stat-card small { color:var(--club-card-muted); }
+:root[data-theme="yankees"] body .stats-grid .stat-card > .stat-spark polyline { stroke:#344b70; }
+:root[data-theme="yankees"] body .stats-grid .stat-card > .stat-spark polygon { fill:#344b7026; }
+:root[data-theme="giants"] body .stats-grid .stat-card:nth-child(even) { border-top-color:#e65b72!important; }
+:root[data-theme="knicks"] body .stats-grid .stat-card:nth-child(even) { border-top-color:#58a7ed!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .table-shell {
+  background:var(--surface)!important; border:1px solid var(--line-strong)!important;
+  box-shadow:inset 0 1px 0 #ffffff12,0 16px 36px #00000070!important;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .table-shell::after { content:none!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .table-shell thead th {
+  background:var(--surface-3)!important; color:var(--text)!important;
+  border-bottom:1px solid var(--line-strong)!important;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .table-shell tbody td { background:var(--surface)!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .table-shell tbody tr:nth-child(even) td { background:var(--surface-2)!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .table-shell tbody tr:is(:hover,.selected) td { background:var(--surface-3)!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .progress-track { height:8px; border:1px solid var(--line-strong); background:var(--bg)!important; }
+:root[data-theme="yankees"] body .progress-bar { background:repeating-linear-gradient(90deg,#c5d6ed 0 7px,#ffffff 7px 8px)!important; }
+:root[data-theme="giants"] body .progress-bar { background:linear-gradient(90deg,#86baff,#c6ddff)!important; }
+:root[data-theme="knicks"] body .progress-bar { background:linear-gradient(90deg,#ffad66,#ffcf98)!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .nav-item.active {
+  color:var(--text)!important; background:var(--surface-3)!important;
+  box-shadow:inset 3px 0 var(--club-edge),0 5px 16px #00000030!important;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .deck-status-rail {
+  background:var(--surface)!important; border:1px solid var(--line-strong)!important;
+  box-shadow:inset 0 2px 0 var(--club-primary),0 6px 20px #00000050!important;
+}
+@media (max-width:760px) {
+  :root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) { --deck-seal-size:25px; }
+  :root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .app-shell { background-attachment:scroll!important; }
+  :root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .mobile-transfers { background:var(--surface)!important; border-color:var(--line-strong)!important; }
+  :root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"]) body .mobile-torrent-card { background:var(--surface)!important; }
+}

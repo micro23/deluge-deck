@@ -33,7 +33,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.64.
+Current release: 1.0.65.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -58,7 +58,7 @@ python -m pip install -r plugin/build-requirements.txt
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.64-py3.14.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Download the single release egg. It contains Python source and UI assets, with no native extensions or bundled interpreter. Deluge 2 accepts eggs built with a different Python version; the `py3.14` suffix identifies the build interpreter, not a requirement to run Python 3.14. CI loads the same egg on Python 3.11–3.14 before publishing.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.65-py3.14.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Download the single release egg. It contains Python source and UI assets, with no native extensions or bundled interpreter. Deluge 2 accepts eggs built with a different Python version; the `py3.14` suffix identifies the build interpreter, not a requirement to run Python 3.14. CI loads the same egg on Python 3.11–3.14 before publishing.
 
 ### Using port 8888 (plugin mode)
 
@@ -85,7 +85,8 @@ If the plugin is listed but the checkbox immediately clears, the egg was loaded 
 - Drag-and-drop multi-file `.torrent` intake, magnet links, and torrent URLs
 - Add options for Windows download path, paused mode, and sequential downloads
 - Torrent detail drawer with overview, files, peers, trackers, and options surfaces
-- Twelve persistent, readable palettes (including light, seasonal, holiday, and terminal themes), responsive tablet/mobile layout, reduced-motion support, and keyboard shortcuts
+- Fifteen persistent palettes grouped into Regular, Holiday, and Sports themes, responsive tablet/mobile layout, reduced-motion support, and keyboard shortcuts
+- New York Yankees, Giants, and Knicks fan themes with local team marks, generated stadium artwork, sport-specific card details, clean torrent lists, and AAA palette/card text contrast. See [artwork sources and prompts](docs/art/sports-sources.md).
 - In-app Deck Preferences for themes, refresh interval, keyboard help, and optional native Deluge settings
 - Secure loopback proxy with RPC allowlisting, upload size caps, origin validation, and no-store responses
 
@@ -96,9 +97,9 @@ npm test
 npm run check
 ```
 
-For theme layout checks, start `npm run demo` in another terminal, then run `npm run verify:themes`. This checks all twelve themes at five screen widths, paired card artwork, large speed values, and each column's pointer and keyboard resizing. It requires Chrome and uses only the fictional demo library. Set `DECK_PREVIEW_URL` for a different demo server address; screenshots and measurements are saved under `/tmp/deck-theme-review` by default (`SCREENSHOT_DIR` overrides this).
+For theme layout checks, start `npm run demo` in another terminal, then run `npm run verify:themes`. This checks all fifteen themes at five screen widths, paired card artwork, large speed values, and each column's pointer and keyboard resizing. Run `npm run verify:theme-menu` for category membership, keyboard navigation, sports selection, loaded artwork, and persistence at four widths. Both require Chrome and use only the fictional demo library. Set `DECK_PREVIEW_URL` for a different demo server address; layout screenshots and measurements are saved under `/tmp/deck-theme-review` by default (`SCREENSHOT_DIR` overrides this).
 
-After building the plugin, start `node server/hosted-layout-fixture.mjs` in another terminal and run `npm run verify:package-styles`. This compares all twelve themes on desktop and phone with the optional CSS resource registered before and after the self-contained style script. Artwork is stored once in that script; older hosts can still register the lighter CSS resource.
+After building the plugin, start `node server/hosted-layout-fixture.mjs` in another terminal and run `npm run verify:package-styles`. This compares all fifteen themes on desktop and phone with the optional CSS resource registered before and after the self-contained style script. Artwork is stored once in that script; older hosts can still register the lighter CSS resource.
 
 After building, run `node scripts/verify-torrent-controls.mjs` to check selected and bulk pause/resume, pending controls, and visible errors in both UI modes. Set `CHROME_PATH` to an installed Chrome executable if Playwright’s browser is unavailable.
 

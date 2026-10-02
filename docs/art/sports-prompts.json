@@ -1,0 +1,15 @@
+{
+  "tool": "Codex built-in image_gen",
+  "transparent_background": false,
+  "prompts": {
+    "yankees": "Create a premium cinematic background for a New York Yankees baseball dashboard. Wide landscape 16:9 composition, photorealistic empty baseball stadium at blue hour, viewpoint from high behind home plate, iconic white Yankee Stadium roof frieze, finely striped green field, dramatic bright floodlights and deep midnight navy sky, subtle silver haze, precise architectural detail, sophisticated restrained sports broadcast look. No people, no lettering, no logos, no watermark. Keep center and upper half dark and quiet for a dashboard overlay. Field and illuminated architecture mostly in the lower third. This is a background asset, not a UI mockup.",
+    "giants": "Create a premium cinematic background for a New York Giants football dashboard. Wide landscape 16:9 composition, photorealistic empty professional American football stadium at night, high viewpoint from the end zone, accurate crisp yard lines on the field in lower third, massive steel architecture and bowl seating, dramatic royal blue stadium lights with narrow red lighting accents, deep dark navy sky, subtle atmospheric haze, sophisticated sports broadcast photography. No people, no lettering, no numbers, no logos, no watermark. Keep center and upper half dark and quiet for dashboard overlay. Stadium illuminated structure and field mostly in lower third. Background asset not a UI mockup.",
+    "knicks": "Create a premium cinematic background for a New York Knicks basketball dashboard. Wide landscape 16:9 composition, photorealistic empty indoor professional basketball arena seen from high behind a baseline, polished maple hardwood court with blue painted key and restrained orange boundary, circular overhead arena light structure and steep seating, dramatic orange and electric blue lights around arena perimeter, dark navy atmosphere with subtle haze, sophisticated Madison Square Garden inspired sports photography. No people, no lettering, no logos, no watermark. Keep center and upper half dark and quiet for a dashboard overlay. Court occupies lower third. Background asset, not a UI mockup."
+  },
+  "files": {
+    "yankees": "src/assets/sports/yankees-stadium.webp",
+    "giants": "src/assets/sports/giants-stadium.webp",
+    "knicks": "src/assets/sports/knicks-stadium.webp"
+  },
+  "processing": "Proportional resize to 1600 pixels wide and WebP encoding at quality 85. No image edits. Logos are separately sourced SVG assets."
+}

@@ -7,11 +7,14 @@ const origin = process.env.DECK_PREVIEW_URL || 'http://127.0.0.1:8118';
 const health = await fetch(`${origin}/api/health`).then(response => response.json());
 if (health.mode !== 'demo') throw new Error('Theme previews require a demo server (npm run demo).');
 const destination = new URL('../src/assets/theme-previews/', import.meta.url);
+const requested = process.env.DECK_PREVIEW_THEMES?.split(',');
+if (requested?.some(id => !THEMES.some(([theme]) => theme === id))) throw new Error('Unknown preview theme.');
 await mkdir(destination, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 try {
   const encoder = await browser.newPage();
   for (const [theme] of THEMES) {
+    if (requested && !requested.includes(theme)) continue;
     const page = await browser.newPage({ viewport: { width: 1456, height: 900 }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
     await page.addInitScript(value => localStorage.setItem('deck-theme', value), theme);
     await page.goto(origin, { waitUntil: 'networkidle' });
