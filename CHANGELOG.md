@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.61
+
+- Make the New Year banner year-independent by displaying "HAPPY NEW YEAR" without a date, and refresh its theme preview.
+
 ## 1.0.60
 
 - Reduce the Independence Day table seal and fireworks opacity by 25%, including the seal's mobile styling.
