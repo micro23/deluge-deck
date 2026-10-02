@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.57
+
+- Remove the extra eagle from the Independence sidebar while keeping the bottom-center eagle.
+- Reduce Independence fireworks opacity to 20% and increase the central seal opacity by 10 percentage points on desktop and mobile.
+
 ## 1.0.56
 
 - Publish one source-only Python 3.14-built egg and its checksum instead of four equivalent builds.
