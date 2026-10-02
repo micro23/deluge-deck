@@ -28,3 +28,6 @@ Refresh only these previews with:
 ```sh
 DECK_PREVIEW_THEMES=yankees,giants,knicks node scripts/generate-theme-previews.mjs
 ```
+
+The expanded roster and added artwork sources are documented in
+[sports-selection.md](sports-selection.md).

@@ -30,11 +30,34 @@
 .theme-preview.yankees { background-image:url('./assets/theme-previews/yankees.webp'); }
 .theme-preview.giants { background-image:url('./assets/theme-previews/giants.webp'); }
 .theme-preview.knicks { background-image:url('./assets/theme-previews/knicks.webp'); }
+.theme-preview.dodgers { background-image:url('./assets/theme-previews/dodgers.webp'); }
+.theme-preview.red-sox { background-image:url('./assets/theme-previews/red-sox.webp'); }
+.theme-preview.blue-jays { background-image:url('./assets/theme-previews/blue-jays.webp'); }
+.theme-preview.cubs { background-image:url('./assets/theme-previews/cubs.webp'); }
+.theme-preview.lakers { background-image:url('./assets/theme-previews/lakers.webp'); }
+.theme-preview.warriors { background-image:url('./assets/theme-previews/warriors.webp'); }
+.theme-preview.bulls { background-image:url('./assets/theme-previews/bulls.webp'); }
+.theme-preview.cavaliers { background-image:url('./assets/theme-previews/cavaliers.webp'); }
+.theme-preview.heat { background-image:url('./assets/theme-previews/heat.webp'); }
+.theme-preview.cowboys { background-image:url('./assets/theme-previews/cowboys.webp'); }
+.theme-preview.eagles { background-image:url('./assets/theme-previews/eagles.webp'); }
+.theme-preview.patriots { background-image:url('./assets/theme-previews/patriots.webp'); }
+.theme-preview.chiefs { background-image:url('./assets/theme-previews/chiefs.webp'); }
+.theme-preview.steelers { background-image:url('./assets/theme-previews/steelers.webp'); }
+.theme-preview.rangers { background-image:url('./assets/theme-previews/rangers.webp'); }
+.theme-preview.blackhawks { background-image:url('./assets/theme-previews/blackhawks.webp'); }
+.theme-preview.penguins { background-image:url('./assets/theme-previews/penguins.webp'); }
+.theme-preview.bruins { background-image:url('./assets/theme-previews/bruins.webp'); }
+.theme-preview.maple-leafs { background-image:url('./assets/theme-previews/maple-leafs.webp'); }
+.theme-preview.canadiens { background-image:url('./assets/theme-previews/canadiens.webp'); }
 .theme-gallery-heading { position:sticky; top:-16px; z-index:2; margin:-4px -4px 0; padding:12px 6px; background:var(--surface); border-bottom:1px solid var(--line); }
 .theme-gallery-caption { font-family:system-ui,sans-serif; }
 .theme-category { grid-column:1/-1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
 .theme-category-heading { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; margin-top:8px; padding:7px 2px; border-bottom:1px solid var(--line); color:var(--text); font:700 12px/1.4 system-ui,sans-serif; }
 .theme-category-heading>span { color:var(--muted); font-size:10px; font-weight:500; }
+.theme-subcategory { grid-column:1/-1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.theme-sport-heading { grid-column:1/-1; display:flex; justify-content:space-between; padding:7px 2px 0; color:var(--muted); font:600 11px/1.4 system-ui,sans-serif; }
+.theme-sport-heading>span { font-size:10px; font-weight:500; }
 .connection-recovery { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding:14px 16px; border:1px solid var(--amber); border-radius:12px; color:var(--amber); background:var(--surface); }
 .connection-recovery>div { flex:1; min-width:0; }
 .connection-recovery strong { display:block; font-size:13px; }

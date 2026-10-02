@@ -85,6 +85,7 @@ import './themes/sizing.css';
 import './themes/terminal.css';
 // Independence owns its reference styling without changing shared geometry.
 import './themes/independence-reference.css';
+import './themes/sports-expansion.css';
 import './themes/sports.css';
 import { createPoller } from '../server/polling.mjs';
 
@@ -533,24 +534,29 @@ function ThemeMenu({ theme, setTheme }) {
               <div className="theme-category-heading" id={`theme-category-${category.id}`}>
                 <strong>{category.label}</strong><span aria-hidden="true">{category.themes.length}</span>
               </div>
-              {category.themes.map((id) => THEMES.find(([key]) => key === id)).map(([key, label, description]) => (
-                <button
-                  key={key}
-                  className={`theme-gallery-option ${theme === key ? 'active' : ''}`}
-                  onKeyDown={navigateMenu}
-                  onClick={() => {
-                    setTheme(key);
-                    setOpen(false);
-                    restoreTriggerFocus();
-                  }}
-                  role="menuitemradio"
-                  aria-checked={theme === key}
-                  aria-label={`${label}: ${description}`}
-                >
-                  <span className={`theme-preview ${key}`} aria-hidden="true" />
-                  <span className="theme-gallery-caption"><strong>{label}</strong><small>{description}</small></span>
-                  {theme === key && <Check size={14} />}
-                </button>
+              {(category.groups || [{ id: category.id, themes: category.themes }]).map((group) => (
+                <div key={group.id} className="theme-subcategory" role={category.groups ? 'group' : undefined} aria-labelledby={category.groups ? `theme-sport-${group.id}` : undefined}>
+                  {category.groups && <div className="theme-sport-heading" id={`theme-sport-${group.id}`}><strong>{group.label}</strong><span aria-hidden="true">{group.themes.length}</span></div>}
+                  {group.themes.map((id) => THEMES.find(([key]) => key === id)).map(([key, label, description]) => (
+                    <button
+                      key={key}
+                      className={`theme-gallery-option ${theme === key ? 'active' : ''}`}
+                      onKeyDown={navigateMenu}
+                      onClick={() => {
+                        setTheme(key);
+                        setOpen(false);
+                        restoreTriggerFocus();
+                      }}
+                      role="menuitemradio"
+                      aria-checked={theme === key}
+                      aria-label={`${label}: ${description}`}
+                    >
+                      <span className={`theme-preview ${key}`} aria-hidden="true" />
+                      <span className="theme-gallery-caption"><strong>{label}</strong><small>{description}</small></span>
+                      {theme === key && <Check size={14} />}
+                    </button>
+                  ))}
+                </div>
               ))}
             </div>
           ))}

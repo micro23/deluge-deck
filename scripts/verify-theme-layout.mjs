@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { THEMES } from '../src/app/themes.js';
+import { SPORTS_CLUBS } from '../src/app/sports-clubs.js';
 
 const origin = process.env.DECK_PREVIEW_URL || 'http://127.0.0.1:8118';
 assert.equal((await fetch(`${origin}/api/health`).then(r => r.json())).mode, 'demo', 'Use the fictional demo library');
@@ -22,18 +23,18 @@ try {
       await page.evaluate(() => document.fonts.ready);
       // Auto sizing runs after font loading and ResizeObserver delivery.
       await page.waitForTimeout(250);
-      const cards = await page.locator('.stat-card').evaluateAll(nodes => nodes.map(card => {
+      const cards = await page.locator('.stat-card').evaluateAll((nodes, isNewSports) => nodes.map(card => {
         const box = card.getBoundingClientRect();
         const text = card.children[1];
         const logos = [...card.querySelectorAll('.theme-detail')].map(n => n.getBoundingClientRect());
         return {width:box.width, textFits:[...text.children].every(el => {
           const r=el.getBoundingClientRect();
-          return !r.width || (r.left >= box.left && r.right <= box.right && el.scrollWidth <= el.clientWidth+1);
+          return !r.width || (r.left >= box.left && r.right <= box.right && el.scrollWidth <= el.clientWidth+1 && (!isNewSports || (r.top >= box.top + 3 && r.bottom <= box.bottom - 3)));
         }),
           seals:logos.length === 2 && logos.every(r => r.left >= box.left && r.right <= box.right && r.bottom <= box.bottom),
           matched:logos.length === 2 && Math.abs(logos[0].width-logos[1].width)<1,
           font:parseFloat(getComputedStyle(text.querySelector('span')).fontSize)};
-      }));
+      }), Boolean(SPORTS_CLUBS[theme]?.material));
       assert.ok(cards.every(c => c.textFits && c.seals && c.matched), `${theme} ${width}: ${JSON.stringify(cards)}`);
       if (width > 760) {
         for (const handle of await page.locator('.column-resize-handle').all()) {

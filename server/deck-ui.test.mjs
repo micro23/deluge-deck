@@ -5,20 +5,23 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { contrastRatio, themeAccentPairs, themePalettes } from './theme-contrast.mjs';
 import { THEMES, THEME_CATEGORIES } from '../src/app/themes.js';
+import { SPORTS_CLUBS, SPORTS_GROUPS } from '../src/app/sports-clubs.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = async () => {
-  const [main, api, themes] = await Promise.all([
+  const [main, api, themes, sports] = await Promise.all([
     readFile(path.join(root, 'src/main.jsx'), 'utf8'),
     readFile(path.join(root, 'src/app/api.js'), 'utf8'),
     readFile(path.join(root, 'src/app/themes.js'), 'utf8'),
+    readFile(path.join(root, 'src/app/sports-clubs.js'), 'utf8'),
   ]);
-  return `${main}\n${api}\n${themes}`;
+  return `${main}\n${api}\n${themes}\n${sports}`;
 };
 const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/styles.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/terminal.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/sports-expansion.css'), 'utf8'),
 ])).join('\n');
 
 test('theme categories cover every persistent theme once with stable sports identities', async () => {
@@ -26,11 +29,14 @@ test('theme categories cover every persistent theme once with stable sports iden
   const grouped = THEME_CATEGORIES.flatMap(({ themes }) => themes);
   assert.equal(new Set(grouped).size, grouped.length);
   assert.deepEqual([...grouped].sort(), THEMES.map(([id]) => id).sort());
-  assert.deepEqual(THEME_CATEGORIES.find(({ id }) => id === 'sports').themes, ['yankees', 'giants', 'knicks']);
+  assert.deepEqual(THEME_CATEGORIES.find(({ id }) => id === 'sports').themes, SPORTS_GROUPS.flatMap(group => group.themes));
+  assert.deepEqual(SPORTS_GROUPS.map(group => [group.label, group.themes.length]), [['Baseball', 5], ['Basketball', 6], ['Football', 6], ['Hockey', 6]]);
+  const required = { Baseball: ['yankees','dodgers','red-sox','blue-jays','cubs'], Basketball: ['knicks','lakers','warriors','bulls','cavaliers','heat'], Football: ['giants','cowboys','eagles','patriots','chiefs','steelers'], Hockey: ['rangers','blackhawks','penguins','bruins','maple-leafs','canadiens'] };
+  for (const [sport, teams] of Object.entries(required)) assert.deepEqual(SPORTS_GROUPS.find(group => group.label === sport).themes, teams);
   const ui = await source();
   assert.match(ui, /role="group" aria-labelledby=\{`theme-category-\$\{category.id\}`\}/);
   assert.match(ui, /querySelectorAll\(\s*'\[role="menuitemradio"\]'/);
-  const sports = await readFile(path.join(root, 'src/themes/sports.css'), 'utf8');
+  const sports = (await Promise.all(['sports.css','sports-expansion.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   assert.doesNotMatch(sports, /data-theme="(?:dark|light|ocean|forest|sunset|terminal|christmas|halloween|valentine|st-patricks|independence|new-year)"/);
   for (const team of THEME_CATEGORIES.find(({ id }) => id === 'sports').themes) {
     const logo = await readFile(path.join(root, `src/assets/sports/${team}-logo.svg`), 'utf8');
@@ -42,8 +48,8 @@ test('theme categories cover every persistent theme once with stable sports iden
 });
 
 test('sports card text meets AAA against the gradients and decorative stripes', async () => {
-  const css = await readFile(path.join(root, 'src/themes/sports.css'), 'utf8');
-  for (const team of ['yankees', 'giants', 'knicks']) {
+  const css = (await Promise.all(['sports.css','sports-expansion.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  for (const team of Object.keys(SPORTS_CLUBS)) {
     const declarations = css.match(new RegExp(`:root\\[data-theme="${team}"\\]\\s*\\{([^}]*)\\}`))[1];
     const variable = name => declarations.match(new RegExp(`--${name}:([^;]+);`))[1];
     const backgrounds = [...variable('club-card').matchAll(/#[a-f\d]{6}/gi)].map(([color]) => color);
@@ -78,7 +84,7 @@ test('remove choices are in-app and pass Deluge the selected remove_data boolean
 test('themes have persistent palette declarations and a desktop/mobile menu', async () => {
   const [ui, css] = await Promise.all([source(), themeStyles()]);
   for (const [name] of THEMES.filter(([name]) => name !== 'dark')) {
-    assert.match(ui, new RegExp(`'${name}'`));
+    assert.match(ui, new RegExp(`[\"']${name}[\"']`));
     assert.match(css, new RegExp(`data-theme=\\"${name}\\"`));
   }
   assert.match(ui, /localStorage\.setItem\('deck-theme', theme\)/);

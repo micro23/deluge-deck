@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.66
+
+- Expand Sports to 23 team themes, with Baseball, Basketball, Football, and Hockey subgroups; retain all 15 established themes and their styling.
+- Add Dodgers, Red Sox, Blue Jays, Cubs, Lakers, Warriors, Bulls, Cavaliers, Heat, Cowboys, Eagles, Patriots, Chiefs, Steelers, Rangers, Blackhawks, Penguins, Bruins, Maple Leafs, and Canadiens themes.
+- Give every added team its own generated stadium or arena backdrop, official local logo, team palette, and live telemetry card treatment. Add hockey rink decorations and ice-finished Rangers, Bruins, Toronto, and Montréal cards.
+- Add actual dashboard previews, responsive identity marks, contrast checks for all 35 palettes and 23 sports card treatments, and browser checks for grouped navigation, persistence, and packaged assets.
+- Keep the new themes' compact phone card labels and values centered with clear spacing inside their borders.
+- Document the social-audience snapshots used for team selection, the built-in artwork generation prompts, and official logo sources.
+- Rebuild the versioned WebUI resources and source-only release egg.
+
 ## 1.0.65
 
 - Organize the theme picker into Regular, Holiday, and Sports categories, preserving keyboard navigation and saved selections.

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { THEMES } from '../src/app/themes.js';
+import { SPORTS_CLUBS } from '../src/app/sports-clubs.js';
 
 const { version } = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
 const css = await readFile(new URL(`../plugin/deluge_deck/data/deluge-deck-${version}.css`, import.meta.url), 'utf8');
@@ -21,7 +22,7 @@ try {
       await page.goto(origin);
       await page.locator('.stat-card').first().waitFor();
       await page.evaluate(() => document.fonts.ready);
-      if (['yankees', 'giants', 'knicks'].includes(theme)) {
+      if (SPORTS_CLUBS[theme]) {
         const logo = page.locator(width > 760 ? '.sports-identity img' : '.sports-mobile-brand img');
         await logo.evaluate(image => image.decode());
         assert.ok(await logo.evaluate(image => image.naturalWidth > 0), `${theme} logo loads inside the hosted plugin`);

@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { THEMES, THEME_CATEGORIES } from '../src/app/themes.js';
+import { SPORTS_CLUBS, SPORTS_GROUPS } from '../src/app/sports-clubs.js';
+const ordered = THEME_CATEGORIES.flatMap(category => category.themes);
+const last = THEMES.find(([id]) => id === ordered.at(-1));
 
 const origin = process.env.DECK_PREVIEW_URL || 'http://127.0.0.1:8118';
 assert.equal((await fetch(`${origin}/api/health`).then(r => r.json())).mode, 'demo');
@@ -22,16 +25,17 @@ try {
     for (const category of THEME_CATEGORIES) {
       assert.equal(await page.getByRole('group', {name:category.label}).getByRole('menuitemradio').count(), category.themes.length);
     }
+    for (const group of SPORTS_GROUPS) assert.equal(await page.getByRole('group', {name:group.label, exact:true}).getByRole('menuitemradio').count(), group.themes.length);
     await page.keyboard.press('End');
-    assert.equal(await page.locator(':focus').getAttribute('aria-label'), `NY Knicks: ${THEMES.find(([id]) => id === 'knicks')[2]}`);
+    assert.equal(await page.locator(':focus').getAttribute('aria-label'), `${last[1]}: ${last[2]}`);
     await page.keyboard.press('ArrowRight');
     assert.match(await page.locator(':focus').getAttribute('aria-label'), /^Midnight:/);
     await page.keyboard.press('ArrowLeft');
-    assert.match(await page.locator(':focus').getAttribute('aria-label'), /^NY Knicks:/);
+    assert.equal(await page.locator(':focus').getAttribute('aria-label'), `${last[1]}: ${last[2]}`);
     await page.keyboard.press('Escape');
     assert.equal(await trigger.getAttribute('aria-expanded'), 'false');
     assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
-    for (const id of ['yankees', 'giants', 'knicks']) {
+    for (const id of Object.keys(SPORTS_CLUBS)) {
       await open();
       const [ , label ] = THEMES.find(([key]) => key === id);
       const item = page.getByRole('menuitemradio', {name:new RegExp(`^${label}:`)});

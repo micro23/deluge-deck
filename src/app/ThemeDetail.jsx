@@ -1,11 +1,14 @@
 import React from 'react';
+import { SPORTS_CLUBS } from './sports-clubs.js';
 
 // Decorative artwork only: adjacent values and sparklines remain real telemetry.
 export function ThemeDetail({ theme, side = 'right' }) {
   if (theme === 'independence') {
     return <span className={`theme-detail theme-detail-${side}`} aria-hidden="true" />;
   }
+  const sportKey = { Baseball: 'yankees', Basketball: 'knicks', Football: 'giants', Hockey: 'hockey' }[SPORTS_CLUBS[theme]?.sport];
   const art = {
+    hockey: <><rect x="12" y="25" width="96" height="70" rx="21" /><path d="M60 25v70M38 25v70m44-70v70" /><circle cx="60" cy="60" r="11" /><circle cx="27" cy="44" r="8" /><circle cx="27" cy="76" r="8" /><circle cx="93" cy="44" r="8" /><circle cx="93" cy="76" r="8" /></>,
     yankees: <><circle cx="60" cy="60" r="43" /><path d="M30 29c31 13 31 49 0 62m60-62c-31 13-31 49 0 62" /><path d="m31 35 8-5m-1 14 8-5m-4 15 8-3m-6 13 8-1m-8 12 8 2m-11 9 8 4m30-43-8-5m1 14-8-5m4 15-8-3m6 13-8-1m8 12-8 2m11 9-8 4" /></>,
     giants: <><path d="M17 98C12 45 44 13 102 18c5 57-27 90-85 80Z" /><path d="m32 87 55-55M46 59l15 15m-7-24 15 15m-6-24 15 15M24 63l33 33m6-72 33 33" /></>,
     knicks: <><circle cx="60" cy="60" r="43" /><path d="M17 60h86M60 17v86M29 30c31 15 31 45 0 60m62-60c-31 15-31 45 0 60" /></>,
@@ -21,6 +24,6 @@ export function ThemeDetail({ theme, side = 'right' }) {
     independence: <><path d="m60 19 10 27 29 1-23 18 8 28-24-16-24 16 8-28-23-18 29-1Z" /><circle cx="60" cy="60" r="49" strokeDasharray="2 6" /><path d="M10 106h100M19 113h82" /></>,
     'new-year': <><path d="M60 12v23m0 50v23M12 60h23m50 0h23M26 26l16 16m36 36 16 16M26 94l16-16m36-36 16-16M42 16l8 21m20 46 8 21M16 42l21 8m46 20 21 8M16 78l21-8m46-20 21-8M42 104l8-21m20-46 8-21" /><path d="m60 43 5 12 12 5-12 5-5 12-5-12-12-5 12-5Z" /></>,
     terminal: <><path d="M14 24h92v72H14zM14 39h92M25 30h2m6 0h2m6 0h2M28 53l11 9-11 9m21 0h22" /><path className="detail-light" d="M78 71h15" /></>,
-  }[theme];
+  }[sportKey || theme];
   return <svg className={`theme-detail theme-detail-${side}`} aria-hidden="true" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">{art}</svg>;
 }
