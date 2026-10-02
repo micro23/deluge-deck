@@ -155,7 +155,7 @@
   --core-icon-border:#d5b871a6;
   --core-icon-bg:linear-gradient(145deg,#c4a760,#856b34);
   --core-icon-shadow:#061e1580;
-  --core-table:linear-gradient(180deg,#fffef3fa 0%,#f7faecf3 52%,#eff3e3dc 100%),url('../assets/st-patricks-botanical-conservatory.jpg') center/cover;
+  --core-table:linear-gradient(180deg,#fffef3 0%,#f7faec 52%,#eff3e3 100%);
   --core-table-shadow:inset 0 1px 0 #fff,0 17px 31px #173b2869;
   --core-head:linear-gradient(180deg,#e7f1d6,#d2e2bb);
   --core-rail:linear-gradient(90deg,#e8f3dbef,#fffcefef 70%,#e6efdbef);

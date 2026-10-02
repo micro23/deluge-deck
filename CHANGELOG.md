@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.58
+
+- Remove the conservatory artwork from the St. Patrick's torrent table body for a cleaner, distraction-free list.
+
 ## 1.0.57
 
 - Remove the extra eagle from the Independence sidebar while keeping the bottom-center eagle.
