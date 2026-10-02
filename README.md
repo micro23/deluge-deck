@@ -1,9 +1,10 @@
 # Deluge Deck
 
-Just download the .egg in the release and add it via the ui to plugins. Make sure WEBUI is enabled! Once you have webui enabled and add this plugin it will appear on first refresh of the webui. 
+Just download the .egg in the release and add it via the ui to plugins. I was basing this off the webui plugin but currently it seems to work on it's own. You should not have to enable webui. 
 
 Please provide any feedback or requests to micro23@gmail.com
 
+SCREENSHOTS OF THEMES WILL BE OUTDATED BECAUSE I UPDATED THEM OFTEN. GIVE IT A TRY TO SEE THE LATEST VERSIONS. 
 
 <img width="1748" height="1130" alt="Screenshot 2026-10-01 at 11 05 25 AM" src="https://github.com/user-attachments/assets/9dfbb700-8923-445f-bf84-b558d5886583" />
 <img width="2273" height="1119" alt="Screenshot 2026-10-01 at 11 05 41 AM" src="https://github.com/user-attachments/assets/ac6cea12-184e-4061-82e9-7a0b96fe7023" />
