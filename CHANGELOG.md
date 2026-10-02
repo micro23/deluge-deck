@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.55
+
+- Replace Independence Day vector eagle decorations and fireworks with generated cinematic wildlife and realistic pyrotechnic artwork.
+- Add a sculpted bronze eagle medallion to the table backdrop and stat cards, and refine the ivory fabric card materials and framing.
+- Apply generated woven fabric shading to the accurate 13-stripe, 50-star progress flag while preserving its real download-progress clipping.
+- Make Independence flag progress meters taller on phones and retain shared sidebar geometry.
+- Save the built-in image-generation prompts in `docs/art/independence-prompts.json`.
+
 ## 1.0.54
 
 - Replace Python 3.9 CI builds with separate eggs for Python 3.11, 3.12, 3.13, and 3.14.

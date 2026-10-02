@@ -51,7 +51,7 @@
 :root[data-theme="independence"] .topbar :is(.global-trigger,.theme-trigger,.avatar,.mobile-preferences) { width:28px!important; min-width:28px!important; height:28px!important; border-radius:7px!important; }
 :root[data-theme="independence"] .table-shell thead th { height:32px!important; color:#193557!important; background:linear-gradient(180deg,#fff9e9,#e8e6dd)!important; border-bottom:2px solid #ad2d40!important; }
 :root[data-theme="independence"] .table-shell tbody td { height:40px!important; padding-top:0!important; padding-bottom:0!important; }
-:root[data-theme="independence"] .table-shell::after { background:url('../assets/independence-fireworks.svg') center 56%/100% 100% no-repeat; opacity:.4; mix-blend-mode:screen; }
+:root[data-theme="independence"] .table-shell::after { background:url('../assets/independence-fireworks-aaa.webp') center 56%/100% 100% no-repeat; opacity:.4; mix-blend-mode:screen; }
 :root[data-theme="independence"] .table-shell::after { z-index:0; }
 :root[data-theme="independence"] .table-shell>table { position:relative; z-index:1; }
 :root[data-theme="independence"] .table-shell tbody tr td { background:#0b1e35!important; }

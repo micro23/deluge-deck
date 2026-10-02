@@ -1,4 +1,4 @@
-/* Independence finishes retain the shared navigation geometry.
+/* Generated Independence artwork retains the shared navigation geometry.
    Artwork is local, static, and never captures input. */
 :root[data-theme="independence"] {
   --bg:#030d25; --surface:#07152e; --surface-2:#102447; --surface-3:#1d3555;
@@ -14,25 +14,40 @@
 :root[data-theme="independence"] body .workspace { padding:7px 10px 10px!important; }
 :root[data-theme="independence"] body .workspace .stats-grid .stat-card {
   height:108px!important; gap:1px!important; padding:6px 10px!important;
-  border:4px double #c8b7a2!important; border-radius:3px!important;
-  background:radial-gradient(ellipse at 20% 40%,#bb965325,transparent 50%),radial-gradient(ellipse at 80% 75%,#ad844326,transparent 50%),linear-gradient(110deg,#e8d7ad,#faf0d6 45%,#e9d8b1)!important;
-  box-shadow:inset 0 0 0 2px #8e2339,inset 0 0 22px #b7955755,0 0 0 1px #294a79!important;
+  border:1px solid #b59c78!important; border-radius:6px!important;
+  background:linear-gradient(110deg,#e8dcc9e8,#fff9eee6 45%,#e9dcc4e8),url('../assets/independence-fabric-aaa.webp') center/cover!important;
+  box-shadow:inset 0 1px #fffdf5,inset 0 -12px 24px #aa85551a,0 3px 12px #01081880!important;
 }
-:root[data-theme="independence"] body .workspace .stats-grid .stat-card::before { inset:5px; border:1px solid #253e6d; border-radius:0; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card::before { inset:5px; border:1px solid #8c70463d; border-radius:3px; }
 :root[data-theme="independence"] body .workspace .stats-grid .stat-card>.stat-icon { width:24px!important; height:22px!important; background:none!important; border:0!important; box-shadow:none!important; }
 :root[data-theme="independence"] body .workspace .stats-grid .stat-card>div:nth-child(2) { width:calc(100% - 72px)!important; }
 :root[data-theme="independence"] body .workspace .stats-grid .stat-card :is(span,strong,small) { color:#171d2d!important; }
 :root[data-theme="independence"] body .workspace .stats-grid .stat-card strong { font-size:20px!important; }
-:root[data-theme="independence"] body .stats-grid .stat-card>.theme-detail { color:#263d67!important; opacity:.2!important; width:32px!important; height:32px!important; top:35px!important; }
-:root[data-theme="independence"] body .stats-grid .stat-card>.stat-spark { margin-top:auto!important; height:13px!important; width:44%!important; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card>.theme-detail {
+  position:absolute!important; display:block!important; margin:0!important; padding:0!important;
+  background:url('../assets/independence-medallion-aaa.webp') center/contain no-repeat!important;
+  opacity:.34!important; width:36px!important; height:36px!important; top:35px!important;
+  filter:sepia(.15); pointer-events:none;
+}
+:root[data-theme="independence"] body .stats-grid .stat-card::after { content:none; }
+:root[data-theme="independence"] body .workspace .stats-grid .stat-card>.stat-spark { margin-top:auto!important; height:13px!important; width:44%!important; }
 :root[data-theme="independence"] body .table-shell {
   background:#040e28!important; border:1px solid #826271!important; border-radius:5px!important;
   box-shadow:inset 0 0 0 1px #223d67!important;
 }
-:root[data-theme="independence"] body .table-shell::after { background:url('../assets/independence-fireworks-extra.svg') center center/cover no-repeat,url('../assets/independence-celebration.svg') center center/cover no-repeat!important; opacity:1!important; mix-blend-mode:normal!important; }
+:root[data-theme="independence"] body .table-shell::after { background:linear-gradient(180deg,#030d25cc,transparent 35%),url('../assets/independence-fireworks-aaa.webp') center/100% 100% no-repeat!important; opacity:.82!important; mix-blend-mode:normal!important; }
+:root[data-theme="independence"] body .table-shell::before {
+  content:""!important; z-index:0; left:50%; top:57%; right:auto; bottom:auto;
+  width:min(34vw,390px); height:min(34vw,390px);
+  transform:translate(-50%,-50%);
+  background:url('../assets/independence-medallion-aaa.webp') center/contain no-repeat;
+  opacity:.38; pointer-events:none;
+}
+:root[data-theme="independence"] body .table-shell::after { z-index:-1; }
+:root[data-theme="independence"] body .table-shell { isolation:isolate; }
 :root[data-theme="independence"] body .table-shell thead th { height:29px!important; color:#f2e5d6!important; background:#06112b!important; border-bottom:1px solid #a4364b!important; }
-:root[data-theme="independence"] body .table-shell tbody td { height:29px!important; background:#082349b8!important; border-bottom:1px solid #ffffff0b!important; font-size:10px!important; }
-:root[data-theme="independence"] body .table-shell tbody tr:nth-child(even) td { background:#820d25a8!important; }
+:root[data-theme="independence"] body .table-shell tbody td { height:29px!important; background:#082349d9!important; border-bottom:1px solid #ffffff0b!important; font-size:10px!important; }
+:root[data-theme="independence"] body .table-shell tbody tr:nth-child(even) td { background:#53132be6!important; }
 :root[data-theme="independence"] body .table-shell tbody tr:hover td { background:#304b70ed!important; }
 :root[data-theme="independence"] body .table-shell tbody tr.selected td { background:#4a3b65ed!important; }
 :root[data-theme="independence"] body .torrent-name strong { font-size:11px!important; }
@@ -40,20 +55,27 @@
 .independence-flag { display:none; }
 :root[data-theme="independence"] body .progress-track {
   position:relative; height:22px!important; overflow:hidden;
-  border:1px solid #d3b5cb!important; border-radius:3px!important;
+  border:1px solid #bfa58a99!important; border-radius:3px!important;
   background:#122653!important;
 }
 :root[data-theme="independence"] body .progress-bar { display:none; }
 :root[data-theme="independence"] body .independence-flag {
   display:block; width:100%; height:100%;
 }
+:root[data-theme="independence"] body .progress-track::after {
+  content:""; position:absolute; inset:0;
+  background:url('../assets/independence-fabric-aaa.webp') center/100% 100% no-repeat;
+  clip-path:inset(0 calc(100% - var(--flag-progress,0%)) 0 0);
+  mix-blend-mode:multiply; opacity:.76; pointer-events:none;
+}
+:root[data-theme="independence"] body .progress-track { isolation:isolate; }
 :root[data-theme="independence"] body .deck-status-rail { position:relative; min-height:32px; border-radius:5px!important; border-color:#814354!important; background:#06122d!important; }
-:root[data-theme="independence"] body .deck-status-rail::after { content:""; position:absolute; left:50%; bottom:-3px; width:82px; height:70px; background:url('../assets/independence-eagle.svg') center/contain no-repeat; transform:translateX(-50%); pointer-events:none; }
+:root[data-theme="independence"] body .deck-status-rail::after { content:""; position:absolute; left:50%; bottom:-3px; width:105px; height:70px; background:url('../assets/independence-eagle-aaa.webp') center/contain no-repeat; transform:translateX(-50%); pointer-events:none; }
 :root[data-theme="independence"] body .session-quick-actions button { box-shadow:0 0 7px #ef52674d!important; }
 :root[data-theme="independence"] body .session-quick-actions button:nth-child(2) { background:linear-gradient(#17689e,#08416e)!important; box-shadow:0 0 7px #51b7ff55!important; }
 /* Colors only: expanded, collapsed, and drawer sizes come from shared rules. */
 :root[data-theme="independence"] body .sidebar {
-  background:linear-gradient(90deg,#09152c,#163768 50%,#07132c)!important;
+  background:radial-gradient(ellipse at 45% 0,#23426466,transparent 45%),linear-gradient(180deg,#0b1c36,#061126)!important;
   border-right:1px solid #a58e84!important;
 }
 :root[data-theme="independence"] body .sidebar::before {
@@ -61,28 +83,30 @@
   display:block;
   flex:none;
   align-self:flex-start;
-  width:78px;
+  width:102px;
   height:72px;
   margin:-8px 0 6px;
-  background:url('../assets/independence-eagle.svg') center/contain no-repeat;
+  background:url('../assets/independence-eagle-aaa.webp') center/contain no-repeat;
   pointer-events:none;
 }
 :root[data-theme="independence"] body .sidebar .nav-item svg {
-  color:#f4dfda; filter:drop-shadow(0 0 4px #e37a9b);
+  color:#f4dfda; filter:none;
 }
 :root[data-theme="independence"] body .sidebar .nav-item.active {
-  background:linear-gradient(90deg,#ac2948,#153668)!important;
+  background:linear-gradient(90deg,#913149aa,#173455cc)!important;
 }
 @media(max-width:760px) {
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card { height:112px!important; }
+  :root[data-theme="independence"] body .mobile-transfer .progress-track { height:14px!important; }
+  :root[data-theme="independence"] body .table-shell::before { width:210px; height:210px; top:65%; opacity:.2; }
   :root[data-theme="independence"] body .deck-status-rail::after { content:none; }
-  :root[data-theme="independence"] body .table-shell::after { background-size:auto 100%,auto 100%!important; }
+  :root[data-theme="independence"] body .table-shell::after { background-size:100% 100%,auto 100%!important; }
 }
 @media(max-width:760px) {
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card>div:nth-child(2) { width:100%!important; }
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card strong { font-size:clamp(14px,4.3vw,20px)!important; }
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card small { font-size:9px!important; }
-  :root[data-theme="independence"] body .stats-grid .stat-card>.theme-detail { top:8px!important; width:20px!important; height:20px!important; }
+  :root[data-theme="independence"] body .workspace .stats-grid .stat-card>.theme-detail { top:8px!important; width:20px!important; height:20px!important; }
 }
 @media(max-width:760px) {
   :root[data-theme="independence"] body .workspace .stats-grid .stat-card:nth-child(n) { height:108px!important; min-height:108px!important; flex-direction:column!important; justify-content:flex-start!important; gap:1px!important; padding:6px 7px!important; }

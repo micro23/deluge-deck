@@ -1388,7 +1388,7 @@ function Progress({ value = 0, state }) {
   const potionId = useId();
   return (
     <div className="progress-wrap">
-      <div className="progress-track">
+      <div className="progress-track" style={{ '--flag-progress': `${progress}%` }}>
         <div
           className={`progress-bar ${stateKey(state)}${progress >= 99.95 ? ' complete' : ''}`}
           style={{

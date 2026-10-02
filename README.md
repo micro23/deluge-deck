@@ -33,7 +33,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.54.
+Current release: 1.0.55.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -58,7 +58,7 @@ python -m pip install -r plugin/build-requirements.txt
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.54-py3.12.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Prefer an egg matching the Python major/minor used by your Deluge installation. CI builds eggs for Python 3.11–3.14; other environments can build locally using their Deluge Python interpreter. The egg contains Python source and UI assets, not a bundled Python interpreter.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.55-py3.12.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Prefer an egg matching the Python major/minor used by your Deluge installation. CI builds eggs for Python 3.11–3.14; other environments can build locally using their Deluge Python interpreter. The egg contains Python source and UI assets, not a bundled Python interpreter.
 
 ### Using port 8888 (plugin mode)
 

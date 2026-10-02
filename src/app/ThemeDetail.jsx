@@ -1,7 +1,10 @@
 import React from 'react';
 
-// Decorative SVG only: the adjacent values and sparklines remain real telemetry.
+// Decorative artwork only: adjacent values and sparklines remain real telemetry.
 export function ThemeDetail({ theme, side = 'right' }) {
+  if (theme === 'independence') {
+    return <span className={`theme-detail theme-detail-${side}`} aria-hidden="true" />;
+  }
   const art = {
     dark: <><circle cx="60" cy="60" r="44" /><circle cx="60" cy="60" r="30" /><circle cx="60" cy="60" r="15" /><path d="M60 7v18m0 70v18M7 60h18m70 0h18M29 29l62 62M29 91l62-62" /><path className="detail-sweep" d="M60 60V16a44 44 0 0 1 44 44Z" /><circle className="detail-light" cx="82" cy="38" r="3" /></>,
     light: <><path d="M18 24h84v72H18zM24 32h72M24 88h72M60 24v72" /><circle cx="60" cy="60" r="23" /><path d="m60 32 7 21 21 7-21 7-7 21-7-21-21-7 21-7Z" /><path d="M11 24v72m98-72v72M18 18h84M18 102h84" /><circle cx="60" cy="60" r="3" /></>,
