@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.60
+
+- Reduce the Independence Day table seal and fireworks opacity by 25%, including the seal's mobile styling.
+
 ## 1.0.59
 
 - Give Midnight, Paper, Ocean, Forest, Sunset, Christmas, Valentine's, and New Year opaque torrent table surfaces without background artwork or decorative overlays.
