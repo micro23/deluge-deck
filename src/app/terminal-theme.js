@@ -7,4 +7,4 @@ export const terminalColumnWidths = {
 };
 export const terminalColumnLabels = { name: 'Name', download: 'DL', upload: 'UL' };
 export const tableStorageKey = (theme, setting) =>
-  theme === 'terminal' ? `deck-terminal-column-${setting}` : `deck-column-${setting}`;
+  ['terminal', 'darkhand'].includes(theme) ? `deck-${theme}-column-${setting}` : `deck-column-${setting}`;

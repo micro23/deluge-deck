@@ -1,0 +1,96 @@
+/* Hand-directed Mets identity. Every rule is owned by this one theme. */
+:root[data-theme="mets"] {
+  color-scheme:dark;
+  --bg:#030914; --surface:#07162a; --surface-2:#0b203b; --surface-3:#102c4c;
+  --text:#fffaf4; --muted:#eee0d6; --muted-2:#dce3f0;
+  --cyan:#ffc38b; --accent-fg:#171008; --violet:#d8ddff; --amber:#ffe1aa;
+  --green:#b8efce; --danger:#ffc7cd; --line:#52739a; --line-strong:#92b2d9;
+  --club-primary:#002d72; --club-secondary:#ff5910; --club-edge:#ff913d;
+  --club-art:url('../assets/sports/mets-stadium.webp');
+  --club-pattern:repeating-linear-gradient(135deg,#cfdeff06 0 1px,transparent 1px 9px);
+  --club-card:linear-gradient(145deg,#143963,#07162f);
+  --club-card-ink:#fffaf4; --club-card-muted:#eee0d6;
+  --club-card-icon:#07182f; --club-card-line:#92b2d9;
+  --theme-radius:6px; --theme-control-radius:5px;
+}
+:root[data-theme="mets"] body .app-shell {
+  background:linear-gradient(180deg,#030b1df0 8%,#05132cb8 58%,#03112675),var(--club-art) center bottom/cover fixed!important;
+}
+:root[data-theme="mets"] body .sidebar {
+  background:linear-gradient(180deg,#061429 0%,#061429ee 40%,#0614296b 75%,#06142948),var(--club-art) 20% bottom/auto 68% no-repeat!important;
+  border-right:1px solid #ff913d!important;
+  box-shadow:inset -4px 0 0 #002d72;
+}
+:root[data-theme="mets"] .sports-identity-mets {
+  position:relative; gap:0; padding:10px 2px 20px;
+  border-bottom:3px double #ff913d;
+}
+:root[data-theme="mets"] .sports-identity-mets .sports-club-motto {
+  color:#ffd0a5; letter-spacing:.14em; margin-bottom:14px;
+}
+:root[data-theme="mets"] .mets-cap-stage { position:relative; display:grid; place-items:center; width:100%; height:105px; isolation:isolate; }
+:root[data-theme="mets"] .mets-cap-stage::before {
+  content:""; position:absolute; width:99px; height:99px; border-radius:50%;
+  border:1px solid #ff913d; background:radial-gradient(circle,#164988,#07182f 70%);
+  box-shadow:0 0 0 5px #001a42,0 0 0 6px #ff913d50,0 10px 24px #00000080;
+}
+:root[data-theme="mets"] .mets-cap-stage img { z-index:1; width:68px; height:84px; filter:drop-shadow(0 3px 2px #000000a0); }
+:root[data-theme="mets"] .mets-skyline { position:absolute; color:#ff913d; opacity:.24; width:100%; height:70px; bottom:0; }
+:root[data-theme="mets"] .sports-identity .mets-script {
+  margin:8px 0 0; padding-right:9px; color:#fff7ec; font:bold italic 55px/1.08 Georgia,serif;
+  letter-spacing:-.07em; -webkit-text-stroke:1px #ff913d;
+  text-shadow:2px 3px 0 #002d72,3px 4px 0 #ff5910,0 8px 16px #00000070;
+}
+:root[data-theme="mets"] .mets-identity-caption { margin-top:9px; color:var(--muted); font:700 8px/1.4 'DM Mono',monospace; letter-spacing:.18em; }
+:root[data-theme="mets"] .sidebar.collapsed .mets-cap-stage { height:66px; }
+:root[data-theme="mets"] .sidebar.collapsed .mets-cap-stage::before { width:54px; height:54px; }
+:root[data-theme="mets"] .sidebar.collapsed .mets-cap-stage img { width:38px; height:50px; }
+:root[data-theme="mets"] .sidebar.collapsed .mets-script { display:none; }
+:root[data-theme="mets"] .sidebar.collapsed .mets-skyline { display:none; }
+:root[data-theme="mets"] .mets-masthead {
+  position:relative; isolation:isolate; display:flex; align-items:center; justify-content:space-between; flex:none;
+  height:69px; padding:0 22px; margin:0 0 12px; overflow:hidden;
+  border:1px solid #92b2d9; border-bottom:3px solid #ff913d; border-radius:6px 6px 0 0;
+  background:linear-gradient(100deg,#002553,#052047 50%,#002553);
+  box-shadow:inset 0 1px 0 #ffffff26,0 7px 20px #00000050;
+}
+:root[data-theme="mets"] .mets-masthead>span { z-index:1; color:#ffd0a5; font:700 10px/1.4 'DM Mono',monospace; letter-spacing:.15em; }
+:root[data-theme="mets"] .mets-masthead>div { z-index:1; display:flex; align-items:center; gap:13px; }
+:root[data-theme="mets"] .mets-masthead small { color:#fffaf4; font:800 11px/1.4 Manrope,sans-serif; letter-spacing:.2em; }
+:root[data-theme="mets"] .mets-masthead strong { padding-right:8px; color:#fff7ec; font:bold italic 48px/1.1 Georgia,serif; letter-spacing:-.055em; -webkit-text-stroke:.8px #ff913d; text-shadow:2px 3px 0 #ff5910; }
+:root[data-theme="mets"] .mets-masthead .mets-skyline { z-index:0; width:52%; height:90px; left:24%; bottom:-24px; opacity:.14; }
+:root[data-theme="mets"] body .workspace .stats-grid .stat-card {
+  border:1px solid #92b2d9!important; border-top:1px solid #92b2d9!important; border-left:4px solid #ff913d!important;
+  border-radius:6px!important; box-shadow:inset 0 1px 0 #dbe8ff35,inset 0 -4px 0 #030d20,0 7px 18px #00000070!important;
+}
+:root[data-theme="mets"] body .workspace .stats-grid .stat-card:nth-child(even) { border-left-color:#589cff!important; }
+:root[data-theme="mets"] body .workspace .stats-grid .stat-card::before { inset:4px; border:1px solid #85b3ff29; border-radius:2px; }
+:root[data-theme="mets"] body .workspace .stats-grid .stat-card::after {
+  content:""; position:absolute; inset:auto 12px 0 12px; height:2px;
+  background:linear-gradient(90deg,transparent,#ff913d,transparent);
+}
+:root[data-theme="mets"] body .workspace .stats-grid .stat-card strong { font-family:'DM Mono',monospace; font-weight:700; letter-spacing:-.07em; }
+:root[data-theme="mets"] body .stats-grid .stat-card>.theme-detail { color:#ffc38b; opacity:.44; }
+:root[data-theme="mets"] body .stats-grid .stat-card>.stat-spark polyline { stroke:#ffc38b; }
+:root[data-theme="mets"] body .stats-grid .stat-card>.stat-spark polygon { fill:#ffc38b24; }
+:root[data-theme="mets"] body .table-shell { border-radius:6px!important; box-shadow:inset 0 3px 0 #ff913d,0 14px 32px #00000070!important; }
+:root[data-theme="mets"] body .table-shell thead th { border-bottom:2px solid #ff913d!important; background:#0c2545!important; }
+:root[data-theme="mets"] body .progress-bar { background:linear-gradient(90deg,#ff913d,#ffc38b)!important; box-shadow:inset 0 1px 0 #ffffff50; }
+:root[data-theme="mets"] body .progress-track { border-color:#92b2d9; border-radius:3px; }
+:root[data-theme="mets"] body .nav-item.active { box-shadow:inset 4px 0 #ff913d,0 5px 16px #00000030!important; }
+:root[data-theme="mets"] body .deck-status-rail { border-bottom:3px solid #ff913d!important; border-radius:6px!important; box-shadow:inset 0 2px 0 #002d72,0 6px 20px #00000050!important; }
+@media (max-width:1100px) and (min-width:761px) {
+  :root[data-theme="mets"] .mets-masthead { height:60px; padding:0 14px; }
+  :root[data-theme="mets"] .mets-masthead>span { font-size:8px; letter-spacing:.08em; }
+  :root[data-theme="mets"] .mets-masthead strong { font-size:40px; }
+}
+@media (max-width:760px) {
+  :root[data-theme="mets"] .mets-masthead { display:none; }
+  :root[data-theme="mets"] .sports-mobile-brand strong { font:bold italic 26px/1.1 Georgia,serif; color:#ffd0a5; letter-spacing:-.07em; }
+  :root[data-theme="mets"] body .workspace .stats-grid .stat-card:nth-child(n+3) { justify-content:center!important; }
+}
+@media (max-width:659px) {
+  :root[data-theme="mets"] body .workspace .stats-grid .stat-card:nth-child(n+3) { height:44px!important; min-height:44px!important; }
+  :root[data-theme="mets"] body .workspace .stats-grid .stat-card:nth-child(n+3)>div:nth-child(2) { flex-direction:column!important; flex-wrap:nowrap; gap:0!important; }
+  :root[data-theme="mets"] body .stats-grid .stat-card:nth-child(n+3)>.theme-detail { top:12px; }
+}

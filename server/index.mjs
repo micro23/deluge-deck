@@ -19,6 +19,7 @@ const UI_KEYS = [
   'is_auto_managed', 'sequential_download', 'prioritize_first_last', 'max_download_speed', 'max_upload_speed', 'distributed_copies',
 ];
 const ALLOWED_METHODS = new Set([
+  'delugedeck.get_speed_history',
   'auth.login', 'auth.check_session', 'auth.delete_session', 'web.connected', 'web.connect', 'web.disconnect',
   'web.update_ui', 'web.get_torrent_status', 'web.get_torrent_files', 'web.get_torrent_info',
   'web.add_torrents', 'web.download_torrent_from_url', 'core.add_torrent_magnet', 'core.add_torrent_url',

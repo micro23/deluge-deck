@@ -63,7 +63,10 @@ import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES } from './app/themes.js';
 import { SportsIdentity } from './app/SportsIdentity.jsx';
+import { MetsMasthead } from './app/MetsBrand.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
+import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
+import { DarkhandOverview, DarkhandSwitches, DarkhandDetails } from './app/Darkhand.jsx';
 import { ThemeDetail } from './app/ThemeDetail.jsx';
 import './styles.css';
 import './theme-gallery.css';
@@ -87,6 +90,8 @@ import './themes/terminal.css';
 import './themes/independence-reference.css';
 import './themes/sports-expansion.css';
 import './themes/sports.css';
+import './themes/darkhand.css';
+import './themes/mets.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -246,7 +251,7 @@ function TrackerFavicon({ host }) {
   const [candidateIndex, setCandidateIndex] = useState(0);
   useEffect(() => setCandidateIndex(0), [host]);
   const src = candidates[candidateIndex];
-  if (!src) return <span className="tracker-favicon-small tracker-favicon-fallback" aria-label={`${host} tracker icon`}><Network size={12} /></span>;
+  if (!src || document.documentElement.dataset.theme === 'darkhand') return <span className="tracker-favicon-small tracker-favicon-fallback" aria-label={`${host} tracker icon`}><Network size={12} /></span>;
   return (
     <img
       className="tracker-favicon-small tracker-favicon-controlled"
@@ -407,6 +412,7 @@ function Sidebar({
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
         <SportsIdentity theme={theme} />
+        {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg>DELUGE</div>}
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
         <div className="sidebar-command-row">
           <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
@@ -616,8 +622,9 @@ function usePopoverDismiss(open, setOpen, ref) {
     };
   }, [open, setOpen, ref]);
 }
-function useDialogDismiss(onClose, ref, blocked = false) {
+function useDialogDismiss(onClose, ref, blocked = false, enabled = true) {
   useEffect(() => {
+    if (!enabled) return;
     const dismiss = (event) => {
       const escape = event.type === 'keydown' && event.key === 'Escape';
       const outside =
@@ -635,7 +642,7 @@ function useDialogDismiss(onClose, ref, blocked = false) {
       document.removeEventListener('keydown', dismiss, true);
       document.removeEventListener('pointerdown', dismiss, true);
     };
-  }, [onClose, ref, blocked]);
+  }, [onClose, ref, blocked, enabled]);
 }
 function ensureViewportOverlayHost() {
   let overlay = document.getElementById('deluge-deck-viewport-overlay');
@@ -1400,7 +1407,7 @@ function Topbar({
     </>
   );
 }
-function Progress({ value = 0, state }) {
+function Progress({ value = 0, state, stateLabel = false }) {
   const progress = Math.max(0, Math.min(100, value));
   const potionId = useId();
   return (
@@ -1483,7 +1490,7 @@ function Progress({ value = 0, state }) {
           <path d="M7 20H139C152 20 152 8 143 8H135" fill="none" stroke="#ffffff" strokeOpacity=".35" strokeWidth="1.2" strokeLinecap="round" />
         </svg>
       </div>
-      <span>{Number(value).toFixed(value % 1 ? 1 : 0)}%</span>
+      <span>{stateLabel ? `${state} ` : ''}{Number(value).toFixed(stateLabel ? 2 : value % 1 ? 1 : 0)}%</span>
     </div>
   );
 }
@@ -2175,7 +2182,7 @@ const normalizeColumnWidths = (savedWidths, clampWidth = clampColumnWidth) =>
     }),
   );
 const hasCurrentTableLayout = (theme) =>
-  localStorage.getItem(theme === 'terminal' ? 'deck-terminal-table-layout-version' : 'deck-table-layout-version') === TABLE_LAYOUT_VERSION;
+  localStorage.getItem(['terminal', 'darkhand'].includes(theme) ? `deck-${theme}-table-layout-version` : 'deck-table-layout-version') === TABLE_LAYOUT_VERSION;
 const TABLE_COLUMN_LABELS = {
   name: 'Torrent',
   state: 'State',
@@ -2276,7 +2283,7 @@ function TorrentTable({
     : clampColumnWidth(key, width);
   const columnResizeStart = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
-    const scopedTheme = theme === 'terminal' || theme === 'valentine' || theme === 'halloween';
+    const scopedTheme = theme === 'terminal' || theme === 'valentine' || theme === 'halloween' || theme === 'darkhand';
     const visibilityKey = scopedTheme
       ? `deck-${theme}-column-visibility`
       : 'deck-column-visibility';
@@ -2286,7 +2293,7 @@ function TorrentTable({
         ? { progress: true, seedingTime: true }
         : theme === 'halloween'
           ? { progress: true, seedingTime: true }
-          : {};
+          : theme === 'darkhand' ? { state: false, progress: true, queue: true, ratio: false, seeds: false, peers: false, added: false, seedingTime: false, tracker: false } : {};
     if (!hasCurrentTableLayout(theme))
       return { ...DEFAULT_COLUMN_VISIBILITY, ...themeColumns };
     try {
@@ -2316,6 +2323,7 @@ function TorrentTable({
     }
   });
   const [columnOrder, setColumnOrder] = useState(() => {
+    if (theme === 'darkhand' && !localStorage.getItem(tableStorageKey(theme, 'order'))) return ['queue', 'name', 'size', 'progress', 'download', 'upload', 'eta', ...TABLE_COLUMN_ORDER.filter(key => !['queue', 'name', 'size', 'progress', 'download', 'upload', 'eta'].includes(key))];
     if (!hasCurrentTableLayout(theme)) return TABLE_COLUMN_ORDER;
     try {
       const stored = JSON.parse(
@@ -2335,7 +2343,7 @@ function TorrentTable({
   });
   useEffect(() => {
     localStorage.setItem(
-      theme === 'terminal' || theme === 'valentine' || theme === 'halloween'
+      theme === 'terminal' || theme === 'valentine' || theme === 'halloween' || theme === 'darkhand'
         ? `deck-${theme}-column-visibility`
         : 'deck-column-visibility',
       JSON.stringify(columnVisibility),
@@ -2348,7 +2356,7 @@ function TorrentTable({
     localStorage.setItem(tableStorageKey(theme, 'order'), JSON.stringify(columnOrder));
   }, [columnOrder, theme]);
   useEffect(() => {
-    localStorage.setItem(theme === 'terminal' ? 'deck-terminal-table-layout-version' : 'deck-table-layout-version', TABLE_LAYOUT_VERSION);
+    localStorage.setItem(['terminal', 'darkhand'].includes(theme) ? `deck-${theme}-table-layout-version` : 'deck-table-layout-version', TABLE_LAYOUT_VERSION);
   }, [theme]);
   useEffect(() => {
     const close = () => setColumnMenuOpen(false);
@@ -2529,7 +2537,7 @@ function TorrentTable({
     if (key === 'progress')
       return (
         <td key={key} data-column={key}>
-          <Progress value={torrent.progress} state={torrent.state} />
+          <Progress value={torrent.progress} state={torrent.state} stateLabel={theme === 'darkhand'} />
         </td>
       );
     if (key === 'size')
@@ -2673,7 +2681,9 @@ function TorrentTable({
                   className="sort-button"
                   onClick={() => toggleSort(TABLE_SORT_KEYS[key])}
                 >
-                  {theme === 'terminal' && terminalColumnLabels[key]
+                  {theme === 'darkhand' && ({ name: 'Name', download: 'Down speed', upload: 'Up speed', queue: '#' })[key]
+                    ? ({ name: 'Name', download: 'Down speed', upload: 'Up speed', queue: '#' })[key]
+                    : theme === 'terminal' && terminalColumnLabels[key]
                     ? terminalColumnLabels[key]
                     : key === 'download'
                     ? '↓ Download'
@@ -2996,12 +3006,13 @@ function InlineRename({ initialName, onSave, onCancel, busy = false }) {
     </span>
   );
 }
-function DetailDrawer({ torrent, onClose, onAction }) {
+function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs = false }) {
   useRestoreFocus();
   const drawerRef = useRef(null);
-  useFocusTrap(drawerRef);
-  useDialogDismiss(onClose, drawerRef);
+  useFocusTrap(drawerRef, !inline);
+  useDialogDismiss(onClose, drawerRef, false, !inline);
   const [tab, setTab] = useState('overview');
+  const tabs = networkTabs ? ['overview', 'files', 'peers', 'trackers'] : ['overview', 'files'];
   const [files, setFiles] = useState([]);
   const [fileState, setFileState] = useState({ status: 'idle', error: '' });
   const [fileAction, setFileAction] = useState({ index: null, error: '' });
@@ -3192,17 +3203,17 @@ function DetailDrawer({ torrent, onClose, onAction }) {
   }, [torrent.hash]);
   return (
     <>
-      <div
+      {!inline && <div
         className="detail-backdrop"
         onMouseDown={onClose}
         aria-hidden="true"
-      />
+      />}
       <aside
         ref={drawerRef}
-        className="detail-drawer"
+        className={`detail-drawer ${inline ? 'dh-inline-details' : ''}`}
         aria-label="Torrent details"
-        role="dialog"
-        aria-modal="true"
+        role={inline ? 'region' : 'dialog'}
+        aria-modal={inline ? undefined : true}
       >
         <div className="drawer-head">
           <h2>{torrent.name}</h2>
@@ -3215,7 +3226,7 @@ function DetailDrawer({ torrent, onClose, onAction }) {
           </button>
         </div>
         <div className="drawer-tabs" role="tablist">
-          {['overview', 'files'].map((name) => (
+          {tabs.map((name) => (
             <button
               key={name}
               id={`drawer-tab-${name}`}
@@ -3223,14 +3234,7 @@ function DetailDrawer({ torrent, onClose, onAction }) {
               onKeyDown={(event) => {
                 if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
                   event.preventDefault();
-                  const next =
-                    event.key === 'ArrowRight'
-                      ? name === 'overview'
-                        ? 'files'
-                        : 'overview'
-                      : name === 'files'
-                        ? 'overview'
-                        : 'files';
+                  const next = tabs[(tabs.indexOf(name) + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
                   setTab(next);
                   document.getElementById(`drawer-tab-${next}`)?.focus();
                 }
@@ -3374,6 +3378,8 @@ function DetailDrawer({ torrent, onClose, onAction }) {
               )}
             </section>
           </div>
+        ) : ['peers', 'trackers'].includes(tab) ? (
+          <TorrentNetworkDetails hash={torrent.hash} kind={tab} />
         ) : (
           <div
             className="drawer-content"
@@ -3993,8 +3999,9 @@ function useRestoreFocus() {
     };
   }, []);
 }
-function useFocusTrap(ref) {
+function useFocusTrap(ref, enabled = true) {
   useEffect(() => {
+    if (!enabled) return;
     const onKeyDown = (event) => {
       if (event.key !== 'Tab' || !ref.current) return;
       const focusable = [
@@ -4015,7 +4022,7 @@ function useFocusTrap(ref) {
     };
     document.addEventListener('keydown', onKeyDown, true);
     return () => document.removeEventListener('keydown', onKeyDown, true);
-  }, [ref]);
+  }, [ref, enabled]);
 }
 function PreferencesModal({
   refreshMs,
@@ -5372,6 +5379,13 @@ function App() {
   useEffect(() => {
     localStorage.setItem('deck-sidebar-collapsed', String(sidebarCollapsed));
   }, [sidebarCollapsed]);
+  const [darkhandLayout, setDarkhandLayout] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('deck-darkhand-layout') || '{}');
+      return { stats: saved.stats === 'above' ? 'above' : 'below', details: saved.details === 'right' ? 'right' : 'bottom', collapsed: saved.collapsed === true, height: Number.isFinite(saved.height) ? Math.max(140, Math.min(600, saved.height)) : 0, width: Number.isFinite(saved.width) ? Math.max(320, Math.min(720, saved.width)) : 400 };
+    } catch { return { stats: 'below', details: 'bottom', collapsed: false }; }
+  });
+  useEffect(() => { localStorage.setItem('deck-darkhand-layout', JSON.stringify(darkhandLayout)); }, [darkhandLayout]);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [connected, setConnected] = useState(false);
   const [sessionData, setSessionData] = useState(null);
@@ -5721,7 +5735,8 @@ function App() {
     );
   return (
     <div
-      className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
+      className={`app-shell ${theme === 'darkhand' ? `dh-dashboard dh-stats-${darkhandLayout.stats} dh-details-${darkhandLayout.details} ${darkhandLayout.collapsed ? 'dh-details-collapsed' : ''}` : ''} ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
+      style={theme === 'darkhand' ? { '--dh-details-width': `${darkhandLayout.width || 400}px`, '--dh-details-height': darkhandLayout.height ? `${darkhandLayout.height}px` : '30vh' } : undefined}
       onContextMenuCapture={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -5810,15 +5825,17 @@ function App() {
           <div className="page-heading">
             <div>
               <h1>
-                Your <em>torrent deck.</em>
+                {theme === 'darkhand' ? `${{ all: 'All Torrents', active: 'Active Torrents', downloading: 'Downloading', seeding: 'Seeding', paused: 'Paused' }[filter] || 'Torrents'}` : <>Your <em>torrent deck.</em></>}
               </h1>
-              <p>Drop a .torrent anywhere to open a review dialog.</p>
+              <p>{theme === 'darkhand' ? `Deluge / Torrents · ${filtered.length}` : 'Drop a .torrent anywhere to open a review dialog.'}</p>
             </div>
             <button className="primary-button" onClick={() => setAddFiles([])}>
               <Plus size={17} /> Add torrent
             </button>
           </div>
-          <div className="stats-grid">
+          {theme === 'mets' && <MetsMasthead />}
+          {theme === 'darkhand' && <DarkhandSwitches layout={darkhandLayout} setLayout={setDarkhandLayout} />}
+          {theme !== 'darkhand' && <div className="stats-grid">
             <Stat
               theme={theme}
               icon={Download}
@@ -5854,7 +5871,7 @@ function App() {
               tone="green"
               trend={telemetryHistory.library}
             />
-          </div>
+          </div>}
           <div className="library-mobile-controls">
             <div className="list-heading">
               <div>
@@ -5915,6 +5932,12 @@ function App() {
             loading={loading}
             onAdd={() => setAddFiles([])}
           />
+          {theme === 'darkhand' && <>
+            <DarkhandOverview stats={stats} counts={torrentCounts} onPreferences={openPreferences} fresh={!refreshError} sourceKey={sessionData?.host?.id || sessionData?.delugeUrl || 'default'} />
+            {!mobileLayout && <DarkhandDetails layout={darkhandLayout} setLayout={setDarkhandLayout}>
+              {detail ? <DetailDrawer key={detail.hash} torrent={detail} inline networkTabs onClose={() => setDetail(null)} onAction={action => act(action, [detail.hash])} /> : <div className="dh-details-empty">Select a torrent to view its details.</div>}
+            </DarkhandDetails>}
+          </>}
           <footer className="deck-status-rail" aria-label="Session status">
             <span
               className="status-free-space"
@@ -5925,7 +5948,7 @@ function App() {
               <strong>
                 {stats.free_space == null
                   ? 'Checking…'
-                  : formatBytes(stats.free_space)}
+                  : stats.free_space < 0 ? 'Folder not found' : formatBytes(stats.free_space)}
               </strong>
             </span>
             <span><i className={refreshError ? 'status-dot' : 'status-dot live'} />{refreshError ? 'Connection interrupted' : 'Live sync'}</span>
@@ -5958,10 +5981,11 @@ function App() {
           </div>
         </div>
       )}
-      {detail && mobileOverlay(
+      {detail && (theme !== 'darkhand' || mobileLayout) && mobileOverlay(
         <DetailDrawer
           key={detail.hash}
           torrent={detail}
+          networkTabs={theme === 'darkhand'}
           onClose={() => setDetail(null)}
           onAction={(action) => act(action, [detail.hash])}
         />

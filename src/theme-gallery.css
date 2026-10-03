@@ -29,6 +29,7 @@
 .theme-preview.terminal { background-image:url('./assets/theme-previews/terminal.webp'); }
 .theme-preview.yankees { background-image:url('./assets/theme-previews/yankees.webp'); }
 .theme-preview.giants { background-image:url('./assets/theme-previews/giants.webp'); }
+.theme-preview.mets { background-image:url('./assets/theme-previews/mets.webp'); }
 .theme-preview.knicks { background-image:url('./assets/theme-previews/knicks.webp'); }
 .theme-preview.dodgers { background-image:url('./assets/theme-previews/dodgers.webp'); }
 .theme-preview.red-sox { background-image:url('./assets/theme-previews/red-sox.webp'); }
@@ -66,3 +67,5 @@
 @media(max-width:480px) { .connection-recovery { flex-wrap:wrap; } .connection-recovery .secondary-button { margin-left:30px; } }
 @media(max-width:760px) { .theme-menu .theme-popover { position:fixed; top:66px; left:12px; right:12px; width:auto; max-height:calc(100dvh - 82px); padding:12px; } }
 @media(prefers-reduced-motion:no-preference) { .theme-gallery-option { transition:border-color .15s,background .15s; } }
+
+.theme-preview.darkhand { background-image:url("./assets/theme-previews/darkhand.webp"); }

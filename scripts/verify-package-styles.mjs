@@ -12,16 +12,20 @@ assert.ok(css.length < 1_000_000, 'Optional CSS must not duplicate the multi-meg
 const origin = process.env.DECK_HOSTED_FIXTURE_URL || 'http://127.0.0.1:8130';
 await fetch(`${origin}/json`, { method:'POST', body:JSON.stringify({method:'auth.login'}) });
 const browser = await chromium.launch({ channel:'chrome', headless:true });
+const requested = process.env.DECK_VERIFY_THEMES?.split(',');
+if (requested) assert.ok(requested.every(id => THEMES.some(([theme]) => theme === id)), 'Unknown verification theme');
 try {
   for (const [theme] of THEMES) {
+    if (requested && !requested.includes(theme)) continue;
     for (const width of [1456,390]) {
       const page = await browser.newPage({ viewport:{width,height:900}, reducedMotion:'reduce' });
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       await page.addInitScript(value => localStorage.setItem('deck-theme', value), theme);
       await page.goto(origin);
-      await page.locator('.stat-card').first().waitFor();
+      await page.locator(theme === 'darkhand' ? '.dh-stat' : '.stat-card').first().waitFor();
       await page.evaluate(() => document.fonts.ready);
+      if (theme === 'darkhand') assert.ok(await page.evaluate(async () => (await document.fonts.load('12px "Deck Inter"')).some(font => font.status === 'loaded')), 'Hosted Darkhand font must load from the egg');
       if (SPORTS_CLUBS[theme]) {
         const logo = page.locator(width > 760 ? '.sports-identity img' : '.sports-mobile-brand img');
         await logo.evaluate(image => image.decode());

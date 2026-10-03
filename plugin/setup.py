@@ -17,7 +17,7 @@ setup(
     url='https://github.com/deluge-torrent/deluge',
     license='GPL-3.0-or-later',
     packages=find_packages(),
-    package_data={'deluge_deck': ['data/*.js', 'data/*.css']},
+    package_data={'deluge_deck': ['data/*.js', 'data/*.css', 'data/*.txt']},
     include_package_data=True,
     entry_points={
         # Entry-point names must match the egg project name Deluge reports.

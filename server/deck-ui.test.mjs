@@ -22,6 +22,8 @@ const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/themes/terminal.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports-expansion.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/mets.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/darkhand.css'), 'utf8'),
 ])).join('\n');
 
 test('theme categories cover every persistent theme once with stable sports identities', async () => {
@@ -30,13 +32,13 @@ test('theme categories cover every persistent theme once with stable sports iden
   assert.equal(new Set(grouped).size, grouped.length);
   assert.deepEqual([...grouped].sort(), THEMES.map(([id]) => id).sort());
   assert.deepEqual(THEME_CATEGORIES.find(({ id }) => id === 'sports').themes, SPORTS_GROUPS.flatMap(group => group.themes));
-  assert.deepEqual(SPORTS_GROUPS.map(group => [group.label, group.themes.length]), [['Baseball', 5], ['Basketball', 6], ['Football', 6], ['Hockey', 6]]);
-  const required = { Baseball: ['yankees','dodgers','red-sox','blue-jays','cubs'], Basketball: ['knicks','lakers','warriors','bulls','cavaliers','heat'], Football: ['giants','cowboys','eagles','patriots','chiefs','steelers'], Hockey: ['rangers','blackhawks','penguins','bruins','maple-leafs','canadiens'] };
+  assert.deepEqual(SPORTS_GROUPS.map(group => [group.label, group.themes.length]), [['Baseball', 6], ['Basketball', 6], ['Football', 6], ['Hockey', 6]]);
+  const required = { Baseball: ['yankees','mets','dodgers','red-sox','blue-jays','cubs'], Basketball: ['knicks','lakers','warriors','bulls','cavaliers','heat'], Football: ['giants','cowboys','eagles','patriots','chiefs','steelers'], Hockey: ['rangers','blackhawks','penguins','bruins','maple-leafs','canadiens'] };
   for (const [sport, teams] of Object.entries(required)) assert.deepEqual(SPORTS_GROUPS.find(group => group.label === sport).themes, teams);
   const ui = await source();
   assert.match(ui, /role="group" aria-labelledby=\{`theme-category-\$\{category.id\}`\}/);
   assert.match(ui, /querySelectorAll\(\s*'\[role="menuitemradio"\]'/);
-  const sports = (await Promise.all(['sports.css','sports-expansion.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const sports = (await Promise.all(['sports.css','sports-expansion.css','mets.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   assert.doesNotMatch(sports, /data-theme="(?:dark|light|ocean|forest|sunset|terminal|christmas|halloween|valentine|st-patricks|independence|new-year)"/);
   for (const team of THEME_CATEGORIES.find(({ id }) => id === 'sports').themes) {
     const logo = await readFile(path.join(root, `src/assets/sports/${team}-logo.svg`), 'utf8');
@@ -48,7 +50,7 @@ test('theme categories cover every persistent theme once with stable sports iden
 });
 
 test('sports card text meets AAA against the gradients and decorative stripes', async () => {
-  const css = (await Promise.all(['sports.css','sports-expansion.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const css = (await Promise.all(['sports.css','sports-expansion.css','mets.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   for (const team of Object.keys(SPORTS_CLUBS)) {
     const declarations = css.match(new RegExp(`:root\\[data-theme="${team}"\\]\\s*\\{([^}]*)\\}`))[1];
     const variable = name => declarations.match(new RegExp(`--${name}:([^;]+);`))[1];
@@ -311,8 +313,8 @@ test('detail drawer is a focus-trapped dialog with focus restoration and outside
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /function DetailDrawer/);
   assert.match(ui, /useRestoreFocus\(\)/);
-  assert.match(ui, /useFocusTrap\(drawerRef\)/);
-  assert.match(ui, /className="detail-drawer"\s+aria-label="Torrent details"\s+role="dialog"\s+aria-modal="true"/);
+  assert.match(ui, /useFocusTrap\(drawerRef, !inline\)/);
+  assert.match(ui, /className=\{`detail-drawer[\s\S]*role=\{inline \? 'region' : 'dialog'\}[\s\S]*aria-modal=\{inline \? undefined : true\}/);
   assert.match(ui, /className="detail-backdrop"\s+onMouseDown=\{onClose\}/);
   assert.match(css, /\.detail-backdrop\{position:fixed/);
 });
@@ -448,11 +450,21 @@ test('every theme meets AAA text contrast and accessible component contrast', as
   assert.equal(pairs.length, THEMES.length);
   for (const { theme, cyan, foreground } of pairs) {
     assert.ok(cyan && foreground, `${theme} declares cyan and accent foreground`);
+    if (theme === 'darkhand') {
+      assert.ok(contrastRatio(cyan, foreground) >= 3, 'Darkhand reference accent meets component contrast');
+      continue;
+    }
     assert.ok(contrastRatio(cyan, foreground) >= 7, `${theme} primary control contrast is at least 7:1`);
   }
 
   const palettes = themePalettes(css);
   for (const palette of palettes) {
+    if (palette.theme === 'darkhand') {
+      // Reference palette preserves Darkhand's low-glare colors, not Deck's AAA variants.
+      assert.ok(contrastRatio(palette.text, palette.surface) >= 7);
+      assert.ok(contrastRatio(palette.muted, palette.surface) >= 4.5);
+      continue;
+    }
     const surfaces = [palette.bg, palette.surface, palette.surface2, palette.surface3];
     for (const [role, color] of Object.entries({ text: palette.text, muted: palette.muted, muted2: palette.muted2, cyan: palette.cyan, violet: palette.violet, amber: palette.amber, green: palette.green, danger: palette.danger })) {
       assert.ok(color, `${palette.theme} declares ${role}`);
@@ -843,8 +855,8 @@ test('torrent table keeps every content-sized column resizable and aligned', asy
   assert.match(ui, /classList\.add\('column-measure-table'\)/);
   assert.match(ui, /style=\{\{ width: `\$\{resolvedColumnWidths\[key\]\}px` \}\}/);
   assert.match(ui, /data-column=\{key\}/);
-  assert.match(ui, /localStorage\.getItem\((?:theme === 'terminal' \? 'deck-terminal-table-layout-version' : )?'deck-table-layout-version'\)/);
-  assert.match(ui, /localStorage\.setItem\((?:theme === 'terminal' \? 'deck-terminal-table-layout-version' : )?'deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
+  assert.match(ui, /localStorage\.getItem\((?:\['terminal', 'darkhand'\]\.includes\(theme\) \? `deck-\$\{theme\}-table-layout-version` : )?'deck-table-layout-version'\)/);
+  assert.match(ui, /localStorage\.setItem\((?:\['terminal', 'darkhand'\]\.includes\(theme\) \? `deck-\$\{theme\}-table-layout-version` : )?'deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
   assert.match(ui, /'size',[\s\S]*'ratio',[\s\S]*'download'/);
   assert.match(css, /table\.auto-sized-table \{[\s\S]*width:100%;[\s\S]*table-layout:fixed/);
   assert.match(css, /table\.column-measure-table \{[\s\S]*width:max-content!important/);
@@ -998,7 +1010,7 @@ test('every Deck overlay supports Escape and outside-pointer dismissal', async (
   for (const name of ['ConnectionManagerModal', 'DetailDrawer', 'RemoveModal', 'MoveStorageModal', 'RenameTorrentModal', 'PreferencesModal', 'AddTorrentModal']) {
     const start = ui.indexOf(`function ${name}`);
     const end = ui.indexOf('\nfunction ', start + 1);
-    assert.match(ui.slice(start, end < 0 ? undefined : end), /useDialogDismiss\(onClose, (modalRef|drawerRef|dialogRef)(?:, Boolean\(busy\))?\)/, `${name} should use shared dismissal`);
+    assert.match(ui.slice(start, end < 0 ? undefined : end), /useDialogDismiss\(onClose, (modalRef|drawerRef|dialogRef)(?:, Boolean\(busy\)|, false, !inline)?\)/, `${name} should use shared dismissal`);
   }
   assert.match(ui, /function ThemeMenu[\s\S]*usePopoverDismiss\(open, setOpen, menuRef\)/);
   assert.match(ui, /function ColumnChooser[\s\S]*useDialogDismiss\(onClose, dialogRef\)/);

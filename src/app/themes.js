@@ -2,6 +2,7 @@ import { SPORTS_CLUBS, SPORTS_GROUPS } from './sports-clubs.js';
 
 export const THEMES = [
   ['dark', 'Midnight', 'Ink black, glacier cyan, and cool moonlight.', '🌙'],
+  ['darkhand', 'Darkhand', 'Low-glare charcoal cards, Deluge blue, and live transfer history.', '💧'],
   ['light', 'Paper', 'Crisp white, slate ink, and editorial teal.', '📝'],
   ['ocean', 'Ocean', 'Abyssal navy, clear aqua, and sea-glass light.', '🌊'],
   ['forest', 'Forest', 'Pine ink, moss layers, and warm parchment.', '🌲'],
@@ -17,7 +18,7 @@ export const THEMES = [
 ];
 
 export const THEME_CATEGORIES = [
-  { id: 'regular', label: 'Regular themes', themes: ['dark', 'light', 'ocean', 'forest', 'sunset', 'terminal'] },
+  { id: 'regular', label: 'Regular themes', themes: ['dark', 'darkhand', 'light', 'ocean', 'forest', 'sunset', 'terminal'] },
   { id: 'holiday', label: 'Holiday themes', themes: ['christmas', 'halloween', 'valentine', 'st-patricks', 'independence', 'new-year'] },
   { id: 'sports', label: 'Sports themes', themes: SPORTS_GROUPS.flatMap(group => group.themes), groups: SPORTS_GROUPS },
 ];

@@ -10,8 +10,11 @@ const output = process.env.SCREENSHOT_DIR || '/tmp/deck-theme-review';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel:'chrome', headless:true });
 const results = [];
+const requested = process.env.DECK_VERIFY_THEMES?.split(',');
+if (requested) assert.ok(requested.every(id => THEMES.some(([theme]) => theme === id)), 'Unknown verification theme');
 try {
   for (const [theme] of THEMES) {
+    if (requested && !requested.includes(theme)) continue;
     const page = await browser.newPage({ reducedMotion:'reduce' });
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
@@ -19,10 +22,23 @@ try {
     for (const [width,height] of [[1456,900],[1200,900],[820,1000],[390,844],[320,740]]) {
       await page.setViewportSize({width,height});
       await page.goto(origin);
-      await page.waitForFunction(() => document.querySelector('.stat-card strong')?.textContent !== '0');
+      await page.locator(theme === 'darkhand' ? '.dh-stat strong' : '.stat-card strong').first().waitFor();
+      await page.waitForFunction(selector => document.querySelector(selector)?.textContent !== '0', theme === 'darkhand' ? '.dh-stat strong' : '.stat-card strong');
       await page.evaluate(() => document.fonts.ready);
       // Auto sizing runs after font loading and ResizeObserver delivery.
       await page.waitForTimeout(250);
+      if (theme === 'mets') {
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Mets layout fits the viewport');
+        const masthead = page.locator('.mets-masthead');
+        assert.equal(await masthead.isVisible(), width > 760);
+        if (width > 760) assert.ok(await masthead.evaluate(el => {
+          const box = el.getBoundingClientRect();
+          return [...el.children].filter(child => child.tagName !== 'svg').every(child => {
+            const rect = child.getBoundingClientRect();
+            return rect.left >= box.left && rect.right <= box.right && rect.top >= box.top && rect.bottom <= box.bottom;
+          });
+        }), 'Mets masthead text fits without clipping');
+      }
       const cards = await page.locator('.stat-card').evaluateAll((nodes, isNewSports) => nodes.map(card => {
         const box = card.getBoundingClientRect();
         const text = card.children[1];
@@ -35,6 +51,10 @@ try {
           matched:logos.length === 2 && Math.abs(logos[0].width-logos[1].width)<1,
           font:parseFloat(getComputedStyle(text.querySelector('span')).fontSize)};
       }), Boolean(SPORTS_CLUBS[theme]?.material));
+      if (theme === 'darkhand') {
+        assert.equal(await page.locator('.dh-stat').count(), 6);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+      }
       assert.ok(cards.every(c => c.textFits && c.seals && c.matched), `${theme} ${width}: ${JSON.stringify(cards)}`);
       if (width > 760) {
         for (const handle of await page.locator('.column-resize-handle').all()) {

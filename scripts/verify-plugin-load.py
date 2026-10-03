@@ -35,6 +35,8 @@ def main():
         os.environ['PYTHON_EGG_CACHE'] = cache
         import pkg_resources
         import deluge.component as component
+        import deluge.configmanager
+        deluge.configmanager.set_config_dir(cache)
 
         # These are the discovery settings used by Deluge 2's plugin manager.
         environment = pkg_resources.Environment(
@@ -55,7 +57,15 @@ def main():
                 self.objects = {name: value for name, value in self.objects.items()
                                 if value is not obj}
 
-        # The plugin only needs these two services during construction.
+        class SessionSource(component.Component):
+            def __init__(self):
+                super().__init__('Core')
+
+            def get_session_status(self, keys):
+                return {'payload_download_rate': 12345, 'payload_upload_rate': 6789}
+
+        session_source = SessionSource()
+        # Isolated registrars and telemetry source avoid a real daemon.
         rpc = Registrar('RPCServer')
         json_rpc = Registrar('JSON')
         groups = ['core', 'gtk3ui', 'gtkui', 'webui', 'web']
@@ -65,6 +75,12 @@ def main():
             instance = wrapper('DelugeDeck')
             assert instance.plugin.__class__.__module__.startswith('deluge_deck.')
             instance.enable()
+            if group == 'core':
+                instance.plugin._sample()
+                history = instance.plugin.get_speed_history(300000, 600)
+                assert history['samples'][-1][1:] == [12345, 6789]
+                assert Path(instance.plugin.history_path).parent == Path(cache)
+                assert getattr(instance.plugin.get_speed_history, '_rpcserver_export', False)
             if group in ('webui', 'web'):
                 resources = instance.plugin.scripts + instance.plugin.stylesheets
                 assert len(resources) == 4
@@ -78,6 +94,7 @@ def main():
             del instance
             gc.collect()
         # Keep registrars alive until all plugin destructors have run.
+        component.deregister(session_source)
         component.deregister(rpc)
         component.deregister(json_rpc)
     print(f'{egg_path.name}: all five entry points and WebUI resources loaded '

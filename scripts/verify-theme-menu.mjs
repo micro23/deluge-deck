@@ -4,6 +4,8 @@ import { THEMES, THEME_CATEGORIES } from '../src/app/themes.js';
 import { SPORTS_CLUBS, SPORTS_GROUPS } from '../src/app/sports-clubs.js';
 const ordered = THEME_CATEGORIES.flatMap(category => category.themes);
 const last = THEMES.find(([id]) => id === ordered.at(-1));
+const requested = process.env.DECK_VERIFY_THEMES?.split(',');
+if (requested) assert.ok(requested.every(id => THEMES.some(([theme]) => theme === id)), 'Unknown verification theme');
 
 const origin = process.env.DECK_PREVIEW_URL || 'http://127.0.0.1:8118';
 assert.equal((await fetch(`${origin}/api/health`).then(r => r.json())).mode, 'demo');
@@ -35,7 +37,8 @@ try {
     await page.keyboard.press('Escape');
     assert.equal(await trigger.getAttribute('aria-expanded'), 'false');
     assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
-    for (const id of Object.keys(SPORTS_CLUBS)) {
+    for (const id of requested || Object.keys(SPORTS_CLUBS)) {
+      if (requested && !requested.includes(id)) continue;
       await open();
       const [ , label ] = THEMES.find(([key]) => key === id);
       const item = page.getByRole('menuitemradio', {name:new RegExp(`^${label}:`)});
@@ -49,9 +52,9 @@ try {
       assert.equal(await page.evaluate(() => localStorage.getItem('deck-theme')), id);
       await page.reload({waitUntil:'networkidle'});
       assert.equal(await page.locator('html').getAttribute('data-theme'), id);
-      if (width > 760) {
+      if (SPORTS_CLUBS[id] && width > 760) {
         assert.equal(await page.locator('.sports-identity img').evaluate(el => el.complete && el.naturalWidth > 0), true);
-      } else {
+      } else if (SPORTS_CLUBS[id]) {
         assert.equal(await page.locator('.sports-mobile-brand img').evaluate(el => el.complete && el.naturalWidth > 0), true);
       }
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));

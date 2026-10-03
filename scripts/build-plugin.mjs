@@ -8,6 +8,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
 const pluginRoot = path.join(root, 'plugin');
 const dataDir = path.join(pluginRoot, 'deluge_deck', 'data');
+for (const name of ['LICENSE-Inter.txt', 'LICENSE-JetBrainsMono.txt']) {
+  mkdirSync(dataDir, { recursive: true });
+  copyFileSync(path.join(root, 'src/assets/fonts/darkhand', name), path.join(dataDir, name));
+}
 const builtAssets = path.join(root, 'dist', 'assets');
 mkdirSync(dataDir, { recursive: true });
 // A Deluge egg only needs the assets for the release it contains. Removing
@@ -32,12 +36,15 @@ const cssAsset = findAsset('.css');
 const css = readFileSync(cssAsset, 'utf8');
 const embeddedAssets = new Map();
 const assetDeclarations = [];
-const cssWithAssets = css.replace(/url\((['"]?)([^)'"?#]+\.(?:png|jpe?g|webp|svg))\1\)/g, (match, quote, assetPath) => {
+const cssWithAssets = css.replace(/url\((['"]?)([^)'"?#]+\.(?:png|jpe?g|webp|svg|woff2))\1\)/g, (match, quote, assetPath) => {
   const asset = path.join(builtAssets, path.basename(assetPath));
   if (!readdirSync(builtAssets).includes(path.basename(assetPath))) return match;
+  // Font-face descriptors cannot resolve custom properties. Keep font data
+  // directly in src; only artwork uses shared CSS variables.
+  if (path.extname(asset) === '.woff2') return `url("data:font/woff2;base64,${readFileSync(asset).toString('base64')}")`;
   if (embeddedAssets.has(assetPath)) return `var(${embeddedAssets.get(assetPath)})`;
   const extension = path.extname(asset).toLowerCase();
-  const mime = extension === '.png' ? 'image/png' : extension === '.webp' ? 'image/webp' : extension === '.svg' ? 'image/svg+xml' : 'image/jpeg';
+  const mime = extension === '.woff2' ? 'font/woff2' : extension === '.png' ? 'image/png' : extension === '.webp' ? 'image/webp' : extension === '.svg' ? 'image/svg+xml' : 'image/jpeg';
   const variable = `--deluge-deck-art-${embeddedAssets.size}`;
   embeddedAssets.set(assetPath, variable);
   assetDeclarations.push(`${variable}:url("data:${mime};base64,${readFileSync(asset).toString('base64')}")`);

@@ -309,6 +309,13 @@ export const SPORTS_CLUBS = {
     "secondary": "#192168",
     "accent": "#ffc6ce",
     "material": "ice"
+  },
+  "mets": {
+    "name": "New York Mets", "short": "Mets", "city": "Queens, New York", "sport": "Baseball",
+    "motto": "QUEENS · NEW YORK", "label": "NY Mets",
+    "description": "Queens after dark. Citi Field brick, cobalt enamel, and Mets orange.",
+    "logoSource": "https://www.mlbstatic.com/team-logos/121.svg",
+    "material": "bespoke"
   }
 };
 
@@ -318,6 +325,7 @@ export const SPORTS_GROUPS = [
     "label": "Baseball",
     "themes": [
       "yankees",
+      "mets",
       "dodgers",
       "red-sox",
       "blue-jays",
