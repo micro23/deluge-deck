@@ -63,3 +63,7 @@ Logo files are `src/assets/sports/<team-id>-logo.svg`; venue artwork is
 the local server when selecting a theme. Baseball seams, football laces,
 basketball seams, and hockey rink markings are code-native SVG decorations.
 The telemetry cards retain real session values and sparklines.
+
+## User-requested addition
+
+Version 1.0.67 adds the New York Mets at the user’s explicit request, independently of the popularity ranking. The gallery now contains 24 sports teams and 36 themes overall; Baseball has six teams. The Mets are hand-directed in `src/themes/mets.css` instead of generated from the shared palette template. See [Mets artwork and prompt](mets-sources.md).

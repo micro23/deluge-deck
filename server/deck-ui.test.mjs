@@ -22,6 +22,7 @@ const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/themes/terminal.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports-expansion.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/mets.css'), 'utf8'),
 ])).join('\n');
 
 test('theme categories cover every persistent theme once with stable sports identities', async () => {
@@ -30,13 +31,13 @@ test('theme categories cover every persistent theme once with stable sports iden
   assert.equal(new Set(grouped).size, grouped.length);
   assert.deepEqual([...grouped].sort(), THEMES.map(([id]) => id).sort());
   assert.deepEqual(THEME_CATEGORIES.find(({ id }) => id === 'sports').themes, SPORTS_GROUPS.flatMap(group => group.themes));
-  assert.deepEqual(SPORTS_GROUPS.map(group => [group.label, group.themes.length]), [['Baseball', 5], ['Basketball', 6], ['Football', 6], ['Hockey', 6]]);
-  const required = { Baseball: ['yankees','dodgers','red-sox','blue-jays','cubs'], Basketball: ['knicks','lakers','warriors','bulls','cavaliers','heat'], Football: ['giants','cowboys','eagles','patriots','chiefs','steelers'], Hockey: ['rangers','blackhawks','penguins','bruins','maple-leafs','canadiens'] };
+  assert.deepEqual(SPORTS_GROUPS.map(group => [group.label, group.themes.length]), [['Baseball', 6], ['Basketball', 6], ['Football', 6], ['Hockey', 6]]);
+  const required = { Baseball: ['yankees','mets','dodgers','red-sox','blue-jays','cubs'], Basketball: ['knicks','lakers','warriors','bulls','cavaliers','heat'], Football: ['giants','cowboys','eagles','patriots','chiefs','steelers'], Hockey: ['rangers','blackhawks','penguins','bruins','maple-leafs','canadiens'] };
   for (const [sport, teams] of Object.entries(required)) assert.deepEqual(SPORTS_GROUPS.find(group => group.label === sport).themes, teams);
   const ui = await source();
   assert.match(ui, /role="group" aria-labelledby=\{`theme-category-\$\{category.id\}`\}/);
   assert.match(ui, /querySelectorAll\(\s*'\[role="menuitemradio"\]'/);
-  const sports = (await Promise.all(['sports.css','sports-expansion.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const sports = (await Promise.all(['sports.css','sports-expansion.css','mets.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   assert.doesNotMatch(sports, /data-theme="(?:dark|light|ocean|forest|sunset|terminal|christmas|halloween|valentine|st-patricks|independence|new-year)"/);
   for (const team of THEME_CATEGORIES.find(({ id }) => id === 'sports').themes) {
     const logo = await readFile(path.join(root, `src/assets/sports/${team}-logo.svg`), 'utf8');
@@ -48,7 +49,7 @@ test('theme categories cover every persistent theme once with stable sports iden
 });
 
 test('sports card text meets AAA against the gradients and decorative stripes', async () => {
-  const css = (await Promise.all(['sports.css','sports-expansion.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const css = (await Promise.all(['sports.css','sports-expansion.css','mets.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   for (const team of Object.keys(SPORTS_CLUBS)) {
     const declarations = css.match(new RegExp(`:root\\[data-theme="${team}"\\]\\s*\\{([^}]*)\\}`))[1];
     const variable = name => declarations.match(new RegExp(`--${name}:([^;]+);`))[1];

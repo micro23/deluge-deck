@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.67
+
+- Add a bespoke New York Mets theme under Baseball, bringing Sports to 24 teams and the gallery to 36 themes.
+- Create a Mets-only Queens skyline masthead, illuminated cap badge, orange-trimmed cobalt enamel cards, and skyline/Home Run Apple decorations instead of the shared baseball artwork.
+- Add a separately generated Citi Field exterior illustration with the rotunda, plaza reflections, and Home Run Apple; retain a clean, opaque torrent list.
+- Add desktop and phone branding, a real demo preview, masthead clipping checks, and focused theme verification; preserve all existing theme designs.
+- Rebuild the versioned WebUI resources and release egg.
+
 ## 1.0.66
 
 - Expand Sports to 23 team themes, with Baseball, Basketball, Football, and Hockey subgroups; retain all 15 established themes and their styling.

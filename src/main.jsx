@@ -63,6 +63,7 @@ import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES } from './app/themes.js';
 import { SportsIdentity } from './app/SportsIdentity.jsx';
+import { MetsMasthead } from './app/MetsBrand.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { ThemeDetail } from './app/ThemeDetail.jsx';
 import './styles.css';
@@ -87,6 +88,7 @@ import './themes/terminal.css';
 import './themes/independence-reference.css';
 import './themes/sports-expansion.css';
 import './themes/sports.css';
+import './themes/mets.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -5818,6 +5820,7 @@ function App() {
               <Plus size={17} /> Add torrent
             </button>
           </div>
+          {theme === 'mets' && <MetsMasthead />}
           <div className="stats-grid">
             <Stat
               theme={theme}
