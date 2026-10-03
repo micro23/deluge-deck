@@ -4,6 +4,8 @@ import { THEMES, THEME_CATEGORIES } from '../src/app/themes.js';
 import { SPORTS_CLUBS, SPORTS_GROUPS } from '../src/app/sports-clubs.js';
 const ordered = THEME_CATEGORIES.flatMap(category => category.themes);
 const last = THEMES.find(([id]) => id === ordered.at(-1));
+const requested = process.env.DECK_VERIFY_THEMES?.split(',');
+if (requested) assert.ok(requested.every(id => SPORTS_CLUBS[id]), 'Unknown sports verification theme');
 
 const origin = process.env.DECK_PREVIEW_URL || 'http://127.0.0.1:8118';
 assert.equal((await fetch(`${origin}/api/health`).then(r => r.json())).mode, 'demo');
@@ -36,6 +38,7 @@ try {
     assert.equal(await trigger.getAttribute('aria-expanded'), 'false');
     assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
     for (const id of Object.keys(SPORTS_CLUBS)) {
+      if (requested && !requested.includes(id)) continue;
       await open();
       const [ , label ] = THEMES.find(([key]) => key === id);
       const item = page.getByRole('menuitemradio', {name:new RegExp(`^${label}:`)});

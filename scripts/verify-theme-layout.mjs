@@ -10,8 +10,11 @@ const output = process.env.SCREENSHOT_DIR || '/tmp/deck-theme-review';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel:'chrome', headless:true });
 const results = [];
+const requested = process.env.DECK_VERIFY_THEMES?.split(',');
+if (requested) assert.ok(requested.every(id => THEMES.some(([theme]) => theme === id)), 'Unknown verification theme');
 try {
   for (const [theme] of THEMES) {
+    if (requested && !requested.includes(theme)) continue;
     const page = await browser.newPage({ reducedMotion:'reduce' });
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
@@ -23,6 +26,18 @@ try {
       await page.evaluate(() => document.fonts.ready);
       // Auto sizing runs after font loading and ResizeObserver delivery.
       await page.waitForTimeout(250);
+      if (theme === 'mets') {
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Mets layout fits the viewport');
+        const masthead = page.locator('.mets-masthead');
+        assert.equal(await masthead.isVisible(), width > 760);
+        if (width > 760) assert.ok(await masthead.evaluate(el => {
+          const box = el.getBoundingClientRect();
+          return [...el.children].filter(child => child.tagName !== 'svg').every(child => {
+            const rect = child.getBoundingClientRect();
+            return rect.left >= box.left && rect.right <= box.right && rect.top >= box.top && rect.bottom <= box.bottom;
+          });
+        }), 'Mets masthead text fits without clipping');
+      }
       const cards = await page.locator('.stat-card').evaluateAll((nodes, isNewSports) => nodes.map(card => {
         const box = card.getBoundingClientRect();
         const text = card.children[1];

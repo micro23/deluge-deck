@@ -12,8 +12,11 @@ assert.ok(css.length < 1_000_000, 'Optional CSS must not duplicate the multi-meg
 const origin = process.env.DECK_HOSTED_FIXTURE_URL || 'http://127.0.0.1:8130';
 await fetch(`${origin}/json`, { method:'POST', body:JSON.stringify({method:'auth.login'}) });
 const browser = await chromium.launch({ channel:'chrome', headless:true });
+const requested = process.env.DECK_VERIFY_THEMES?.split(',');
+if (requested) assert.ok(requested.every(id => THEMES.some(([theme]) => theme === id)), 'Unknown verification theme');
 try {
   for (const [theme] of THEMES) {
+    if (requested && !requested.includes(theme)) continue;
     for (const width of [1456,390]) {
       const page = await browser.newPage({ viewport:{width,height:900}, reducedMotion:'reduce' });
       const errors = [];

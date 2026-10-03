@@ -1,0 +1,8 @@
+{
+  "mode": "built-in image_gen.imagegen",
+  "transparent_background": false,
+  "prompt": "Use case: photorealistic-natural. Asset type: unique premium New York Mets dashboard background, wide 16:9. Create a cinematic photograph-inspired illustration of the exterior of Citi Field in Queens at blue hour, inspired by the Jackie Robinson Rotunda: sweeping historic red-brick baseball stadium facade with tall arched windows and a grand curved central entrance, warm amber-orange light glowing through glass, cobalt-blue architectural accent lights, wet plaza paving reflecting orange and blue in the foreground, a large glossy red home-run apple sculpture near the entrance at the lower left, realistic stadium light towers at the edges, far-off restrained New York city silhouettes. The architecture is the hero, NOT another interior field or bowl of seats. Physically credible brickwork, steel, glass, beautifully detailed rain reflections, sophisticated AAA sports title atmosphere. Architectural illustration rather than exact documentary recreation. Put the building, apple, and reflections across the lower 45 percent; reserve the upper half as quiet deep midnight blue sky with very subtle atmospheric haze for interface overlays. No people, players, lettering, text, signs, logos, sponsor names, watermarks, interface elements, or frames.",
+  "asset": "src/assets/sports/mets-stadium.webp",
+  "generated_original": "/Users/micro/.codex/generated_images/01a0f39d-630b-7823-a346-a273af9915fc/exec-e1051f24-b57c-4771-b40e-71583ae3ac5f.png",
+  "processing": "Encoded as 1600 \u00d7 900 WebP for local delivery."
+}
