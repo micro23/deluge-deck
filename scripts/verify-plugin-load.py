@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+import types
 import zipfile
 
 
@@ -37,6 +38,18 @@ def main():
         import deluge.component as component
         import deluge.configmanager
         deluge.configmanager.set_config_dir(cache)
+
+        # CorePluginBase does not need Deluge's transport server. Import only
+        # its RPC marker decorator so this check avoids unrelated TLS/rencode
+        # dependencies while still checking that the history method is exported.
+        rpcserver = types.ModuleType('deluge.core.rpcserver')
+
+        def export(func):
+            func._rpcserver_export = True
+            return func
+
+        rpcserver.export = export
+        sys.modules['deluge.core.rpcserver'] = rpcserver
 
         # These are the discovery settings used by Deluge 2's plugin manager.
         environment = pkg_resources.Environment(
