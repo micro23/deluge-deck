@@ -34,7 +34,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.68.
+Current release: 1.0.69.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -59,7 +59,7 @@ python -m pip install -r plugin/build-requirements.txt
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.68-py3.14.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Download the single release egg. It contains Python source and UI assets, with no native extensions or bundled interpreter. Deluge 2 accepts eggs built with a different Python version; the `py3.14` suffix identifies the build interpreter, not a requirement to run Python 3.14. CI loads the same egg on Python 3.11–3.14 before publishing.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.69-py3.14.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Download the single release egg. It contains Python source and UI assets, with no native extensions or bundled interpreter. Deluge 2 accepts eggs built with a different Python version; the `py3.14` suffix identifies the build interpreter, not a requirement to run Python 3.14. CI loads the same egg on Python 3.11–3.14 before publishing.
 
 ### Using port 8888 (plugin mode)
 
@@ -129,6 +129,10 @@ stats/details placement, collapse and resizing. Install the egg normally; no
 `sudo` installer is required. Enable the updated DelugeDeck core plugin and restart
 the daemon for history that continues while the browser is closed. Without it,
 the chart labels its browser-session fallback.
+
+Visual design credit goes to [Darkhand81](https://github.com/Darkhand81), whose
+[Deluge Darkhand theme](https://github.com/Darkhand81/Deluge_Darkhand_Theme)
+inspired this independent Deck implementation.
 
 History stores only aggregate rates and timestamps in
 `deluge_deck_speed_history.json` in the daemon's config directory, every five

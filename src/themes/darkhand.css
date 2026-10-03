@@ -1,5 +1,6 @@
-/* Independently implemented for Deck. Reference values: Darkhand style guide.
-   This theme owns its geometry; no upstream installer or ExtJS patches. */
+/* Visual design credit: Darkhand81 — https://github.com/Darkhand81
+   Reference: https://github.com/Darkhand81/Deluge_Darkhand_Theme
+   Independently implemented for Deck; no upstream installer or ExtJS patches. */
 @font-face { font-family:Deck Inter; src:url('../assets/fonts/darkhand/inter-latin-wght-normal.woff2') format('woff2'); font-weight:100 900; font-display:swap; unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 @font-face { font-family:Deck Inter; src:url('../assets/fonts/darkhand/inter-latin-ext-wght-normal.woff2') format('woff2'); font-weight:100 900; font-display:swap; unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
 @font-face { font-family:Deck Inter; src:url('../assets/fonts/darkhand/inter-cyrillic-wght-normal.woff2') format('woff2'); font-weight:100 900; font-display:swap; unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
@@ -264,3 +265,57 @@
 :root[data-theme="darkhand"][data-theme] body .dh-network-scroll table { border-collapse:collapse; width:100%; font-size:12px; }
 :root[data-theme="darkhand"][data-theme] body .dh-network-scroll :is(th,td) { text-align:left; padding:7px 10px; white-space:nowrap; border-bottom:1px solid var(--line); }
 :root[data-theme="darkhand"][data-theme] body .dh-network-scroll td:first-child { font-family:Deck JB Mono,monospace; }
+
+/* Keep the toolbar in normal flow; panel placement only affects this grid. */
+:root[data-theme="darkhand"][data-theme] body .app-shell.dh-dashboard { --deck-sidebar-size:211px; }
+:root[data-theme="darkhand"][data-theme] body .app-shell.dh-dashboard.sidebar-collapsed { --deck-sidebar-size:72px; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar { width:var(--deck-sidebar-size)!important; display:flex; flex-direction:column; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .main-content { margin-left:calc(var(--deck-sidebar-size) + 16px)!important; width:calc(100% - var(--deck-sidebar-size) - 16px)!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-brand { justify-content:center; padding:0 12px; gap:10px; font-size:18px; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar .nav-label { text-align:center!important; padding-inline:12px!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar>nav .nav-item { display:grid!important; grid-template-columns:18px minmax(0,1fr) 24px; padding:0 14px!important; gap:8px!important; justify-items:center; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar .nav-item span { text-align:center!important; min-width:0; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar .nav-item b { width:24px; text-align:right; margin:0!important; font-variant-numeric:tabular-nums; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar-bottom { flex-direction:column; align-items:center; gap:6px; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar-toggle { display:grid!important; place-items:center; color:var(--muted); background:var(--surface-2); border:1px solid var(--line); }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar.collapsed .nav-item :is(span,b),
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar.collapsed .dh-brand span { display:none!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar.collapsed>nav .nav-item { display:flex!important; justify-content:center!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .topbar { position:relative!important; inset:auto!important; width:100%!important; height:auto!important; min-height:52px!important; display:grid!important; grid-template-columns:auto minmax(130px,1fr) auto; align-items:center; gap:24px; margin:0 0 16px; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .topbar .mobile-brand { display:none!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .topbar .search-wrap { display:flex!important; position:static!important; width:100%!important; max-width:500px!important; min-width:0; justify-self:center; margin:0!important; height:36px; background:var(--surface-2)!important; border-color:var(--line-strong)!important; box-shadow:none!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches { position:static!important; margin:0!important; padding:0!important; gap:16px; justify-content:flex-start; order:0; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .top-actions { margin:0; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .workspace { min-height:0; padding:0!important; gap:16px; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; align-items:stretch; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.table-shell { grid-row:1; order:0!important; min-height:340px; flex:none; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.dh-overview { grid-row:2; order:0!important; margin:0!important; grid-template-columns:repeat(2,minmax(0,1fr)); }
+:root[data-theme="darkhand"][data-theme] body .dh-stats-above .dh-panels>.dh-overview { grid-row:1; }
+:root[data-theme="darkhand"][data-theme] body .dh-stats-above .dh-panels>.table-shell { grid-row:2; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.dh-details-card { position:relative!important; inset:auto!important; width:auto!important; grid-row:3; height:var(--dh-details-height,30vh); max-height:600px; min-height:140px; resize:none; order:0; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.dh-details-card.dh-collapsed { height:auto; min-height:0; }
+@media (min-width:1101px) {
+ :root[data-theme="darkhand"][data-theme] body .dh-details-right .dh-panels { grid-template-columns:minmax(0,1fr) clamp(320px,var(--dh-details-width,400px),40%); }
+ :root[data-theme="darkhand"][data-theme] body .dh-details-right.dh-details-collapsed .dh-panels { grid-template-columns:minmax(0,1fr) 32px; }
+ :root[data-theme="darkhand"][data-theme] body .dh-details-right .dh-panels>.dh-details-card { grid-column:2; grid-row:1 / span 2; height:auto; max-height:none; min-height:0; }
+ :root[data-theme="darkhand"][data-theme] body .dh-details-right .dh-panels>.dh-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:1250px) {
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .topbar { grid-template-columns:minmax(0,1fr) auto; gap:12px; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches { grid-row:2; grid-column:1 / -1; }
+ :root[data-theme="darkhand"][data-theme] body .dh-panels>.dh-overview { grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:760px) {
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .main-content { margin-left:0!important; width:100%!important; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar { display:none!important; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .topbar { padding:12px 0!important; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .topbar .search-wrap { grid-column:1 / -1; grid-row:2; max-width:none!important; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .top-actions { grid-column:2; grid-row:1; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches { grid-column:1; grid-row:1; gap:0; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches>div { gap:5px; }
+ :root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches button { padding:6px 8px; }
+ :root[data-theme="darkhand"][data-theme] body .dh-panels>.mobile-transfers { grid-row:1; }
+ :root[data-theme="darkhand"][data-theme] body .dh-stats-above .dh-panels>.mobile-transfers { grid-row:2; }
+}
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .top-actions { position:static!important; inset:auto!important; width:auto!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .mobile-stats { display:none!important; }

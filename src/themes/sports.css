@@ -7,7 +7,7 @@
   --cyan:#e2ebf8; --accent-fg:#071326; --violet:#cddaff; --amber:#ffe0aa;
   --green:#a8efc3; --danger:#ffbac4; --line:#455d7c; --line-strong:#8297b2;
   --club-primary:#132448; --club-secondary:#c4cedd; --club-edge:#8ea4c5;
-  --club-art:url('../assets/sports/yankees-stadium.webp');
+  --club-art:url('../assets/sports/yankees-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,#1324481b 0 1px,transparent 1px 12px);
   --club-card:linear-gradient(145deg,#ffffff,#e8edf5);
   --club-card-ink:#10213c; --club-card-muted:#283750;
@@ -21,7 +21,7 @@
   --cyan:#b9d7ff; --accent-fg:#071528; --violet:#d0d9ff; --amber:#ffe1a9;
   --green:#a5edc5; --danger:#ffb7c2; --line:#49658a; --line-strong:#819bbd;
   --club-primary:#0b2265; --club-secondary:#a71930; --club-edge:#86b5ff;
-  --club-art:url('../assets/sports/giants-stadium.webp');
+  --club-art:url('../assets/sports/giants-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,transparent 0 31px,#a4caff0a 31px 32px);
   --club-card:linear-gradient(145deg,#0b2265,#091a3d 75%);
   --club-card-ink:#ffffff; --club-card-muted:#d3e0f2;
@@ -35,7 +35,7 @@
   --cyan:#ffc18b; --accent-fg:#231105; --violet:#c3d9ff; --amber:#ffe1a5;
   --green:#a5efc1; --danger:#ffb9b4; --line:#6a6770; --line-strong:#a49d9a;
   --club-primary:#006bb6; --club-secondary:#f58426; --club-edge:#ffac6e;
-  --club-art:url('../assets/sports/knicks-stadium.webp');
+  --club-art:url('../assets/sports/knicks-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(0deg,#ef9c4507 0 1px,transparent 1px 8px);
   --club-card:linear-gradient(145deg,#102b50,#0c1c33 75%);
   --club-card-ink:#fffaf3; --club-card-muted:#e6dbd1;

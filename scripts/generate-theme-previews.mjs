@@ -31,9 +31,13 @@ try {
       const context = canvas.getContext('2d');
       context.imageSmoothingQuality = 'high';
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL('image/webp', .9).split(',')[1];
+      return {
+        original: canvas.toDataURL('image/webp', .9).split(',')[1],
+        optimized: canvas.toDataURL('image/webp', .82).split(',')[1],
+      };
     }, screenshot.toString('base64'));
-    await writeFile(new URL(`${theme}.webp`, destination), Buffer.from(encoded, 'base64'));
+    await writeFile(new URL(`${theme}.webp`, destination), Buffer.from(encoded.original, 'base64'));
+    await writeFile(new URL(`${theme}-optimized.webp`, destination), Buffer.from(encoded.optimized, 'base64'));
     await page.close();
     console.log(`Captured ${theme}`);
   }

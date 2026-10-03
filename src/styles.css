@@ -1501,7 +1501,7 @@ tbody tr:hover .state-icon {
 :root[data-theme="dark"] .app-shell {
   background:
     linear-gradient(90deg,rgba(3,10,17,.94) 0%,rgba(3,10,17,.76) 22%,rgba(3,10,17,.68) 54%,rgba(3,10,17,.82) 100%),
-    url('./assets/midnight-operations-bay.jpg') center/cover fixed!important;
+    url('./assets/midnight-operations-bay-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="dark"] .topbar {
   background:linear-gradient(105deg,rgba(5,17,27,.9),rgba(7,26,40,.72) 55%,rgba(10,23,38,.86))!important;
@@ -1531,22 +1531,22 @@ tbody tr:hover .state-icon {
 /* The remaining palettes share the same environmental depth, but each gets
    its own light treatment so the identity of the palette remains intact. */
 :root[data-theme="ocean"] .app-shell {
-  background:linear-gradient(90deg,rgba(2,16,29,.82),rgba(3,26,45,.42) 48%,rgba(1,14,27,.74)),url('./assets/ocean-deep-sea-habitat.jpg') center/cover fixed!important;
+  background:linear-gradient(90deg,rgba(2,16,29,.82),rgba(3,26,45,.42) 48%,rgba(1,14,27,.74)),url('./assets/ocean-deep-sea-habitat-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="sunset"] .app-shell {
-  background:linear-gradient(90deg,rgba(16,20,42,.82),rgba(44,32,68,.44) 46%,rgba(65,28,48,.74)),url('./assets/sunset-desert-observatory.jpg') center/cover fixed!important;
+  background:linear-gradient(90deg,rgba(16,20,42,.82),rgba(44,32,68,.44) 46%,rgba(65,28,48,.74)),url('./assets/sunset-desert-observatory-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="independence"] .app-shell {
-  background:linear-gradient(90deg,rgba(2,12,31,.82),rgba(10,40,78,.44) 48%,rgba(46,14,32,.74)),url('./assets/independence-coastal-observatory.jpg') center/cover fixed!important;
+  background:linear-gradient(90deg,rgba(2,12,31,.82),rgba(10,40,78,.44) 48%,rgba(46,14,32,.74)),url('./assets/independence-coastal-observatory-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="new-year"] .app-shell {
-  background:linear-gradient(90deg,rgba(4,6,9,.84),rgba(29,27,21,.44) 48%,rgba(8,8,10,.78)),url('./assets/new-year-rooftop-observatory.jpg') center/cover fixed!important;
+  background:linear-gradient(90deg,rgba(4,6,9,.84),rgba(29,27,21,.44) 48%,rgba(8,8,10,.78)),url('./assets/new-year-rooftop-observatory-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="light"] .app-shell {
-  background:linear-gradient(90deg,rgba(233,242,244,.84),rgba(218,235,236,.48) 48%,rgba(245,235,225,.78)),url('./assets/paper-observatory-atrium.jpg') center/cover fixed!important;
+  background:linear-gradient(90deg,rgba(233,242,244,.84),rgba(218,235,236,.48) 48%,rgba(245,235,225,.78)),url('./assets/paper-observatory-atrium-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="forest"] .app-shell {
-  background:linear-gradient(90deg,rgba(220,234,210,.82),rgba(202,224,199,.44) 48%,rgba(240,230,211,.76)),url('./assets/forest-bioluminescent-conservatory.jpg') center/cover fixed!important;
+  background:linear-gradient(90deg,rgba(220,234,210,.82),rgba(202,224,199,.44) 48%,rgba(240,230,211,.76)),url('./assets/forest-bioluminescent-conservatory-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="ocean"] .stat-card,
 :root[data-theme="sunset"] .stat-card,
@@ -1640,12 +1640,12 @@ tbody tr:hover .state-icon {
 
 /* Seasonal plates: each one now has a different location and lighting
    language instead of sharing the earlier frame exports. */
-:root[data-theme="christmas"] .app-shell { background:linear-gradient(90deg,rgba(28,33,25,.84),rgba(72,73,61,.30) 48%,rgba(22,24,19,.78)),url('./assets/christmas-night-observatory.jpg') center/cover fixed!important; }
-:root[data-theme="halloween"] .app-shell { background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(9,4,1,.34) 48%,rgba(0,0,0,.82)),url('./assets/halloween-midnight-conservatory.jpg') center/cover fixed!important; }
-:root[data-theme="valentine"] .app-shell { background:linear-gradient(90deg,rgba(255,243,246,.78),rgba(100,23,53,.24) 48%,rgba(255,243,246,.72)),url('./assets/valentine-art-deco-salon.jpg') center/cover fixed!important; }
-:root[data-theme="st-patricks"] .app-shell { background:linear-gradient(90deg,rgba(231,243,219,.78),rgba(21,74,43,.22) 48%,rgba(239,242,220,.7)),url('./assets/st-patricks-botanical-conservatory.jpg') center/cover fixed!important; }
-:root[data-theme="independence"] .app-shell { background:linear-gradient(90deg,rgba(2,12,31,.8),rgba(10,38,74,.32) 48%,rgba(34,13,30,.74)),url('./assets/independence-coastal-observatory.jpg') center/cover fixed!important; }
-:root[data-theme="new-year"] .app-shell { background:linear-gradient(90deg,rgba(3,4,6,.82),rgba(28,25,20,.32) 48%,rgba(3,4,6,.76)),url('./assets/new-year-rooftop-observatory.jpg') center/cover fixed!important; }
+:root[data-theme="christmas"] .app-shell { background:linear-gradient(90deg,rgba(28,33,25,.84),rgba(72,73,61,.30) 48%,rgba(22,24,19,.78)),url('./assets/christmas-night-observatory-optimized.webp') center/cover fixed!important; }
+:root[data-theme="halloween"] .app-shell { background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(9,4,1,.34) 48%,rgba(0,0,0,.82)),url('./assets/halloween-midnight-conservatory-optimized.webp') center/cover fixed!important; }
+:root[data-theme="valentine"] .app-shell { background:linear-gradient(90deg,rgba(255,243,246,.78),rgba(100,23,53,.24) 48%,rgba(255,243,246,.72)),url('./assets/valentine-art-deco-salon-optimized.webp') center/cover fixed!important; }
+:root[data-theme="st-patricks"] .app-shell { background:linear-gradient(90deg,rgba(231,243,219,.78),rgba(21,74,43,.22) 48%,rgba(239,242,220,.7)),url('./assets/st-patricks-botanical-conservatory-optimized.webp') center/cover fixed!important; }
+:root[data-theme="independence"] .app-shell { background:linear-gradient(90deg,rgba(2,12,31,.8),rgba(10,38,74,.32) 48%,rgba(34,13,30,.74)),url('./assets/independence-coastal-observatory-optimized.webp') center/cover fixed!important; }
+:root[data-theme="new-year"] .app-shell { background:linear-gradient(90deg,rgba(3,4,6,.82),rgba(28,25,20,.32) 48%,rgba(3,4,6,.76)),url('./assets/new-year-rooftop-observatory-optimized.webp') center/cover fixed!important; }
 @media (max-width:760px) {
   .preferences-modal { width:calc(100vw - 20px); height:calc(100dvh - 20px)!important; padding:0 15px; }
   :root[data-theme="christmas"] .app-shell,:root[data-theme="halloween"] .app-shell,:root[data-theme="valentine"] .app-shell,:root[data-theme="st-patricks"] .app-shell,:root[data-theme="independence"] .app-shell,:root[data-theme="new-year"] .app-shell { background-attachment:scroll!important; }

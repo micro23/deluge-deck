@@ -7,7 +7,7 @@
   --cyan:#b7dcff; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#005a9c; --club-secondary:#ef3e42; --club-edge:#b7dcff;
-  --club-art:url('../assets/sports/dodgers-stadium.webp');
+  --club-art:url('../assets/sports/dodgers-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,#005a9c14 0 1px,transparent 1px 13px);
   --club-card:linear-gradient(145deg,#ffffff,#edf2f9);
   --club-card-ink:#092039; --club-card-muted:#23364d;
@@ -30,7 +30,7 @@
   --cyan:#ffbfc3; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#bd3039; --club-secondary:#0c2340; --club-edge:#ffbfc3;
-  --club-art:url('../assets/sports/red-sox-stadium.webp');
+  --club-art:url('../assets/sports/red-sox-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,#bd303914 0 1px,transparent 1px 13px);
   --club-card:linear-gradient(145deg,#421923,#20121b);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -53,7 +53,7 @@
   --cyan:#b8dcff; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#134a8e; --club-secondary:#e8291c; --club-edge:#b8dcff;
-  --club-art:url('../assets/sports/blue-jays-stadium.webp');
+  --club-art:url('../assets/sports/blue-jays-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,#134a8e14 0 1px,transparent 1px 13px);
   --club-card:linear-gradient(145deg,#ffffff,#edf2f9);
   --club-card-ink:#0b1e37; --club-card-muted:#23364d;
@@ -76,7 +76,7 @@
   --cyan:#c4d7ff; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#0e3386; --club-secondary:#cc3433; --club-edge:#c4d7ff;
-  --club-art:url('../assets/sports/cubs-stadium.webp');
+  --club-art:url('../assets/sports/cubs-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,#0e338614 0 1px,transparent 1px 13px);
   --club-card:linear-gradient(145deg,#ffffff,#edf2f9);
   --club-card-ink:#0b1a36; --club-card-muted:#23364d;
@@ -99,7 +99,7 @@
   --cyan:#ffe2a4; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#552583; --club-secondary:#fdb927; --club-edge:#ffe2a4;
-  --club-art:url('../assets/sports/lakers-stadium.webp');
+  --club-art:url('../assets/sports/lakers-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(0deg,#fdb92708 0 1px,transparent 1px 9px);
   --club-card:linear-gradient(145deg,#21153a,#121025);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -122,7 +122,7 @@
   --cyan:#ffe59a; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#1d428a; --club-secondary:#ffc72c; --club-edge:#ffe59a;
-  --club-art:url('../assets/sports/warriors-stadium.webp');
+  --club-art:url('../assets/sports/warriors-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(0deg,#ffc72c08 0 1px,transparent 1px 9px);
   --club-card:linear-gradient(145deg,#0f1f3c,#0a1426);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -145,7 +145,7 @@
   --cyan:#ffbecd; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#ce1141; --club-secondary:#171717; --club-edge:#ffbecd;
-  --club-art:url('../assets/sports/bulls-stadium.webp');
+  --club-art:url('../assets/sports/bulls-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(0deg,#17171708 0 1px,transparent 1px 9px);
   --club-card:linear-gradient(145deg,#470f25,#230e1c);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -168,7 +168,7 @@
   --cyan:#ffe1a2; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#860038; --club-secondary:#fdbb30; --club-edge:#ffe1a2;
-  --club-art:url('../assets/sports/cavaliers-stadium.webp');
+  --club-art:url('../assets/sports/cavaliers-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(0deg,#fdbb3008 0 1px,transparent 1px 9px);
   --club-card:linear-gradient(145deg,#300a22,#190b1b);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -191,7 +191,7 @@
   --cyan:#ffd6a1; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#98002e; --club-secondary:#f9a01b; --club-edge:#ffd6a1;
-  --club-art:url('../assets/sports/heat-stadium.webp');
+  --club-art:url('../assets/sports/heat-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(0deg,#f9a01b08 0 1px,transparent 1px 9px);
   --club-card:linear-gradient(145deg,#360a1f,#1b0b19);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -214,7 +214,7 @@
   --cyan:#d7e5f7; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#003594; --club-secondary:#869397; --club-edge:#d7e5f7;
-  --club-art:url('../assets/sports/cowboys-stadium.webp');
+  --club-art:url('../assets/sports/cowboys-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,transparent 0 31px,#d7e5f70a 31px 32px);
   --club-card:linear-gradient(145deg,#ffffff,#edf2f9);
   --club-card-ink:#091b38; --club-card-muted:#23364d;
@@ -237,7 +237,7 @@
   --cyan:#b8eee3; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#004c54; --club-secondary:#a5acaf; --club-edge:#b8eee3;
-  --club-art:url('../assets/sports/eagles-stadium.webp');
+  --club-art:url('../assets/sports/eagles-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,transparent 0 31px,#b8eee30a 31px 32px);
   --club-card:linear-gradient(145deg,#05222b,#06161f);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -260,7 +260,7 @@
   --cyan:#cbdfff; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#002244; --club-secondary:#c60c30; --club-edge:#cbdfff;
-  --club-art:url('../assets/sports/patriots-stadium.webp');
+  --club-art:url('../assets/sports/patriots-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,transparent 0 31px,#cbdfff0a 31px 32px);
   --club-card:linear-gradient(145deg,#051426,#06101c);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -283,7 +283,7 @@
   --cyan:#ffd7a1; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#e31837; --club-secondary:#ffb81c; --club-edge:#ffd7a1;
-  --club-art:url('../assets/sports/chiefs-stadium.webp');
+  --club-art:url('../assets/sports/chiefs-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,transparent 0 31px,#ffd7a10a 31px 32px);
   --club-card:linear-gradient(145deg,#4e1122,#260f1b);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -306,7 +306,7 @@
   --cyan:#ffe28f; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#171717; --club-secondary:#ffb612; --club-edge:#ffe28f;
-  --club-art:url('../assets/sports/steelers-stadium.webp');
+  --club-art:url('../assets/sports/steelers-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(90deg,transparent 0 31px,#ffe28f0a 31px 32px);
   --club-card:linear-gradient(145deg,#0d1118,#090e16);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -329,7 +329,7 @@
   --cyan:#c9deff; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#0038a8; --club-secondary:#ce1126; --club-edge:#c9deff;
-  --club-art:url('../assets/sports/rangers-stadium.webp');
+  --club-art:url('../assets/sports/rangers-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(135deg,#0038a806 0 1px,transparent 1px 17px);
   --club-card:linear-gradient(145deg,#ffffff,#e4eef8);
   --club-card-ink:#091b3b; --club-card-muted:#23364d;
@@ -352,7 +352,7 @@
   --cyan:#ffbdc7; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#cf0a2c; --club-secondary:#111111; --club-edge:#ffbdc7;
-  --club-art:url('../assets/sports/blackhawks-stadium.webp');
+  --club-art:url('../assets/sports/blackhawks-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(135deg,#cf0a2c06 0 1px,transparent 1px 17px);
   --club-card:linear-gradient(145deg,#480d1e,#230d19);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -375,7 +375,7 @@
   --cyan:#ffe399; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#111111; --club-secondary:#ffb81c; --club-edge:#ffe399;
-  --club-art:url('../assets/sports/penguins-stadium.webp');
+  --club-art:url('../assets/sports/penguins-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(135deg,#11111106 0 1px,transparent 1px 17px);
   --club-card:linear-gradient(145deg,#0b0f16,#080e15);
   --club-card-ink:#ffffff; --club-card-muted:#d3deed;
@@ -398,7 +398,7 @@
   --cyan:#ffe59f; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#111111; --club-secondary:#ffb81c; --club-edge:#ffe59f;
-  --club-art:url('../assets/sports/bruins-stadium.webp');
+  --club-art:url('../assets/sports/bruins-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(135deg,#11111106 0 1px,transparent 1px 17px);
   --club-card:linear-gradient(145deg,#ffffff,#e4eef8);
   --club-card-ink:#0b1525; --club-card-muted:#23364d;
@@ -421,7 +421,7 @@
   --cyan:#c8ddff; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#00205b; --club-secondary:#ffffff; --club-edge:#c8ddff;
-  --club-art:url('../assets/sports/maple-leafs-stadium.webp');
+  --club-art:url('../assets/sports/maple-leafs-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(135deg,#00205b06 0 1px,transparent 1px 17px);
   --club-card:linear-gradient(145deg,#ffffff,#e4eef8);
   --club-card-ink:#091830; --club-card-muted:#23364d;
@@ -444,7 +444,7 @@
   --cyan:#ffc6ce; --accent-fg:#070b12; --violet:#d6d9ff; --amber:#ffe0a0; --green:#b2edc9; --danger:#ffc2c9;
   --line:#52647c; --line-strong:#8e9fb7;
   --club-primary:#af1e2d; --club-secondary:#192168; --club-edge:#ffc6ce;
-  --club-art:url('../assets/sports/canadiens-stadium.webp');
+  --club-art:url('../assets/sports/canadiens-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(135deg,#af1e2d06 0 1px,transparent 1px 17px);
   --club-card:linear-gradient(145deg,#ffffff,#e4eef8);
   --club-card-ink:#231729; --club-card-muted:#23364d;

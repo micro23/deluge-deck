@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.69
+
+- Arrange Darkhand placement controls, search, and actions in a stable themed top bar; remove the page heading, breadcrumb, and duplicate Add torrent button.
+- Fix stats/details placement, responsive detail resizing, and sidebar count alignment; reduce the sidebar width by 15% and enable collapse.
+- Optimize theme backgrounds, decorations, and gallery thumbnails with quality 82 WebP at their original dimensions; preserve the original artwork files.
+- Rebuild the versioned WebUI resources and release egg with the smaller artwork payload.
+
 ## 1.0.68
 
 - Add Darkhand as the second Regular theme, independently recreated with local fonts and scoped charcoal/blue card styling.

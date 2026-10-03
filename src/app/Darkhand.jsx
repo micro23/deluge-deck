@@ -82,7 +82,14 @@ export function DarkhandOverview({ stats, counts, onPreferences, fresh, sourceKe
 export function DarkhandDetails({ layout, setLayout, children }) {
   const panel = useRef(null);
   const drag = useRef(null);
-  const vertical = layout.details === 'bottom';
+  const [sideBySide, setSideBySide] = useState(() => window.matchMedia('(min-width:1101px)').matches);
+  useEffect(() => {
+    const media = window.matchMedia('(min-width:1101px)');
+    const update = () => setSideBySide(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+  const vertical = layout.details === 'bottom' || !sideBySide;
   const resize = value => setLayout(current => ({ ...current, [vertical ? 'height' : 'width']: Math.max(vertical ? 140 : 320, Math.min(vertical ? 600 : 720, Math.round(value))) }));
   return <section ref={panel} className={`dh-details-card ${layout.collapsed ? 'dh-collapsed' : ''}`} aria-label="Torrent details panel">
     {!layout.collapsed && <div className="dh-details-resize" role="separator" aria-label="Resize torrent details" aria-orientation={vertical ? 'horizontal' : 'vertical'} aria-valuemin={vertical ? 140 : 320} aria-valuemax={vertical ? 600 : 720} aria-valuenow={vertical ? layout.height || 250 : layout.width || 400} tabIndex="0"

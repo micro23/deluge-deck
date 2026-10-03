@@ -41,7 +41,7 @@
   position:relative;
   background:
     linear-gradient(180deg,#c9858b40,#66253b32),
-    url('../assets/valentine-damask-brocade.jpg') center/420px 420px repeat!important;
+    url('../assets/valentine-damask-brocade-optimized.webp') center/420px 420px repeat!important;
   color:var(--text);
 }
 
@@ -60,7 +60,7 @@
   border-right:2px solid #d0a46c!important;
   background:
     linear-gradient(180deg,#72283fdd,#5b1e35eF 65%,#49182ddd),
-    url('../assets/valentine-damask-brocade.jpg') center/300px repeat!important;
+    url('../assets/valentine-damask-brocade-optimized.webp') center/300px repeat!important;
   box-shadow:inset -1px 0 #f4d7a555,6px 0 18px #45152638;
 }
 
@@ -306,7 +306,7 @@
   inset:0;
   width:auto;
   height:auto;
-  background:url('../assets/valentine-card-corners.png') center/100% 100% no-repeat;
+  background:url('../assets/valentine-card-corners-optimized.webp') center/100% 100% no-repeat;
 }
 
 :root[data-theme="valentine"] .stats-grid .stat-card::after { content:none; }

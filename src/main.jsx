@@ -412,7 +412,7 @@ function Sidebar({
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
         <SportsIdentity theme={theme} />
-        {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg>DELUGE</div>}
+        {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg><span>DELUGE</span></div>}
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
         <div className="sidebar-command-row">
           <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
@@ -1349,6 +1349,7 @@ function Topbar({
   onPreferences,
   onRefresh,
   onConnectionChanged,
+  layoutControls,
 }) {
   const [connectionsOpen, setConnectionsOpen] = useState(false);
   const mobile = useMobileLayout();
@@ -1362,7 +1363,8 @@ function Topbar({
         <div className="topbar-heading">
           <h1>Deluge</h1>
         </div>
-        {theme === 'terminal' && !mobile && <SearchField search={search} setSearch={setSearch} />}
+        {layoutControls}
+        {(theme === 'darkhand' || (theme === 'terminal' && !mobile)) && <SearchField search={search} setSearch={setSearch} />}
         <div className="top-actions">
           <GlobalControls
             stats={stats}
@@ -5733,6 +5735,7 @@ function App() {
         }}
       />
     );
+  const PanelContainer = theme === 'darkhand' ? 'div' : React.Fragment;
   return (
     <div
       className={`app-shell ${theme === 'darkhand' ? `dh-dashboard dh-stats-${darkhandLayout.stats} dh-details-${darkhandLayout.details} ${darkhandLayout.collapsed ? 'dh-details-collapsed' : ''}` : ''} ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
@@ -5761,6 +5764,7 @@ function App() {
       />
       <main className="main-content">
         <Topbar
+          layoutControls={theme === 'darkhand' ? <DarkhandSwitches layout={darkhandLayout} setLayout={setDarkhandLayout} /> : null}
           search={search}
           setSearch={setSearch}
           stats={stats}
@@ -5821,20 +5825,19 @@ function App() {
               </button>
             </div>
           )}
-          {(theme !== 'terminal' || mobileLayout) && <SearchField search={search} setSearch={setSearch} />}
-          <div className="page-heading">
+          {theme !== 'darkhand' && (theme !== 'terminal' || mobileLayout) && <SearchField search={search} setSearch={setSearch} />}
+          {theme !== 'darkhand' && <div className="page-heading">
             <div>
               <h1>
-                {theme === 'darkhand' ? `${{ all: 'All Torrents', active: 'Active Torrents', downloading: 'Downloading', seeding: 'Seeding', paused: 'Paused' }[filter] || 'Torrents'}` : <>Your <em>torrent deck.</em></>}
+                Your <em>torrent deck.</em>
               </h1>
-              <p>{theme === 'darkhand' ? `Deluge / Torrents · ${filtered.length}` : 'Drop a .torrent anywhere to open a review dialog.'}</p>
+              <p>Drop a .torrent anywhere to open a review dialog.</p>
             </div>
             <button className="primary-button" onClick={() => setAddFiles([])}>
               <Plus size={17} /> Add torrent
             </button>
-          </div>
+          </div>}
           {theme === 'mets' && <MetsMasthead />}
-          {theme === 'darkhand' && <DarkhandSwitches layout={darkhandLayout} setLayout={setDarkhandLayout} />}
           {theme !== 'darkhand' && <div className="stats-grid">
             <Stat
               theme={theme}
@@ -5905,39 +5908,41 @@ function App() {
               <button onClick={() => setSearch('')}>Clear</button>
             </div>
           )}
-          <TorrentTable
-            key={theme}
-            torrents={filtered}
-            theme={theme}
-            selected={selected}
-            setSelected={setSelected}
-            onOpen={setDetail}
-            onMenu={(torrent, event) => {
-              const rect = event.currentTarget.getBoundingClientRect();
-              const width = 224;
-              const height = 420;
-              const left = Math.max(
-                12,
-                Math.min(window.innerWidth - width - 12, rect.right - width),
-              );
-              const top = Math.max(
-                12,
-                Math.min(window.innerHeight - height - 12, rect.bottom + 8),
-              );
-              setMenuPosition({ top, left });
-              setMenuTorrent(
-                menuTorrent?.hash === torrent.hash ? null : torrent,
-              );
-            }}
-            loading={loading}
-            onAdd={() => setAddFiles([])}
-          />
-          {theme === 'darkhand' && <>
-            <DarkhandOverview stats={stats} counts={torrentCounts} onPreferences={openPreferences} fresh={!refreshError} sourceKey={sessionData?.host?.id || sessionData?.delugeUrl || 'default'} />
-            {!mobileLayout && <DarkhandDetails layout={darkhandLayout} setLayout={setDarkhandLayout}>
-              {detail ? <DetailDrawer key={detail.hash} torrent={detail} inline networkTabs onClose={() => setDetail(null)} onAction={action => act(action, [detail.hash])} /> : <div className="dh-details-empty">Select a torrent to view its details.</div>}
-            </DarkhandDetails>}
-          </>}
+          <PanelContainer {...(theme === 'darkhand' ? { className: 'dh-panels' } : {})}>
+            <TorrentTable
+              key={theme}
+              torrents={filtered}
+              theme={theme}
+              selected={selected}
+              setSelected={setSelected}
+              onOpen={setDetail}
+              onMenu={(torrent, event) => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                const width = 224;
+                const height = 420;
+                const left = Math.max(
+                  12,
+                  Math.min(window.innerWidth - width - 12, rect.right - width),
+                );
+                const top = Math.max(
+                  12,
+                  Math.min(window.innerHeight - height - 12, rect.bottom + 8),
+                );
+                setMenuPosition({ top, left });
+                setMenuTorrent(
+                  menuTorrent?.hash === torrent.hash ? null : torrent,
+                );
+              }}
+              loading={loading}
+              onAdd={() => setAddFiles([])}
+            />
+            {theme === 'darkhand' && <>
+              <DarkhandOverview stats={stats} counts={torrentCounts} onPreferences={openPreferences} fresh={!refreshError} sourceKey={sessionData?.host?.id || sessionData?.delugeUrl || 'default'} />
+              {!mobileLayout && <DarkhandDetails layout={darkhandLayout} setLayout={setDarkhandLayout}>
+                {detail ? <DetailDrawer key={detail.hash} torrent={detail} inline networkTabs onClose={() => setDetail(null)} onAction={action => act(action, [detail.hash])} /> : <div className="dh-details-empty">Select a torrent to view its details.</div>}
+              </DarkhandDetails>}
+            </>}
+          </PanelContainer>
           <footer className="deck-status-rail" aria-label="Session status">
             <span
               className="status-free-space"

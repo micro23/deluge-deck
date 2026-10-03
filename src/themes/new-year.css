@@ -6,8 +6,8 @@
   --cyan:#e8cf91; --accent-fg:#211b10; --violet:#bec9da; --amber:#e6c37a; --green:#a9d0ad; --danger:#d58c7d;
   --cyan-soft:#d3ad5b2b; --shadow:0 24px 60px #02050ae8;
 }
-:root[data-theme="new-year"] .app-shell { background:linear-gradient(90deg,#050d186b,#0b1a2a57 50%,#080d156b),url('../assets/new-year-rooftop-observatory.jpg') center 48%/cover fixed!important; }
-:root[data-theme="new-year"] .sidebar { background:linear-gradient(180deg,#0d1b2bf2,#07111ff2),url('../assets/new-year-rooftop-observatory.jpg') 18% center/auto 100% no-repeat!important; border-right:1px solid #a28d65!important; }
+:root[data-theme="new-year"] .app-shell { background:linear-gradient(90deg,#050d186b,#0b1a2a57 50%,#080d156b),url('../assets/new-year-rooftop-observatory-optimized.webp') center 48%/cover fixed!important; }
+:root[data-theme="new-year"] .sidebar { background:linear-gradient(180deg,#0d1b2bf2,#07111ff2),url('../assets/new-year-rooftop-observatory-optimized.webp') 18% center/auto 100% no-repeat!important; border-right:1px solid #a28d65!important; }
 :root[data-theme="new-year"] .topbar { background:linear-gradient(100deg,#0a1625f5,#1b2a3bef 52%,#171b20f5)!important; border-bottom:1px solid #a58e5b!important; }
 :root[data-theme="new-year"] .sidebar .add-button,:root[data-theme="new-year"] .primary-button { color:#251b0b!important; background:linear-gradient(180deg,#f5e3b4,#b89759)!important; border-color:#f4e5bd!important; }
 :root[data-theme="new-year"] .stats-grid { position:relative; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin:0 0 9px; }

@@ -6,7 +6,7 @@
   --cyan:#ffc38b; --accent-fg:#171008; --violet:#d8ddff; --amber:#ffe1aa;
   --green:#b8efce; --danger:#ffc7cd; --line:#52739a; --line-strong:#92b2d9;
   --club-primary:#002d72; --club-secondary:#ff5910; --club-edge:#ff913d;
-  --club-art:url('../assets/sports/mets-stadium.webp');
+  --club-art:url('../assets/sports/mets-stadium-optimized.webp');
   --club-pattern:repeating-linear-gradient(135deg,#cfdeff06 0 1px,transparent 1px 9px);
   --club-card:linear-gradient(145deg,#143963,#07162f);
   --club-card-ink:#fffaf4; --club-card-muted:#eee0d6;

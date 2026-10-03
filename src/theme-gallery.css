@@ -15,42 +15,42 @@
 /* Actual dashboard captures from the fictional demo library. The candidate
    image remains independent of the currently selected theme. */
 .theme-preview { display:block; width:100%; height:auto; aspect-ratio:1456 / 900; flex:none; padding:0; border:1px solid #ffffff20; border-radius:7px; background-position:center; background-size:cover; background-repeat:no-repeat; }
-.theme-preview.dark { background-image:url('./assets/theme-previews/dark.webp'); }
-.theme-preview.light { background-image:url('./assets/theme-previews/light.webp'); }
-.theme-preview.ocean { background-image:url('./assets/theme-previews/ocean.webp'); }
-.theme-preview.forest { background-image:url('./assets/theme-previews/forest.webp'); }
-.theme-preview.sunset { background-image:url('./assets/theme-previews/sunset.webp'); }
-.theme-preview.christmas { background-image:url('./assets/theme-previews/christmas.webp'); }
-.theme-preview.halloween { background-image:url('./assets/theme-previews/halloween.webp'); }
-.theme-preview.valentine { background-image:url('./assets/theme-previews/valentine.webp'); }
-.theme-preview.st-patricks { background-image:url('./assets/theme-previews/st-patricks.webp'); }
-.theme-preview.independence { background-image:url('./assets/theme-previews/independence.webp'); }
-.theme-preview.new-year { background-image:url('./assets/theme-previews/new-year.webp'); }
-.theme-preview.terminal { background-image:url('./assets/theme-previews/terminal.webp'); }
-.theme-preview.yankees { background-image:url('./assets/theme-previews/yankees.webp'); }
-.theme-preview.giants { background-image:url('./assets/theme-previews/giants.webp'); }
-.theme-preview.mets { background-image:url('./assets/theme-previews/mets.webp'); }
-.theme-preview.knicks { background-image:url('./assets/theme-previews/knicks.webp'); }
-.theme-preview.dodgers { background-image:url('./assets/theme-previews/dodgers.webp'); }
-.theme-preview.red-sox { background-image:url('./assets/theme-previews/red-sox.webp'); }
-.theme-preview.blue-jays { background-image:url('./assets/theme-previews/blue-jays.webp'); }
-.theme-preview.cubs { background-image:url('./assets/theme-previews/cubs.webp'); }
-.theme-preview.lakers { background-image:url('./assets/theme-previews/lakers.webp'); }
-.theme-preview.warriors { background-image:url('./assets/theme-previews/warriors.webp'); }
-.theme-preview.bulls { background-image:url('./assets/theme-previews/bulls.webp'); }
-.theme-preview.cavaliers { background-image:url('./assets/theme-previews/cavaliers.webp'); }
-.theme-preview.heat { background-image:url('./assets/theme-previews/heat.webp'); }
-.theme-preview.cowboys { background-image:url('./assets/theme-previews/cowboys.webp'); }
-.theme-preview.eagles { background-image:url('./assets/theme-previews/eagles.webp'); }
-.theme-preview.patriots { background-image:url('./assets/theme-previews/patriots.webp'); }
-.theme-preview.chiefs { background-image:url('./assets/theme-previews/chiefs.webp'); }
-.theme-preview.steelers { background-image:url('./assets/theme-previews/steelers.webp'); }
-.theme-preview.rangers { background-image:url('./assets/theme-previews/rangers.webp'); }
-.theme-preview.blackhawks { background-image:url('./assets/theme-previews/blackhawks.webp'); }
-.theme-preview.penguins { background-image:url('./assets/theme-previews/penguins.webp'); }
-.theme-preview.bruins { background-image:url('./assets/theme-previews/bruins.webp'); }
-.theme-preview.maple-leafs { background-image:url('./assets/theme-previews/maple-leafs.webp'); }
-.theme-preview.canadiens { background-image:url('./assets/theme-previews/canadiens.webp'); }
+.theme-preview.dark { background-image:url('./assets/theme-previews/dark-optimized.webp'); }
+.theme-preview.light { background-image:url('./assets/theme-previews/light-optimized.webp'); }
+.theme-preview.ocean { background-image:url('./assets/theme-previews/ocean-optimized.webp'); }
+.theme-preview.forest { background-image:url('./assets/theme-previews/forest-optimized.webp'); }
+.theme-preview.sunset { background-image:url('./assets/theme-previews/sunset-optimized.webp'); }
+.theme-preview.christmas { background-image:url('./assets/theme-previews/christmas-optimized.webp'); }
+.theme-preview.halloween { background-image:url('./assets/theme-previews/halloween-optimized.webp'); }
+.theme-preview.valentine { background-image:url('./assets/theme-previews/valentine-optimized.webp'); }
+.theme-preview.st-patricks { background-image:url('./assets/theme-previews/st-patricks-optimized.webp'); }
+.theme-preview.independence { background-image:url('./assets/theme-previews/independence-optimized.webp'); }
+.theme-preview.new-year { background-image:url('./assets/theme-previews/new-year-optimized.webp'); }
+.theme-preview.terminal { background-image:url('./assets/theme-previews/terminal-optimized.webp'); }
+.theme-preview.yankees { background-image:url('./assets/theme-previews/yankees-optimized.webp'); }
+.theme-preview.giants { background-image:url('./assets/theme-previews/giants-optimized.webp'); }
+.theme-preview.mets { background-image:url('./assets/theme-previews/mets-optimized.webp'); }
+.theme-preview.knicks { background-image:url('./assets/theme-previews/knicks-optimized.webp'); }
+.theme-preview.dodgers { background-image:url('./assets/theme-previews/dodgers-optimized.webp'); }
+.theme-preview.red-sox { background-image:url('./assets/theme-previews/red-sox-optimized.webp'); }
+.theme-preview.blue-jays { background-image:url('./assets/theme-previews/blue-jays-optimized.webp'); }
+.theme-preview.cubs { background-image:url('./assets/theme-previews/cubs-optimized.webp'); }
+.theme-preview.lakers { background-image:url('./assets/theme-previews/lakers-optimized.webp'); }
+.theme-preview.warriors { background-image:url('./assets/theme-previews/warriors-optimized.webp'); }
+.theme-preview.bulls { background-image:url('./assets/theme-previews/bulls-optimized.webp'); }
+.theme-preview.cavaliers { background-image:url('./assets/theme-previews/cavaliers-optimized.webp'); }
+.theme-preview.heat { background-image:url('./assets/theme-previews/heat-optimized.webp'); }
+.theme-preview.cowboys { background-image:url('./assets/theme-previews/cowboys-optimized.webp'); }
+.theme-preview.eagles { background-image:url('./assets/theme-previews/eagles-optimized.webp'); }
+.theme-preview.patriots { background-image:url('./assets/theme-previews/patriots-optimized.webp'); }
+.theme-preview.chiefs { background-image:url('./assets/theme-previews/chiefs-optimized.webp'); }
+.theme-preview.steelers { background-image:url('./assets/theme-previews/steelers-optimized.webp'); }
+.theme-preview.rangers { background-image:url('./assets/theme-previews/rangers-optimized.webp'); }
+.theme-preview.blackhawks { background-image:url('./assets/theme-previews/blackhawks-optimized.webp'); }
+.theme-preview.penguins { background-image:url('./assets/theme-previews/penguins-optimized.webp'); }
+.theme-preview.bruins { background-image:url('./assets/theme-previews/bruins-optimized.webp'); }
+.theme-preview.maple-leafs { background-image:url('./assets/theme-previews/maple-leafs-optimized.webp'); }
+.theme-preview.canadiens { background-image:url('./assets/theme-previews/canadiens-optimized.webp'); }
 .theme-gallery-heading { position:sticky; top:-16px; z-index:2; margin:-4px -4px 0; padding:12px 6px; background:var(--surface); border-bottom:1px solid var(--line); }
 .theme-gallery-caption { font-family:system-ui,sans-serif; }
 .theme-category { grid-column:1/-1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
@@ -68,4 +68,4 @@
 @media(max-width:760px) { .theme-menu .theme-popover { position:fixed; top:66px; left:12px; right:12px; width:auto; max-height:calc(100dvh - 82px); padding:12px; } }
 @media(prefers-reduced-motion:no-preference) { .theme-gallery-option { transition:border-color .15s,background .15s; } }
 
-.theme-preview.darkhand { background-image:url("./assets/theme-previews/darkhand.webp"); }
+.theme-preview.darkhand { background-image:url("./assets/theme-previews/darkhand-optimized.webp"); }

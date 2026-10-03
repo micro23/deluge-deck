@@ -7,9 +7,9 @@
   --cyan-soft:#a9413d35; --shadow:0 20px 54px #020a06c9;
 }
 :root[data-theme="christmas"] .app-shell {
-  background:linear-gradient(90deg,#06140fd9 0%,#0b2018a6 50%,#07140ed1 100%),url('../assets/christmas-night-observatory.jpg') center 48%/cover fixed!important;
+  background:linear-gradient(90deg,#06140fd9 0%,#0b2018a6 50%,#07140ed1 100%),url('../assets/christmas-night-observatory-optimized.webp') center 48%/cover fixed!important;
 }
-:root[data-theme="christmas"] .sidebar { background:linear-gradient(180deg,#0c2119ef,#07140fee),url('../assets/christmas-night-observatory.jpg') 16% center/auto 100% no-repeat!important; border-right:1px solid #a48350!important; }
+:root[data-theme="christmas"] .sidebar { background:linear-gradient(180deg,#0c2119ef,#07140fee),url('../assets/christmas-night-observatory-optimized.webp') 16% center/auto 100% no-repeat!important; border-right:1px solid #a48350!important; }
 :root[data-theme="christmas"] .topbar { background:linear-gradient(100deg,#0b2118f2,#183729ee 56%,#30261fee)!important; border-bottom:1px solid #a48350!important; }
 :root[data-theme="christmas"] .sidebar .add-button,:root[data-theme="christmas"] .primary-button { color:#fff8e8!important; background:linear-gradient(180deg,#a94740,#722a2a)!important; border-color:#d0aa67!important; }
 :root[data-theme="christmas"] .nav-item:is(.active,:hover) { color:#fff5df!important; background:linear-gradient(90deg,#9f3b382f,#d8b76e12)!important; }

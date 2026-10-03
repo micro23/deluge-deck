@@ -42,7 +42,7 @@
   background:
     linear-gradient(90deg,#070705e8 0%,#0a0907c4 16%,#0d0b095c 53%,#080705a6 100%),
     radial-gradient(ellipse at 18% 72%,#c8752020,transparent 34%),
-    url('../assets/halloween-graveyard-midnight.jpg') center 54%/cover fixed!important;
+    url('../assets/halloween-graveyard-midnight-optimized.webp') center 54%/cover fixed!important;
   color:#e9e8df;
 }
 
@@ -64,7 +64,7 @@
   border-right:1px solid #9a7347!important;
   background:
     linear-gradient(180deg,#080705ec 0%,#0b0907d2 54%,#090805e8),
-    url('../assets/halloween-graveyard-midnight.jpg') left bottom/auto 100% no-repeat!important;
+    url('../assets/halloween-graveyard-midnight-optimized.webp') left bottom/auto 100% no-repeat!important;
   box-shadow:inset -1px 0 #dce4df15,5px 0 17px #02060996;
 }
 
@@ -248,7 +248,7 @@
   background:
     linear-gradient(180deg,#080705a8,#0b0806c4),
     radial-gradient(ellipse at 50% 15%,#b16b2b30,transparent 72%),
-    url('../assets/halloween-midnight-conservatory.jpg') center 33%/cover!important;
+    url('../assets/halloween-midnight-conservatory-optimized.webp') center 33%/cover!important;
   box-shadow:inset 0 0 0 1px #e4b87342,inset 0 0 0 3px #090704a0,inset 0 0 0 4px #a77b4f70,inset 0 0 18px #0008,0 5px 13px #0009!important;
   text-align:center;
 }
@@ -275,7 +275,7 @@
 :root[data-theme="halloween"] .stats-grid .stat-card:nth-child(3) {
   background:
     linear-gradient(180deg,#08070565,#0907049c),
-    url('../assets/halloween-graveyard-midnight.jpg') center 68%/cover!important;
+    url('../assets/halloween-graveyard-midnight-optimized.webp') center 68%/cover!important;
 }
 :root[data-theme="halloween"] .stats-grid .stat-icon {
   display:grid;
@@ -545,12 +545,12 @@
     min-height:112px!important;
     padding:7px 8px!important;
     border:2px solid #947149!important;
-    background:linear-gradient(180deg,#080705b8,#0b0806d8),url('../assets/halloween-midnight-conservatory.jpg') center/cover!important;
+    background:linear-gradient(180deg,#080705b8,#0b0806d8),url('../assets/halloween-midnight-conservatory-optimized.webp') center/cover!important;
     box-shadow:inset 0 0 0 1px #e4b87342,inset 0 0 0 3px #090704a0,0 5px 13px #0009!important;
     text-align:center!important;
   }
   :root[data-theme="halloween"] body .workspace .stats-grid .stat-card:nth-child(3) {
-    background:linear-gradient(180deg,#08070580,#090704b8),url('../assets/halloween-graveyard-midnight.jpg') center 68%/cover!important;
+    background:linear-gradient(180deg,#08070580,#090704b8),url('../assets/halloween-graveyard-midnight-optimized.webp') center 68%/cover!important;
   }
   :root[data-theme="halloween"] body .workspace .stats-grid .stat-card>div:nth-child(2) {
     display:block!important;

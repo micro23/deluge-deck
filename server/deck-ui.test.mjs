@@ -107,12 +107,12 @@ test('themes have persistent palette declarations and a desktop/mobile menu', as
 test('themes use distinct seasonal artwork and menus keep one aligned action rail', async () => {
   const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
   for (const asset of [
-    'christmas-night-observatory.jpg',
-    'halloween-midnight-conservatory.jpg',
-    'valentine-art-deco-salon.jpg',
-    'st-patricks-botanical-conservatory.jpg',
-    'independence-coastal-observatory.jpg',
-    'new-year-rooftop-observatory.jpg',
+    'christmas-night-observatory-optimized.webp',
+    'halloween-midnight-conservatory-optimized.webp',
+    'valentine-art-deco-salon-optimized.webp',
+    'st-patricks-botanical-conservatory-optimized.webp',
+    'independence-coastal-observatory-optimized.webp',
+    'new-year-rooftop-observatory-optimized.webp',
   ]) assert.match(css, new RegExp(asset.replace('.', '\\.'), 's'));
   assert.match(css, /\.preferences-content\s*\{[\s\S]*grid-template-columns:1fr!important/);
   assert.doesNotMatch(css, /data-deluge-deck-native-window/); // native skin has one owner
