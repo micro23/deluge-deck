@@ -1,3 +1,9 @@
+## 1.0.82
+
+- Remove the Yankees theme's unwanted sidebar and masthead slogans.
+- Fix low contrast in the dashboard stat icons and add red baseball stitching details to their navy badges.
+- Refresh the versioned WebUI resources and source-only Python 3.14 plugin egg.
+
 ## 1.0.81
 
 - Give the Yankees theme a dedicated Bronx identity and stadium-history masthead, with stronger pinstripe, navy, and chalk details throughout the dashboard.

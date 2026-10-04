@@ -19,7 +19,6 @@ export function YankeesIdentity({ logo }) {
     <span className="yankees-kicker">BRONX · NEW YORK</span>
     <strong className="yankees-wordmark">Yankees</strong>
     <span className="yankees-identity-caption">27-TIME WORLD SERIES CHAMPIONS</span>
-    <span className="yankees-heritage">THE HOUSE THAT RUTH BUILT</span>
   </div>;
 }
 
@@ -32,7 +31,6 @@ export function YankeesMasthead({ logo }) {
     </div>
     <div className="yankees-masthead-story">
       <span className="yankees-opened">YANKEE STADIUM <b>·</b> OPENED 1923</span>
-      <span className="yankees-callout">ONE CITY. ONE PINSTRIPE.</span>
       <span className="yankees-titles"><strong>27</strong><small>WORLD SERIES<br />CHAMPIONSHIPS</small></span>
     </div>
   </section>;

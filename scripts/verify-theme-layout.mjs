@@ -29,7 +29,7 @@ try {
       await page.waitForTimeout(250);
       if (SPORTS_CLUBS[theme]) {
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${theme} layout fits the viewport`);
-        const masthead = page.locator(theme === 'mets' ? '.mets-masthead' : '.sports-masthead');
+        const masthead = page.locator(theme === 'mets' ? '.mets-masthead' : theme === 'yankees' ? '.yankees-masthead' : '.sports-masthead');
         assert.equal(await masthead.isVisible(), width > 760);
         if (width > 760) assert.ok(await masthead.evaluate(el => {
           const box = el.getBoundingClientRect();
