@@ -100,7 +100,7 @@ def main():
             if group in ('webui', 'web'):
                 static_root = web_server.top_level.children[b'deluge-deck-resources']
                 manifest = json.loads((Path(os.fsdecode(static_root.path)) / 'manifest.json').read_text())
-                assert len(manifest['themes']) == 37
+                assert len(manifest['themes']) == 38
                 assert all((Path(os.fsdecode(static_root.path)) / name).is_file() for name in manifest['themes'].values())
                 resources = instance.plugin.scripts + instance.plugin.stylesheets
                 assert len(resources) == 4

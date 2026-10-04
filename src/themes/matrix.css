@@ -15,16 +15,16 @@
   --surface-3:#112619;
   --text:#d8ffe0;
   --muted:#91b59a;
-  --muted-2:#688d72;
+  --muted-2:#9cbda1;
   --line:#23472d;
-  --line-strong:#347345;
+  --line-strong:#3e8c51;
   --cyan:#68ff86;
   --accent-fg:#031007;
   --cyan-soft:#51ff701e;
   --violet:#a5ffc0;
   --amber:#c7e96b;
   --green:#54f57d;
-  --danger:#ff7180;
+  --danger:#ff959a;
   --shadow:0 20px 60px #000a;
   --theme-radius:9px;
   --theme-control-radius:7px;
@@ -96,6 +96,58 @@
 :root[data-theme="matrix"] .sidebar {
   border-right:1px solid #37b94c55!important;
   box-shadow:8px 0 35px #0005;
+}
+:root[data-theme="matrix"] .matrix-identity {
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-height:51px;
+  margin:2px 5px 15px;
+  padding:0 9px;
+  border:1px solid #3be15b54;
+  border-radius:8px;
+  background:linear-gradient(110deg,#0d2815,#06100a 82%);
+  box-shadow:inset 0 1px #b9ffc016,0 8px 24px #0005,0 0 22px #12ff3610;
+}
+:root[data-theme="matrix"] .matrix-mark {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  width:32px;height:32px;
+  flex:none;
+  overflow:hidden;
+  border:1px solid #8aff9d;
+  border-radius:5px;
+  color:#021307;
+  background:linear-gradient(150deg,#b2ffc2,#40ed65 50%,#086022);
+  box-shadow:0 0 17px #36ff6380,inset 0 0 8px #deffe366;
+  font:800 16px/1 var(--matrix-font);
+  text-shadow:0 1px #b9ffc8;
+}
+:root[data-theme="matrix"] .matrix-mark i:nth-child(2) { transform:translateY(-3px); }
+:root[data-theme="matrix"] .matrix-identity>span:nth-child(2) { min-width:0; }
+:root[data-theme="matrix"] .matrix-identity strong {
+  display:block;
+  color:#e1ffe7;
+  font:700 12px/1.2 var(--matrix-font);
+  letter-spacing:.14em;
+}
+:root[data-theme="matrix"] .matrix-identity small {
+  display:block;
+  margin-top:4px;
+  color:#6dcc80;
+  font:9px/1 var(--matrix-font);
+  letter-spacing:.08em;
+}
+:root[data-theme="matrix"] .matrix-live {
+  position:absolute;
+  top:10px;right:10px;
+  width:5px;height:5px;
+  border-radius:50%;
+  background:#73ff8a;
+  box-shadow:0 0 8px #6aff80,0 0 16px #42ff6377;
 }
 :root[data-theme="matrix"] .sidebar::before {
   content:"";
@@ -195,8 +247,18 @@
 :root[data-theme="matrix"] .table-shell {
   position:relative;
   border-color:#347745!important;
-  background:linear-gradient(180deg,#07140cf8,#040b07f8)!important;
+  background:linear-gradient(180deg,#07140cf5,#040b07eF)!important;
   box-shadow:0 18px 55px #0009,inset 0 0 0 1px #7cff8d10,0 0 34px #17ff3410!important;
+}
+:root[data-theme="matrix"] .table-shell::after {
+  content:""!important;
+  position:absolute;
+  z-index:0!important;
+  inset:0;
+  pointer-events:none;
+  opacity:.25;
+  background:url('../assets/matrix-rain.svg') right bottom/cover no-repeat;
+  mix-blend-mode:screen;
 }
 :root[data-theme="matrix"] .table-shell::before {
   content:"SYSTEM / TRANSFER MATRIX";
@@ -254,6 +316,14 @@
   background:linear-gradient(90deg,#07140b,#0d2112 50%,#06100a)!important;
   box-shadow:inset 0 1px #8aff9b12,0 0 24px #1aff3511;
 }
+:root[data-theme="matrix"] .deck-status-rail::before {
+  content:"MATRIX LINK";
+  color:#69d77f;
+  font:9px var(--matrix-font);
+  letter-spacing:.12em;
+  padding-right:9px;
+  border-right:1px solid #347745;
+}
 :root[data-theme="matrix"] .deck-status-rail .status-dot.live { box-shadow:0 0 9px #61ff7e; }
 :root[data-theme="matrix"] :is(.modal-card,.detail-drawer,.global-popover,.theme-popover,.context-menu) {
   border-color:#397b49!important;
@@ -263,6 +333,22 @@
 }
 :root[data-theme="matrix"] :is(button,input,select,textarea):focus-visible { outline-color:#79ff8d!important; }
 :root[data-theme="matrix"] ::selection { color:#001407; background:#74ff8b; }
+
+@media (max-width:760px) {
+  :root[data-theme="matrix"] .mobile-brand .brand strong { font-size:0!important; }
+  :root[data-theme="matrix"] .mobile-brand .brand strong::before {
+    content:"THE MATRIX";
+    font-size:15px;
+    letter-spacing:.1em;
+    color:#e1ffe7;
+  }
+  :root[data-theme="matrix"] .mobile-brand .brand small { color:#6dcc80!important; font-size:8px; }
+  :root[data-theme="matrix"] .matrix-identity { min-height:42px; margin:0; padding:0 7px; gap:7px; }
+  :root[data-theme="matrix"] .matrix-mark { width:28px;height:28px; }
+  :root[data-theme="matrix"] .matrix-identity strong { font-size:10px; }
+  :root[data-theme="matrix"] .matrix-identity small { font-size:8px; }
+  :root[data-theme="matrix"] .table-shell::after { opacity:.38; }
+}
 
 @media (prefers-reduced-motion:no-preference) {
   :root[data-theme="matrix"] .app-shell::after { animation:matrix-stream 38s linear infinite; }

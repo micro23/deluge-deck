@@ -1,3 +1,9 @@
+## 1.0.77
+
+- Add The Matrix as a complete selectable theme, with a cinematic phosphor-green dashboard, responsive branding, reduced-motion support, and original code-rain artwork.
+- Tighten torrent table spacing and keep the Matrix theme palette in the automated theme checks.
+- Refresh the versioned WebUI resources and Python 3.14 source-only plugin egg.
+
 ## 1.0.76
 
 - Make Darkhand the default theme and first theme in the picker.

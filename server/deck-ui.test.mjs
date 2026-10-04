@@ -25,6 +25,7 @@ const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/themes/mets.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports-bespoke.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/darkhand.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/matrix.css'), 'utf8'),
 ])).join('\n');
 
 test('theme categories cover every persistent theme once with stable sports identities', async () => {
