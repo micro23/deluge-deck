@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.71
+
+- Preserve the active theme when Deluge executes the stylesheet bootstrap again, preventing Terminal from flashing into a broken generic layout.
+- Remove sidebar slogans and masthead side captions from all 24 sports themes; retain team branding and the sport/city caption below each sidebar logo.
+- Let Darkhand wheel scrolling continue from torrent lists and details into the dashboard, using one details scroll area.
+- Automatically fit and reveal bottom torrent details when opened, collapse them with Escape, and restore automatic sizing when reopened; retain pointer and keyboard resizing.
+- Move Darkhand's right panel closer to the viewport edge and refresh the affected theme previews.
+- Reconcile the superseded 1.0.11 branch while retaining current layout ownership and package versioning.
+- Rebuild the versioned WebUI resources and Python 3.14 source-only plugin egg.
+
 ## 1.0.70
 
 - Include the bespoke sports identities, mastheads, motifs, and refreshed gallery artwork from the parallel theme work.
