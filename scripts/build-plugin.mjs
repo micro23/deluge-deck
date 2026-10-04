@@ -46,9 +46,12 @@ copyFileSync(findAsset('.js'), path.join(dataDir, `deluge-deck-${version}.js`));
 // Retain the optional CSS filename for older hosts without duplicating rules.
 writeFileSync(path.join(dataDir, `deluge-deck-${version}.css`), '/* Shared styles and on-demand themes are supplied by the versioned style loader. */\n');
 const css = readFileSync(cssAsset, 'utf8');
+// Deluge can execute a registered resource again after Deck has mounted.
+// Keep the assembled theme stylesheet; a second shared-only sheet would
+// override its layout rules and visibly revert Terminal to the generic UI.
 writeFileSync(
   path.join(dataDir, `deluge-deck-${version}-style.js`),
-  `(() => { if (!document.documentElement.classList.contains('deluge-deck-ready')) document.documentElement.classList.add('deluge-deck-loading'); window.__DELUGE_DECK_THEME_MANIFEST_URL__ = new URL('deluge-deck-resources/manifest.json', document.baseURI).href; const style = document.createElement('style'); style.dataset.delugeDeck = 'true'; style.textContent = ${JSON.stringify(css)}.replaceAll('/assets/', new URL('deluge-deck-resources/assets/', document.baseURI).href); document.head.appendChild(style); })();\n`,
+  `(() => { if (!document.documentElement.classList.contains('deluge-deck-ready')) document.documentElement.classList.add('deluge-deck-loading'); window.__DELUGE_DECK_THEME_MANIFEST_URL__ = new URL('deluge-deck-resources/manifest.json', document.baseURI).href; if (document.querySelector('style[data-deluge-deck="true"]')) return; const style = document.createElement('style'); style.dataset.delugeDeck = 'true'; style.textContent = ${JSON.stringify(css)}.replaceAll('/assets/', new URL('deluge-deck-resources/assets/', document.baseURI).href); document.head.appendChild(style); })();\n`,
 );
 copyFileSync(path.join(dataDir, 'deluge-deck-plugin.js'), path.join(dataDir, `deluge-deck-${version}-plugin.js`));
 rmSync(path.join(pluginRoot, 'build'), { recursive: true, force: true });

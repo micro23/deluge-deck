@@ -81,9 +81,16 @@ export function DarkhandOverview({ stats, counts, onPreferences, fresh, sourceKe
   return <div className="dh-overview"><section className="dh-stats" aria-label="Live session statistics">{fields.map(([Icon, label, value, caption, tone]) => <div className={`dh-stat ${tone}`} key={label}><i><Icon size={22} /></i><div><span>{label}</span><strong>{value}</strong><small>{caption}</small></div></div>)}</section><section className="dh-chart" aria-label="Transfer speed history"><header><strong>Transfer speed</strong><label><span className="sr-only">Speed chart range</span><select aria-label="Speed chart range" value={minutes} onChange={e => setMinutes(Number(e.target.value))}>{[[5, 'Last 5 minutes'], [60, 'Last hour'], [720, 'Last 12 hours'], [1440, 'Last day'], [43200, 'Last 30 days'], [129600, 'Last 90 days']].map(([n, label]) => <option value={n} key={n}>{label}</option>)}{![5, 60, 720, 1440, 43200, 129600].includes(minutes) && <option value={minutes}>Last {minutes} minutes</option>}</select></label><details><summary>Custom</summary><form onSubmit={e => { e.preventDefault(); const value = Number(new FormData(e.currentTarget).get('minutes')); if (Number.isInteger(value) && value >= 1 && value <= 129600) { setMinutes(value); e.currentTarget.closest('details').open = false; } }}><label>Minutes (up to 90 days)<input name="minutes" type="number" min="1" max="129600" step="1" defaultValue={minutes} required /></label><button>Apply</button></form></details></header><div className="dh-chart-legend"><span>● Download <b>{rate(stats.download_rate)}</b></span><span>● Upload <b>{rate(stats.upload_rate)}</b></span></div><div className="dh-plot"><span>{rate(max)}</span><svg viewBox="0 0 700 125" preserveAspectRatio="none" role="img" aria-label={`${minutes} minutes of download and upload speeds; gaps indicate missing samples`}><defs><linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#3ecf8e" stopOpacity=".15" /><stop offset="1" stopColor="#3ecf8e" stopOpacity="0" /></linearGradient></defs>{[10, 60, 110].map(y => <path key={y} d={`M0 ${y}H700`} stroke="#262c37" strokeDasharray="2 5" />)}<path d={area} fill={`url(#${id}-fill)`} />{paths.map((d, i) => <path key={i} d={d} fill="none" stroke={i ? '#5b9dff' : '#3ecf8e'} strokeWidth="1.8" vectorEffect="non-scaling-stroke" />)}</svg><div className="dh-axis">{[start, start + minutes * 30000, clock].map(t => <span key={t}>{minutes >= 1440 ? new Date(t).toLocaleDateString() : new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>)}</div></div><small className="dh-history-note">{daemonHistory ? 'Daemon history · recorded while your browser is closed' : 'Browser session only · enable the Deluge Deck core plugin for persistent history'}{!fresh && ' · connection interrupted'}</small></section></div>;
 }
 
-export function DarkhandDetails({ layout, setLayout, children }) {
+export function DarkhandDetails({ layout, setLayout, torrentHash, children }) {
   const panel = useRef(null);
   const drag = useRef(null);
+  const [autoFit, setAutoFit] = useState(true);
+  useEffect(() => {
+    if (!torrentHash) return;
+    setAutoFit(true);
+    setLayout(current => ({ ...current, collapsed: false }));
+  }, [torrentHash, setLayout]);
+  useEffect(() => { if (!layout.collapsed) setAutoFit(true); }, [layout.collapsed]);
   const [sideBySide, setSideBySide] = useState(() => window.matchMedia('(min-width:1101px)').matches);
   useEffect(() => {
     const media = window.matchMedia('(min-width:1101px)');
@@ -91,15 +98,42 @@ export function DarkhandDetails({ layout, setLayout, children }) {
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
+  const [panelSize, setPanelSize] = useState(0);
   const vertical = layout.details === 'bottom' || !sideBySide;
-  const resize = value => setLayout(current => ({ ...current, [vertical ? 'height' : 'width']: Math.max(vertical ? 140 : 320, Math.min(vertical ? 600 : 720, Math.round(value))) }));
-  return <section ref={panel} className={`dh-details-card ${layout.collapsed ? 'dh-collapsed' : ''}`} aria-label="Torrent details panel">
-    {!layout.collapsed && <div className="dh-details-resize" role="separator" aria-label="Resize torrent details" aria-orientation={vertical ? 'horizontal' : 'vertical'} aria-valuemin={vertical ? 140 : 320} aria-valuemax={vertical ? 600 : 720} aria-valuenow={vertical ? layout.height || 250 : layout.width || 400} tabIndex="0"
+  useEffect(() => {
+    const measure = () => {
+      const rect = panel.current?.getBoundingClientRect();
+      if (rect) setPanelSize(Math.round(vertical ? rect.height : rect.width));
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(panel.current);
+    measure();
+    return () => observer.disconnect();
+  }, [vertical]);
+  useEffect(() => {
+    if (!torrentHash || layout.collapsed || !vertical || !autoFit) return;
+    let frame;
+    const reveal = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => panel.current?.scrollIntoView({ block: 'nearest' }));
+    };
+    // Fonts and fetched tab contents can change the initial fitted height.
+    const observer = new ResizeObserver(reveal);
+    observer.observe(panel.current.querySelector('.dh-details-scroll'));
+    reveal();
+    return () => { observer.disconnect(); cancelAnimationFrame(frame); };
+  }, [torrentHash, layout.collapsed, vertical, autoFit]);
+  const resize = value => {
+    if (vertical) setAutoFit(false);
+    setLayout(current => ({ ...current, [vertical ? 'height' : 'width']: Math.max(vertical ? 140 : 320, Math.min(vertical ? 600 : 720, Math.round(value))) }));
+  };
+  return <section ref={panel} className={`dh-details-card ${layout.collapsed ? 'dh-collapsed' : ''} ${vertical && autoFit ? 'dh-auto-fit' : ''}`} aria-label="Torrent details panel">
+    {!layout.collapsed && <div className="dh-details-resize" role="separator" aria-label="Resize torrent details" aria-orientation={vertical ? 'horizontal' : 'vertical'} aria-valuemin={vertical ? 140 : 320} aria-valuemax={vertical ? Math.max(600, panelSize) : 720} aria-valuenow={panelSize || (vertical ? layout.height || 250 : layout.width || 400)} tabIndex="0"
       onPointerDown={e => { if (e.button !== 0) return; e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId); const r = panel.current.getBoundingClientRect(); drag.current = { x: e.clientX, y: e.clientY, size: vertical ? r.height : r.width }; }}
       onPointerMove={e => { if (drag.current) resize(drag.current.size - (vertical ? e.clientY - drag.current.y : e.clientX - drag.current.x)); }}
       onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}
       onKeyDown={e => { if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); const r = panel.current.getBoundingClientRect(); resize((vertical ? r.height : r.width) + (['ArrowUp', 'ArrowLeft'].includes(e.key) ? 20 : -20)); } }} />}
-    <button className="dh-details-toggle" aria-expanded={!layout.collapsed} onClick={() => setLayout(current => ({ ...current, collapsed: !current.collapsed }))}>{layout.collapsed ? 'Open torrent details' : 'Collapse torrent details'}</button>
-    {!layout.collapsed && children}
+    <button className="dh-details-toggle" aria-expanded={!layout.collapsed} onClick={() => { setAutoFit(true); setLayout(current => ({ ...current, collapsed: !current.collapsed })); }}>{layout.collapsed ? 'Open torrent details' : 'Collapse torrent details'}</button>
+    {!layout.collapsed && <div className="dh-details-scroll">{children}</div>}
   </section>;
 }

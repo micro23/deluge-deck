@@ -11,18 +11,15 @@ function QueensSkyline() {
 
 export function MetsIdentity({ logo }) {
   return <div className="sports-identity sports-identity-mets">
-    <span className="sports-club-motto">QUEENS · NEW YORK</span>
     <div className="mets-cap-stage"><QueensSkyline /><img src={logo} alt="New York Mets" width="88" height="88" /></div>
     <strong className="mets-script">Mets</strong>
-    <span className="mets-identity-caption">NEW YORK BASEBALL</span>
+    <span className="mets-identity-caption">Baseball · Queens, New York</span>
   </div>;
 }
 
 export function MetsMasthead() {
   return <div className="mets-masthead">
-    <span>QUEENS, NEW YORK</span>
     <div><small>NEW YORK</small><strong>Mets</strong></div>
-    <span>BLUE &amp; ORANGE</span>
     <QueensSkyline />
   </div>;
 }

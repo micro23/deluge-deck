@@ -5111,6 +5111,9 @@ function App() {
           event.preventDefault();
           setAddFiles(null);
           setDetail(null);
+          if (theme === 'darkhand' && !addFiles && !menuTorrent) {
+            setDarkhandLayout(current => ({ ...current, collapsed: true }));
+          }
           setMenuTorrent(null);
         }
         return;
@@ -5149,7 +5152,7 @@ function App() {
     };
     window.addEventListener('keydown', keys);
     return () => window.removeEventListener('keydown', keys);
-  }, [addFiles, detail, menuTorrent]);
+  }, [addFiles, detail, menuTorrent, theme]);
   const copyMagnet = async (torrent) => {
     setMenuTorrent(null);
     try {
@@ -5411,7 +5414,10 @@ function App() {
               theme={theme}
               selected={selected}
               setSelected={setSelected}
-              onOpen={setDetail}
+              onOpen={torrent => {
+                setDetail(torrent);
+                if (theme === 'darkhand') setDarkhandLayout(current => ({ ...current, collapsed: false }));
+              }}
               onMenu={(torrent, event) => {
                 const rect = event.currentTarget.getBoundingClientRect();
                 const width = 224;
@@ -5434,7 +5440,7 @@ function App() {
             />
             {theme === 'darkhand' && <>
               <DarkhandOverview stats={stats} counts={torrentCounts} onPreferences={openPreferences} fresh={!refreshError} sourceKey={sessionData?.host?.id || sessionData?.delugeUrl || 'default'} />
-              {!mobileLayout && <DarkhandDetails layout={darkhandLayout} setLayout={setDarkhandLayout}>
+              {!mobileLayout && <DarkhandDetails layout={darkhandLayout} setLayout={setDarkhandLayout} torrentHash={detail?.hash}>
                 {detail ? <DetailDrawer key={detail.hash} torrent={detail} inline networkTabs onClose={() => setDetail(null)} onAction={action => act(action, [detail.hash])} /> : <div className="dh-details-empty">Select a torrent to view its details.</div>}
               </DarkhandDetails>}
             </>}

@@ -8,6 +8,7 @@ import { SPORTS_CLUBS } from '../src/app/sports-clubs.js';
 
 const { version } = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
 const css = await readFile(new URL(`../plugin/deluge_deck/data/deluge-deck-${version}.css`, import.meta.url), 'utf8');
+const bootstrap = await readFile(new URL(`../plugin/deluge_deck/data/deluge-deck-${version}-style.js`, import.meta.url), 'utf8');
 assert.ok(css.length < 1_000_000, 'Optional CSS must not duplicate the multi-megabyte artwork payload');
 const origin = process.env.DECK_HOSTED_FIXTURE_URL || 'http://127.0.0.1:8130';
 await fetch(`${origin}/json`, { method:'POST', body:JSON.stringify({method:'auth.login'}) });
@@ -50,6 +51,18 @@ try {
       const injected = await page.locator('style[data-deluge-deck="true"]').textContent();
       assert.equal(await page.locator('style[data-deluge-deck="true"]').getAttribute('data-theme'), theme, 'Selected theme is assembled before rendering');
       assert.ok(css.length < 500 && !css.includes('@font-face') && !css.includes('data:image/'), 'Optional CSS must not duplicate resources');
+      // Deluge may register the style resource again after the theme is active.
+      // Replaying it must preserve the complete stylesheet and rendered layout.
+      for (let replay = 0; replay < 2; replay++) {
+        await page.addScriptTag({content:bootstrap});
+        assert.equal(await page.locator('style[data-deluge-deck="true"]').count(), 1, 'Style bootstrap must be idempotent');
+        assert.equal(await page.locator('style[data-deluge-deck="true"]').textContent(), injected, 'Late bootstrap preserves the selected theme');
+        assert.deepEqual(await snapshot(), originalState, `${theme} ${width}: late bootstrap changed layout`);
+      }
+      if (theme === 'terminal' && width > 760) {
+        assert.equal(await page.locator('.stat-icon').first().isVisible(), false, 'Terminal keeps its text-only stat cards');
+        assert.ok(await page.locator('.topbar').evaluate(el => el.getBoundingClientRect().height >= 59), 'Terminal keeps the full CLI header');
+      }
       // Both orders are used by Deluge variants. Neither may change rendering.
       for (const placement of ['before','after']) {
         await page.evaluate(({css,placement}) => {

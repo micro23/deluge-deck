@@ -38,7 +38,6 @@ export function SportsIdentity({ theme, compact = false, fallback = null }) {
   if (compact) return <div className={`sports-mobile-brand sports-mobile-brand-${theme} ${SPORTS_DESIGNS[theme] ? `sports-lettering-${SPORTS_DESIGNS[theme].lettering}` : ''}`}><img src={LOGOS[theme]} alt={club.name} width="32" height="32" /><strong>{club.short}</strong></div>;
   return (
     <div className={`sports-identity sports-identity-${theme} sports-lettering-${SPORTS_DESIGNS[theme].lettering}`}>
-      <span className="sports-club-motto" aria-hidden="true">{club.motto}</span>
       <div className="sports-logo-stage"><SportsMotif theme={theme} /><img src={LOGOS[theme]} alt={club.name} width="88" height="88" /></div>
       <strong className="sports-wordmark">{club.short}</strong>
       <span className="sports-club-sport">{club.sport} · {club.city}</span>
@@ -52,9 +51,7 @@ export function SportsMasthead({ theme }) {
   if (theme === 'mets') return <MetsMasthead />;
   const design = SPORTS_DESIGNS[theme];
   return <div className={`sports-masthead sports-lettering-${design.lettering}`}>
-    <span>{club.city.toUpperCase()}<br />{club.sport.toUpperCase()}</span>
     <div className="sports-masthead-title"><img src={LOGOS[theme]} alt="" width="42" height="42" /><strong>{club.short}</strong></div>
-    <span>{club.motto}</span>
     <SportsMotif theme={theme} />
   </div>;
 }

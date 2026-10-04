@@ -327,3 +327,16 @@
 :root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches button:focus-visible { color:var(--text); background:var(--surface-3); }
 :root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches button[aria-pressed="true"] { color:var(--text); background:var(--surface-3); box-shadow:inset 0 0 0 1px var(--line-strong); }
 :root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar:not(.collapsed) .sidebar-bottom .nav-item>svg { display:none!important; }
+
+/* One details scroller, with native wheel chaining into the dashboard. */
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard { padding-right:8px!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard :is(.table-shell,.dh-details-card,.dh-inline-details,.drawer-tabs,.dh-network-scroll) { overscroll-behavior-y:auto!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.dh-details-card { overflow:visible; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.dh-details-card.dh-auto-fit:not(.dh-collapsed) { height:auto; max-height:none; }
+:root[data-theme="darkhand"][data-theme] body .dh-details-card .dh-inline-details { height:auto!important; overflow:visible!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details :is(.drawer-head,.drawer-tabs,.drawer-content,.drawer-footer) { flex:none; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-content { overflow:visible!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.dh-details-card { scroll-margin-block:16px 50px; }
+
+:root[data-theme="darkhand"][data-theme] body .dh-details-scroll { height:calc(100% - 24px); overflow:auto; overscroll-behavior-y:auto; border-radius:0 0 18px 18px; }
+:root[data-theme="darkhand"][data-theme] body .dh-auto-fit .dh-details-scroll { height:auto; max-height:max(574px,calc(100dvh - 176px)); }
