@@ -5338,7 +5338,7 @@ function App() {
             </button>
           </div>}
           <SportsMasthead theme={theme} />
-          {theme === 'matrix' && <MatrixMasthead interrupted={Boolean(refreshError)} />}
+          {theme === 'matrix' && <MatrixMasthead />}
           {theme === 'independence' && <USAMasthead />}
           {theme !== 'darkhand' && <div className="stats-grid">
             <Stat

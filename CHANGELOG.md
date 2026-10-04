@@ -1,3 +1,9 @@
+## 1.0.85
+
+- Remove the Matrix masthead's decorative slogan, source connection phrases, system number, and transmission phrases.
+- Remove the source slogan from the Matrix theme preview and refresh its gallery images.
+- Refresh the versioned WebUI resources and source-only Python 3.14 plugin egg.
+
 ## 1.0.84
 
 - Give all 24 sports themes factual heritage mastheads: establishment year, current venue opening year, and World Series, NBA, Super Bowl, or Stanley Cup title counts.

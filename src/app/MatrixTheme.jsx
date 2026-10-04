@@ -14,13 +14,10 @@ export function MatrixIdentity() {
   </div>;
 }
 
-export function MatrixMasthead({ interrupted = false }) {
+export function MatrixMasthead() {
   return <header className="matrix-masthead" aria-label="The Matrix">
     <div className="matrix-masthead-copy">
       <h1>THE MATRIX</h1>
-      <div className="matrix-source"><i className={interrupted ? 'interrupted' : ''} aria-hidden="true" />{interrupted ? 'RECONNECTING TO THE SOURCE' : 'CONNECTED TO THE SOURCE'}</div>
-      <p>Every transfer. One reality.</p>
     </div>
-    <div className="matrix-masthead-coordinate" aria-hidden="true">SYSTEM / 01<span>{interrupted ? 'LINK INTERRUPTED' : 'TRANSMISSION ACTIVE'}</span></div>
   </header>;
 }

@@ -97,12 +97,6 @@
 :root[data-theme="matrix"] .matrix-masthead::after { content:""; position:absolute; z-index:-1; inset:0; background:linear-gradient(180deg,#070b0a18,transparent 70%,var(--bg)); pointer-events:none; }
 :root[data-theme="matrix"] .matrix-masthead-copy { position:absolute; left:24px; top:38px; }
 :root[data-theme="matrix"] .matrix-masthead h1 { color:#f4f8f5; margin:0 0 13px; font:400 clamp(32px,3.9vw,56px)/1.1 Georgia,"Times New Roman",serif; letter-spacing:.22em; text-shadow:0 2px 30px #000; white-space:nowrap; }
-:root[data-theme="matrix"] .matrix-source { display:flex; align-items:center; gap:10px; color:var(--cyan); font:10px/1.5 var(--matrix-mono); letter-spacing:.29em; }
-:root[data-theme="matrix"] .matrix-source i { width:5px; height:5px; background:var(--cyan); border-radius:50%; box-shadow:0 0 12px #63f99a99; }
-:root[data-theme="matrix"] .matrix-source i.interrupted { background:var(--amber); box-shadow:none; }
-:root[data-theme="matrix"] .matrix-masthead p { margin:20px 0 0; color:var(--muted); font:11px/1.5 var(--matrix-mono); letter-spacing:.18em; }
-:root[data-theme="matrix"] .matrix-masthead-coordinate { position:absolute; right:20px; bottom:16px; color:var(--muted-2); font:8px/1.8 var(--matrix-mono); letter-spacing:.16em; text-align:right; opacity:.8; }
-:root[data-theme="matrix"] .matrix-masthead-coordinate span { display:block; }
 :root[data-theme="matrix"] body .workspace .stats-grid { gap:12px!important; margin-bottom:16px!important; grid-template-columns:repeat(4,minmax(0,1fr))!important; }
 :root[data-theme="matrix"] body .workspace .stats-grid .stat-card {
   position:relative; display:block!important; height:96px!important; padding:17px 18px!important;
@@ -169,7 +163,6 @@
   :root[data-theme="matrix"] .matrix-masthead { height:188px; }
   :root[data-theme="matrix"] .matrix-masthead-copy { left:16px; }
   :root[data-theme="matrix"] .matrix-masthead h1 { font-size:32px; letter-spacing:.17em; }
-  :root[data-theme="matrix"] .matrix-source { font-size:8px; letter-spacing:.13em; }
   :root[data-theme="matrix"] body .workspace .stats-grid .stat-card { padding:16px 12px!important; }
   :root[data-theme="matrix"] body .workspace .stats-grid .stat-card > .stat-spark { width:24%!important; right:9px!important; opacity:.6; }
 }
@@ -183,9 +176,6 @@
   :root[data-theme="matrix"] .matrix-masthead { height:168px; margin-bottom:12px; background-position:60% 50%; }
   :root[data-theme="matrix"] .matrix-masthead-copy { left:15px; top:35px; }
   :root[data-theme="matrix"] .matrix-masthead h1 { font-size:30px; letter-spacing:.17em; margin-bottom:12px; }
-  :root[data-theme="matrix"] .matrix-source { font-size:7px; letter-spacing:.14em; gap:6px; }
-  :root[data-theme="matrix"] .matrix-masthead p { margin-top:15px; font-size:9px; letter-spacing:.08em; }
-  :root[data-theme="matrix"] .matrix-masthead-coordinate { display:none; }
   :root[data-theme="matrix"] body .workspace .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:8px!important; margin-bottom:14px!important; }
   :root[data-theme="matrix"] body .workspace .stats-grid .stat-card { height:86px!important; padding:13px 12px!important; }
   :root[data-theme="matrix"] body .workspace .stats-grid .stat-card:nth-child(-n+2) strong { font-size:19px!important; max-width:100%!important; width:auto!important; }
@@ -199,7 +189,6 @@
   :root[data-theme="matrix"] .matrix-masthead { height:148px; }
   :root[data-theme="matrix"] .matrix-masthead-copy { top:26px; }
   :root[data-theme="matrix"] .matrix-masthead h1 { font-size:38px; }
-  :root[data-theme="matrix"] .matrix-masthead p { margin-top:12px; }
   :root[data-theme="matrix"] body .workspace .stats-grid .stat-card { height:80px!important; padding-top:11px!important; }
 }
 @media (prefers-reduced-motion:no-preference) {
@@ -211,7 +200,6 @@
 }
 .theme-preview.matrix { position:relative; overflow:hidden; background:linear-gradient(90deg,#080d0bbd,transparent),url('../assets/matrix-atmosphere.webp') center/cover; border-color:#476c52!important; }
 .theme-preview.matrix::before { content:"THE MATRIX"; position:absolute; top:27%; left:6%; color:#f4f8f5; font:400 16px Georgia,serif; letter-spacing:.21em; }
-.theme-preview.matrix::after { content:"CONNECTED TO THE SOURCE"; position:absolute; top:57%; left:6%; color:#63f99a; font:5px "Matrix Mono",Consolas,monospace; letter-spacing:.2em; }
 /* Reset shared centered-grid alignment for the horizontal telemetry cards. */
 :root[data-theme="matrix"] body .workspace .stats-grid .stat-card > div:nth-child(2) { justify-items:start!important; align-items:start!important; }
 :root[data-theme="matrix"] body .workspace .stats-grid .stat-card :is(span,strong,small) { justify-self:start!important; align-self:start!important; width:100%!important; }
