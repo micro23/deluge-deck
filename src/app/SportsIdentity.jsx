@@ -3,6 +3,7 @@ import { SPORTS_DESIGNS } from './sports-designs.js';
 import { SportsMotif } from './SportsMotif.jsx';
 import { MetsIdentity, MetsMasthead } from './MetsBrand.jsx';
 import metsLogo from '../assets/sports/mets-logo.svg?inline';
+import { YankeesIdentity, YankeesMasthead } from './YankeesBrand.jsx';
 // All logos are inline for Deluge's self-contained JavaScript resource.
 import { SPORTS_CLUBS } from './sports-clubs.js';
 import logo0 from '../assets/sports/yankees-logo.svg?inline';
@@ -35,6 +36,7 @@ export function SportsIdentity({ theme, compact = false, fallback = null }) {
   const club = SPORTS_CLUBS[theme];
   if (!club) return fallback;
   if (theme === 'mets' && !compact) return <MetsIdentity logo={metsLogo} />;
+  if (theme === 'yankees' && !compact) return <YankeesIdentity logo={LOGOS.yankees} />;
   if (compact) return <div className={`sports-mobile-brand sports-mobile-brand-${theme} ${SPORTS_DESIGNS[theme] ? `sports-lettering-${SPORTS_DESIGNS[theme].lettering}` : ''}`}><img src={LOGOS[theme]} alt={club.name} width="32" height="32" /><strong>{club.short}</strong></div>;
   return (
     <div className={`sports-identity sports-identity-${theme} sports-lettering-${SPORTS_DESIGNS[theme].lettering}`}>
@@ -49,6 +51,7 @@ export function SportsMasthead({ theme }) {
   const club = SPORTS_CLUBS[theme];
   if (!club) return null;
   if (theme === 'mets') return <MetsMasthead />;
+  if (theme === 'yankees') return <YankeesMasthead logo={LOGOS.yankees} />;
   const design = SPORTS_DESIGNS[theme];
   return <div className={`sports-masthead sports-lettering-${design.lettering}`}>
     <div className="sports-masthead-title"><img src={LOGOS[theme]} alt="" width="42" height="42" /><strong>{club.short}</strong></div>

@@ -99,6 +99,7 @@ import './themes/sports.css';
 import './themes/darkhand.css';
 import './themes/mets.css';
 import './themes/sports-bespoke.css';
+import './themes/yankees.css';
 import './windowed-list.css';
 import { createPoller } from '../server/polling.mjs';
 

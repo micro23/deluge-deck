@@ -1,0 +1,121 @@
+/* Yankees-only heritage treatment: chalk, navy, stadium steel, and light. */
+:root[data-theme="yankees"] {
+  --theme-radius:5px;
+  --club-edge:#d1d9e5;
+  --club-card:linear-gradient(145deg,#182943,#091426 76%);
+  --club-card-ink:#f7f9fc;
+  --club-card-muted:#c8d3e2;
+  --club-card-line:#a7b6cb;
+}
+:root[data-theme="yankees"] body .app-shell {
+  background:linear-gradient(180deg,#030916e8 4%,#071226b8 52%,#03091655),var(--club-art) center 58%/cover fixed!important;
+}
+:root[data-theme="yankees"] body .sidebar {
+  background:linear-gradient(180deg,#071226 0%,#08152aeb 42%,#0712269c 76%),var(--club-art) center bottom/auto 68% no-repeat!important;
+  border-right:1px solid #a9b7cb!important;
+  box-shadow:inset -4px 0 0 #1c3761, inset -5px 0 0 #ffffff20;
+}
+:root[data-theme="yankees"] .sports-identity-yankees {
+  position:relative; gap:2px; padding:11px 4px 16px; margin-bottom:14px;
+  border-bottom:3px double #d2d9e4;
+}
+:root[data-theme="yankees"] .sports-identity-yankees::after {
+  content:""; position:absolute; inset:auto 8px 5px; height:1px;
+  background:linear-gradient(90deg,transparent,#ffffff70,transparent);
+}
+:root[data-theme="yankees"] .yankees-crest {
+  position:relative; isolation:isolate; display:grid; place-items:center;
+  width:100%; height:105px; margin-bottom:2px;
+}
+:root[data-theme="yankees"] .yankees-crest::before {
+  content:""; position:absolute; width:78px; height:78px; border-radius:50%;
+  border:1px solid #d5dce8; background:radial-gradient(circle at 50% 35%,#263b5a,#071326 72%);
+  box-shadow:0 0 0 5px #09172b,0 0 0 6px #cbd4e155,0 9px 24px #000a;
+}
+:root[data-theme="yankees"] .yankees-crest img {
+  z-index:2; width:57px; height:67px; filter:brightness(0) invert(1) drop-shadow(0 3px 4px #000a);
+}
+:root[data-theme="yankees"] .yankees-stadium-lines {
+  position:absolute; inset:auto 0 0; z-index:0; width:100%; height:68px;
+  color:#d6dfed; opacity:.19;
+}
+:root[data-theme="yankees"] .yankees-crest-year {
+  position:absolute; z-index:3; right:calc(50% - 48px); bottom:8px;
+  padding:2px 4px; color:#edf2f8; background:#0a1729;
+  border:1px solid #71839d; font:700 7px/1 'DM Mono',monospace; letter-spacing:.12em;
+}
+:root[data-theme="yankees"] .yankees-kicker,
+:root[data-theme="yankees"] .yankees-identity-caption,
+:root[data-theme="yankees"] .yankees-heritage {
+  color:#c5d0df; font:700 8px/1.5 'DM Mono',monospace; letter-spacing:.13em;
+}
+:root[data-theme="yankees"] .yankees-wordmark {
+  margin:1px 0 2px; color:#fff!important; font:bold italic 43px/.98 Georgia,serif!important;
+  letter-spacing:-.075em!important; text-shadow:0 3px 0 #263c60,0 8px 20px #000a;
+}
+:root[data-theme="yankees"] .yankees-identity-caption { color:#fff; letter-spacing:.08em; }
+:root[data-theme="yankees"] .yankees-heritage { margin-top:7px; color:#aebed4; font-size:7px; letter-spacing:.16em; }
+:root[data-theme="yankees"] .sidebar.collapsed .yankees-crest { height:64px; }
+:root[data-theme="yankees"] .sidebar.collapsed .yankees-crest::before { width:50px; height:50px; }
+:root[data-theme="yankees"] .sidebar.collapsed .yankees-crest img { width:36px; height:42px; }
+:root[data-theme="yankees"] .sidebar.collapsed .yankees-stadium-lines,
+:root[data-theme="yankees"] .sidebar.collapsed .yankees-crest-year { display:none; }
+:root[data-theme="yankees"] .sidebar.collapsed .yankees-wordmark { display:none; }
+:root[data-theme="yankees"] .sidebar.collapsed .yankees-identity { padding:8px 0 12px; }
+:root[data-theme="yankees"] .yankees-masthead {
+  position:relative; isolation:isolate; display:flex; align-items:center; justify-content:space-between;
+  min-height:92px; padding:12px 24px; margin:0 0 13px; overflow:hidden;
+  border:1px solid #aab8cb; border-bottom:3px double #e2e8f0; border-radius:4px;
+  background:linear-gradient(100deg,#07152aee 0%,#142743e8 48%,#091529f2 100%),var(--club-art) center 45%/cover;
+  box-shadow:inset 0 1px #ffffff35,0 10px 26px #0008;
+}
+:root[data-theme="yankees"] .yankees-masthead::before,
+:root[data-theme="yankees"] .yankees-masthead::after {
+  content:""; position:absolute; z-index:0; top:0; bottom:0; width:1px; background:#e4eaf355;
+}
+:root[data-theme="yankees"] .yankees-masthead::before { left:12px; }
+:root[data-theme="yankees"] .yankees-masthead::after { right:12px; }
+:root[data-theme="yankees"] .yankees-masthead-art { position:absolute; inset:0; z-index:-1; overflow:hidden; }
+:root[data-theme="yankees"] .yankees-masthead-art .yankees-stadium-lines {
+  inset:auto 0 -3px; height:97px; opacity:.12;
+}
+:root[data-theme="yankees"] .yankees-masthead-lockup,
+:root[data-theme="yankees"] .yankees-masthead-story { position:relative; z-index:1; display:flex; align-items:center; }
+:root[data-theme="yankees"] .yankees-masthead-lockup { gap:12px; }
+:root[data-theme="yankees"] .yankees-masthead-lockup img { width:50px; height:50px; object-fit:contain; filter:brightness(0) invert(1) drop-shadow(0 2px 3px #000); }
+:root[data-theme="yankees"] .yankees-masthead-lockup div { display:flex; flex-direction:column; gap:1px; }
+:root[data-theme="yankees"] .yankees-masthead-lockup span,
+:root[data-theme="yankees"] .yankees-opened { color:#d1dbea; font:700 8px/1.4 'DM Mono',monospace; letter-spacing:.17em; }
+:root[data-theme="yankees"] .yankees-masthead-lockup strong { color:#fff; font:bold italic 42px/.98 Georgia,serif; letter-spacing:-.07em; text-shadow:0 3px 0 #263c60; }
+:root[data-theme="yankees"] .yankees-masthead-story { gap:22px; }
+:root[data-theme="yankees"] .yankees-opened b { color:#9db0ca; }
+:root[data-theme="yankees"] .yankees-callout { color:#fff; font:700 10px/1.3 'DM Mono',monospace; letter-spacing:.16em; }
+:root[data-theme="yankees"] .yankees-titles { display:flex; align-items:center; gap:8px; padding-left:15px; border-left:1px solid #bfcad955; color:#fff; }
+:root[data-theme="yankees"] .yankees-titles strong { font:700 33px/.9 Georgia,serif; }
+:root[data-theme="yankees"] .yankees-titles small { color:#d1dbea; font:700 7px/1.4 'DM Mono',monospace; letter-spacing:.09em; }
+:root[data-theme="yankees"] body .workspace .stats-grid .stat-card {
+  border-radius:5px!important; border:1px solid #8294ae!important;
+  border-top:2px solid #edf2f8!important;
+  background:repeating-linear-gradient(90deg,#dce5f10a 0 1px,transparent 1px 14px),linear-gradient(145deg,#152641,#091426 78%)!important;
+  box-shadow:inset 0 1px #ffffff1c,inset 0 -3px #030b17,0 9px 22px #0008!important;
+}
+:root[data-theme="yankees"] body .workspace .stats-grid .stat-card:nth-child(even) { border-top-color:#9babc1!important; }
+:root[data-theme="yankees"] body .workspace .stats-grid .stat-card::before { inset:4px; border:1px solid #e4ebf21c; border-radius:2px; }
+:root[data-theme="yankees"] body .table-shell { border-radius:4px!important; box-shadow:inset 0 3px #d4dce7,0 15px 32px #0008!important; }
+:root[data-theme="yankees"] body .table-shell thead th { border-bottom:2px solid #c4cfde!important; background:#12223a!important; }
+:root[data-theme="yankees"] body .nav-item.active { box-shadow:inset 4px 0 #e1e7ef,0 5px 16px #0005!important; }
+:root[data-theme="yankees"] body .deck-status-rail { border-bottom:3px double #cbd5e3!important; box-shadow:inset 0 2px #1b365f,0 7px 20px #0007!important; }
+:root[data-theme="yankees"] body .progress-bar { background:repeating-linear-gradient(90deg,#dfe7f1 0 7px,#fff 7px 8px)!important; }
+@media(max-width:1100px) and (min-width:761px) {
+  :root[data-theme="yankees"] .yankees-masthead { min-height:78px; padding:10px 19px; }
+  :root[data-theme="yankees"] .yankees-masthead-story { gap:12px; }
+  :root[data-theme="yankees"] .yankees-callout { display:none; }
+}
+@media(max-width:760px) {
+  :root[data-theme="yankees"] .yankees-masthead { display:none; }
+  :root[data-theme="yankees"] .sports-mobile-brand strong { font:bold italic 25px/1 Georgia,serif; letter-spacing:-.06em; }
+}
+@media(max-width:430px) {
+  :root[data-theme="yankees"] .yankees-identity-caption { font-size:7px; letter-spacing:.035em; }
+  :root[data-theme="yankees"] .yankees-heritage { letter-spacing:.09em; }
+}

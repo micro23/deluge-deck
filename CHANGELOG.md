@@ -1,3 +1,9 @@
+## 1.0.81
+
+- Give the Yankees theme a dedicated Bronx identity and stadium-history masthead, with stronger pinstripe, navy, and chalk details throughout the dashboard.
+- Add Yankees heritage copy including the 1923 Stadium opening, 27 World Series championships, and “The House that Ruth Built.”
+- Refresh the versioned WebUI resources and source-only Python 3.14 plugin egg.
+
 ## 1.0.80
 
 - Update the USA sidebar flag to the current 50-star design.

@@ -5,9 +5,9 @@ export const SPORTS_CLUBS = {
     "short": "Yankees",
     "city": "New York",
     "sport": "Baseball",
-    "motto": "PINSTRIPE PRIDE",
+    "motto": "THE HOUSE THAT RUTH BUILT",
     "label": "NY Yankees",
-    "description": "Pinstripe precision. Midnight navy and stadium silver.",
+    "description": "Bronx nights, Monument Park legends, and pinstripes under the lights.",
     "logoSource": "https://www.mlbstatic.com/team-logos/147.svg"
   },
   "giants": {
