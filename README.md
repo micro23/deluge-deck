@@ -4,7 +4,7 @@ Deluge Deck is a keyboard-friendly WebUI for Deluge 2.1 and 2.2. It gives you a 
 
 [Download the latest Deluge Deck plugin](https://github.com/micro23/deluge-deck/releases/latest) · [Release history](CHANGELOG.md) · [Release and build guide](docs/RELEASE.md)
 
-Current version: **1.0.88**
+Current version: **1.0.89**
 
 ## Features
 
@@ -18,6 +18,50 @@ Current version: **1.0.88**
 - **Distinct theme design:** Matrix code rain in its progress meter; seasonal artwork and motion; dedicated Yankees and Mets treatments; and recently rebuilt Midnight, Paper, Ocean, Forest, and Sunset themes. Motion follows the operating system’s reduced-motion preference.
 - **Hosted WebUI support:** the plugin serves the same interface inside Deluge Web, including reverse-proxy base paths, and uses Deluge Web’s existing session and settings.
 - **Local companion security:** the standalone service binds to loopback by default, keeps the Deluge session on the server, restricts RPC methods, limits uploads, validates origins, and disables response caching.
+
+
+## Theme screenshots
+
+These previews are captured from the current demo build and are also used in the in-app theme gallery.
+
+### Regular themes
+
+<p align="center">
+  <img src="src/assets/theme-previews/darkhand-optimized.webp" alt="Darkhand theme preview" width="320">
+  <img src="src/assets/theme-previews/terminal-optimized.webp" alt="Terminal theme preview" width="320">
+  <img src="src/assets/theme-previews/matrix-optimized.webp" alt="Matrix theme preview" width="320">
+  <img src="src/assets/theme-previews/dark-optimized.webp" alt="Midnight theme preview" width="320">
+</p>
+<p align="center">
+  <img src="src/assets/theme-previews/light-optimized.webp" alt="Paper theme preview" width="320">
+  <img src="src/assets/theme-previews/ocean-optimized.webp" alt="Ocean theme preview" width="320">
+  <img src="src/assets/theme-previews/forest-optimized.webp" alt="Forest theme preview" width="320">
+  <img src="src/assets/theme-previews/sunset-optimized.webp" alt="Sunset theme preview" width="320">
+</p>
+
+### Holiday themes
+
+<p align="center">
+  <img src="src/assets/theme-previews/christmas-optimized.webp" alt="Christmas theme preview" width="320">
+  <img src="src/assets/theme-previews/halloween-optimized.webp" alt="Halloween theme preview" width="320">
+  <img src="src/assets/theme-previews/valentine-optimized.webp" alt="Valentine theme preview" width="320">
+</p>
+<p align="center">
+  <img src="src/assets/theme-previews/st-patricks-optimized.webp" alt="St. Patrick’s theme preview" width="320">
+  <img src="src/assets/theme-previews/independence-optimized.webp" alt="USA theme preview" width="320">
+  <img src="src/assets/theme-previews/new-year-optimized.webp" alt="New Year theme preview" width="320">
+</p>
+
+### Sports themes
+
+One current preview is shown for each sport.
+
+<p align="center">
+  <img src="src/assets/theme-previews/yankees-optimized.webp" alt="Yankees baseball theme preview" width="320">
+  <img src="src/assets/theme-previews/knicks-optimized.webp" alt="Knicks basketball theme preview" width="320">
+  <img src="src/assets/theme-previews/giants-optimized.webp" alt="Giants football theme preview" width="320">
+  <img src="src/assets/theme-previews/rangers-optimized.webp" alt="Rangers hockey theme preview" width="320">
+</p>
 
 ## Install as a Deluge plugin
 

@@ -1,3 +1,9 @@
+## 1.0.89
+
+- Refresh the in-app theme gallery screenshots for all regular and holiday themes, plus the Yankees, Knicks, Giants, and Rangers as one representative team for each sport.
+- Replace the README’s outdated screenshot set with the current theme gallery previews, showing one team per sport.
+- Rebuild the versioned WebUI resources and source-only Python 3.14 plugin egg.
+
 ## 1.0.88
 
 - Rebuild Midnight, Paper, Ocean, Forest, and Sunset with distinct named identities, original vector symbols and engraving, and dedicated artwork mastheads.
