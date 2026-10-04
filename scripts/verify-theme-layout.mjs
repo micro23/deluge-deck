@@ -73,7 +73,7 @@ try {
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
       }
       // Matrix and USA keep artwork in the masthead and telemetry cards free of seals.
-      assert.ok(cards.every(c => c.textFits && (['matrix', 'independence'].includes(theme) || (c.seals && c.matched))), `${theme} ${width}: ${JSON.stringify(cards)}`);
+      assert.ok(cards.every(c => c.textFits && (['matrix', 'independence', 'dark', 'light', 'ocean', 'forest', 'sunset'].includes(theme) || (c.seals && c.matched))), `${theme} ${width}: ${JSON.stringify(cards)}`);
       if (width > 760) {
         for (const handle of await page.locator('.column-resize-handle').all()) {
           await handle.scrollIntoViewIfNeeded();

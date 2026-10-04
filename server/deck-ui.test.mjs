@@ -28,6 +28,7 @@ const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/themes/sports-heritage.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/darkhand.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/matrix.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/core-refined.css'), 'utf8'),
 ])).join('\n');
 
 test('theme categories cover every persistent theme once with stable sports identities', async () => {
@@ -476,6 +477,11 @@ test('every theme meets AAA text contrast and accessible component contrast', as
     }
     assert.ok(contrastRatio(palette.lineStrong, palette.surface3) >= 3, `${palette.theme} strong control boundaries remain at least 3:1`);
   }
+});
+
+test('Darkhand bulk controls sit above the fixed session status rail', async () => {
+  const css = await readFile(path.join(root, 'src/themes/darkhand.css'), 'utf8');
+  assert.match(css, /\.bulk-bar\s*\{\s*bottom:48px!important;\s*\}/);
 });
 
 test('Halloween is a strict black, neutral, and orange palette without purple', async () => {

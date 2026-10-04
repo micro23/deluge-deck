@@ -354,3 +354,6 @@
 
 /* Let short libraries end at their last row while keeping large lists scrollable. */
 :root[data-theme="darkhand"][data-theme] body .dh-panels>.table-shell { min-height:0!important; height:max-content; max-height:min(70dvh,760px); }
+
+/* Keep the bulk selection controls above Darkhand's fixed status rail. */
+:root[data-theme="darkhand"][data-theme] body .bulk-bar { bottom:48px!important; }

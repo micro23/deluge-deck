@@ -1,3 +1,12 @@
+## 1.0.88
+
+- Rebuild Midnight, Paper, Ocean, Forest, and Sunset with distinct named identities, original vector symbols and engraving, and dedicated artwork mastheads.
+- Replace translucent data surfaces with opaque palettes, refined typography, clearer dashboard cards, custom vector icons, and desktop search in the toolbar.
+- Add theme-specific progress meters: segmented moonlight, ruled ink, flowing water, growing leaves, and layered twilight.
+- Give Forest a deep-green navigation rail and Paper a warm letterpress finish; refine panel geometry and controls across all five themes.
+- Add restrained ambient motion with reduced-motion support and accessible progress values, without decorative slogans.
+- Refresh all five theme previews, versioned WebUI resources, and the source-only Python 3.14 plugin egg.
+
 ## 1.0.87
 
 - Remove the parentheses around M in the Terminal theme's bottom-left Menu label.

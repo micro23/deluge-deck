@@ -68,6 +68,7 @@ import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/th
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
 import { SportsStatIcon } from './app/SportsStatIcon.jsx';
 import { MatrixCodeProgress, MatrixIdentity, MatrixMasthead, MatrixStatIcon } from './app/MatrixTheme.jsx';
+import { CORE_THEMES, CoreIdentity, CoreMasthead, CoreProgress, CoreStatIcon } from './app/CoreThemes.jsx';
 import { USAFlagProgress, USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
@@ -101,6 +102,7 @@ import './themes/mets.css';
 import './themes/sports-bespoke.css';
 import './themes/yankees.css';
 import './themes/sports-heritage.css';
+import './themes/core-refined.css';
 import './windowed-list.css';
 import { createPoller } from '../server/polling.mjs';
 
@@ -391,6 +393,7 @@ function Sidebar({
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
         <SportsIdentity theme={theme} />
+        <CoreIdentity theme={theme} />
         {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg><span>DELUGE</span></div>}
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
         {theme === 'matrix' && <MatrixIdentity />}
@@ -1343,13 +1346,13 @@ function Topbar({
     <>
       <header className="topbar">
         <div className="mobile-brand">
-          {theme === 'matrix' ? <MatrixIdentity /> : theme === 'independence' ? <USAIdentity /> : <SportsIdentity theme={theme} compact fallback={<Brand />} />}
+          {theme === 'matrix' ? <MatrixIdentity /> : theme === 'independence' ? <USAIdentity /> : <SportsIdentity theme={theme} compact fallback={<CoreIdentity theme={theme} compact fallback={<Brand />} />} />}
         </div>
         <div className="topbar-heading">
           <h1>Deluge</h1>
         </div>
         {layoutControls}
-        {(theme === 'darkhand' || ((theme === 'terminal' || theme === 'matrix' || theme === 'independence') && !mobile)) && <SearchField search={search} setSearch={setSearch} placeholder={['matrix', 'independence'].includes(theme) ? 'Search torrents…' : undefined} />}
+        {(theme === 'darkhand' || ((theme === 'terminal' || theme === 'matrix' || theme === 'independence' || CORE_THEMES[theme]) && !mobile)) && <SearchField search={search} setSearch={setSearch} placeholder={['matrix', 'independence'].includes(theme) || CORE_THEMES[theme] ? 'Search torrents…' : undefined} />}
         <div className="top-actions">
           <GlobalControls
             stats={stats}
@@ -1399,7 +1402,7 @@ function Progress({ value = 0, state, theme }) {
   const potionId = useId();
   return (
     <div className="progress-wrap">
-      <div className="progress-track" {...(theme === 'matrix' ? { role:'progressbar', 'aria-label':'Transfer progress', 'aria-valuemin':0, 'aria-valuemax':100, 'aria-valuenow':progress } : {})}>
+      <div className="progress-track" {...(theme === 'matrix' || CORE_THEMES[theme] ? { role:'progressbar', 'aria-label':'Transfer progress', 'aria-valuemin':0, 'aria-valuemax':100, 'aria-valuenow':progress } : {})}>
         <div
           className={`progress-bar ${stateKey(state)}${progress >= 99.95 ? ' complete' : ''}`}
           style={{
@@ -1408,6 +1411,7 @@ function Progress({ value = 0, state, theme }) {
         />
         {theme === 'independence' && <USAFlagProgress progress={progress} id={`${potionId}-usa`} />}
         {theme === 'matrix' && <MatrixCodeProgress progress={progress} state={stateKey(state)} id={`${potionId}-matrix`} />}
+        {CORE_THEMES[theme] && <CoreProgress theme={theme} progress={progress} state={stateKey(state)} id={`${potionId}-core`} />}
         {theme === 'halloween' && (<svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-inside`}>
@@ -5326,7 +5330,7 @@ function App() {
               </button>
             </div>
           )}
-          {theme !== 'darkhand' && ((theme !== 'terminal' && theme !== 'matrix' && theme !== 'independence') || mobileLayout) && <SearchField search={search} setSearch={setSearch} placeholder={['matrix', 'independence'].includes(theme) ? 'Search torrents…' : undefined} />}
+          {theme !== 'darkhand' && ((theme !== 'terminal' && theme !== 'matrix' && theme !== 'independence' && !CORE_THEMES[theme]) || mobileLayout) && <SearchField search={search} setSearch={setSearch} placeholder={['matrix', 'independence'].includes(theme) || CORE_THEMES[theme] ? 'Search torrents…' : undefined} />}
           {theme !== 'darkhand' && <div className="page-heading">
             <div>
               <h1>
@@ -5339,6 +5343,7 @@ function App() {
             </button>
           </div>}
           <SportsMasthead theme={theme} />
+          <CoreMasthead theme={theme} />
           {theme === 'matrix' && <MatrixMasthead />}
           {theme === 'independence' && <USAMasthead />}
           {theme !== 'darkhand' && <div className="stats-grid">
@@ -5641,7 +5646,7 @@ function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }
   return (
     <div className={`stat-card ${tone}`}>
       <div className="stat-icon">
-        {theme === 'matrix' ? <MatrixStatIcon label={label} /> : THEME_CATEGORIES.find(category => category.id === 'sports').themes.includes(theme) ? <SportsStatIcon theme={theme} label={label} /> : <Icon size={17} />}
+        {CORE_THEMES[theme] ? <CoreStatIcon theme={theme} label={label} /> : theme === 'matrix' ? <MatrixStatIcon label={label} /> : THEME_CATEGORIES.find(category => category.id === 'sports').themes.includes(theme) ? <SportsStatIcon theme={theme} label={label} /> : <Icon size={17} />}
       </div>
       <div>
         <span>{label}</span>
