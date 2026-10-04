@@ -332,6 +332,7 @@ function Login({ onConnect, mode, sessionMessage = '' }) {
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Your Deluge Web password"
               autoComplete="current-password"
+              autoFocus
             />
           </label>
           {(error || sessionMessage) && (
@@ -3862,12 +3863,13 @@ function PreferencesModal({
             <div className="shortcut-keys" aria-label="Keyboard shortcuts">
               <kbd title="Add torrent">A</kbd>
               <kbd title="Focus search">/</kbd>
+              <kbd title="Darkhand theme">D</kbd>
               <kbd title="Next theme">T</kbd>
               <kbd title="Previous theme">Shift+T</kbd>
               <kbd title="Close panels">Esc</kbd>
             </div>
             <span className="shortcut-summary">
-              <kbd>T</kbd> next · <kbd>Shift+T</kbd> previous
+              <kbd>D</kbd> Darkhand · <kbd>T</kbd> next · <kbd>Shift+T</kbd> previous
             </span>
           </section>
           <section className="preferences-card native-preferences">
@@ -4877,7 +4879,7 @@ function App() {
   const [theme, setThemeState] = useState(
     () => {
       const saved = localStorage.getItem('deck-theme');
-      return THEMES.some(([key]) => key === saved) ? saved : 'dark';
+      return THEMES.some(([key]) => key === saved) ? saved : 'darkhand';
     },
   );
   const [refreshMs, setRefreshMs] = useState(
@@ -5100,7 +5102,8 @@ function App() {
   }, [stats, torrents.length]);
   useEffect(() => {
     const cycleTheme = event => {
-      if (event.key.toLowerCase() !== 't' || event.metaKey || event.ctrlKey ||
+      const key = event.key.toLowerCase();
+      if (!['d', 't'].includes(key) || event.metaKey || event.ctrlKey ||
           event.altKey || event.repeat || event.isComposing) return;
       const target = event.target instanceof Element ? event.target : null;
       const isTyping = element => element?.isContentEditable || element?.closest?.(
@@ -5108,6 +5111,10 @@ function App() {
       );
       if (isTyping(target) || isTyping(document.activeElement)) return;
       event.preventDefault();
+      if (key === 'd') {
+        setTheme('darkhand');
+        return;
+      }
       setTheme(current => {
         const index = THEME_ORDER.indexOf(current);
         return THEME_ORDER[(index + (event.shiftKey ? -1 : 1) + THEME_ORDER.length) % THEME_ORDER.length];
@@ -5677,14 +5684,14 @@ const mount = async () => {
   }
   mounted = true;
   let theme = localStorage.getItem('deck-theme');
-  if (!THEMES.some(([key]) => key === theme)) theme = 'dark';
+  if (!THEMES.some(([key]) => key === theme)) theme = 'darkhand';
   try {
     await prepareTheme(theme);
     await activateTheme(theme);
   } catch (error) {
     window.__DELUGE_DECK_THEME_ERROR__ = error.message;
-    localStorage.setItem('deck-theme', 'dark');
-    try { await prepareTheme('dark'); await activateTheme('dark'); } catch { /* Shared styles keep login usable during a resource failure. */ }
+    localStorage.setItem('deck-theme', 'darkhand');
+    try { await prepareTheme('darkhand'); await activateTheme('darkhand'); } catch { /* Shared styles keep login usable during a resource failure. */ }
   }
   createRoot(root).render(<App />);
 };

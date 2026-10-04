@@ -9,7 +9,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1456, height: 900 } });
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.addInitScript(() => localStorage.setItem('deck-theme', 'dark'));
+  await page.addInitScript(() => localStorage.setItem('deck-theme', 'darkhand'));
   await page.goto(origin);
   await page.locator('tbody tr[role="button"]').first().waitFor();
   const theme = () => page.locator('html').getAttribute('data-theme');
@@ -29,27 +29,29 @@ try {
   for (const id of [...THEME_ORDER.slice(1).reverse(), THEME_ORDER[0]]) await press('Shift+T', id);
   await page.keyboard.press('Escape');
   await page.locator('tbody tr[role="button"]').first().focus();
-  await press('t', 'darkhand');
+  await press('t', 'dark');
+  await press('d', 'darkhand');
   await page.locator('tbody tr[role="button"]').first().dblclick();
   await page.locator('.dh-inline-details,.dh-details-scroll .drawer').first().waitFor();
   await page.locator('.dh-details-card button').first().focus();
-  await press('Shift+T', 'dark');
+  await press('Shift+T', THEME_ORDER.at(-1));
+  await press('d', 'darkhand');
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Preferences', exact: true }).click();
   await page.locator('.preferences-modal').waitFor();
   await page.locator('.preferences-modal button').first().focus();
-  await press('t', 'darkhand');
-  await press('Shift+T', 'dark');
+  await press('t', 'dark');
+  await press('Shift+T', 'darkhand');
   await page.locator('.preferences-modal select').first().focus();
-  await press('t', 'darkhand');
-  await press('Shift+T', 'dark');
+  await press('t', 'dark');
+  await press('Shift+T', 'darkhand');
   await page.keyboard.press('Escape');
   const search = page.locator('.search-wrap input');
   await search.focus();
   await page.keyboard.press('t');
   await page.keyboard.press('Shift+T');
   assert.equal(await search.inputValue(), 'tT');
-  assert.equal(await theme(), 'dark');
+  assert.equal(await theme(), 'darkhand');
   await search.fill('');
   // Editable descendants and textarea fields also keep their typing.
   for (const html of ['<textarea></textarea>', '<div contenteditable="true"><span>edit</span></div>']) {
@@ -60,13 +62,13 @@ try {
     }, html);
     await page.keyboard.press('t');
     await page.keyboard.press('Shift+T');
-    assert.equal(await theme(), 'dark');
+    assert.equal(await theme(), 'darkhand');
     await page.locator('#shortcut-edit-test').evaluate(el => el.remove());
   }
   await page.getByRole('button', { name: /Choose color theme/ }).focus();
   for (const key of ['Control+t', 'Alt+t']) {
     await page.keyboard.press(key);
-    assert.equal(await theme(), 'dark');
+    assert.equal(await theme(), 'darkhand');
   }
   assert.deepEqual(errors, []);
   console.log(`Verified all ${THEME_ORDER.length} themes forward/backward in picker order, wraparound, focused controls, torrent details, preferences, and editable fields.`);

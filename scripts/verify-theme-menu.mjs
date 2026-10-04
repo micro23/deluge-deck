@@ -31,7 +31,7 @@ try {
     await page.keyboard.press('End');
     assert.equal(await page.locator(':focus').getAttribute('aria-label'), `${last[1]}: ${last[2]}`);
     await page.keyboard.press('ArrowRight');
-    assert.match(await page.locator(':focus').getAttribute('aria-label'), /^Midnight:/);
+    assert.match(await page.locator(':focus').getAttribute('aria-label'), /^Darkhand:/);
     await page.keyboard.press('ArrowLeft');
     assert.equal(await page.locator(':focus').getAttribute('aria-label'), `${last[1]}: ${last[2]}`);
     await page.keyboard.press('Escape');
@@ -48,6 +48,7 @@ try {
       assert.ok(popover.y >= 0 && popover.y + popover.height <= 901);
       assert.match(await item.locator('.theme-preview').evaluate(el => getComputedStyle(el).backgroundImage), /url\(/);
       await item.click();
+      await page.waitForFunction(theme => document.documentElement.dataset.theme === theme, id);
       assert.equal(await page.locator('html').getAttribute('data-theme'), id);
       assert.equal(await page.evaluate(() => localStorage.getItem('deck-theme')), id);
       await page.reload({waitUntil:'networkidle'});

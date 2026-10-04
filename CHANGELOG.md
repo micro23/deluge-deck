@@ -1,3 +1,9 @@
+## 1.0.76
+
+- Make Darkhand the default theme and first theme in the picker.
+- Add D as a direct shortcut to return to Darkhand.
+- Focus the login password field automatically on first page load.
+
 ## 1.0.75
 
 - Kept the Darkhand details pane empty until a torrent is selected.

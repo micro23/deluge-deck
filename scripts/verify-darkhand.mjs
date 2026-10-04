@@ -3,8 +3,8 @@ import { chromium } from 'playwright';
 import { THEMES, THEME_CATEGORIES } from '../src/app/themes.js';
 const origin = process.env.DECK_PREVIEW_URL || 'http://127.0.0.1:8120';
 assert.equal((await fetch(`${origin}/api/health`).then(r => r.json())).mode, 'demo');
-assert.equal(THEMES[1][0], 'darkhand');
-assert.equal(THEME_CATEGORIES[0].themes[1], 'darkhand');
+assert.equal(THEMES[0][0], 'darkhand');
+assert.equal(THEME_CATEGORIES[0].themes[0], 'darkhand');
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 try {
  for (const width of [1920, 1456, 1200, 820, 390, 320]) {
