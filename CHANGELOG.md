@@ -1,3 +1,10 @@
+## 1.0.79
+
+- Replace Independence with the USA heritage theme while preserving saved theme selections.
+- Add original flag and American monument engraving in a compact masthead, with ivory paper, navy ink, and muted red controls.
+- Remove fireworks, medallions, striped rows, and flag progress bars; improve compact telemetry and responsive layouts.
+- Package the USA theme and artwork in refreshed versioned WebUI resources and the Python 3.14 source-only plugin egg.
+
 ## 1.0.78
 
 - Rebuild The Matrix theme around original cinematic city and code-rain artwork, ivory typography, charcoal panels, and restrained emerald accents.
