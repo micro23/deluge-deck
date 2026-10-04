@@ -1,3 +1,8 @@
+## 1.0.87
+
+- Remove the parentheses around M in the Terminal theme's bottom-left Menu label.
+- Refresh the versioned WebUI resources and source-only Python 3.14 plugin egg.
+
 ## 1.0.86
 
 - Replace Matrix transfer fills with crisp green code that reveals the actual completion width in desktop rows, mobile cards, and the detail drawer.

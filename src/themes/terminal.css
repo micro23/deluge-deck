@@ -648,7 +648,7 @@
   :root[data-theme="terminal"] body .sidebar-bottom .nav-item span { font-size:16px; }
   :root[data-theme="terminal"] body .sidebar-toggle { width:max-content!important; height:24px!important; font-size:17px; white-space:nowrap; }
   :root[data-theme="terminal"] body .sidebar-toggle>svg { display:none; }
-  :root[data-theme="terminal"] body .sidebar-toggle::before { content:"[ (M)enu ]"!important; }
+  :root[data-theme="terminal"] body .sidebar-toggle::before { content:"[ Menu ]"!important; }
   :root[data-theme="terminal"] body .sidebar.collapsed::before { content:">_"; font-size:22px; margin-bottom:25px; }
   :root[data-theme="terminal"] body .sidebar.collapsed .sidebar-toggle::before { content:"[ > ]"!important; }
   :root[data-theme="terminal"] body .sidebar.collapsed>nav .nav-item { justify-content:center!important; height:32px; }
