@@ -1,0 +1,306 @@
+/* MATRIX // cinematic phosphor operator theme. All rules stay theme scoped. */
+@font-face {
+  font-family: "Matrix Console";
+  src: url('../assets/fonts/ShareTechMono-Regular.ttf?inline') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root[data-theme="matrix"] {
+  color-scheme: dark;
+  --bg:#030906;
+  --surface:#07110b;
+  --surface-2:#0b1a10;
+  --surface-3:#112619;
+  --text:#d8ffe0;
+  --muted:#91b59a;
+  --muted-2:#688d72;
+  --line:#23472d;
+  --line-strong:#347345;
+  --cyan:#68ff86;
+  --accent-fg:#031007;
+  --cyan-soft:#51ff701e;
+  --violet:#a5ffc0;
+  --amber:#c7e96b;
+  --green:#54f57d;
+  --danger:#ff7180;
+  --shadow:0 20px 60px #000a;
+  --theme-radius:9px;
+  --theme-control-radius:7px;
+  --theme-wash-one:#00ff4110;
+  --theme-wash-two:#00ff4108;
+  --theme-glow-a:#00ff4120;
+  --theme-glow-b:#7fff9e0c;
+  --theme-topbar:#07140deF;
+  --theme-sidebar:#040b07f5;
+  --theme-card:#07130cf2;
+  --theme-card-shadow:0 10px 28px #0008,inset 0 1px 0 #b1ffbe0b;
+  --theme-control-shadow:inset 0 1px 0 #9dffae12,0 8px 20px #0005;
+  --theme-rule:#285532;
+  --theme-edge:#367445;
+  --theme-texture:none;
+  --matrix-font:"Matrix Console","SFMono-Regular",Consolas,monospace;
+}
+
+:root[data-theme="matrix"] body,
+:root[data-theme="matrix"] body :not(svg):not(svg *) {
+  font-family:var(--matrix-font)!important;
+  font-variant-numeric:tabular-nums;
+}
+
+:root[data-theme="matrix"] .app-shell {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse at 76% -18%,#20ff4e18,transparent 45%),
+    radial-gradient(ellipse at 41% 110%,#00bc3c10,transparent 44%),
+    linear-gradient(125deg,#020603 0%,#06100a 48%,#030906 100%)!important;
+}
+:root[data-theme="matrix"] .app-shell::before {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  pointer-events:none;
+  opacity:.2;
+  background-image:
+    repeating-linear-gradient(0deg,transparent 0 31px,#31ff5713 31px 32px),
+    repeating-linear-gradient(90deg,transparent 0 55px,#31ff570a 55px 56px),
+    radial-gradient(ellipse at 78% 12%,#48ff6b18,transparent 39%);
+  mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 43%,#000 100%);
+}
+:root[data-theme="matrix"] .app-shell::after {
+  content:"01001011  /  01010010  /  11001001  /  00110101  /  01001011  /  10100110  /  00101001  /  10010110";
+  position:absolute;
+  z-index:-1;
+  top:0; right:0; bottom:0;
+  width:min(56vw,820px);
+  overflow:hidden;
+  pointer-events:none;
+  color:#67ff8214;
+  font:11px/2.7 var(--matrix-font);
+  letter-spacing:.7em;
+  word-break:break-all;
+  text-align:justify;
+  padding:28px 26px;
+  opacity:.38;
+  mask-image:linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);
+  text-shadow:0 0 12px #20ff4128;
+}
+:root[data-theme="matrix"] :is(.sidebar,.topbar) {
+  backdrop-filter:blur(18px);
+}
+:root[data-theme="matrix"] .sidebar {
+  border-right:1px solid #37b94c55!important;
+  box-shadow:8px 0 35px #0005;
+}
+:root[data-theme="matrix"] .sidebar::before {
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  inset:0 auto 0 0;
+  width:2px;
+  background:linear-gradient(180deg,transparent,#36ff5b99 28%,#1fff4a38 68%,transparent);
+  box-shadow:0 0 18px #35ff5a66;
+}
+:root[data-theme="matrix"] .brand-mark {
+  border:1px solid #9cffab;
+  border-radius:7px;
+  background:radial-gradient(circle at 50% 35%,#a4ffac,#27d84a 43%,#063710 100%);
+  box-shadow:0 0 18px #2fff5c70,inset 0 0 12px #b4ffc480;
+}
+:root[data-theme="matrix"] .brand-mark span { background:#031608; }
+:root[data-theme="matrix"] .brand strong { letter-spacing:.02em; text-transform:uppercase; }
+:root[data-theme="matrix"] .brand small,
+:root[data-theme="matrix"] .nav-label,
+:root[data-theme="matrix"] .eyebrow { color:#64cc79!important; letter-spacing:.16em; }
+:root[data-theme="matrix"] .nav-item {
+  border-radius:6px;
+  transition:color .2s ease,background .2s ease,box-shadow .2s ease;
+}
+:root[data-theme="matrix"] .nav-item:is(.active,:hover) {
+  color:#caffd2!important;
+  background:linear-gradient(90deg,#31e95128,#23a33a0c 82%,transparent)!important;
+  box-shadow:inset 2px 0 #63ff7d,0 0 18px #23ff4118!important;
+}
+:root[data-theme="matrix"] .topbar {
+  border-bottom-color:#50d76555!important;
+  box-shadow:0 8px 30px #0007,0 1px #54ff6711;
+}
+:root[data-theme="matrix"] .topbar-heading,
+:root[data-theme="matrix"] h1 { text-shadow:0 0 22px #39ff5b2c; }
+:root[data-theme="matrix"] h1 em { color:#79ff91!important; }
+:root[data-theme="matrix"] .search-wrap,
+:root[data-theme="matrix"] .search-field {
+  border-color:#357e45!important;
+  background:linear-gradient(120deg,#0a1d10f2,#07120bf5)!important;
+  box-shadow:inset 0 1px #b2ffc011,0 0 18px #19ff3710!important;
+}
+:root[data-theme="matrix"] :is(.add-button,.primary-button,.secondary-button,.session-quick-actions button) {
+  border-color:#53d96b!important;
+  color:#caffd2!important;
+  background:linear-gradient(180deg,#164b25,#0a2712)!important;
+  box-shadow:inset 0 1px #c1ffcc30,0 0 15px #2dff4c20!important;
+  text-shadow:0 0 10px #52ff7355;
+}
+:root[data-theme="matrix"] :is(.add-button,.primary-button,.secondary-button,.session-quick-actions button):hover {
+  color:#f0fff1!important;
+  border-color:#a4ffad!important;
+  background:linear-gradient(180deg,#207435,#0c3b19)!important;
+  box-shadow:inset 0 1px #e0ffe450,0 0 22px #35ff5660!important;
+}
+:root[data-theme="matrix"] .stats-grid { gap:14px; }
+:root[data-theme="matrix"] .stat-card {
+  position:relative;
+  overflow:hidden;
+  border-color:#28663a!important;
+  background:linear-gradient(145deg,#0b1c10f5,#06100bf7 72%)!important;
+  box-shadow:0 12px 32px #0008,inset 0 1px #9dffb018!important;
+  transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease;
+}
+:root[data-theme="matrix"] .stat-card::before {
+  content:"";
+  position:absolute;
+  inset:0 0 auto;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#69ff83,transparent);
+  opacity:.65;
+}
+:root[data-theme="matrix"] .stat-card::after {
+  content:"";
+  position:absolute;
+  width:135px;height:135px;
+  right:-72px;top:-82px;
+  border:1px solid #57ff6b1b;
+  border-radius:50%;
+  box-shadow:0 0 0 12px #57ff6b08,0 0 0 24px #57ff6b05;
+  pointer-events:none;
+}
+:root[data-theme="matrix"] .stat-card:hover {
+  transform:translateY(-2px);
+  border-color:#58e66b!important;
+  box-shadow:0 16px 36px #0009,0 0 24px #23ff3d18,inset 0 1px #d4ffdc24!important;
+}
+:root[data-theme="matrix"] .stat-icon {
+  color:#78ff8e!important;
+  background:linear-gradient(145deg,#1d5429,#0d2815)!important;
+  border:1px solid #44bf5b60;
+  box-shadow:0 0 15px #2fff451d;
+}
+:root[data-theme="matrix"] .stat-card strong { color:#e0ffe4; text-shadow:0 0 14px #55ff7433; }
+:root[data-theme="matrix"] .stat-card span { color:#96c79f; text-transform:uppercase; letter-spacing:.12em; }
+:root[data-theme="matrix"] .table-shell {
+  position:relative;
+  border-color:#347745!important;
+  background:linear-gradient(180deg,#07140cf8,#040b07f8)!important;
+  box-shadow:0 18px 55px #0009,inset 0 0 0 1px #7cff8d10,0 0 34px #17ff3410!important;
+}
+:root[data-theme="matrix"] .table-shell::before {
+  content:"SYSTEM / TRANSFER MATRIX";
+  display:block;
+  position:sticky;
+  left:0;
+  width:max-content;
+  max-width:100%;
+  padding:8px 13px 7px;
+  color:#79d98a;
+  font:10px/1.2 var(--matrix-font);
+  letter-spacing:.17em;
+  background:linear-gradient(90deg,#07180c,#0a1b10 75%,transparent);
+  text-shadow:0 0 9px #4dff7140;
+}
+:root[data-theme="matrix"] .table-shell th {
+  color:#8dd99a!important;
+  background:linear-gradient(180deg,#102519,#0b1a10)!important;
+  border-bottom:1px solid #3a7546!important;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+}
+:root[data-theme="matrix"] .table-shell td { border-bottom-color:#23513180!important; }
+:root[data-theme="matrix"] .table-shell tbody tr:nth-child(even) td { background:#83ff9a04; }
+:root[data-theme="matrix"] .table-shell tbody tr:hover td,
+:root[data-theme="matrix"] .table-shell tbody tr.selected td {
+  background:#44ff6515!important;
+  box-shadow:inset 0 1px #74ff8720,inset 0 -1px #74ff8710;
+}
+:root[data-theme="matrix"] .table-shell tbody tr.selected td:first-child { box-shadow:inset 3px 0 #68ff86; }
+:root[data-theme="matrix"] .table-shell .torrent-name strong { color:#e3ffe7!important; }
+:root[data-theme="matrix"] .table-shell .torrent-name span { color:#80b68a!important; }
+:root[data-theme="matrix"] .table-shell .state-icon {
+  color:#7eff92!important;
+  background:#10441d!important;
+  box-shadow:inset 0 0 0 1px #47d66355,0 0 12px #32ff4918;
+}
+:root[data-theme="matrix"] .table-shell .state-icon.paused { color:#99b49d!important; background:#142018!important; }
+:root[data-theme="matrix"] .table-shell .state-icon.queued { color:#d3ec73!important; background:#273310!important; }
+:root[data-theme="matrix"] .table-shell .state-icon.error { color:#ff8b92!important; background:#381318!important; }
+:root[data-theme="matrix"] .state-badge i,
+:root[data-theme="matrix"] .progress-bar { box-shadow:0 0 9px currentColor,0 0 18px #48ff6370; }
+:root[data-theme="matrix"] .state-badge i { background:#65ff80!important; }
+:root[data-theme="matrix"] .state-badge.seeding i { background:#a0ffb4!important; }
+:root[data-theme="matrix"] .state-badge.paused i { background:#7c9180!important; box-shadow:none; }
+:root[data-theme="matrix"] .state-badge.queued i { background:#d1e970!important; }
+:root[data-theme="matrix"] .state-badge.error i { background:#ff7180!important; }
+:root[data-theme="matrix"] .progress-track { background:#102718!important; box-shadow:inset 0 0 0 1px #3b754940; }
+:root[data-theme="matrix"] .progress-bar { background:linear-gradient(90deg,#20bc43,#83ff8d)!important; }
+:root[data-theme="matrix"] .progress-bar.seeding { background:linear-gradient(90deg,#60bb76,#c1ffd0)!important; }
+:root[data-theme="matrix"] .rate-cell.down { color:#76ff8c!important; }
+:root[data-theme="matrix"] .rate-cell.up { color:#b5e67a!important; }
+:root[data-theme="matrix"] .deck-status-rail {
+  border:1px solid #28643a!important;
+  background:linear-gradient(90deg,#07140b,#0d2112 50%,#06100a)!important;
+  box-shadow:inset 0 1px #8aff9b12,0 0 24px #1aff3511;
+}
+:root[data-theme="matrix"] .deck-status-rail .status-dot.live { box-shadow:0 0 9px #61ff7e; }
+:root[data-theme="matrix"] :is(.modal-card,.detail-drawer,.global-popover,.theme-popover,.context-menu) {
+  border-color:#397b49!important;
+  background:linear-gradient(145deg,#0b1a10f7,#050c08fc)!important;
+  box-shadow:0 22px 70px #000d,0 0 32px #20ff3822!important;
+  backdrop-filter:blur(20px);
+}
+:root[data-theme="matrix"] :is(button,input,select,textarea):focus-visible { outline-color:#79ff8d!important; }
+:root[data-theme="matrix"] ::selection { color:#001407; background:#74ff8b; }
+
+@media (prefers-reduced-motion:no-preference) {
+  :root[data-theme="matrix"] .app-shell::after { animation:matrix-stream 38s linear infinite; }
+  :root[data-theme="matrix"] .brand-mark { animation:matrix-pulse 4s ease-in-out infinite; }
+  @keyframes matrix-stream { from { transform:translateY(-2%); } to { transform:translateY(2%); } }
+  @keyframes matrix-pulse { 50% { box-shadow:0 0 23px #2fff5c9c,inset 0 0 12px #b4ffc480; } }
+}
+@media (prefers-reduced-motion:reduce) {
+  :root[data-theme="matrix"] *, :root[data-theme="matrix"] *::before, :root[data-theme="matrix"] *::after { animation:none!important; transition:none!important; }
+}
+
+/* Original, lightweight gallery treatment; no remote artwork dependency. */
+.theme-preview.matrix {
+  position:relative;
+  overflow:hidden;
+  border-color:#51d96b!important;
+  background:
+    radial-gradient(ellipse at 72% 24%,#2cff5c32,transparent 32%),
+    repeating-linear-gradient(90deg,transparent 0 17px,#25ff4312 17px 18px),
+    linear-gradient(135deg,#020503 0%,#0a1c0e 49%,#020503 100%);
+}
+.theme-preview.matrix::before {
+  content:"01 10 01  110  0101  001\A 10 01 10  011  1001  110\A 11 00 10  101  0110  001\A 01 10 01  010  1101  101";
+  white-space:pre;
+  position:absolute;
+  inset:4% 4% auto auto;
+  width:30%;
+  color:#52ff6c82;
+  font:7px/1.6 var(--matrix-font);
+  letter-spacing:.22em;
+  text-shadow:0 0 8px #46ff663f;
+}
+.theme-preview.matrix::after {
+  content:"DELUGE DECK  //  MAINFRAME ONLINE";
+  position:absolute;
+  left:5%;bottom:7%;
+  color:#c2ffd0;
+  font:8px var(--matrix-font);
+  letter-spacing:.12em;
+  text-shadow:0 0 9px #48ff6570;
+}

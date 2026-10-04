@@ -161,9 +161,9 @@
   :root[data-theme] body .table-shell td {
     height:var(--deck-table-row-height)!important; padding:0 12px!important; font-size:11px!important; line-height:1.2;
   }
-  :root[data-theme] body .table-shell .check-cell { width:32px!important; padding-left:7px!important; padding-right:3px!important; }
+  :root[data-theme] body .table-shell .check-cell { width:35px!important; padding-left:7px!important; padding-right:0!important; }
   :root[data-theme] body .table-shell :is(th,td):last-child { width:52px!important; }
-  :root[data-theme] body .table-shell td.name-cell { padding-left:3px!important; padding-right:3px!important; }
+  :root[data-theme] body .table-shell td.name-cell { padding-left:0!important; padding-right:3px!important; }
   :root[data-theme] body .table-shell .name-content { gap:4px; }
   :root[data-theme] body .table-shell .torrent-name strong { font-size:12px!important; line-height:15px; }
   :root[data-theme] body .table-shell .name-content .state-icon { display:grid!important; width:29px; height:29px; }

@@ -782,7 +782,8 @@
     white-space:nowrap;
     color:#a7a8a0;
   }
-  :root[data-theme="terminal"] body .table-shell .check-cell { width:27px!important; padding:0 3px!important; }
+  :root[data-theme="terminal"] body .table-shell .check-cell { width:25px!important; padding:0 0 0 3px!important; }
+  :root[data-theme="terminal"] body .table-shell td.name-cell { padding-left:0!important; }
   :root[data-theme="terminal"] body .table-shell :is(th,td):last-child { width:20px!important; padding:0!important; }
   :root[data-theme="terminal"] body .table-shell .row-menu { width:18px; height:23px; min-width:0; opacity:.2; }
   :root[data-theme="terminal"] body .table-shell tr:hover .row-menu { opacity:1; }

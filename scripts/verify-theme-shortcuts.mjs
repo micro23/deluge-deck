@@ -29,7 +29,7 @@ try {
   for (const id of [...THEME_ORDER.slice(1).reverse(), THEME_ORDER[0]]) await press('Shift+T', id);
   await page.keyboard.press('Escape');
   await page.locator('tbody tr[role="button"]').first().focus();
-  await press('t', 'dark');
+  await press('t', 'terminal');
   await press('d', 'darkhand');
   await page.locator('tbody tr[role="button"]').first().dblclick();
   await page.locator('.dh-inline-details,.dh-details-scroll .drawer').first().waitFor();
@@ -40,10 +40,10 @@ try {
   await page.getByRole('button', { name: 'Preferences', exact: true }).click();
   await page.locator('.preferences-modal').waitFor();
   await page.locator('.preferences-modal button').first().focus();
-  await press('t', 'dark');
+  await press('t', 'terminal');
   await press('Shift+T', 'darkhand');
   await page.locator('.preferences-modal select').first().focus();
-  await press('t', 'dark');
+  await press('t', 'terminal');
   await press('Shift+T', 'darkhand');
   await page.keyboard.press('Escape');
   const search = page.locator('.search-wrap input');

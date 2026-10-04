@@ -88,6 +88,7 @@ import './themes/sidebar.css';
 import './themes/sizing.css';
 // Terminal owns its geometry as well as its palette; load after shared sizing.
 import './themes/terminal.css';
+import './themes/matrix.css';
 // Independence owns its reference styling without changing shared geometry.
 import './themes/independence-reference.css';
 import './themes/sports-expansion.css';
@@ -387,6 +388,13 @@ function Sidebar({
         <SportsIdentity theme={theme} />
         {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg><span>DELUGE</span></div>}
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
+        {theme === 'matrix' && (
+          <div className="matrix-identity" aria-label="The Matrix, node online">
+            <span className="matrix-mark" aria-hidden="true"><i>0</i><i>1</i><i>0</i></span>
+            <span><strong>THE MATRIX</strong><small>NODE 01 · ONLINE</small></span>
+            <i className="matrix-live" aria-hidden="true" />
+          </div>
+        )}
         <div className="sidebar-command-row">
           <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
             <Plus size={18} />
