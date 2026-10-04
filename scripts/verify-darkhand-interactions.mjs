@@ -46,7 +46,10 @@ try {
  assert.ok(await panel.evaluate(el=>el.classList.contains('dh-auto-fit')),'Reopening the same torrent restores automatic sizing');
  await page.getByRole('button',{name:'Right',exact:true}).click();
  await page.waitForTimeout(200);
- assert.ok(await panel.evaluate(el=>Math.abs(innerWidth-el.getBoundingClientRect().right-8)<1),'Right panel sits eight pixels from the edge');
+ assert.ok(await panel.evaluate(el=>Math.abs(document.documentElement.clientWidth-el.getBoundingClientRect().right)<1),'Open right panel sits flush with the viewport edge');
+ await page.getByRole('button',{name:'Collapse torrent details',exact:true}).click();
+ assert.ok(await panel.evaluate(el=>Math.abs(document.documentElement.clientWidth-el.getBoundingClientRect().right)<1),'Collapsed right details tab sits flush with the viewport edge');
+ await page.getByRole('button',{name:'Open torrent details',exact:true}).click();
  // At a list boundary, vertical wheel input must carry on into the page.
  await page.evaluate(()=>{
    const table=document.querySelector('.table-shell');table.scrollTop=table.scrollHeight;

@@ -50,8 +50,8 @@
 :root[data-theme="darkhand"][data-theme] body .dh-switches>div>div { display:flex; padding:3px; border:1px solid var(--line); border-radius:10px; background:var(--surface); }
 :root[data-theme="darkhand"][data-theme] body .dh-switches button { border:0; border-radius:6px; background:transparent; color:var(--muted); padding:6px 12px; font-size:12px; }
 :root[data-theme="darkhand"][data-theme] body .dh-switches button[aria-pressed="true"] { background:var(--cyan); color:white; }
-:root[data-theme="darkhand"][data-theme] body .table-shell { min-height:300px; flex:1; margin:0!important; border:1px solid var(--line)!important; border-radius:18px!important; background:var(--surface)!important; padding:12px 0 0!important; overflow:auto!important; }
-:root[data-theme="darkhand"][data-theme] body .table-tools { height:35px; padding:0 14px; }
+:root[data-theme="darkhand"][data-theme] body .table-shell { min-height:300px; flex:1; margin:0!important; border:1px solid var(--line)!important; border-radius:18px!important; background:var(--surface)!important; padding:2px 0 0!important; overflow:auto!important; }
+:root[data-theme="darkhand"][data-theme] body .table-tools { height:26px!important; min-height:26px!important; padding:0 5px; align-items:center; }
 :root[data-theme="darkhand"][data-theme] body .table-shell :is(th,td) { height:28px!important; min-height:28px!important; padding:3px 8px!important; font-family:Deck Inter,sans-serif!important; font-size:12px!important; border-bottom:1px solid var(--line)!important; background:transparent!important; }
 :root[data-theme="darkhand"][data-theme] body .table-shell th { font-size:10.5px!important; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
 :root[data-theme="darkhand"][data-theme] body .table-shell tbody tr:nth-child(even) { background:#171b22!important; }
@@ -340,3 +340,14 @@
 
 :root[data-theme="darkhand"][data-theme] body .dh-details-scroll { height:calc(100% - 24px); overflow:auto; overscroll-behavior-y:auto; border-radius:0 0 18px 18px; }
 :root[data-theme="darkhand"][data-theme] body .dh-auto-fit .dh-details-scroll { height:auto; max-height:max(574px,calc(100dvh - 176px)); }
+
+/* Right-side details share the viewport edge at every screen size. */
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard.dh-details-right { padding-right:0!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard.dh-details-right .workspace { padding-right:0!important; }
+
+/* Tight table frame with a compact, deliberate column menu in its top rail. */
+:root[data-theme="darkhand"][data-theme] body .app-shell.dh-dashboard { padding-top:4px!important; padding-bottom:0!important; }
+:root[data-theme="darkhand"][data-theme] body .table-shell { padding-top:2px!important; padding-bottom:0!important; }
+:root[data-theme="darkhand"][data-theme] body .table-shell>.table-tools { height:26px!important; min-height:26px!important; padding:0 5px; align-items:center; }
+:root[data-theme="darkhand"][data-theme] body .table-shell .column-menu-trigger { position:relative; inset:auto!important; width:26px!important; height:24px!important; min-width:26px!important; min-height:24px!important; border-radius:7px!important; background:var(--surface-2)!important; border-color:var(--line-strong)!important; }
+:root[data-theme="darkhand"][data-theme] body .table-shell .column-menu-trigger svg { width:13px!important; height:13px!important; }

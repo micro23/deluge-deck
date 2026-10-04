@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.73
+
+- Remove Darkhand's bottom dashboard padding and reduce the top frame spacing.
+- Place the column menu in a compact, integrated toolbar above the torrent headers.
+- Align the Darkhand right-side torrent details panel flush with the viewport, open or collapsed, across desktop and narrow screens.
+- Refresh versioned plugin resources and the Python 3.14 source-only egg.
+
 ## 1.0.72
 
 - Make T advance one theme and Shift+T go back one theme in the exact theme-switcher order, wrapping through all 37 themes.
