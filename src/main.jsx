@@ -1539,22 +1539,23 @@ function ColumnChooser({ columns, visibility, onToggle, onClose }) {
 const TABLE_COLUMN_ORDER = [
   'name',
   'state',
-  'progress',
   'size',
-  'ratio',
+  'progress',
   'download',
   'upload',
   'eta',
+  'ratio',
   'seeds',
   'peers',
-  'added',
   'seedingTime',
+  'added',
   'tracker',
   'queue',
 ];
-// Shared defaults remain independent of the palette. Terminal owns a compact
-// width preset and separate storage; the other themes retain this layout.
+// Shared default columns stay consistent across palettes; Terminal keeps its
+// own compact widths and separate stored preferences.
 const TABLE_LAYOUT_VERSION = '2026-09-content-aware-columns';
+const COLUMN_DEFAULTS_VERSION = '2026-10-requested-default-columns';
 const DEFAULT_COLUMN_VISIBILITY = {
   state: true,
   progress: true,
@@ -1566,7 +1567,7 @@ const DEFAULT_COLUMN_VISIBILITY = {
   seeds: true,
   peers: true,
   added: false,
-  seedingTime: false,
+  seedingTime: true,
   tracker: false,
   queue: false,
 };
@@ -1638,6 +1639,8 @@ const normalizeColumnWidths = (savedWidths, clampWidth = clampColumnWidth) =>
   );
 const hasCurrentTableLayout = (theme) =>
   localStorage.getItem(['terminal', 'darkhand'].includes(theme) ? `deck-${theme}-table-layout-version` : 'deck-table-layout-version') === TABLE_LAYOUT_VERSION;
+const hasCurrentColumnDefaults = (theme) =>
+  localStorage.getItem(['terminal', 'darkhand'].includes(theme) ? `deck-${theme}-column-defaults-version` : 'deck-column-defaults-version') === COLUMN_DEFAULTS_VERSION;
 const TABLE_COLUMN_LABELS = {
   name: 'Torrent',
   state: 'State',
@@ -1747,14 +1750,8 @@ function TorrentTable({
     const visibilityKey = scopedTheme
       ? `deck-${theme}-column-visibility`
       : 'deck-column-visibility';
-    const themeColumns = theme === 'terminal'
-      ? { progress: true }
-      : theme === 'valentine'
-        ? { progress: true, seedingTime: true }
-        : theme === 'halloween'
-          ? { progress: true, seedingTime: true }
-          : theme === 'darkhand' ? { state: false, progress: true, queue: true, ratio: false, seeds: false, peers: false, added: false, seedingTime: false, tracker: false } : {};
-    if (!hasCurrentTableLayout(theme))
+    const themeColumns = {};
+    if (!hasCurrentColumnDefaults(theme))
       return { ...DEFAULT_COLUMN_VISIBILITY, ...themeColumns };
     try {
       const saved = JSON.parse(localStorage.getItem(visibilityKey) || '{}');
@@ -1785,8 +1782,7 @@ function TorrentTable({
     }
   });
   const [columnOrder, setColumnOrder] = useState(() => {
-    if (theme === 'darkhand' && !localStorage.getItem(tableStorageKey(theme, 'order'))) return ['queue', 'name', 'size', 'progress', 'download', 'upload', 'eta', ...TABLE_COLUMN_ORDER.filter(key => !['queue', 'name', 'size', 'progress', 'download', 'upload', 'eta'].includes(key))];
-    if (!hasCurrentTableLayout(theme)) return TABLE_COLUMN_ORDER;
+    if (!hasCurrentColumnDefaults(theme)) return TABLE_COLUMN_ORDER;
     try {
       const stored = JSON.parse(
         localStorage.getItem(tableStorageKey(theme, 'order')) || '[]',
@@ -1819,6 +1815,9 @@ function TorrentTable({
   }, [columnOrder, theme]);
   useEffect(() => {
     localStorage.setItem(['terminal', 'darkhand'].includes(theme) ? `deck-${theme}-table-layout-version` : 'deck-table-layout-version', TABLE_LAYOUT_VERSION);
+  }, [theme]);
+  useEffect(() => {
+    localStorage.setItem(['terminal', 'darkhand'].includes(theme) ? `deck-${theme}-column-defaults-version` : 'deck-column-defaults-version', COLUMN_DEFAULTS_VERSION);
   }, [theme]);
   useEffect(() => {
     const close = () => setColumnMenuOpen(false);

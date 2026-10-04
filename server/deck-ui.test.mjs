@@ -849,6 +849,7 @@ test('torrent table persists column visibility preferences', async () => {
 
 test('torrent table keeps every content-sized column resizable and aligned', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8')]);
+  assert.match(ui, /const COLUMN_DEFAULTS_VERSION = '2026-10-requested-default-columns'/);
   assert.match(ui, /const TABLE_LAYOUT_VERSION = '2026-09-content-aware-columns'/);
   assert.match(ui, /const DEFAULT_COLUMN_VISIBILITY = \{[\s\S]*added: false,[\s\S]*tracker: false,[\s\S]*queue: false/);
   assert.match(ui, /const AUTO_COLUMN_FALLBACKS = \{[\s\S]*progress: 154/);
@@ -857,7 +858,9 @@ test('torrent table keeps every content-sized column resizable and aligned', asy
   assert.match(ui, /data-column=\{key\}/);
   assert.match(ui, /localStorage\.getItem\((?:\['terminal', 'darkhand'\]\.includes\(theme\) \? `deck-\$\{theme\}-table-layout-version` : )?'deck-table-layout-version'\)/);
   assert.match(ui, /localStorage\.setItem\((?:\['terminal', 'darkhand'\]\.includes\(theme\) \? `deck-\$\{theme\}-table-layout-version` : )?'deck-table-layout-version', TABLE_LAYOUT_VERSION\)/);
-  assert.match(ui, /'size',[\s\S]*'ratio',[\s\S]*'download'/);
+  assert.match(ui, /'name',[\s\S]*'state',[\s\S]*'size',[\s\S]*'progress',[\s\S]*'download',[\s\S]*'upload',[\s\S]*'eta',[\s\S]*'ratio',[\s\S]*'seeds',[\s\S]*'peers',[\s\S]*'seedingTime'/);
+  assert.match(ui, /seedingTime: true/);
+  assert.match(ui, /hasCurrentColumnDefaults/);
   assert.match(css, /table\.auto-sized-table \{[\s\S]*width:100%;[\s\S]*table-layout:fixed/);
   assert.match(css, /table\.column-measure-table \{[\s\S]*width:max-content!important/);
   assert.match(css, /td\[data-column\][\s\S]*text-align:center/);
@@ -926,7 +929,7 @@ test('torrent table shows sortable queue positions beside queue actions', async 
 
 test('queue position participates in column visibility controls', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
-  assert.match(ui, /queue: true/);
+  assert.match(ui, /queue: false/);
   assert.match(ui, /queue: 'Queue'/);
   assert.match(css, /hide-queue th:nth-child\(15\)/);
 });

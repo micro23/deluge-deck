@@ -351,3 +351,6 @@
 :root[data-theme="darkhand"][data-theme] body .table-shell>.table-tools { height:26px!important; min-height:26px!important; padding:0 5px; align-items:center; }
 :root[data-theme="darkhand"][data-theme] body .table-shell .column-menu-trigger { position:relative; inset:auto!important; width:26px!important; height:24px!important; min-width:26px!important; min-height:24px!important; border-radius:7px!important; background:var(--surface-2)!important; border-color:var(--line-strong)!important; }
 :root[data-theme="darkhand"][data-theme] body .table-shell .column-menu-trigger svg { width:13px!important; height:13px!important; }
+
+/* Let short libraries end at their last row while keeping large lists scrollable. */
+:root[data-theme="darkhand"][data-theme] body .dh-panels>.table-shell { min-height:0!important; height:max-content; max-height:min(70dvh,760px); }

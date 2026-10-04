@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.74
+
+- Set the same default torrent columns in every theme, in the requested order: Name, State, Size, Progress, Download, Upload, ETA, Ratio, Seeds, Peers, and Seeding time.
+- Hide Queue, Added, and Tracker by default while retaining them in the column chooser.
+- Apply a one-time default-column update without resetting saved column widths.
+- Tighten the gap after torrent selection checkboxes across desktop and mobile tables.
+- Shrink Darkhand's short-list table to its content while keeping long lists scrollable, removing the unused area beneath the last row.
+- Rebuild versioned resources and the Python 3.14 source-only egg.
+
 ## 1.0.73
 
 - Remove Darkhand's bottom dashboard padding and reduce the top frame spacing.
