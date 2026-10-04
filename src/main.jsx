@@ -67,7 +67,8 @@ import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
 import { MatrixIdentity, MatrixMasthead } from './app/MatrixTheme.jsx';
-import { USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
+import { USAFlagProgress, USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
+import usaFooterEagle from './assets/independence-eagle-aaa-optimized.webp';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
 import { DarkhandOverview, DarkhandSwitches, DarkhandDetails } from './app/Darkhand.jsx';
@@ -1403,6 +1404,7 @@ function Progress({ value = 0, state, theme }) {
             width: `${progress}%`,
           }}
         />
+        {theme === 'independence' && <USAFlagProgress progress={progress} id={`${potionId}-usa`} />}
         {theme === 'halloween' && (<svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-inside`}>
@@ -5463,6 +5465,7 @@ function App() {
             <span><ArrowDown size={13} />{rate(stats.download_rate)}</span>
             <span><ArrowUp size={13} />{rate(stats.upload_rate)}</span>
             <span className="status-ip"><Wifi size={13} />{stats.external_ip || 'IP unavailable'}</span>
+            {theme === 'independence' && <img className="usa-footer-eagle" src={usaFooterEagle} alt="" aria-hidden="true" />}
           </footer>
         </section>
       </main>

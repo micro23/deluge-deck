@@ -57,8 +57,9 @@
 :root[data-theme="independence"] body .state-icon { color:#782a25; background:#782a2508; border:1px solid #782a251c; border-radius:3px; box-shadow:none; }
 :root[data-theme="independence"] body .state-badge { color:var(--muted); font-family:var(--usa-ui)!important; }
 :root[data-theme="independence"] body .state-badge i { background:var(--green); box-shadow:none!important; }
-:root[data-theme="independence"] body .progress-track { height:7px!important; background:#ded5c4!important; border:0!important; border-radius:1px!important; padding:0!important; box-shadow:inset 0 0 0 1px #7b6d5422!important; }
-:root[data-theme="independence"] body .progress-bar { display:block!important; height:100%; background:#782a25!important; border:0!important; border-radius:1px!important; box-shadow:none!important; }
+:root[data-theme="independence"] body .progress-track { position:relative!important; height:15px!important; overflow:hidden!important; background:#e5dccb!important; border:1px solid #b5a888!important; border-radius:2px!important; padding:0!important; box-shadow:inset 0 1px 2px #14283b18!important; }
+:root[data-theme="independence"] body .progress-track > .progress-bar { display:none!important; }
+:root[data-theme="independence"] body .progress-track > .independence-flag { position:absolute; inset:0; display:block; width:100%; height:100%; }
 :root[data-theme="independence"] body .progress-bar.complete { background:#263f58!important; }
 :root[data-theme="independence"] body .progress-bar.paused { background:#7b6d54!important; }
 :root[data-theme="independence"] body .rate-cell.down { color:#782a25!important; }
@@ -67,7 +68,8 @@
 :root[data-theme="independence"] body .table-shell table :is(th,td):last-child { position:sticky!important; right:0; z-index:3; background:#fbf7ee!important; border-left:1px solid #c6b79944; box-shadow:-12px 0 14px #fbf7eee6; }
 :root[data-theme="independence"] body .table-shell table th:last-child { z-index:4; background:#eee5d5!important; box-shadow:-12px 0 14px #eee5d5e6; }
 :root[data-theme="independence"] body .table-tools .column-menu-trigger { top:7px!important; right:10px!important; width:24px!important; height:24px!important; background:#eee5d5!important; border:0; }
-:root[data-theme="independence"] body .deck-status-rail { height:42px!important; min-height:42px!important; margin-top:10px!important; background:#f2eadd!important; border:1px solid #c6b799!important; color:var(--muted)!important; border-radius:3px; box-shadow:none!important; font:10px var(--usa-ui)!important; }
+:root[data-theme="independence"] body .deck-status-rail { position:relative!important; overflow:visible!important; height:42px!important; min-height:42px!important; margin-top:10px!important; background:#f2eadd!important; border:1px solid #c6b799!important; color:var(--muted)!important; border-radius:3px; box-shadow:none!important; font:10px var(--usa-ui)!important; }
+:root[data-theme="independence"] .usa-footer-eagle { position:absolute; z-index:6; pointer-events:none; left:50%; top:-51px; width:92px; height:86px; object-fit:contain; object-position:center bottom; transform:translateX(-50%); }
 :root[data-theme="independence"] body :is(.status-free-space,.status-ip) { background:transparent!important; border:0!important; box-shadow:none!important; }
 :root[data-theme="independence"] body :is(.modal-card,.detail-drawer,.global-popover,.theme-popover,.context-menu,.bulk-bar) { background:var(--surface)!important; border-color:var(--line)!important; box-shadow:var(--shadow)!important; }
 :root[data-theme="independence"] body :is(.secondary-button,.session-quick-actions button,.icon-button,.theme-trigger,.sidebar-toggle,.row-menu) { background:#fbf7ee!important; color:var(--text)!important; border-color:#7b6d54!important; border-radius:3px!important; box-shadow:none!important; text-shadow:none; }
@@ -100,6 +102,7 @@
   :root[data-theme="independence"] .mobile-brand .usa-flag-mark { width:30px; height:19px; }
   :root[data-theme="independence"] .mobile-brand .usa-identity strong { color:#14283b; font-size:21px; }
   :root[data-theme="independence"] body .workspace { padding:10px 12px 20px!important; }
+  :root[data-theme="independence"] .usa-footer-eagle { top:-28px; width:66px; height:62px; }
   :root[data-theme="independence"] .usa-masthead { height:92px; margin-bottom:10px; background-size:auto 200px; background-position:right center; }
   :root[data-theme="independence"] .usa-masthead h1 { left:14px; font-size:34px; padding:7px 2px; background:#f5eedfaa; }
   :root[data-theme="independence"] body .workspace .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:8px!important; }

@@ -1,3 +1,10 @@
+## 1.0.80
+
+- Update the USA sidebar flag to the current 50-star design.
+- Restore the flag-shaped torrent progress bar, filling left to right with transfer progress.
+- Bring back the detailed bald eagle artwork at the bottom center of the USA theme, with a compact mobile treatment.
+- Refresh the versioned WebUI resources and source-only Python 3.14 plugin egg.
+
 ## 1.0.79
 
 - Replace Independence with the USA heritage theme while preserving saved theme selections.
