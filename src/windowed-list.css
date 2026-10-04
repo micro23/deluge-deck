@@ -1,0 +1,10 @@
+/* Spacer rows preserve native table geometry and logical stripe parity. */
+:root[data-theme][data-theme] body .table-shell tbody tr.virtual-spacer > td {
+  height:var(--virtual-gap)!important; min-height:0!important; max-height:none!important;
+  padding:0!important; border:0!important; line-height:0!important;
+  background:transparent!important; box-shadow:none!important;
+}
+:root[data-theme][data-theme] body .mobile-transfer-list > li.virtual-spacer {
+  display:block!important; min-height:0!important; padding:0!important; margin:0!important;
+  border:0!important; background:transparent!important; pointer-events:none;
+}

@@ -1,6 +1,6 @@
 {
   "name": "deluge-deck",
-  "version": "1.0.69",
+  "version": "1.0.70",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,17 +16,19 @@
     "verify:release": "node scripts/verify-release.mjs",
     "release:check": "npm test && npm run check && npm run verify:release",
     "test": "node --test server/*.test.mjs",
-    "check": "vite build && node --check server/index.mjs && node --check server/hosted-layout-fixture.mjs"
+    "check": "vite build && node --check server/index.mjs && node --check server/hosted-layout-fixture.mjs",
+    "verify:performance": "node scripts/verify-performance.mjs",
+    "verify:windowing": "node scripts/verify-windowing-and-themes.mjs"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "6.1.1",
-    "concurrently": "10.0.5",
     "lucide-react": "1.38.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "vite": "8.2.2"
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "playwright": "1.63.0"
+    "@vitejs/plugin-react": "6.1.1",
+    "concurrently": "10.0.5",
+    "playwright": "1.63.0",
+    "vite": "8.2.2"
   }
 }

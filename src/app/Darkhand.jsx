@@ -1,6 +1,7 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, Activity, Network, HardDrive, Wifi } from 'lucide-react';
 import { rpc } from './api.js';
+import { createPoller } from '../../server/polling.mjs';
 import { storage } from './storage.js';
 import { formatBytes } from '../../server/hosted-contracts.mjs';
 const rate = n => `${formatBytes(Math.max(0, Number(n) || 0))}/s`;
@@ -31,7 +32,6 @@ export function DarkhandOverview({ stats, counts, onPreferences, fresh, sourceKe
   }, [stats, fresh]);
   useEffect(() => {
     let alive = true;
-    let timer;
     const read = async () => {
       try {
         const result = await rpc('delugedeck.get_speed_history', [minutes * 60000, 600]);
@@ -48,10 +48,12 @@ export function DarkhandOverview({ stats, counts, onPreferences, fresh, sourceKe
         setIntervalValue(15000);
         setDaemonHistory(false);
       }
-      if (alive) timer = window.setTimeout(read, minutes > 60 ? 60000 : 5000);
     };
-    read();
-    return () => { alive = false; window.clearTimeout(timer); };
+    const poller = createPoller({ refresh: read, visible: () => !document.hidden, delay: () => minutes > 60 ? 60000 : 5000 });
+    const wake = () => { void poller.wake(); };
+    wake();
+    document.addEventListener('visibilitychange', wake);
+    return () => { alive = false; poller.stop(); document.removeEventListener('visibilitychange', wake); };
   }, [minutes, sourceKey]);
   const start = clock - minutes * 60000;
   const rows = samples.filter(r => r[0] >= start && r[0] <= clock);

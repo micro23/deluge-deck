@@ -285,7 +285,7 @@ const ensureRoot = () => {
     // React owns everything inside this layer.  Its dialogs intentionally use
     // accessible dialog semantics and words such as "daemon", so legacy
     // ExtJS detection must never annotate or style them.
-    if (node.closest?.(`#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`)) return;
+    if (node.closest?.(`#${window.__DELUGE_DECK_ROOT_ID__},#${window.__DELUGE_DECK_OVERLAY_ROOT_ID__}`)) return;
     suppressStockLogin(node);
     suppressStockConnectionWindow(node);
     const infrastructure = ['SCRIPT', 'STYLE', 'LINK'].includes(node.tagName);
@@ -303,7 +303,6 @@ const ensureRoot = () => {
   // for the page lifetime so every new instance is patched before (or quickly
   // after) an automatic checkConnected()/disconnect(true) tries to show it.
   disableStockConnectionManager();
-  window.setInterval(disableStockConnectionManager, 250);
   window.setInterval(scanStockConnectionWindows, 250);
   let root = document.getElementById(window.__DELUGE_DECK_ROOT_ID__);
   if (!root) {

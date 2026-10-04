@@ -59,7 +59,7 @@ test('hosted bridge suppresses Deluge stock connection manager in favor of Deck 
   assert.match(bridge, /!patchedStockConnectionManagers\.has\(manager\)/);
   assert.match(bridge, /manager\.show = function suppressDeckStockConnectionManager/);
   assert.match(bridge, /manager\.isVisible\?\.\(\) \|\| \(manager\.rendered && manager\.hidden !== true\)/);
-  assert.match(bridge, /window\.setInterval\(disableStockConnectionManager, 250\)/);
+  assert.match(bridge, /window\.setInterval\(scanStockConnectionWindows, 250\)/);
   assert.match(bridge, /const hideStockConnectionElement = \(element\) =>/);
   assert.match(bridge, /element\.style\.setProperty\('display', 'none', 'important'\)/);
   assert.match(bridge, /x-window:has\(\.x-deluge-connect-window-icon\)/);

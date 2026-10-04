@@ -55,6 +55,9 @@ import {
   formatBytes,
   normalizeTorrentFiles,
 } from '../server/hosted-contracts.mjs';
+import { useWindowedRows } from './app/useWindowedRows.js';
+import { prepareTheme, activateTheme, loadThemeGallery } from './app/theme-loader.js';
+import { mapTorrents } from './app/torrent-model.js';
 import { api, pluginMode, rpc } from './app/api.js';
 import { decodeTorrentMetadata } from './app/torrent-metadata.js';
 import { daemonHostStatus, addedHostId } from '../server/hosted-contracts.mjs';
@@ -62,8 +65,7 @@ import { proxyFormValues, proxyConfig } from './app/preferences.js';
 import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES } from './app/themes.js';
-import { SportsIdentity } from './app/SportsIdentity.jsx';
-import { MetsMasthead } from './app/MetsBrand.jsx';
+import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
 import { DarkhandOverview, DarkhandSwitches, DarkhandDetails } from './app/Darkhand.jsx';
@@ -92,15 +94,13 @@ import './themes/sports-expansion.css';
 import './themes/sports.css';
 import './themes/darkhand.css';
 import './themes/mets.css';
+import './themes/sports-bespoke.css';
+import './windowed-list.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
 const queueRank = (torrent) =>
   Number(torrent.queue) >= 0 ? Number(torrent.queue) : Number.MAX_SAFE_INTEGER;
-const mapTorrents = (data) =>
-  Object.entries(data?.torrents || {})
-    .map(([hash, torrent]) => ({ ...torrent, hash }))
-    .sort((left, right) => queueRank(left) - queueRank(right));
 const stateKey = (state = '') => state.toLowerCase().replaceAll(' ', '-');
 const countTorrentStates = (torrents) => torrents.reduce((counts, torrent) => {
   counts.all += 1;
@@ -218,34 +218,6 @@ const trackerFaviconCandidates = (host = '') => {
     ),
   ];
 };
-// Existing table renderers share this recovery path.  Browsers do not require
-// CORS permission to display an image, so this reaches the actual tracker icon
-// even though the tracker API itself is cross-origin.
-if (
-  typeof document !== 'undefined' &&
-  !window.__DELUGE_DECK_TRACKER_FAVICON_RECOVERY__
-) {
-  window.__DELUGE_DECK_TRACKER_FAVICON_RECOVERY__ = true;
-  document.addEventListener(
-    'error',
-    (event) => {
-      const image = event.target;
-      if (
-        !(image instanceof HTMLImageElement) ||
-        !image.classList.contains('tracker-favicon-small') ||
-        image.classList.contains('tracker-favicon-controlled')
-      )
-        return;
-      const host = image.alt.replace(/ favicon$/, '');
-      const candidates = trackerFaviconCandidates(host);
-      const nextIndex = Number(image.dataset.trackerFaviconIndex || 0) + 1;
-      if (!candidates[nextIndex]) return;
-      image.dataset.trackerFaviconIndex = String(nextIndex);
-      image.src = candidates[nextIndex];
-    },
-    true,
-  );
-}
 function TrackerFavicon({ host }) {
   const candidates = useMemo(() => trackerFaviconCandidates(host), [host]);
   const [candidateIndex, setCandidateIndex] = useState(0);
@@ -494,6 +466,9 @@ function ThemeMenu({ theme, setTheme }) {
     return () =>
       window.removeEventListener('deluge-deck:close-popovers', close);
   }, []);
+  useEffect(() => {
+    if (open) loadThemeGallery().catch(error => window.dispatchEvent(new CustomEvent('deck-theme-load-error', { detail: error.message })));
+  }, [open]);
   const navigateMenu = (event) => {
     if (!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
     event.preventDefault();
@@ -1409,7 +1384,7 @@ function Topbar({
     </>
   );
 }
-function Progress({ value = 0, state, stateLabel = false }) {
+function Progress({ value = 0, state, theme }) {
   const progress = Math.max(0, Math.min(100, value));
   const potionId = useId();
   return (
@@ -1421,7 +1396,7 @@ function Progress({ value = 0, state, stateLabel = false }) {
             width: `${progress}%`,
           }}
         />
-        <svg className="independence-flag" viewBox="0 0 190 100" preserveAspectRatio="none" aria-hidden="true">
+        {theme === 'independence' && (<svg className="independence-flag" viewBox="0 0 190 100" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-flag-fill`}>
               <rect width={190 * progress / 100} height="100" />
@@ -1442,8 +1417,8 @@ function Progress({ value = 0, state, stateLabel = false }) {
               ))
             ))}
           </g>
-        </svg>
-        <svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
+        </svg>)}
+        {theme === 'halloween' && (<svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-inside`}>
               <path d="M22 11H133C137 11 138 6 145 6C152 6 156 10 156 16S152 26 145 26C138 26 137 21 133 21H22Z" />
@@ -1470,8 +1445,8 @@ function Progress({ value = 0, state, stateLabel = false }) {
           <path d="M6 12V20M10 12V20" stroke="#d2a365" strokeOpacity=".35" />
           <rect x="14" y="7" width="7" height="18" rx="2" fill="#353535" stroke={`url(#${potionId}-glass)`} strokeWidth="1.2" />
           <path d="M16 9V22" stroke="#e6e6e6" strokeOpacity=".65" />
-        </svg>
-        <svg className="candy-cane" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
+        </svg>)}
+        {theme === 'christmas' && (<svg className="candy-cane" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <pattern id={`${potionId}-candy-stripes`} patternUnits="userSpaceOnUse" width="12" height="12" patternTransform="rotate(35)">
               <rect width="12" height="12" fill="#fff5e9" />
@@ -1490,27 +1465,12 @@ function Progress({ value = 0, state, stateLabel = false }) {
             strokeDasharray={`${progress} 100`}
           />}
           <path d="M7 20H139C152 20 152 8 143 8H135" fill="none" stroke="#ffffff" strokeOpacity=".35" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
+        </svg>)}
       </div>
-      <span>{stateLabel ? `${state} ` : ''}{Number(value).toFixed(stateLabel ? 2 : value % 1 ? 1 : 0)}%</span>
+      <span>{Number(value).toFixed(value % 1 ? 1 : 0)}%</span>
     </div>
   );
 }
-const COLUMN_CHOOSER_COLUMNS = [
-  ['state', 'State'],
-  ['progress', 'Progress'],
-  ['size', 'Size'],
-  ['download', 'Download'],
-  ['upload', 'Upload'],
-  ['eta', 'ETA'],
-  ['ratio', 'Ratio'],
-  ['seeds', 'Seeds'],
-  ['peers', 'Peers'],
-  ['added', 'Added'],
-  ['seedingTime', 'Seeding time'],
-  ['tracker', 'Tracker'],
-  ['queue', 'Queue'],
-].map(([key, label]) => ({ key, label }));
 function ColumnChooser({ columns, visibility, onToggle, onClose }) {
   useRestoreFocus();
   const overlayHost = useViewportOverlayHost();
@@ -1574,513 +1534,6 @@ function ColumnChooser({ columns, visibility, onToggle, onClose }) {
       </section>
     </div>,
     overlayHost,
-  );
-}
-function LegacyTorrentTable({
-  torrents,
-  selected,
-  setSelected,
-  onOpen,
-  onMenu,
-  loading,
-  onAdd,
-}) {
-  const allSelected =
-    torrents.length && torrents.every((torrent) => selected.has(torrent.hash));
-  const [sort, setSort] = useState({ key: 'queue', direction: 1 });
-  const [columnMenuOpen, setColumnMenuOpen] = useState(false);
-  const tableRef = useRef(null);
-  useEffect(() => {
-    const close = () => setColumnMenuOpen(false);
-    window.addEventListener('deluge-deck:close-popovers', close);
-    return () =>
-      window.removeEventListener('deluge-deck:close-popovers', close);
-  }, []);
-  const [columnVisibility, setColumnVisibility] = useState(() => {
-    const defaults = {
-      state: true,
-      progress: true,
-      size: true,
-      download: true,
-      upload: true,
-      eta: true,
-      ratio: true,
-      seeds: true,
-      peers: true,
-      added: true,
-      seedingTime: false,
-      tracker: true,
-      queue: true,
-    };
-    try {
-      return {
-        ...defaults,
-        ...JSON.parse(localStorage.getItem('deck-column-visibility') || '{}'),
-      };
-    } catch {
-      return defaults;
-    }
-  });
-  const [columnWidths, setColumnWidths] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem(tableStorageKey(theme, 'widths')) || '{}');
-    } catch {
-      return {};
-    }
-  });
-  useEffect(() => {
-    localStorage.setItem(
-      'deck-column-visibility',
-      JSON.stringify(columnVisibility),
-    );
-  }, [columnVisibility]);
-  useEffect(() => {
-    localStorage.setItem(tableStorageKey(theme, 'widths'), JSON.stringify(columnWidths));
-  }, [columnWidths, theme]);
-  useEffect(() => {
-    const table = tableRef.current;
-    if (!table || !window.ResizeObserver) return undefined;
-    const headers = [...table.querySelectorAll('th[data-column]')];
-    headers.forEach((header) => {
-      const savedWidth = Number(columnWidths[header.dataset.column]);
-      if (savedWidth > 0) header.style.width = savedWidth + 'px';
-    });
-    const observer = new ResizeObserver((entries) =>
-      setColumnWidths((current) => {
-        let changed = false;
-        const next = { ...current };
-        entries.forEach(({ target, contentRect }) => {
-          const key = target.dataset.column;
-          const width = Math.round(contentRect.width);
-          if (key && width > 0 && next[key] !== width) {
-            next[key] = width;
-            changed = true;
-          }
-        });
-        return changed ? next : current;
-      }),
-    );
-    headers.forEach((header) => observer.observe(header));
-    return () => observer.disconnect();
-  }, []);
-  const toggleColumn = (key) =>
-    setColumnVisibility((current) => ({ ...current, [key]: !current[key] }));
-  const toggleColumnMenu = () => {
-    if (!columnMenuOpen) signalPopover('columns');
-    setColumnMenuOpen((open) => !open);
-  };
-  const tableClass = Object.entries(columnVisibility)
-    .filter(([, visible]) => !visible)
-    .map(([key]) => `hide-${key}`)
-    .join(' ');
-  const toggleSort = (key) =>
-    setSort((current) =>
-      current.key === key
-        ? { key, direction: current.direction * -1 }
-        : { key, direction: 1 },
-    );
-  const sortedTorrents = useMemo(
-    () =>
-      [...torrents].sort((left, right) => {
-        const a = left[sort.key] ?? '';
-        const b = right[sort.key] ?? '';
-        return (
-          (typeof a === 'number' && typeof b === 'number'
-            ? a - b
-            : String(a).localeCompare(String(b))) * sort.direction
-        );
-      }),
-    [torrents, sort],
-  );
-  const sortLabel =
-    {
-      name: 'Torrent',
-      state: 'State',
-      progress: 'Progress',
-      total_size: 'Size',
-      download_payload_rate: 'Download',
-      upload_payload_rate: 'Upload',
-      eta: 'ETA',
-      ratio: 'Ratio',
-      total_seeds: 'Seeds',
-      total_peers: 'Peers',
-      time_added: 'Added',
-      seeding_time: 'Seeding time',
-      tracker_host: 'Tracker',
-      queue: 'Queue',
-    }[sort.key] || sort.key;
-  const sortValue = (key) =>
-    sort.key === key
-      ? sort.direction === 1
-        ? 'ascending'
-        : 'descending'
-      : 'none';
-
-  return (
-    <div className="table-shell">
-      <div className="table-tools">
-        <span className="sort-announcement" role="status" aria-live="polite">
-          Sorted by {sortLabel},{' '}
-          {sort.direction === 1 ? 'ascending' : 'descending'}
-        </span>
-        <button
-          className="column-menu-trigger"
-          onClick={toggleColumnMenu}
-          aria-expanded={columnMenuOpen}
-          aria-label="Choose visible columns"
-          title="Choose visible columns"
-        >
-          <Menu size={17} />
-        </button>
-        {columnMenuOpen && (
-          <ColumnChooser
-            columns={COLUMN_CHOOSER_COLUMNS}
-            visibility={columnVisibility}
-            onToggle={toggleColumn}
-            onClose={() => setColumnMenuOpen(false)}
-          />
-        )}
-      </div>
-      <table ref={tableRef} className={tableClass}>
-        <thead>
-          <tr>
-            <th className="check-cell">
-              <input
-                type="checkbox"
-                checked={Boolean(allSelected)}
-                onChange={() =>
-                  setSelected(
-                    allSelected
-                      ? new Set()
-                      : new Set(torrents.map((torrent) => torrent.hash)),
-                  )
-                }
-                aria-label="Select all filtered torrents"
-              />
-            </th>
-            <th
-              aria-sort={sortValue('name')}
-              className="resizable-th"
-              data-column="name"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('name')}
-              >
-                Torrent
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('state')}
-              className="resizable-th"
-              data-column="state"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('state')}
-              >
-                State
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('progress')}
-              className="resizable-th"
-              data-column="progress"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('progress')}
-              >
-                Progress
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('total_size')}
-              className="resizable-th"
-              data-column="size"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('total_size')}
-              >
-                Size
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('download_payload_rate')}
-              className="resizable-th"
-              data-column="download"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('download_payload_rate')}
-              >
-                ↓ Download
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('upload_payload_rate')}
-              className="resizable-th"
-              data-column="upload"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('upload_payload_rate')}
-              >
-                ↑ Upload
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('eta')}
-              className="resizable-th"
-              data-column="eta"
-            >
-              <button className="sort-button" onClick={() => toggleSort('eta')}>
-                ETA
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('ratio')}
-              className="resizable-th"
-              data-column="ratio"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('ratio')}
-              >
-                Ratio
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('total_seeds')}
-              className="resizable-th"
-              data-column="seeds"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('total_seeds')}
-              >
-                Seeds
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('total_peers')}
-              className="resizable-th"
-              data-column="peers"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('total_peers')}
-              >
-                Peers
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('time_added')}
-              className="resizable-th"
-              data-column="added"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('time_added')}
-              >
-                Added
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('seeding_time')}
-              className="resizable-th"
-              data-column="seedingTime"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('seeding_time')}
-              >
-                Seeding time
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('tracker_host')}
-              className="resizable-th"
-              data-column="tracker"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('tracker_host')}
-              >
-                Tracker
-              </button>
-            </th>
-            <th
-              aria-sort={sortValue('queue')}
-              className="resizable-th"
-              data-column="queue"
-            >
-              <button
-                className="sort-button"
-                onClick={() => toggleSort('queue')}
-              >
-                Queue
-              </button>
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            Array.from({ length: 5 }).map((_, index) => (
-              <tr key={index} className="skeleton-row">
-                <td />
-                <td>
-                  <span />
-                  <span />
-                </td>
-                <td>
-                  <i />
-                </td>
-                <td>
-                  <span />
-                </td>
-                <td>
-                  <i />
-                </td>
-                <td>
-                  <i />
-                </td>
-                <td>
-                  <i />
-                </td>
-                <td>
-                  <i />
-                </td>
-                <td>
-                  <i />
-                </td>
-                <td />
-              </tr>
-            ))
-          ) : torrents.length ? (
-            sortedTorrents.map((torrent) => {
-              const Icon = icons[stateKey(torrent.state)] || Info;
-              return (
-                <tr
-                  key={torrent.hash}
-                  className={selected.has(torrent.hash) ? 'selected' : ''}
-                  onClick={(event) => {
-                    if (event.target.closest('button,input,select,a')) return;
-                    onOpen(torrent);
-                  }}
-                  tabIndex="0"
-                  role="button"
-                  aria-label={`Open details for ${torrent.name}`}
-                  onKeyDown={(event) => {
-                    if (event.target !== event.currentTarget) return;
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      onOpen(torrent);
-                    }
-                  }}
-                >
-                  <td className="check-cell">
-                    <input
-                      type="checkbox"
-                      checked={selected.has(torrent.hash)}
-                      onChange={() =>
-                        setSelected((current) => {
-                          const next = new Set(current);
-                          next.has(torrent.hash)
-                            ? next.delete(torrent.hash)
-                            : next.add(torrent.hash);
-                          return next;
-                        })
-                      }
-                      aria-label={`Select ${torrent.name}`}
-                    />
-                  </td>
-                  <td className="name-cell">
-                    <div className="name-content">
-                      <div className={`state-icon ${stateKey(torrent.state)}`}>
-                        <Icon size={15} />
-                      </div>
-                      {torrent.tracker_host && <TrackerFavicon host={torrent.tracker_host} />}
-                      <div className="torrent-name">
-                        <strong title={torrent.name}>{torrent.name}</strong>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`state-badge ${stateKey(torrent.state)}`}>
-                      <i />
-                      {torrent.state}
-                    </span>
-                  </td>
-                  <td>
-                    <Progress value={torrent.progress} state={torrent.state} />
-                  </td>
-                  <td>{formatBytes(torrent.total_size)}</td>
-                  <td className="rate-cell down">
-                    {rate(torrent.download_payload_rate)}
-                  </td>
-                  <td className="rate-cell up">
-                    {rate(torrent.upload_payload_rate)}
-                  </td>
-                  <td>{eta(torrent.eta)}</td>
-                  <td className="ratio-cell">
-                    {Number(torrent.ratio || 0).toFixed(2)}
-                  </td>
-                  <td>{`${Number(torrent.num_seeds) || 0} / ${Number(torrent.total_seeds) || 0}`}</td>
-                  <td>{`${Number(torrent.num_peers) || 0} / ${Number(torrent.total_peers) || 0}`}</td>
-                  <td>{torrentDate(torrent.time_added)}</td>
-                  <td>{elapsedTime(torrent.seeding_time)}</td>
-                  <td>
-                    <span
-                      className={`tracker-status ${stateKey(torrent.tracker_status || 'unknown')}`}
-                    >
-                      {torrent.tracker_status || 'Unknown'}
-                    </span>
-                    <small className="tracker-host">
-                      {torrent.tracker_host || '—'}
-                    </small>
-                  </td>
-                  <td>
-                    {queueRank(torrent) === Number.MAX_SAFE_INTEGER
-                      ? '—'
-                      : queueRank(torrent) + 1}
-                  </td>
-                  <td>
-                    <button
-                      className="row-menu"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        onMenu(torrent, event);
-                      }}
-                      aria-label={`Actions for ${torrent.name}`}
-                    >
-                      <MoreHorizontal size={17} />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td colSpan="16">
-                <div className="empty-table">
-                  <div className="empty-icon">
-                    <ListFilter size={22} />
-                  </div>
-                  <h3>No torrents here</h3>
-                  <p>Try another filter or add a torrent.</p>
-                  <button className="secondary-button" onClick={onAdd}>
-                    <Plus size={16} /> Add torrent
-                  </button>
-                </div>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
   );
 }
 const TABLE_COLUMN_ORDER = [
@@ -2237,7 +1690,9 @@ function useMobileLayout() {
   return mobile;
 }
 
-function MobileTorrentList({ torrents, selected, setSelected, onOpen, onMenu, loading, onAdd, sort, setSort }) {
+function MobileTorrentList({ torrents, theme, selected, setSelected, onOpen, onMenu, loading, onAdd, sort, setSort }) {
+  const listRef = useRef(null);
+  const rows = useWindowedRows(torrents, { listRef, enabled: !loading, estimate: 120, resetKey: `${theme}:${sort.key}:${sort.direction}` });
   const allSelected = torrents.length > 0 && torrents.every(t => selected.has(t.hash));
   return (
     <section className="mobile-transfers" aria-label="Torrent list">
@@ -2248,17 +1703,20 @@ function MobileTorrentList({ torrents, selected, setSelected, onOpen, onMenu, lo
         </select></label>
         <button className="mobile-sort-direction" aria-label={sort.direction === 1 ? 'Sort descending' : 'Sort ascending'} onClick={() => setSort(s => ({ ...s, direction: -s.direction }))}>{sort.direction === 1 ? <ArrowDown size={16} /> : <ArrowUp size={16} />}</button>
       </div>
-      {loading ? <p className="mobile-list-empty" role="status">Loading torrents…</p> : torrents.length ? <ul className="mobile-transfer-list">
-        {torrents.map(t => <li key={t.hash} className={`mobile-transfer ${selected.has(t.hash) ? 'selected' : ''}`}>
+      {loading ? <p className="mobile-list-empty" role="status">Loading torrents…</p> : torrents.length ? <ul className="mobile-transfer-list" ref={listRef}>
+        {rows.slots.map(slot => {
+          if (slot.type === 'spacer') return <React.Fragment key={slot.key}><li className="virtual-spacer" aria-hidden="true" style={{ height: slot.height }} />{slot.parity === 0 && <li className="virtual-spacer" aria-hidden="true" style={{ height: 0 }} />}</React.Fragment>;
+          const index = slot.index, t = torrents[index];
+          return <li data-virtual-index={index} key={t.hash} onKeyDown={event => rows.tabAcrossBoundary(event, index, 'button.row-menu', 'input')} className={`mobile-transfer ${selected.has(t.hash) ? 'selected' : ''}`}>
           <label className="mobile-row-select"><input type="checkbox" aria-label={`Select ${t.name}`} checked={selected.has(t.hash)} onChange={() => setSelected(current => { const next = new Set(current); next.has(t.hash) ? next.delete(t.hash) : next.add(t.hash); return next; })} /></label>
-          <button className="mobile-transfer-open" aria-label={`Open details for ${t.name}`} onClick={() => onOpen(t)}>
+          <button className="mobile-transfer-open" aria-label={`Open details for ${t.name}`} onKeyDown={event => rows.navigate(event, index, '.mobile-transfer-open')} onClick={() => onOpen(t)}>
             <strong className="mobile-transfer-name">{t.name}</strong>
             <span className="mobile-transfer-meta"><span className={`state-badge ${stateKey(t.state)}`}><i />{t.state}</span><span>{formatBytes(t.total_size)}</span><span>Ratio {Number(t.ratio || 0).toFixed(2)}</span></span>
-            <Progress value={t.progress} state={t.state} />
+            <Progress value={t.progress} state={t.state} theme={theme} />
             <span className="mobile-transfer-rates"><span><ArrowDown size={12} />{rate(t.download_payload_rate)}</span><span><ArrowUp size={12} />{rate(t.upload_payload_rate)}</span><span>ETA {eta(t.eta)}</span></span>
           </button>
           <button className="row-menu mobile-row-menu" aria-label={`Actions for ${t.name}`} onClick={event => onMenu(t, event)}><MoreHorizontal size={19} /></button>
-        </li>)}
+        </li>; })}
       </ul> : <div className="mobile-list-empty"><strong>No torrents here</strong><p>Try another filter or add a torrent.</p><button className="secondary-button" onClick={onAdd}><Plus size={16} />Add torrent</button></div>}
     </section>
   );
@@ -2310,6 +1768,8 @@ function TorrentTable({
     }
   });
   const tableRef = useRef(null);
+  const bodyRef = useRef(null);
+  const scrollRef = useRef(null);
   const [autoColumnWidths, setAutoColumnWidths] = useState(
     AUTO_COLUMN_FALLBACKS,
   );
@@ -2420,9 +1880,9 @@ function TorrentTable({
     if (!columnMenuOpen) signalPopover('columns');
     setColumnMenuOpen((open) => !open);
   };
-  const visibleColumns = columnOrder.filter(
+  const visibleColumns = useMemo(() => columnOrder.filter(
     (key) => key === 'name' || columnVisibility[key],
-  );
+  ), [columnOrder, columnVisibility]);
   const sortedTorrents = useMemo(
     () =>
       [...torrents].sort((left, right) => {
@@ -2436,6 +1896,7 @@ function TorrentTable({
       }),
     [torrents, sort],
   );
+  const rows = useWindowedRows(sortedTorrents, { listRef: bodyRef, scrollRef, enabled: !loading && !mobile, uniform: true, resetKey: `${theme}:${sort.key}:${sort.direction}` });
   const resolvedColumnWidths = useMemo(
     () => ({ ...(theme === 'terminal' ? terminalColumnWidths : autoColumnWidths), ...columnWidths }),
     [autoColumnWidths, columnWidths, theme],
@@ -2453,7 +1914,7 @@ function TorrentTable({
   // its already assigned width and would slowly ratchet columns larger.
   useLayoutEffect(() => {
     const table = tableRef.current;
-    if (!table || loading || theme === 'terminal') return undefined;
+    if (!table || mobile || loading || theme === 'terminal') return undefined;
     let cancelled = false;
     let frame = 0;
     const measure = () => {
@@ -2511,7 +1972,7 @@ function TorrentTable({
         ? 'ascending'
         : 'descending'
       : 'none';
-  if (mobile) return <MobileTorrentList torrents={sortedTorrents} selected={selected} setSelected={setSelected} onOpen={onOpen} onMenu={onMenu} loading={loading} onAdd={onAdd} sort={sort} setSort={setSort} />;
+  if (mobile) return <MobileTorrentList torrents={sortedTorrents} theme={theme} selected={selected} setSelected={setSelected} onOpen={onOpen} onMenu={onMenu} loading={loading} onAdd={onAdd} sort={sort} setSort={setSort} />;
   const renderCell = (key, torrent, Icon) => {
     if (key === 'name')
       return (
@@ -2539,7 +2000,7 @@ function TorrentTable({
     if (key === 'progress')
       return (
         <td key={key} data-column={key}>
-          <Progress value={torrent.progress} state={torrent.state} stateLabel={theme === 'darkhand'} />
+          <Progress value={torrent.progress} state={torrent.state} theme={theme} />
         </td>
       );
     if (key === 'size')
@@ -2601,7 +2062,7 @@ function TorrentTable({
     );
   };
   return (
-    <div className="table-shell">
+    <div className="table-shell" ref={scrollRef}>
       <div className="table-tools">
         <span className="sort-announcement" role="status" aria-live="polite">
           Sorted by {sortLabel},{' '}
@@ -2630,6 +2091,7 @@ function TorrentTable({
       <table
         ref={tableRef}
         className="auto-sized-table"
+        aria-rowcount={sortedTorrents.length + 1}
         style={{ minWidth: `${tableMinimumWidth}px` }}
       >
         <thead>
@@ -2753,7 +2215,7 @@ function TorrentTable({
             <th />
           </tr>
         </thead>
-        <tbody>
+        <tbody ref={bodyRef}>
           {loading ? (
             Array.from({ length: 5 }).map((_, index) => (
               <tr key={index} className="skeleton-row">
@@ -2767,11 +2229,14 @@ function TorrentTable({
               </tr>
             ))
           ) : torrents.length ? (
-            sortedTorrents.map((torrent) => {
+            rows.slots.map((slot) => {
+              if (slot.type === 'spacer') return <React.Fragment key={slot.key}><tr className="virtual-spacer" aria-hidden="true"><td colSpan={visibleColumns.length + 2} style={{ '--virtual-gap': `${slot.height}px` }} /></tr>{slot.parity === 0 && <tr className="virtual-spacer" aria-hidden="true"><td colSpan={visibleColumns.length + 2} style={{ '--virtual-gap': '0px' }} /></tr>}</React.Fragment>;
+              const index = slot.index, torrent = sortedTorrents[index];
               const Icon = icons[stateKey(torrent.state)] || Info;
               return (
                 <tr
                   key={torrent.hash}
+                  data-virtual-index={index}
                   className={selected.has(torrent.hash) ? 'selected' : ''}
                   onClick={(event) => {
                     if (event.target.closest('button,input,select,a')) return;
@@ -2781,7 +2246,9 @@ function TorrentTable({
                   role="button"
                   aria-label={`Open details for ${torrent.name}`}
                   onKeyDown={(event) => {
+                    rows.tabAcrossBoundary(event, index, 'button.row-menu');
                     if (event.target !== event.currentTarget) return;
+                    if (rows.navigate(event, index)) return;
                     if (event.key === 'Enter' || event.key === ' ') {
                       event.preventDefault();
                       onOpen(torrent);
@@ -3109,8 +2576,9 @@ function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs 
       ? files
       : files.filter((file) => file.path.startsWith(`${folder}/`));
   const setFolderPriority = async (folder, priority) => {
+    const members = new Set(folderFiles(folder));
     const next = files.map((file) =>
-      folderFiles(folder).includes(file)
+      members.has(file)
         ? { ...file, priority: Number(priority) }
         : file,
     );
@@ -3132,6 +2600,7 @@ function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs 
       });
     }
   };
+  const treeRows = useMemo(() => fileTreeRows(files), [files]);
   const toggleFileSelection = (position) =>
     setSelectedFiles((current) => {
       const next = new Set(current);
@@ -3426,7 +2895,7 @@ function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs 
               </div>
             </div>
             <div className="file-list">
-              {fileTreeRows(files).map((entry) =>
+              {treeRows.map((entry) =>
                 entry.type === 'folder' ? (
                   <div
                     className="file-folder-row"
@@ -5405,7 +4874,7 @@ function App() {
   const [addFiles, setAddFiles] = useState(null);
   const [menuTorrent, setMenuTorrent] = useState(null);
   const [menuPosition, setMenuPosition] = useState(null);
-  const [theme, setTheme] = useState(
+  const [theme, setThemeState] = useState(
     () => {
       const saved = localStorage.getItem('deck-theme');
       return THEMES.some(([key]) => key === saved) ? saved : 'dark';
@@ -5417,7 +4886,29 @@ function App() {
       return REFRESH_OPTIONS.some(([value]) => value === saved) ? saved : 1500;
     },
   );
-  const [notice, setNotice] = useState('');
+  const [notice, setNotice] = useState(window.__DELUGE_DECK_THEME_ERROR__ || '');
+  const requestedTheme = useRef(theme);
+  const themeGeneration = useRef(0);
+  const setTheme = value => {
+    const next = typeof value === 'function' ? value(requestedTheme.current) : value;
+    if (!THEMES.some(([key]) => key === next)) return;
+    requestedTheme.current = next;
+    const generation = ++themeGeneration.current;
+    prepareTheme(next).then(() => {
+      if (generation !== themeGeneration.current) return;
+      activateTheme(next);
+      if (generation === themeGeneration.current) setThemeState(next);
+    }).catch(error => {
+      if (generation !== themeGeneration.current) return;
+      requestedTheme.current = theme;
+      setNotice(error.message);
+    });
+  };
+  useEffect(() => {
+    const show = event => setNotice(event.detail);
+    window.addEventListener('deck-theme-load-error', show);
+    return () => window.removeEventListener('deck-theme-load-error', show);
+  }, []);
   const [refreshError, setRefreshError] = useState('');
   const [copied, setCopied] = useState('');
   const [celebrateCompletions, setCelebrateCompletions] = useState(
@@ -5454,7 +4945,7 @@ function App() {
       if (!refreshGate.current.isCurrent(token)) return;
       if (data.connected === false) throw new Error('Deluge daemon is disconnected. Open the connection manager to reconnect.');
       refreshFailures.current = 0;
-      const next = mapTorrents(data);
+      const next = mapTorrents(data, pollState.current?.torrents);
       setRefreshError('');
       if (
         celebrateCompletions &&
@@ -5476,7 +4967,10 @@ function App() {
       );
       setTorrents(next);
       const liveHashes = new Set(next.map((torrent) => torrent.hash));
-      setSelected((current) => new Set([...current].filter((hash) => liveHashes.has(hash))));
+      setSelected((current) => {
+        const nextSelection = new Set([...current].filter((hash) => liveHashes.has(hash)));
+        return nextSelection.size === current.size ? current : nextSelection;
+      });
       setStats(data.stats || {});
       setDetail(
         (current) =>
@@ -5573,8 +5067,9 @@ function App() {
     return () => clearTimeout(timer);
   }, [copied]);
   const filtered = useMemo(
-    () =>
-      torrents.filter((torrent) => {
+    () => {
+      const query = search.toLowerCase();
+      return torrents.filter((torrent) => {
         const allowed =
           filter === 'all' ||
           (filter === 'active'
@@ -5585,9 +5080,10 @@ function App() {
           (!search ||
             `${torrent.name} ${torrent.hash} ${torrent.tracker_host || ''}`
               .toLowerCase()
-              .includes(search.toLowerCase()))
+              .includes(query))
         );
-      }),
+      });
+    },
     [torrents, filter, search],
   );
   const torrentCounts = useMemo(() => countTorrentStates(torrents), [torrents]);
@@ -5837,7 +5333,7 @@ function App() {
               <Plus size={17} /> Add torrent
             </button>
           </div>}
-          {theme === 'mets' && <MetsMasthead />}
+          <SportsMasthead theme={theme} />
           {theme !== 'darkhand' && <div className="stats-grid">
             <Stat
               theme={theme}
@@ -6156,7 +5652,7 @@ const resolveMountRoot = () => {
   if (hostedRootId) return document.getElementById(hostedRootId) || null;
   return document.getElementById('root');
 };
-const mount = () => {
+const mount = async () => {
   if (mounted) return;
   const root = resolveMountRoot();
   if (!root) {
@@ -6168,6 +5664,16 @@ const mount = () => {
     return;
   }
   mounted = true;
+  let theme = localStorage.getItem('deck-theme');
+  if (!THEMES.some(([key]) => key === theme)) theme = 'dark';
+  try {
+    await prepareTheme(theme);
+    await activateTheme(theme);
+  } catch (error) {
+    window.__DELUGE_DECK_THEME_ERROR__ = error.message;
+    localStorage.setItem('deck-theme', 'dark');
+    try { await prepareTheme('dark'); await activateTheme('dark'); } catch { /* Shared styles keep login usable during a resource failure. */ }
+  }
   createRoot(root).render(<App />);
 };
 if (document.readyState === 'loading')

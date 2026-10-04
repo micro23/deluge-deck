@@ -1,0 +1,196 @@
+/* Mets-level finishing, scoped exclusively to the other sports clubs. */
+:root[data-theme="yankees"] {
+  --sports-stage-radius:50%; --sports-rule-style:double; --theme-radius:4px;
+  --sports-angle:90deg; --sports-detail-ink:#10213c; --club-pattern:repeating-linear-gradient(90deg,#13244812 0 1px,transparent 1px 14px);
+  --sports-panel-radius:4px;
+}
+:root[data-theme="giants"] {
+  --sports-stage-radius:12px 12px 3px 3px; --sports-rule-style:solid; --theme-radius:5px;
+  --sports-angle:0deg; --sports-detail-ink:#b9d7ff; --club-pattern:repeating-linear-gradient(0deg,#a4caff0a 0 1px,transparent 1px 22px);
+  --sports-panel-radius:5px;
+}
+:root[data-theme="knicks"] {
+  --sports-stage-radius:28%; --sports-rule-style:solid; --theme-radius:14px;
+  --sports-angle:0deg; --sports-detail-ink:#ffc18b; --club-pattern:repeating-linear-gradient(0deg,#ef9c4510 0 1px,transparent 1px 9px);
+  --sports-panel-radius:14px 3px 14px 3px;
+}
+:root[data-theme="dodgers"] {
+  --sports-stage-radius:50% 50% 6px 6px; --sports-rule-style:solid; --theme-radius:18px;
+  --sports-angle:135deg; --sports-detail-ink:#174b78; --club-pattern:repeating-linear-gradient(135deg,#005a9c0b 0 1px,transparent 1px 18px);
+  --sports-panel-radius:18px 18px 5px 5px;
+}
+:root[data-theme="red-sox"] {
+  --sports-stage-radius:4px; --sports-rule-style:double; --theme-radius:3px;
+  --sports-angle:0deg; --sports-detail-ink:#ffbfc3; --club-pattern:repeating-linear-gradient(0deg,#ffbfc30b 0 1px,transparent 1px 12px);
+  --sports-panel-radius:3px;
+}
+:root[data-theme="blue-jays"] {
+  --sports-stage-radius:50%; --sports-rule-style:solid; --theme-radius:20px;
+  --sports-angle:60deg; --sports-detail-ink:#163d72; --club-pattern:repeating-linear-gradient(60deg,#134a8e0b 0 1px,transparent 1px 20px);
+  --sports-panel-radius:20px;
+}
+:root[data-theme="cubs"] {
+  --sports-stage-radius:8px; --sports-rule-style:double; --theme-radius:7px;
+  --sports-angle:90deg; --sports-detail-ink:#173665; --club-pattern:repeating-linear-gradient(90deg,#0e33860c 0 1px,transparent 1px 24px);
+  --sports-panel-radius:7px 7px 20px 20px;
+}
+:root[data-theme="lakers"] {
+  --sports-stage-radius:50%; --sports-rule-style:double; --theme-radius:16px;
+  --sports-angle:135deg; --sports-detail-ink:#ffe2a4; --club-pattern:repeating-linear-gradient(135deg,#ffe2a40b 0 1px,transparent 1px 16px);
+  --sports-panel-radius:16px;
+}
+:root[data-theme="warriors"] {
+  --sports-stage-radius:50%; --sports-rule-style:solid; --theme-radius:20px;
+  --sports-angle:60deg; --sports-detail-ink:#ffe59a; --club-pattern:repeating-linear-gradient(60deg,#ffe59a10 0 1px,transparent 1px 26px);
+  --sports-panel-radius:20px 5px 20px 5px;
+}
+:root[data-theme="bulls"] {
+  --sports-stage-radius:3px; --sports-rule-style:solid; --theme-radius:2px;
+  --sports-angle:135deg; --sports-detail-ink:#ffbecd; --club-pattern:repeating-linear-gradient(135deg,#ffbecd0a 0 1px,transparent 1px 8px);
+  --sports-panel-radius:2px;
+}
+:root[data-theme="cavaliers"] {
+  --sports-stage-radius:45% 45% 8px 8px; --sports-rule-style:double; --theme-radius:10px;
+  --sports-angle:45deg; --sports-detail-ink:#ffe1a2; --club-pattern:repeating-linear-gradient(45deg,#ffe1a208 0 1px,transparent 1px 15px);
+  --sports-panel-radius:10px 2px 10px 2px;
+}
+:root[data-theme="heat"] {
+  --sports-stage-radius:50% 50% 5px 5px; --sports-rule-style:solid; --theme-radius:22px;
+  --sports-angle:115deg; --sports-detail-ink:#ffd6a1; --club-pattern:repeating-linear-gradient(115deg,#ffd6a109 0 1px,transparent 1px 19px);
+  --sports-panel-radius:22px 4px 22px 4px;
+}
+:root[data-theme="cowboys"] {
+  --sports-stage-radius:10px; --sports-rule-style:solid; --theme-radius:4px;
+  --sports-angle:135deg; --sports-detail-ink:#203e64; --club-pattern:repeating-linear-gradient(135deg,#0035940c 0 2px,transparent 2px 22px);
+  --sports-panel-radius:4px 18px 4px 18px;
+}
+:root[data-theme="eagles"] {
+  --sports-stage-radius:2px 28px 2px 28px; --sports-rule-style:solid; --theme-radius:2px;
+  --sports-angle:155deg; --sports-detail-ink:#b8eee3; --club-pattern:repeating-linear-gradient(155deg,#b8eee30c 0 1px,transparent 1px 13px);
+  --sports-panel-radius:2px 18px 2px 18px;
+}
+:root[data-theme="patriots"] {
+  --sports-stage-radius:4px; --sports-rule-style:double; --theme-radius:3px;
+  --sports-angle:0deg; --sports-detail-ink:#cbdfff; --club-pattern:repeating-linear-gradient(0deg,#cbdfff0a 0 1px,transparent 1px 20px);
+  --sports-panel-radius:3px 3px 16px 3px;
+}
+:root[data-theme="chiefs"] {
+  --sports-stage-radius:30% 3px 30% 3px; --sports-rule-style:solid; --theme-radius:12px;
+  --sports-angle:30deg; --sports-detail-ink:#ffd7a1; --club-pattern:repeating-linear-gradient(30deg,#ffd7a10c 0 1px,transparent 1px 20px);
+  --sports-panel-radius:12px 2px 12px 2px;
+}
+:root[data-theme="steelers"] {
+  --sports-stage-radius:2px; --sports-rule-style:solid; --theme-radius:2px;
+  --sports-angle:45deg; --sports-detail-ink:#ffe28f; --club-pattern:repeating-linear-gradient(45deg,#ffe28f0d 0 2px,transparent 2px 10px);
+  --sports-panel-radius:2px;
+}
+:root[data-theme="rangers"] {
+  --sports-stage-radius:6px 6px 35% 35%; --sports-rule-style:double; --theme-radius:3px;
+  --sports-angle:135deg; --sports-detail-ink:#193e75; --club-pattern:repeating-linear-gradient(135deg,#0038a810 0 3px,transparent 3px 23px);
+  --sports-panel-radius:3px 3px 14px 14px;
+}
+:root[data-theme="blackhawks"] {
+  --sports-stage-radius:6px; --sports-rule-style:solid; --theme-radius:5px;
+  --sports-angle:0deg; --sports-detail-ink:#ffbdc7; --club-pattern:repeating-linear-gradient(0deg,#ffbdc70c 0 3px,transparent 3px 17px);
+  --sports-panel-radius:5px 17px 5px 17px;
+}
+:root[data-theme="penguins"] {
+  --sports-stage-radius:50% 3px 50% 3px; --sports-rule-style:solid; --theme-radius:18px;
+  --sports-angle:120deg; --sports-detail-ink:#ffe399; --club-pattern:repeating-linear-gradient(120deg,#ffe3990b 0 1px,transparent 1px 18px);
+  --sports-panel-radius:18px 2px 18px 2px;
+}
+:root[data-theme="bruins"] {
+  --sports-stage-radius:50%; --sports-rule-style:double; --theme-radius:24px;
+  --sports-angle:90deg; --sports-detail-ink:#403015; --club-pattern:repeating-radial-gradient(circle at 50% 50%,#1111110b 0 1px,transparent 1px 18px);
+  --sports-panel-radius:24px;
+}
+:root[data-theme="maple-leafs"] {
+  --sports-stage-radius:8px; --sports-rule-style:double; --theme-radius:6px;
+  --sports-angle:45deg; --sports-detail-ink:#153663; --club-pattern:repeating-linear-gradient(45deg,#00205b09 0 1px,transparent 1px 12px);
+  --sports-panel-radius:6px;
+}
+:root[data-theme="canadiens"] {
+  --sports-stage-radius:6px; --sports-rule-style:solid; --theme-radius:12px;
+  --sports-angle:0deg; --sports-detail-ink:#762537; --club-pattern:repeating-linear-gradient(0deg,#af1e2d0a 0 2px,transparent 2px 28px);
+  --sports-panel-radius:12px 12px 2px 2px;
+}
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .app-shell { background:linear-gradient(var(--sports-angle),color-mix(in srgb,var(--bg) 96%,transparent) 8%,color-mix(in srgb,var(--bg) 78%,transparent) 58%,color-mix(in srgb,var(--club-primary) 30%,transparent)),var(--club-art) center bottom/cover fixed!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .sidebar { background:linear-gradient(180deg,var(--surface) 10%,color-mix(in srgb,var(--surface) 94%,transparent) 45%,color-mix(in srgb,var(--surface) 38%,transparent)),var(--club-art) 25% bottom/auto 68% no-repeat!important; border-right:1px solid var(--club-edge)!important; box-shadow:inset -4px 0 0 var(--club-primary); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-identity { gap:8px; border-bottom:3px var(--sports-rule-style) var(--club-edge); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-logo-stage { position:relative; isolation:isolate; display:grid; place-items:center; width:100%; height:110px; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-logo-stage::before { content:""; position:absolute; width:98px; height:98px; border:2px var(--sports-rule-style) var(--club-edge); border-radius:var(--sports-stage-radius); background:var(--club-pattern),linear-gradient(var(--sports-angle),var(--surface-3),var(--bg)); box-shadow:0 0 0 5px var(--surface),0 0 0 6px color-mix(in srgb,var(--club-edge) 35%,transparent),0 8px 20px #0008; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-logo-stage img { z-index:1; width:72px; height:78px; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-logo-stage .sports-motif { position:absolute; width:100%; height:108px; opacity:.16; color:var(--club-edge); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-wordmark { font-size:30px; line-height:1.12; color:var(--text); text-shadow:0 4px 12px #0009; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-club-sport { font:700 8px/1.5 'DM Mono',monospace; letter-spacing:.1em; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sidebar.collapsed .sports-logo-stage { height:64px; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sidebar.collapsed .sports-logo-stage::before { width:52px; height:52px; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sidebar.collapsed .sports-logo-stage img { width:40px; height:44px; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sidebar.collapsed .sports-logo-stage .sports-motif { display:none; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-masthead { position:relative; isolation:isolate; display:flex; align-items:center; justify-content:space-between; gap:14px; flex:none; min-height:69px; padding:10px 20px; margin-bottom:12px; overflow:hidden; border:1px solid var(--line-strong); border-bottom:3px var(--sports-rule-style) var(--club-edge); border-radius:var(--sports-panel-radius); background:var(--club-pattern),linear-gradient(var(--sports-angle),var(--surface-3),var(--surface)); box-shadow:inset 0 1px 0 #ffffff26,0 7px 20px #0006; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-masthead>span { z-index:1; flex:1; color:var(--muted); font:700 9px/1.4 'DM Mono',monospace; letter-spacing:.12em; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-masthead>span:last-of-type { text-align:right; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-masthead-title { z-index:1; display:flex; align-items:center; justify-content:center; gap:13px; min-width:0; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-masthead-title img { width:42px; height:42px; object-fit:contain; filter:drop-shadow(0 3px 3px #0008); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-masthead-title strong { font-size:34px; line-height:1.12; color:var(--text); white-space:nowrap; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) .sports-masthead>.sports-motif { position:absolute; width:200px; height:160px; right:9%; top:-45px; color:var(--club-edge); opacity:.09; z-index:0; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .workspace .stats-grid .stat-card { border-radius:var(--sports-panel-radius)!important; border-top:1px solid var(--club-card-line)!important; border-left:4px var(--sports-rule-style) var(--club-edge)!important; box-shadow:inset 0 1px 0 #ffffff28,inset 0 -4px 0 #00000020,0 7px 18px #00000070!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .workspace .stats-grid .stat-card:nth-child(even) { border-left-color:var(--club-secondary)!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .workspace .stats-grid .stat-card::before { inset:5px; border:1px solid color-mix(in srgb,var(--club-card-ink) 12%,transparent); border-radius:var(--sports-panel-radius); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .workspace .stats-grid .stat-card::after { content:""; position:absolute; inset:auto 14px 0; height:2px; background:linear-gradient(90deg,transparent,var(--club-edge),transparent); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .workspace .stats-grid .stat-card strong { font-family:'DM Mono',monospace; font-weight:700; letter-spacing:-.07em; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .stats-grid .stat-card>.theme-detail { color:var(--sports-detail-ink); opacity:.35; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .table-shell { border-radius:var(--sports-panel-radius)!important; box-shadow:inset 0 3px 0 var(--club-edge),0 14px 32px #0009!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .table-shell thead th { border-bottom:2px var(--sports-rule-style) var(--club-edge)!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .progress-track { border-radius:var(--theme-control-radius); }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .progress-bar { box-shadow:inset 0 1px 0 #ffffff50; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .nav-item.active { box-shadow:inset 4px 0 var(--club-edge),0 5px 16px #0005!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .deck-status-rail { border-bottom:3px var(--sports-rule-style) var(--club-edge)!important; border-radius:var(--sports-panel-radius)!important; }
+
+.sports-lettering-serif :is(.sports-wordmark,.sports-masthead-title strong) { font-family:Georgia,serif; font-weight:700; letter-spacing:-.04em; }
+.sports-lettering-script :is(.sports-wordmark,.sports-masthead-title strong) { font:bold italic 42px/1.12 Georgia,serif; letter-spacing:-.06em; }
+.sports-lettering-block :is(.sports-wordmark,.sports-masthead-title strong) { font-family:Impact,'Arial Narrow',sans-serif; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
+.sports-lettering-slant :is(.sports-wordmark,.sports-masthead-title strong) { font-family:Manrope,sans-serif; font-weight:900; font-style:italic; letter-spacing:-.045em; }
+.sports-lettering-round :is(.sports-wordmark,.sports-masthead-title strong) { font-family:Manrope,sans-serif; font-weight:800; letter-spacing:-.06em; }
+:root[data-theme="yankees"] .sports-masthead-title img { filter:brightness(0) invert(1); }
+:root[data-theme="yankees"] .sports-masthead { border-top:3px double var(--club-edge); }
+:root[data-theme="giants"] .sports-masthead { box-shadow:inset 7px 0 #a71930,inset -7px 0 #a71930,0 7px 20px #0006; }
+:root[data-theme="knicks"] .sports-masthead { border-right:8px solid #f58426; }
+:root[data-theme="dodgers"] .sports-masthead { background:linear-gradient(100deg,#f9fcff,#ddebf6); --text:#133b61; --muted:#284b70; }
+:root[data-theme="red-sox"] .sports-masthead { background:linear-gradient(100deg,#39131c,#142738); border-top:3px double #ffbfc3; }
+:root[data-theme="blue-jays"] .sports-masthead { border-top:2px solid #b8dcff; box-shadow:inset 0 -7px #134a8e,0 7px 20px #0006; }
+:root[data-theme="cubs"] .sports-masthead { background:linear-gradient(100deg,#19372c,#112547); border-top:4px double #cc3433; }
+:root[data-theme="lakers"] .sports-masthead { background:radial-gradient(ellipse at 50% 0,#552583,#180e29); border-top:3px double #fdb927; }
+:root[data-theme="warriors"] .sports-masthead { background:linear-gradient(115deg,#173365 48%,#234d8e 48%,#0e203e); border-right:8px solid #ffc72c; }
+:root[data-theme="bulls"] .sports-masthead { background:linear-gradient(105deg,#171717 65%,#4c1422 65%); border-left:8px solid #ce1141; }
+:root[data-theme="cavaliers"] .sports-masthead { background:linear-gradient(100deg,#43051e,#240d23); border:3px double #ffe1a2; }
+:root[data-theme="heat"] .sports-masthead { background:radial-gradient(ellipse at 85% 100%,#6d1724,#190e1a 70%); border-right:8px solid #f9a01b; }
+:root[data-theme="cowboys"] .sports-masthead { background:linear-gradient(135deg,#f9fbfe,#bacbdf); --text:#102f58; --muted:#2d4663; border:3px double #d7e5f7; }
+:root[data-theme="eagles"] .sports-masthead { background:linear-gradient(155deg,#124b4e,#061c26 60%); border-left:8px solid #a5acaf; }
+:root[data-theme="patriots"] .sports-masthead { border-top:3px solid #c60c30; box-shadow:inset 0 5px #002244,0 7px 20px #0006; }
+:root[data-theme="chiefs"] .sports-masthead { background:linear-gradient(30deg,#641227,#290d19); border-left:8px solid #ffb81c; }
+:root[data-theme="steelers"] .sports-masthead { background:repeating-linear-gradient(45deg,#ffe28f07 0 2px,transparent 2px 10px),#11151b; border:2px solid #ffe28f; }
+:root[data-theme="rangers"] .sports-masthead { background:linear-gradient(135deg,#163a80 43%,#a8253a 43%,#a8253a 46%,#091d42 46%); border-top:3px double #c9deff; }
+:root[data-theme="blackhawks"] .sports-masthead { background:linear-gradient(0deg,#161218 20%,#641025 20%,#641025 28%,#161218 28%,#161218 72%,#641025 72%,#641025 80%,#161218 80%); }
+:root[data-theme="penguins"] .sports-masthead { background:linear-gradient(120deg,#11161b 62%,#3c341e 62%); border-right:8px solid #ffb81c; }
+:root[data-theme="bruins"] .sports-masthead { background:linear-gradient(100deg,#fff8e8,#eee1bf); --text:#30240e; --muted:#4c3c1d; border:3px double #ffb81c; }
+:root[data-theme="maple-leafs"] .sports-masthead { background:linear-gradient(100deg,#e8f2ff,#ffffff); --text:#00205b; --muted:#274369; border:3px double #8faace; }
+:root[data-theme="canadiens"] .sports-masthead { background:linear-gradient(0deg,#581522 0 18%,#192168 18% 24%,#1a2036 24% 76%,#192168 76% 82%,#581522 82%); }
+@media (min-width:761px) and (max-width:1100px) {
+  .sports-masthead { padding:10px 12px!important; gap:8px!important; }
+  .sports-masthead>span { font-size:8px!important; letter-spacing:.04em!important; }
+  .sports-masthead-title { gap:8px!important; }
+  .sports-masthead-title strong { font-size:25px!important; }
+  .sports-masthead-title img { width:32px!important; height:32px!important; }
+}
+@media (max-width:760px) {
+  .sports-masthead { display:none!important; }
+:root:is([data-theme="yankees"],[data-theme="giants"],[data-theme="knicks"],[data-theme="dodgers"],[data-theme="red-sox"],[data-theme="blue-jays"],[data-theme="cubs"],[data-theme="lakers"],[data-theme="warriors"],[data-theme="bulls"],[data-theme="cavaliers"],[data-theme="heat"],[data-theme="cowboys"],[data-theme="eagles"],[data-theme="patriots"],[data-theme="chiefs"],[data-theme="steelers"],[data-theme="rangers"],[data-theme="blackhawks"],[data-theme="penguins"],[data-theme="bruins"],[data-theme="maple-leafs"],[data-theme="canadiens"]) body .app-shell { background-attachment:scroll!important; }
+}
+
+/* Preserve each wordmark's character in the compact mobile header. */
+.sports-mobile-brand.sports-lettering-serif strong { font-family:Georgia,serif; letter-spacing:-.03em; }
+.sports-mobile-brand.sports-lettering-script strong { font-family:Georgia,serif; font-style:italic; font-size:23px; letter-spacing:-.06em; }
+.sports-mobile-brand.sports-lettering-block strong { font-family:Impact,'Arial Narrow',sans-serif; text-transform:uppercase; letter-spacing:.04em; }
+.sports-mobile-brand.sports-lettering-slant strong { font-style:italic; font-weight:900; }
+.sports-mobile-brand.sports-lettering-round strong { letter-spacing:-.06em; font-weight:800; }

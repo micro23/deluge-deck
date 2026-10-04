@@ -31,6 +31,10 @@ const json = (res, value) => {
 };
 const feed = () => ({ torrents, stats: {}, connected: true });
 const server = http.createServer(async (req, res) => {
+  if (pluginData && req.url.startsWith('/deluge/deluge-deck-resources/')) {
+    const content = await readFile(path.join(pluginData, 'resources', req.url.slice('/deluge/deluge-deck-resources/'.length)));
+    res.end(content); return;
+  }
   if (pluginData && req.url.startsWith('/deluge/plugin/')) {
     const filename = path.basename(req.url);
     res.writeHead(200, { 'content-type': 'text/javascript' });
@@ -64,7 +68,8 @@ const server = http.createServer(async (req, res) => {
     // Deluge's pause/resume methods return null on success.
     return json(res, { result: null });
   }
-  const assetPath = req.url.startsWith('/assets/') ? req.url.slice(1) : 'index.html';
+  const themePath = req.url.replace(/^\/deluge\/deluge-deck-resources\//, '/').replace('/manifest.json', '/deck-themes.json');
+  const assetPath = /^(?:\/assets\/|\/themes\/|\/deck-themes\.json$)/.test(themePath) ? themePath.slice(1) : 'index.html';
   let content = await readFile(path.join(root, 'dist', assetPath));
   if (req.url.startsWith('/deluge/') && assetPath === 'index.html') {
     content = content.toString().replace('<head>', '<head><script>window.__DELUGE_DECK_PLUGIN__=true;</script>');

@@ -1,4 +1,5 @@
 import React from 'react';
+import { SportsMotif } from './SportsMotif.jsx';
 import { SPORTS_CLUBS } from './sports-clubs.js';
 
 // Decorative artwork only: adjacent values and sparklines remain real telemetry.
@@ -11,6 +12,9 @@ export function ThemeDetail({ theme, side = 'right' }) {
       ? <><path d="M10 98h100M17 98V58h14v40m6 0V39h15v59m7 0V23h14v75m7 0V49h13v49m7 0V69h9v29M63 23V12m-8 27h23" /><path d="M10 86c29-25 71-25 100 0M19 98V82m16 16V73m50 25V73m16 25V82" /></>
       : <><path d="M60 36c-27-20-49 0-41 31 7 28 22 37 41 31 19 6 34-3 41-31 8-31-14-51-41-31Z" /><path d="M60 36c-2-15 2-24 10-30M63 28c21-15 34-10 34-10-5 19-21 22-34 10ZM30 55c-4 14 0 25 9 32" /><path d="M37 107h46" /></>;
     return <svg className={`theme-detail theme-detail-${side} mets-detail`} aria-hidden="true" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{drawing}</svg>;
+  }
+  if (SPORTS_CLUBS[theme] && side === 'left') {
+    return <SportsMotif theme={theme} className={`theme-detail theme-detail-${side}`} />;
   }
   const sportKey = { Baseball: 'yankees', Basketball: 'knicks', Football: 'giants', Hockey: 'hockey' }[SPORTS_CLUBS[theme]?.sport];
   const art = {

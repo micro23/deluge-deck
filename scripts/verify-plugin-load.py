@@ -81,6 +81,9 @@ def main():
         # Isolated registrars and telemetry source avoid a real daemon.
         rpc = Registrar('RPCServer')
         json_rpc = Registrar('JSON')
+        from twisted.web.resource import Resource
+        web_server = Registrar('DelugeWeb')
+        web_server.top_level = Resource()
         groups = ['core', 'gtk3ui', 'gtkui', 'webui', 'web']
         for group in groups:
             entry_group = 'deluge.plugin.' + group
@@ -95,6 +98,10 @@ def main():
                 assert Path(instance.plugin.history_path).parent == Path(cache)
                 assert getattr(instance.plugin.get_speed_history, '_rpcserver_export', False)
             if group in ('webui', 'web'):
+                static_root = web_server.top_level.children[b'deluge-deck-resources']
+                manifest = json.loads((Path(os.fsdecode(static_root.path)) / 'manifest.json').read_text())
+                assert len(manifest['themes']) == 37
+                assert all((Path(os.fsdecode(static_root.path)) / name).is_file() for name in manifest['themes'].values())
                 resources = instance.plugin.scripts + instance.plugin.stylesheets
                 assert len(resources) == 4
                 for resource in resources:
@@ -110,6 +117,7 @@ def main():
         component.deregister(session_source)
         component.deregister(rpc)
         component.deregister(json_rpc)
+        component.deregister(web_server)
     print(f'{egg_path.name}: all five entry points and WebUI resources loaded '
           f'on Python {sys.version.split()[0]}')
 

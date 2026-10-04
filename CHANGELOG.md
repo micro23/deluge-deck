@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.70
+
+- Include the bespoke sports identities, mastheads, motifs, and refreshed gallery artwork from the parallel theme work.
+- Reduce repeated torrent processing, hidden-page polling, inactive decorations, and legacy code.
+
+- Render a scrolling window of torrent rows in large desktop and mobile libraries, preserving full-library selection and keyboard navigation.
+- Load the selected theme and its artwork on demand; cache resources and retain the prior theme while the next one loads.
+- Serve theme resources through the existing Deluge Web origin, including reverse-proxy base paths, with shared rules stored once and their original cascade order retained.
+- Keep versioned UI resources fresh after the loader change.
+
 ## 1.0.69
 
 - Arrange Darkhand placement controls, search, and actions in a stable themed top bar; remove the page heading, breadcrumb, and duplicate Add torrent button.

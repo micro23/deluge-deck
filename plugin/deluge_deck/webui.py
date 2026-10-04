@@ -2,6 +2,8 @@
 
 from deluge.plugins.pluginbase import WebPluginBase
 import pkg_resources
+from deluge import component
+from twisted.web.static import File
 
 from . import __version__
 
@@ -20,7 +22,18 @@ class WebUI(WebPluginBase):
         resource(f'deluge-deck-{__version__}.js'),
     ]
     debug_scripts = scripts
-    # The style script supplies artwork variables and all rules synchronously.
-    # Hosts that also register stylesheets reuse those variables here.
+    # Shared styles load synchronously; the selected theme and its artwork
+    # are requested on demand from the static resource directory.
+    # Keep the legacy optional stylesheet registration as a harmless stub.
     stylesheets = [resource(f'deluge-deck-{__version__}.css')]
     debug_stylesheets = stylesheets
+
+    def enable(self):
+        self._resource_parent = component.get('DelugeWeb').top_level
+        self._theme_resources = File(resource('resources'))
+        self._resource_parent.putChild(b'deluge-deck-resources', self._theme_resources)
+
+    def disable(self):
+        parent = getattr(self, '_resource_parent', None)
+        if parent and parent.children.get(b'deluge-deck-resources') is getattr(self, '_theme_resources', None):
+            del parent.children[b'deluge-deck-resources']

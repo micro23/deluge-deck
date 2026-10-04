@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { rpc } from './api.js';
+import { createPoller } from '../../server/polling.mjs';
 import { formatBytes } from '../../server/hosted-contracts.mjs';
 const rate = value => `${formatBytes(Math.max(0, Number(value) || 0))}/s`;
 const trackerHost = value => {
@@ -14,7 +15,6 @@ export function TorrentNetworkDetails({ hash, kind }) {
   const [status, setStatus] = useState('Loading…');
   useEffect(() => {
     let active = true;
-    let timer;
     setRows([]);
     setStatus('Loading…');
     const refresh = async () => {
@@ -27,10 +27,12 @@ export function TorrentNetworkDetails({ hash, kind }) {
       } catch (error) {
         if (active) setStatus(error.message || `Unable to load ${kind}.`);
       }
-      if (active) timer = window.setTimeout(refresh, 5000);
     };
-    refresh();
-    return () => { active = false; window.clearTimeout(timer); };
+    const poller = createPoller({ refresh, visible: () => !document.hidden, delay: () => 5000 });
+    const wake = () => { void poller.wake(); };
+    wake();
+    document.addEventListener('visibilitychange', wake);
+    return () => { active = false; poller.stop(); document.removeEventListener('visibilitychange', wake); };
   }, [hash, kind]);
   const peers = kind === 'peers';
   return <div className="drawer-content dh-network-content" id={`drawer-panel-${kind}`} role="tabpanel" aria-labelledby={`drawer-tab-${kind}`}>

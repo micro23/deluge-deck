@@ -37,7 +37,8 @@ const server = http.createServer(async (req, res) => {
       if (['core.set_config', 'web.add_torrents', 'web.add_host'].includes(method)) writes.push({ method, params });
       return json(res, { result });
     }
-    const assetPath = req.url.startsWith('/assets/') ? req.url.slice(1) : 'index.html';
+    const themePath = req.url.replace(/^\/deluge\/deluge-deck-resources\//, '/').replace('/manifest.json', '/deck-themes.json');
+    const assetPath = /^(?:\/assets\/|\/themes\/|\/deck-themes\.json$)/.test(themePath) ? themePath.slice(1) : 'index.html';
     let content = await readFile(path.join(root, 'dist', assetPath));
     if (req.url === '/deluge/') content = content.toString().replace('<head>', '<head><script>window.__DELUGE_DECK_PLUGIN__=true;</script>');
     res.setHeader('content-type', assetPath.endsWith('.js') ? 'text/javascript' : assetPath.endsWith('.css') ? 'text/css' : 'text/html');

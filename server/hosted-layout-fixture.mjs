@@ -49,6 +49,16 @@ const server = http.createServer(async (req, res) => {
     if (method === 'auth.delete_session') { authenticated = false; return json(res, { result: true }); }
     return json(res, { result: true });
   }
+  if (req.url.startsWith('/deluge-deck-resources/')) {
+    const candidate = path.resolve(data, 'resources', req.url.slice('/deluge-deck-resources/'.length));
+    if (!candidate.startsWith(path.resolve(data, 'resources') + path.sep)) { res.writeHead(403); return res.end(); }
+    try {
+      const content = await readFile(candidate);
+      const ext = path.extname(candidate);
+      res.setHeader('content-type', ({ '.json': 'application/json', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.png': 'image/png', '.jpg': 'image/jpeg' })[ext] || 'application/octet-stream');
+      return res.end(content);
+    } catch { res.writeHead(404); return res.end(); }
+  }
   const asset = path.basename(req.url || '');
   if (![`deluge-deck-${version}-style.js`, `deluge-deck-${version}-plugin.js`, `deluge-deck-${version}.js`, `deluge-deck-${version}.css`].includes(asset)) { res.writeHead(404); res.end(); return; }
   try {

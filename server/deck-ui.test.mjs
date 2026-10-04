@@ -23,6 +23,7 @@ const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/themes/sports.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports-expansion.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/mets.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/sports-bespoke.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/darkhand.css'), 'utf8'),
 ])).join('\n');
 
@@ -38,7 +39,7 @@ test('theme categories cover every persistent theme once with stable sports iden
   const ui = await source();
   assert.match(ui, /role="group" aria-labelledby=\{`theme-category-\$\{category.id\}`\}/);
   assert.match(ui, /querySelectorAll\(\s*'\[role="menuitemradio"\]'/);
-  const sports = (await Promise.all(['sports.css','sports-expansion.css','mets.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const sports = (await Promise.all(['sports.css','sports-expansion.css','mets.css','sports-bespoke.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   assert.doesNotMatch(sports, /data-theme="(?:dark|light|ocean|forest|sunset|terminal|christmas|halloween|valentine|st-patricks|independence|new-year)"/);
   for (const team of THEME_CATEGORIES.find(({ id }) => id === 'sports').themes) {
     const logo = await readFile(path.join(root, `src/assets/sports/${team}-logo.svg`), 'utf8');
@@ -50,10 +51,10 @@ test('theme categories cover every persistent theme once with stable sports iden
 });
 
 test('sports card text meets AAA against the gradients and decorative stripes', async () => {
-  const css = (await Promise.all(['sports.css','sports-expansion.css','mets.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const css = (await Promise.all(['sports.css','sports-expansion.css','mets.css','sports-bespoke.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   for (const team of Object.keys(SPORTS_CLUBS)) {
-    const declarations = css.match(new RegExp(`:root\\[data-theme="${team}"\\]\\s*\\{([^}]*)\\}`))[1];
-    const variable = name => declarations.match(new RegExp(`--${name}:([^;]+);`))[1];
+    const declarations = [...css.matchAll(new RegExp(`:root\\[data-theme="${team}"\\]\\s*\\{([^}]*)\\}`, 'g'))].map(match => match[1]).join('\n');
+    const variable = name => [...declarations.matchAll(new RegExp(`--${name}:([^;]+);`, 'g'))].at(-1)[1];
     const backgrounds = [...variable('club-card').matchAll(/#[a-f\d]{6}/gi)].map(([color]) => color);
     const stripes = [...variable('club-pattern').matchAll(/#[a-f\d]{8}/gi)].map(([color]) => color);
     const composite = (overlay, base) => {
@@ -222,8 +223,9 @@ test('torrent table announces sort changes accessibly', async () => {
 test('torrent table exposes current sort direction to assistive technology', async () => {
   const ui = await source();
   assert.match(ui, /const sortValue = \(key\) =>\s+sort\.key === key/);
-  assert.match(ui, /aria-sort=\{sortValue\('name'\)\}/);
-  assert.match(ui, /aria-sort=\{sortValue\('queue'\)\}/);
+  assert.match(ui, /aria-sort=\{sortValue\(TABLE_SORT_KEYS\[key\]\)\}/);
+  assert.match(ui, /name: 'name'/);
+  assert.match(ui, /queue: 'queue'/);
   assert.match(ui, /sort\.direction === 1 \? 'ascending' : 'descending'/);
 });
 
@@ -797,7 +799,7 @@ test('torrent table supports sortable columns', async () => {
   assert.match(ui, /const \[sort, setSort\] = useState/);
   assert.match(ui, /const toggleSort = \(key\)/);
   assert.match(ui, /const sortedTorrents = useMemo/);
-  assert.match(ui, /toggleSort\('progress'\)/);
+  assert.match(ui, /toggleSort\(TABLE_SORT_KEYS\[key\]\)/);
   assert.match(css, /\.sort-button/);
 });
 
@@ -831,7 +833,7 @@ test('torrent table supports column visibility toggles', async () => {
   assert.match(ui, /toggleColumn/);
   assert.match(ui, /aria-label="Column visibility"/);
   assert.match(ui, /aria-label="Choose visible columns"/);
-  assert.match(ui, /className=\{tableClass\}/);
+  assert.match(ui, /className="auto-sized-table"/);
   assert.match(ui, /function ColumnChooser/);
   assert.match(ui, /aria-labelledby="column-chooser-title"/);
   assert.match(css, /\.column-chooser-backdrop/);
@@ -843,8 +845,8 @@ test('torrent table supports column visibility toggles', async () => {
 
 test('torrent table persists column visibility preferences', async () => {
   const ui = await source();
-  assert.match(ui, /localStorage\.getItem\('deck-column-visibility'/);
-  assert.match(ui, /localStorage\.setItem\(\s*'deck-column-visibility',\s*JSON\.stringify\(columnVisibility\),?\s*\)/);
+  assert.match(ui, /localStorage\.getItem\(visibilityKey\)/);
+  assert.match(ui, /localStorage\.setItem\([\s\S]*: 'deck-column-visibility',[\s\S]*JSON\.stringify\(columnVisibility\)/);
 });
 
 test('torrent table keeps every content-sized column resizable and aligned', async () => {
@@ -894,10 +896,10 @@ test('dashboard uses concise command bar copy and zero-valued idle rates', async
 
 test('torrent table exposes seed peer added and tracker columns', async () => {
   const ui = await source();
-  assert.match(ui, />\s*Seeds\s*<\/button>/);
-  assert.match(ui, />\s*Peers\s*<\/button>/);
-  assert.match(ui, />\s*Added\s*<\/button>/);
-  assert.match(ui, />\s*Tracker\s*<\/button>/);
+  assert.match(ui, /seeds: 'Seeds'/);
+  assert.match(ui, /peers: 'Peers'/);
+  assert.match(ui, /added: 'Added'/);
+  assert.match(ui, /tracker: 'Tracker'/);
   assert.match(ui, /torrent\.tracker_host/);
 });
 
@@ -912,14 +914,14 @@ test('torrent table supports tracker favicons, compact swarm counts, and seeding
   assert.match(ui, /className="tracker-favicon-small tracker-favicon-controlled"/);
   assert.match(ui, /className="tracker-favicon-small tracker-favicon-fallback"/);
   assert.match(ui, /seedingTime: 'Seeding time'/);
-  assert.match(ui, /toggleSort\('seeding_time'\)/);
+  assert.match(ui, /seedingTime: 'seeding_time'/);
   assert.match(ui, /Number\(torrent\.num_seeds\) \|\| 0} \/ \$\{Number\(torrent\.total_seeds\)/);
   assert.match(ui, /Number\(torrent\.num_peers\) \|\| 0} \/ \$\{Number\(torrent\.total_peers\)/);
 });
 
 test('torrent table shows sortable queue positions beside queue actions', async () => {
   const ui = await source();
-  assert.match(ui, /toggleSort\('queue'\)/);
+  assert.match(ui, /queue: 'queue'/);
   assert.match(ui, /queueRank\(torrent\) === Number\.MAX_SAFE_INTEGER/);
   assert.match(ui, /queueRank\(torrent\) \+ 1/);
 });
@@ -1026,6 +1028,6 @@ test('every Deck overlay supports Escape and outside-pointer dismissal', async (
 
 test('hosted bridge leaves Deck viewport overlays out of legacy window detection', async () => {
   const bridge = await readFile(path.join(root, 'plugin/deluge_deck/data/deluge-deck-plugin.js'), 'utf8');
-  assert.match(bridge, /if \(node\.closest\?\.\(`#\$\{window\.__DELUGE_DECK_OVERLAY_ROOT_ID__\}`\)\) return;/);
+  assert.match(bridge, /if \(node\.closest\?\.\(`#\$\{window\.__DELUGE_DECK_ROOT_ID__\},#\$\{window\.__DELUGE_DECK_OVERLAY_ROOT_ID__\}`\)\) return;/);
   assert.match(bridge, /!candidate\.closest\?\.\(`#\$\{window\.__DELUGE_DECK_OVERLAY_ROOT_ID__\}`\)/);
 });

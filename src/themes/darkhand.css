@@ -319,3 +319,11 @@
 }
 :root[data-theme="darkhand"][data-theme] body .dh-dashboard .top-actions { position:static!important; inset:auto!important; width:auto!important; }
 :root[data-theme="darkhand"][data-theme] body .dh-dashboard .mobile-stats { display:none!important; }
+
+/* Placement pills share the session controls' compact finish and dimensions. */
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches>div>div { padding:3px; gap:0; border:1px solid var(--line); border-radius:10px; background:color-mix(in srgb,var(--surface-2) 88%,transparent); box-shadow:inset 0 1px rgba(255,255,255,.03); }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches button { display:flex; align-items:center; justify-content:center; height:29px; min-height:29px; padding:0 8px; border:0; border-radius:7px; font-size:9px; font-weight:750; line-height:1.2; white-space:nowrap; }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches button:hover,
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches button:focus-visible { color:var(--text); background:var(--surface-3); }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .dh-switches button[aria-pressed="true"] { color:var(--text); background:var(--surface-3); box-shadow:inset 0 0 0 1px var(--line-strong); }
+:root[data-theme="darkhand"][data-theme] body .dh-dashboard .sidebar:not(.collapsed) .sidebar-bottom .nav-item>svg { display:none!important; }

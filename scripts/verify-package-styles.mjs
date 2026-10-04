@@ -48,8 +48,8 @@ try {
       const originalState = await snapshot();
       const original = await page.screenshot();
       const injected = await page.locator('style[data-deluge-deck="true"]').textContent();
-      assert.ok(injected.endsWith(css), 'Optional stylesheet rules must match the canonical injected rules');
-      assert.ok(injected.includes('data:image/'), 'The canonical style script must retain the artwork');
+      assert.equal(await page.locator('style[data-deluge-deck="true"]').getAttribute('data-theme'), theme, 'Selected theme is assembled before rendering');
+      assert.ok(css.length < 500 && !css.includes('@font-face') && !css.includes('data:image/'), 'Optional CSS must not duplicate resources');
       // Both orders are used by Deluge variants. Neither may change rendering.
       for (const placement of ['before','after']) {
         await page.evaluate(({css,placement}) => {

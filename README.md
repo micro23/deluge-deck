@@ -34,7 +34,7 @@ It can also be packaged as a normal Deluge plugin (`.egg`) for the Plugins dialo
 
 Deluge Deck supports two deliberate modes. The companion leaves your Deluge installation untouched and proxies `/json` and `/upload` on its loopback origin. The installed plugin mounts the same SPA inside Deluge Web on the existing origin and port, including reverse-proxy base paths; it uses Deluge’s existing authentication cookie and does not start a second service.
 
-Current release: 1.0.69.
+Current build: 1.0.70.
 
 The release version is read from `package.json` and propagated to the standalone UI, health endpoint, plugin metadata, and generated egg. See [CHANGELOG.md](CHANGELOG.md) and [docs/RELEASE.md](docs/RELEASE.md) for release history and the reproducible release procedure.
 
@@ -59,7 +59,7 @@ python -m pip install -r plugin/build-requirements.txt
 npm run build:plugin
 ```
 
-Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.69-py3.14.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Download the single release egg. It contains Python source and UI assets, with no native extensions or bundled interpreter. Deluge 2 accepts eggs built with a different Python version; the `py3.14` suffix identifies the build interpreter, not a requirement to run Python 3.14. CI loads the same egg on Python 3.11–3.14 before publishing.
+Then open Deluge → Preferences → Plugins → Install Plugin and choose the generated file in `plugin\\dist\\` (for example `DelugeDeck-1.0.70-py3.14.egg`). Enable **DelugeDeck**, restart Deluge and `deluge-web`, then enable **DelugeDeck** in the WebUI plugin list if your build exposes a separate WebUI plugin page. Download the single release egg. It contains Python source and UI assets, with no native extensions or bundled interpreter. Deluge 2 accepts eggs built with a different Python version; the `py3.14` suffix identifies the build interpreter, not a requirement to run Python 3.14. CI loads the same egg on Python 3.11–3.14 before publishing.
 
 ### Using port 8888 (plugin mode)
 
@@ -108,6 +108,8 @@ After building, run `node scripts/verify-torrent-controls.mjs` to check selected
 Run `node scripts/verify-reliability.mjs` for isolated browser checks of proxy settings, malformed torrent metadata, Add dialog protection during uploads, payload priorities, and mobile bounds. Both browser scripts use fictional fixtures and do not contact your Deluge daemon.
 
 Dependencies are pinned in `package.json` and locked in `package-lock.json`; use `npm ci` for reproducible installs. Release builds also run the automated version, test, and plugin checks described in [docs/RELEASE.md](docs/RELEASE.md).
+
+For a self-contained 300-torrent performance regression check, run `npm run verify:performance` after building. See [the performance and size review](docs/PERFORMANCE-REVIEW.md) for measured results and remaining opportunities.
 
 For a real Deluge instance, test login, add, remove-with-data safety, file priorities, and the daemon’s capability/plugin set on the Windows host. Deluge paths are host paths (for example `D:\\Media\\Downloads`), not paths on the browser machine.
 

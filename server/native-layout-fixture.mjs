@@ -26,7 +26,7 @@ deluge.ui.initialize=function(){
   }});
   deluge.client={core:rpc,web:rpc,webutils:rpc,autoadd:rpc};
   deluge.preferences=new Deluge.preferences.PreferencesWindow();
-  if (Deluge.ux.preferences?.AutoAddPage) deluge.preferences.addPage(new Deluge.ux.preferences.AutoAddPage());
+  if (Deluge.ux?.preferences?.AutoAddPage) deluge.preferences.addPage(new Deluge.ux.preferences.AutoAddPage());
   document.documentElement.classList.remove('deluge-deck-loading');
   document.documentElement.classList.add('deluge-deck-ready');
   window.__DELUGE_DECK_SHOW_NATIVE_PREFERENCES__();

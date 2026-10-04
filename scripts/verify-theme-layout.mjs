@@ -27,9 +27,9 @@ try {
       await page.evaluate(() => document.fonts.ready);
       // Auto sizing runs after font loading and ResizeObserver delivery.
       await page.waitForTimeout(250);
-      if (theme === 'mets') {
-        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Mets layout fits the viewport');
-        const masthead = page.locator('.mets-masthead');
+      if (SPORTS_CLUBS[theme]) {
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${theme} layout fits the viewport`);
+        const masthead = page.locator(theme === 'mets' ? '.mets-masthead' : '.sports-masthead');
         assert.equal(await masthead.isVisible(), width > 760);
         if (width > 760) assert.ok(await masthead.evaluate(el => {
           const box = el.getBoundingClientRect();
@@ -37,7 +37,7 @@ try {
             const rect = child.getBoundingClientRect();
             return rect.left >= box.left && rect.right <= box.right && rect.top >= box.top && rect.bottom <= box.bottom;
           });
-        }), 'Mets masthead text fits without clipping');
+        }), `${theme} masthead text fits without clipping`);
       }
       const cards = await page.locator('.stat-card').evaluateAll((nodes, isNewSports) => nodes.map(card => {
         const box = card.getBoundingClientRect();
