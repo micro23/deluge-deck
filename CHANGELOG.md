@@ -1,3 +1,7 @@
+## 1.0.83
+
+- Fix the USA theme footer eagle asset path in packaged Deluge eggs so the artwork displays in the installed plugin.
+
 ## 1.0.82
 
 - Remove the Yankees theme's unwanted sidebar and masthead slogans.
