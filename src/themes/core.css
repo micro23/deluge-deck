@@ -50,18 +50,18 @@
 
 /* Midnight: frosted operator glass, a crisp cyan edge and restrained radar. */
 :root[data-theme="dark"] {
-  --core-border:#4b9aaa;
-  --core-inner-border:#8ae8e72b;
-  --core-card:radial-gradient(ellipse at 50% -10%,#2888a12b,transparent 70%),linear-gradient(155deg,#102a39e8,#081824f2 62%,#07131ff4);
-  --core-card-shadow:inset 0 1px 0 #8dfbfb38,inset 0 -14px 30px #01081178,0 12px 24px #01081099;
-  --core-icon-border:#55bdc75e;
-  --core-icon-bg:linear-gradient(150deg,#174c59,#0a2b38);
-  --core-icon-shadow:#39c9d836;
-  --core-table:linear-gradient(180deg,#071b28,#061724 38%,#05131f);
-  --core-table-shadow:inset 0 1px 0 #a3f6f22e,0 18px 38px #010811ad;
-  --core-head:linear-gradient(180deg,#102c3c,#0c202d);
-  --core-rail:linear-gradient(90deg,#0d2736ed,#091b29f2 70%,#0a2534ed);
-  --core-rail-shadow:inset 0 1px 0 #72e4e027,0 8px 21px #0108107d;
+  --core-border:#777b9d;
+  --core-inner-border:#c3b4ff2b;
+  --core-card:radial-gradient(ellipse at 50% -10%,#8274c22b,transparent 70%),linear-gradient(155deg,#242638e8,#191b2bf2 62%,#141625f4);
+  --core-card-shadow:inset 0 1px 0 #ded8ff38,inset 0 -14px 30px #09091378,0 12px 24px #09091399;
+  --core-icon-border:#aaa0d65e;
+  --core-icon-bg:linear-gradient(150deg,#51466f,#302b4e);
+  --core-icon-shadow:#ad8de836;
+  --core-table:linear-gradient(180deg,#191b2b,#151725 38%,#111320);
+  --core-table-shadow:inset 0 1px 0 #ded8ff2e,0 18px 38px #090913ad;
+  --core-head:linear-gradient(180deg,#292b40,#202236);
+  --core-rail:linear-gradient(90deg,#23253a,#17192a 70%,#22243a);
+  --core-rail-shadow:inset 0 1px 0 #c3b4ff27,0 8px 21px #0909137d;
 }
 :root[data-theme="dark"] .stats-grid .stat-card { border-radius:9px!important; }
 :root[data-theme="dark"] .table-shell { border-radius:10px!important; }
@@ -69,18 +69,18 @@
 
 /* Paper: quiet editorial surfaces with blue ink and a pale brass detail. */
 :root[data-theme="light"] {
-  --core-border:#7c9eaa;
+  --core-border:#aa8268;
   --core-inner-border:#ffffffdd;
-  --core-card:linear-gradient(155deg,#ffffffed,#f6faf9ea 62%,#e8f1f1ed);
-  --core-card-shadow:inset 0 1px 0 #fff,inset 0 -12px 25px #d1e0e25c,0 13px 27px #36586925;
-  --core-icon-border:#8eb1b980;
-  --core-icon-bg:linear-gradient(145deg,#eef6f5,#d6e7e8);
-  --core-icon-shadow:#3e777c2a;
-  --core-table:linear-gradient(180deg,#f9fcf9 0%,#f7faf7 52%,#eef3ef 100%);
-  --core-table-shadow:inset 0 1px 0 #fff,0 16px 30px #47647430;
-  --core-head:linear-gradient(180deg,#fdfdf9,#e4eff0);
-  --core-rail:linear-gradient(90deg,#fffefaef,#edf5f4ef 68%,#fcf8f0ee);
-  --core-rail-shadow:inset 0 1px 0 #fff,0 9px 20px #425f6c24;
+  --core-card:linear-gradient(155deg,#fff9efed,#f8eddeea 62%,#edddc9ed);
+  --core-card-shadow:inset 0 1px 0 #fff,inset 0 -12px 25px #d8bda25c,0 13px 27px #694b3825;
+  --core-icon-border:#bd9a7f80;
+  --core-icon-bg:linear-gradient(145deg,#f8ecda,#e8d3ba);
+  --core-icon-shadow:#9e63452a;
+  --core-table:linear-gradient(180deg,#fff9ee 0%,#f9efdf 52%,#f1e3cf 100%);
+  --core-table-shadow:inset 0 1px 0 #fff,0 16px 30px #694b3830;
+  --core-head:linear-gradient(180deg,#fffaf0,#ead8c1);
+  --core-rail:linear-gradient(90deg,#fff8ebef,#f0dfc9ef 68%,#fff4e4ee);
+  --core-rail-shadow:inset 0 1px 0 #fff,0 9px 20px #694b3824;
 }
 :root[data-theme="light"] .stats-grid .stat-card span,
 :root[data-theme="light"] .table-shell th { font-family:Georgia,serif; letter-spacing:.025em; }
@@ -88,18 +88,18 @@
 
 /* Ocean: deep glass, refracted light and a sonar trace under the list. */
 :root[data-theme="ocean"] {
-  --core-border:#55afca;
-  --core-inner-border:#94edff26;
-  --core-card:radial-gradient(ellipse at 50% -20%,#3fc4ec37,transparent 72%),linear-gradient(155deg,#0d3e5af0,#09283ef2 60%,#061b2cf7);
-  --core-card-shadow:inset 0 1px 0 #b9f3ff52,inset 0 -14px 25px #010e1a88,0 14px 29px #001525aa;
-  --core-icon-border:#79d6eb77;
-  --core-icon-bg:linear-gradient(145deg,#1e7186,#12425c);
-  --core-icon-shadow:#28b9d556;
-  --core-table:linear-gradient(180deg,#071e2d,#082335 46%,#041625);
-  --core-table-shadow:inset 0 1px 0 #b9f3ff32,0 18px 38px #00121fc2;
-  --core-head:linear-gradient(180deg,#12435c,#0a3047);
-  --core-rail:linear-gradient(90deg,#0a3349e8,#072639ef 68%,#0b344de8);
-  --core-rail-shadow:inset 0 1px 0 #a5f0ff34,0 8px 24px #00121d9c;
+  --core-border:#4c9d9a;
+  --core-inner-border:#73e3bd26;
+  --core-card:radial-gradient(ellipse at 50% -20%,#4dd5ad37,transparent 72%),linear-gradient(155deg,#104456f0,#0b3545f2 60%,#072a39f7);
+  --core-card-shadow:inset 0 1px 0 #b9ffdf52,inset 0 -14px 25px #010e1a88,0 14px 29px #001525aa;
+  --core-icon-border:#79d6bd77;
+  --core-icon-bg:linear-gradient(145deg,#267769,#124f4b);
+  --core-icon-shadow:#28b99d56;
+  --core-table:linear-gradient(180deg,#082632,#0a2d38 46%,#06212e);
+  --core-table-shadow:inset 0 1px 0 #b9ffdf32,0 18px 38px #00121fc2;
+  --core-head:linear-gradient(180deg,#145347,#0c3d3c);
+  --core-rail:linear-gradient(90deg,#0d403e,#092f38 68%,#104548);
+  --core-rail-shadow:inset 0 1px 0 #a5ffe034,0 8px 24px #00121d9c;
 }
 :root[data-theme="ocean"] .stats-grid .stat-card { border-radius:22px!important; }
 :root[data-theme="ocean"] .stats-grid .stat-card::after { border-radius:16px; }
@@ -108,18 +108,18 @@
 
 /* Forest: botanical parchment and a moss ink edge. */
 :root[data-theme="forest"] {
-  --core-border:#749873;
-  --core-inner-border:#fffef0ce;
-  --core-card:radial-gradient(ellipse at 0 0,#fefff2dc,transparent 55%),linear-gradient(155deg,#f7fcf0ed,#ecf5e8ed 62%,#ddebd8ef);
-  --core-card-shadow:inset 0 1px 0 #fff,inset 0 -14px 26px #b4ccb057,0 13px 27px #244c283d;
-  --core-icon-border:#a7c49c;
-  --core-icon-bg:linear-gradient(145deg,#edf7e7,#cfe4c5);
-  --core-icon-shadow:#4384522c;
-  --core-table:linear-gradient(180deg,#f6faef 0%,#eff5e9 52%,#e7eee1 100%);
-  --core-table-shadow:inset 0 1px 0 #fff,0 17px 31px #284a2c3d;
-  --core-head:linear-gradient(180deg,#f6fbee,#dcebd2);
-  --core-rail:linear-gradient(90deg,#fafdf2e8,#e5f1ddea 68%,#f8f5e8e8);
-  --core-rail-shadow:inset 0 1px 0 #fff,0 8px 22px #294b2d32;
+  --core-border:#829a66;
+  --core-inner-border:#f2f4d9ce;
+  --core-card:radial-gradient(ellipse at 0 0,#71874edc,transparent 55%),linear-gradient(155deg,#29483aed,#203d32ed 62%,#172f28ef);
+  --core-card-shadow:inset 0 1px 0 #e8efc8,inset 0 -14px 26px #08181057,0 13px 27px #0818106d;
+  --core-icon-border:#a9bb7c;
+  --core-icon-bg:linear-gradient(145deg,#546d43,#344e39);
+  --core-icon-shadow:#132e202c;
+  --core-table:linear-gradient(180deg,#19372e 0%,#18342b 52%,#122c26 100%);
+  --core-table-shadow:inset 0 1px 0 #d2df8d33,0 17px 31px #0818105d;
+  --core-head:linear-gradient(180deg,#315344,#233f35);
+  --core-rail:linear-gradient(90deg,#214237,#172f29 68%,#27473a);
+  --core-rail-shadow:inset 0 1px 0 #d2df8d33,0 8px 22px #08181052;
 }
 :root[data-theme="forest"] .stats-grid .stat-card { border-left:3px solid #3c875d!important; }
 :root[data-theme="forest"] .stats-grid .stat-card::after { border-left:0; }

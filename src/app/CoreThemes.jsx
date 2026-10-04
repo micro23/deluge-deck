@@ -15,23 +15,23 @@ export function CoreMark({ theme, className = '' }) {
 
 export function CoreIdentity({ theme, compact = false, fallback = null }) {
   if (!CORE_THEMES[theme]) return fallback;
-  return <div className={`core-identity${compact ? ' compact' : ''}`}><CoreMark theme={theme} /><strong>{CORE_THEMES[theme]}</strong></div>;
+  return <div className={`core-identity${compact ? ' compact' : ''}`} aria-label={`${CORE_THEMES[theme]} theme`}><CoreMark theme={theme} /></div>;
 }
 
 function CoreArtwork({ theme }) {
   const art = {
-    dark:<><g className="core-orbit"><circle cx="260" cy="82" r="60" strokeDasharray="1 12" /><ellipse cx="260" cy="82" rx="93" ry="28" transform="rotate(-25 260 82)" /><circle cx="340" cy="48" r="4" fill="currentColor" /></g><circle cx="260" cy="82" r="44" /><path d="M260 10v144M188 82h144M102 45l36 32 37-11m-37 11-12 43" /><circle cx="102" cy="45" r="3" /><circle cx="138" cy="77" r="3" /><circle cx="175" cy="66" r="3" /><path d="M337 18h50m-25-5v10M346 137h46" /></>,
-    light:<><path d="M105 128V43h215v85M123 128V62h180v66M142 128V80h142v48M105 43l107-30 108 30M85 128h257M212 13v115M123 62h180M142 80h142" /><circle cx="212" cy="62" r="45" strokeDasharray="2 7" /><path d="M362 32v85m-10-74h20m-20 15h12m-12 15h20m-20 15h12m-12 15h20M65 30h18m-9-9v18" /></>,
-    ocean:<><g className="core-current"><path d="M5 100c45-65 85 65 130 0s85 65 130 0 85 65 130 0 85 65 130 0M5 120c45-65 85 65 130 0s85 65 130 0 85 65 130 0 85 65 130 0M5 140c45-65 85 65 130 0s85 65 130 0 85 65 130 0 85 65 130 0" /></g><circle cx="294" cy="56" r="43" /><circle cx="294" cy="56" r="30" strokeDasharray="1 7" /><path d="M294 13v13m43 30h-13m-30 43V86m-43-30h13M294 56l22-22" /><circle cx="294" cy="56" r="3" fill="currentColor" /></>,
-    forest:<><g className="core-canopy"><path d="M120 152C158 106 236 66 335 16M173 110C121 105 105 64 115 38c40 5 71 27 58 72ZM223 78c-17-52 8-76 40-77 12 35 3 65-40 77ZM265 56c46 34 80 21 94-7-32-23-67-24-94 7ZM309 29c5-32 31-43 52-39" /><path d="m128 53 45 57m61-97-11 65m119-22-77 0" /></g><circle cx="94" cy="117" r="28" strokeDasharray="1 8" /><path d="M77 117h34m-17-17v34" /></>,
-    sunset:<><circle className="core-sun" cx="278" cy="77" r="54" /><path d="M196 77h164M207 88h142M215 99h127M228 110h100M239 121h78M253 132h50M68 137l76-42 65 42 72-17 103 17M112 48h48m-24-24v48" /><path d="M248 22h60M230 33h96M222 44h112M216 55h123" /></>,
+    dark:<><path d="M75 126h330M95 126V82h78v44m17 0V57h89v69m17 0V34h82v92"/><path d="M207 57V38h54v19m-42-19V24h30v14M296 75h55m-55 13h55m-55 13h55M108 95h48m-48 13h48"/><circle cx="337" cy="51" r="13"/><path d="M337 18v10m0 46v10m-33-33h10m46 0h10m-56-23 7 7m32 32 7 7m0-46-7 7m-32 32-7 7"/></>,
+    light:<><path d="M86 37h230v102H86zM99 49h204v78H99zM109 139h184M125 127v12m150-12v12M72 145h260"/><path d="M121 67h43v60h-43zm59-7h42v67h-42zm57 17h48v50h-48z"/><path d="M132 80h21m-21 11h21m-21 11h21m37-30h21m-21 11h21m-21 11h21m37-8h26m-26 11h26"/><circle cx="350" cy="57" r="24"/><path d="M350 26v8m0 46v8m-31-31h8m46 0h8"/></>,
+    ocean:<><path d="M57 121c28-23 55-23 83 0s55 23 83 0 55-23 83 0 55 23 83 0 55-23 83 0M57 143c28-23 55-23 83 0s55 23 83 0 55-23 83 0 55 23 83 0 55-23 83 0"/><path d="M100 93h76l18-37h71l22 37h79v28H100z"/><path d="M211 56V37h40v19m-31-19V25h22v12M123 100v15m19-15v15m20-15v15m141-15v15m20-15v15m19-15v15"/><circle cx="337" cy="49" r="12"/><path d="M337 23v8m0 36v8m-26-26h8m36 0h8"/></>,
+    forest:<><path d="M82 139c38-57 75-86 132-104-6 45-25 81-62 104M148 139c21-48 56-79 112-99 4 42-15 76-51 99M214 139c18-39 53-63 105-73 1 34-18 59-51 73M82 139h267"/><path d="M114 111c-22-7-33-22-36-43 25-1 44 10 52 33m68-32c-6-23 1-41 18-57 17 17 20 36 7 57m68 12c12-21 30-31 55-28-6 24-21 38-47 41"/><circle cx="363" cy="115" r="20" strokeDasharray="2 6"/></>,
+    sunset:<><path d="M72 136h300M103 136a115 115 0 0 1 230 0"/><path d="M117 112h202M128 91h180M146 70h144M173 51h90M200 35h36"/><path d="M58 136l55-22 47 22 62-28 49 28 54-19 62 19"/><path d="M105 149h238M137 160h175"/></>,
   }[theme];
   return <svg className="core-artwork" viewBox="0 0 440 160" fill="none" stroke="currentColor" strokeWidth=".8" aria-hidden="true">{art}</svg>;
 }
 
 export function CoreMasthead({ theme }) {
   if (!CORE_THEMES[theme]) return null;
-  return <header className="core-masthead"><div className="core-masthead-title"><CoreMark theme={theme} /><h1>{CORE_THEMES[theme]}</h1></div><CoreArtwork theme={theme} /></header>;
+  return <header className="core-masthead" aria-label={`${CORE_THEMES[theme]} theme artwork`}><CoreArtwork theme={theme} /></header>;
 }
 
 export function CoreStatIcon({ theme, label }) {

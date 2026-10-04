@@ -4,7 +4,7 @@ Deluge Deck is a keyboard-friendly WebUI for Deluge 2.1 and 2.2. It gives you a 
 
 [Download the latest Deluge Deck plugin](https://github.com/micro23/deluge-deck/releases/latest) · [Release history](CHANGELOG.md) · [Release and build guide](docs/RELEASE.md)
 
-Current version: **1.0.89**
+Current version: **1.0.90**
 
 ## Features
 

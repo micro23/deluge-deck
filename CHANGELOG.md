@@ -1,3 +1,9 @@
+## 1.0.90
+
+- Remove theme names from the Midnight, Paper, Ocean, Forest, and Sunset sidebar identities and mastheads.
+- Recreate the five core theme masthead illustrations; refresh Midnight, Paper, Ocean, and Forest palettes while preserving Sunset’s palette and leaving Matrix unchanged.
+- Rebuild the versioned WebUI resources and Python 3.14 source-only plugin egg.
+
 ## 1.0.89
 
 - Refresh the in-app theme gallery screenshots for all regular and holiday themes, plus the Yankees, Knicks, Giants, and Rangers as one representative team for each sport.
