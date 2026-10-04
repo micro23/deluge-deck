@@ -55,8 +55,8 @@ try {
         assert.equal(await page.locator('.dh-stat').count(), 6);
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
       }
-      // Matrix uses artwork in its masthead, leaving metric cards free of ornamental seals.
-      assert.ok(cards.every(c => c.textFits && (theme === 'matrix' || (c.seals && c.matched))), `${theme} ${width}: ${JSON.stringify(cards)}`);
+      // Matrix and USA keep artwork in the masthead and telemetry cards free of seals.
+      assert.ok(cards.every(c => c.textFits && (['matrix', 'independence'].includes(theme) || (c.seals && c.matched))), `${theme} ${width}: ${JSON.stringify(cards)}`);
       if (width > 760) {
         for (const handle of await page.locator('.column-resize-handle').all()) {
           await handle.scrollIntoViewIfNeeded();

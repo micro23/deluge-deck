@@ -67,6 +67,7 @@ import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
 import { MatrixIdentity, MatrixMasthead } from './app/MatrixTheme.jsx';
+import { USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
 import { DarkhandOverview, DarkhandSwitches, DarkhandDetails } from './app/Darkhand.jsx';
@@ -390,6 +391,7 @@ function Sidebar({
         {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg><span>DELUGE</span></div>}
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
         {theme === 'matrix' && <MatrixIdentity />}
+        {theme === 'independence' && <USAIdentity />}
         <div className="sidebar-command-row">
           <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
             <Plus size={18} />
@@ -1338,13 +1340,13 @@ function Topbar({
     <>
       <header className="topbar">
         <div className="mobile-brand">
-          {theme === 'matrix' ? <MatrixIdentity /> : <SportsIdentity theme={theme} compact fallback={<Brand />} />}
+          {theme === 'matrix' ? <MatrixIdentity /> : theme === 'independence' ? <USAIdentity /> : <SportsIdentity theme={theme} compact fallback={<Brand />} />}
         </div>
         <div className="topbar-heading">
           <h1>Deluge</h1>
         </div>
         {layoutControls}
-        {(theme === 'darkhand' || ((theme === 'terminal' || theme === 'matrix') && !mobile)) && <SearchField search={search} setSearch={setSearch} placeholder={theme === 'matrix' ? 'Search torrents…' : undefined} />}
+        {(theme === 'darkhand' || ((theme === 'terminal' || theme === 'matrix' || theme === 'independence') && !mobile)) && <SearchField search={search} setSearch={setSearch} placeholder={['matrix', 'independence'].includes(theme) ? 'Search torrents…' : undefined} />}
         <div className="top-actions">
           <GlobalControls
             stats={stats}
@@ -1394,35 +1396,13 @@ function Progress({ value = 0, state, theme }) {
   const potionId = useId();
   return (
     <div className="progress-wrap">
-      <div className="progress-track" style={{ '--flag-progress': `${progress}%` }}>
+      <div className="progress-track">
         <div
           className={`progress-bar ${stateKey(state)}${progress >= 99.95 ? ' complete' : ''}`}
           style={{
             width: `${progress}%`,
           }}
         />
-        {theme === 'independence' && (<svg className="independence-flag" viewBox="0 0 190 100" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <clipPath id={`${potionId}-flag-fill`}>
-              <rect width={190 * progress / 100} height="100" />
-            </clipPath>
-            <path id={`${potionId}-flag-star`} d="M0-3L.67-.93L2.85-.93L1.09.35L1.76 2.43L0 1.15L-1.76 2.43L-1.09.35L-2.85-.93L-.67-.93Z" />
-          </defs>
-          <g clipPath={`url(#${potionId}-flag-fill)`}>
-            <rect width="190" height="100" fill="#fff8ed" />
-            {Array.from({ length: 7 }, (_, stripe) => (
-              <rect key={stripe} y={stripe * 200 / 13} width="190" height={100 / 13} fill="#bf263c" />
-            ))}
-            <rect width="76" height={700 / 13} fill="#183b78" />
-            {Array.from({ length: 9 }, (_, row) => (
-              Array.from({ length: row % 2 ? 5 : 6 }, (_, column) => (
-                <use key={`${row}-${column}`} href={`#${potionId}-flag-star`}
-                  transform={`translate(${(column + (row % 2 ? 1 : .5)) * 76 / 6},${(row + 1) * 70 / 13})`}
-                  fill="#fff8ed" />
-              ))
-            ))}
-          </g>
-        </svg>)}
         {theme === 'halloween' && (<svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-inside`}>
@@ -5341,7 +5321,7 @@ function App() {
               </button>
             </div>
           )}
-          {theme !== 'darkhand' && ((theme !== 'terminal' && theme !== 'matrix') || mobileLayout) && <SearchField search={search} setSearch={setSearch} placeholder={theme === 'matrix' ? 'Search torrents…' : undefined} />}
+          {theme !== 'darkhand' && ((theme !== 'terminal' && theme !== 'matrix' && theme !== 'independence') || mobileLayout) && <SearchField search={search} setSearch={setSearch} placeholder={['matrix', 'independence'].includes(theme) ? 'Search torrents…' : undefined} />}
           {theme !== 'darkhand' && <div className="page-heading">
             <div>
               <h1>
@@ -5355,6 +5335,7 @@ function App() {
           </div>}
           <SportsMasthead theme={theme} />
           {theme === 'matrix' && <MatrixMasthead interrupted={Boolean(refreshError)} />}
+          {theme === 'independence' && <USAMasthead />}
           {theme !== 'darkhand' && <div className="stats-grid">
             <Stat
               theme={theme}

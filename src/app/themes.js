@@ -13,7 +13,7 @@ export const THEMES = [
   ['halloween', 'Halloween', 'Strict black and harvest-orange contrast.', '🎃'],
   ['valentine', 'Valentine’s', 'Rose paper, berry ink, and plum detail.', '💗'],
   ['st-patricks', 'St. Patrick’s', 'Clover, heritage green, and cream.', '☘️'],
-  ['independence', 'Independence', 'Midnight navy, signal red, and star blue.', '⭐'],
+  ['independence', 'USA', 'Old American engraving, heritage flags, navy ink, and ivory paper.', '🇺🇸'],
   ['new-year', 'New Year', 'Midnight black, champagne, and warm gold.', '✨'],
   ...Object.entries(SPORTS_CLUBS).map(([id, club]) => [id, club.label, club.description, { Baseball: '⚾', Basketball: '🏀', Football: '🏈', Hockey: '🏒' }[club.sport]]),
 ];
