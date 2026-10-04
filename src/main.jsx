@@ -66,6 +66,7 @@ import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
+import { MatrixIdentity, MatrixMasthead } from './app/MatrixTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
 import { DarkhandOverview, DarkhandSwitches, DarkhandDetails } from './app/Darkhand.jsx';
@@ -388,13 +389,7 @@ function Sidebar({
         <SportsIdentity theme={theme} />
         {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg><span>DELUGE</span></div>}
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
-        {theme === 'matrix' && (
-          <div className="matrix-identity" aria-label="The Matrix, node online">
-            <span className="matrix-mark" aria-hidden="true"><i>0</i><i>1</i><i>0</i></span>
-            <span><strong>THE MATRIX</strong><small>NODE 01 · ONLINE</small></span>
-            <i className="matrix-live" aria-hidden="true" />
-          </div>
-        )}
+        {theme === 'matrix' && <MatrixIdentity />}
         <div className="sidebar-command-row">
           <button className="add-button" onClick={onAdd} aria-label="Add torrent" title="Add torrent">
             <Plus size={18} />
@@ -555,7 +550,7 @@ function ThemeMenu({ theme, setTheme }) {
     </div>
   );
 }
-function SearchField({ search, setSearch }) {
+function SearchField({ search, setSearch, placeholder }) {
   return (
     <div className="search-wrap">
       <Search size={17} />
@@ -563,6 +558,7 @@ function SearchField({ search, setSearch }) {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         aria-label="Search torrents"
+        placeholder={placeholder}
       />
       {!search && <kbd className="search-shortcut" aria-hidden="true">/</kbd>}
       {search && (
@@ -1342,13 +1338,13 @@ function Topbar({
     <>
       <header className="topbar">
         <div className="mobile-brand">
-          <SportsIdentity theme={theme} compact fallback={<Brand />} />
+          {theme === 'matrix' ? <MatrixIdentity /> : <SportsIdentity theme={theme} compact fallback={<Brand />} />}
         </div>
         <div className="topbar-heading">
           <h1>Deluge</h1>
         </div>
         {layoutControls}
-        {(theme === 'darkhand' || (theme === 'terminal' && !mobile)) && <SearchField search={search} setSearch={setSearch} />}
+        {(theme === 'darkhand' || ((theme === 'terminal' || theme === 'matrix') && !mobile)) && <SearchField search={search} setSearch={setSearch} placeholder={theme === 'matrix' ? 'Search torrents…' : undefined} />}
         <div className="top-actions">
           <GlobalControls
             stats={stats}
@@ -5345,7 +5341,7 @@ function App() {
               </button>
             </div>
           )}
-          {theme !== 'darkhand' && (theme !== 'terminal' || mobileLayout) && <SearchField search={search} setSearch={setSearch} />}
+          {theme !== 'darkhand' && ((theme !== 'terminal' && theme !== 'matrix') || mobileLayout) && <SearchField search={search} setSearch={setSearch} placeholder={theme === 'matrix' ? 'Search torrents…' : undefined} />}
           {theme !== 'darkhand' && <div className="page-heading">
             <div>
               <h1>
@@ -5358,6 +5354,7 @@ function App() {
             </button>
           </div>}
           <SportsMasthead theme={theme} />
+          {theme === 'matrix' && <MatrixMasthead interrupted={Boolean(refreshError)} />}
           {theme !== 'darkhand' && <div className="stats-grid">
             <Stat
               theme={theme}

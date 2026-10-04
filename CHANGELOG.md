@@ -1,3 +1,11 @@
+## 1.0.78
+
+- Rebuild The Matrix theme around original cinematic city and code-rain artwork, ivory typography, charcoal panels, and restrained emerald accents.
+- Add a responsive Matrix masthead and brand identity, with connection-aware status and reduced-motion support.
+- Redesign telemetry cards, improve torrent table legibility, and pin row actions while optional columns scroll.
+- Add Matrix search guidance and update responsive layout checks for the new card design.
+- Refresh versioned WebUI resources and the Python 3.14 source-only plugin egg.
+
 ## 1.0.77
 
 - Add The Matrix as a complete selectable theme, with a cinematic phosphor-green dashboard, responsive branding, reduced-motion support, and original code-rain artwork.
