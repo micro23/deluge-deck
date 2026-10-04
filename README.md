@@ -22,7 +22,9 @@ Current version: **1.0.89**
 
 ## Theme screenshots
 
-These previews are captured from the current demo build and are also used in the in-app theme gallery.
+These previews are captured from a previous demo build and are also used in the in-app theme gallery. 
+
+I have been updating them pretty often so please check the current .egg for latest versions. 
 
 ### Regular themes
 
