@@ -1,3 +1,12 @@
+## 1.0.84
+
+- Give all 24 sports themes factual heritage mastheads: establishment year, current venue opening year, and World Series, NBA, Super Bowl, or Stanley Cup title counts.
+- Remove sports slogans and refresh the Yankees and Mets identities with the same factual treatment.
+- Add crisp baseball, basketball, football, and hockey vector icons with distinct dashboard action marks and stronger contrast.
+- Refine responsive heritage panels, preserve team-specific artwork and materials, and refresh all sports theme previews.
+- Document official history sources and verify all 24 themes at five viewport sizes, including 7:1 heritage text contrast and visible icon sizing.
+- Refresh the versioned WebUI resources and source-only Python 3.14 plugin egg.
+
 ## 1.0.83
 
 - Fix the USA theme footer eagle asset path in packaged Deluge eggs so the artwork displays in the installed plugin.

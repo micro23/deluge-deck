@@ -3,6 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { THEMES } from '../src/app/themes.js';
 import { SPORTS_CLUBS } from '../src/app/sports-clubs.js';
+import { contrastRatio } from '../server/theme-contrast.mjs';
 
 const origin = process.env.DECK_PREVIEW_URL || 'http://127.0.0.1:8118';
 assert.equal((await fetch(`${origin}/api/health`).then(r => r.json())).mode, 'demo', 'Use the fictional demo library');
@@ -30,7 +31,23 @@ try {
       if (SPORTS_CLUBS[theme]) {
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${theme} layout fits the viewport`);
         const masthead = page.locator(theme === 'mets' ? '.mets-masthead' : theme === 'yankees' ? '.yankees-masthead' : '.sports-masthead');
-        assert.equal(await masthead.isVisible(), width > 760);
+        assert.equal(await masthead.isVisible(), true);
+        const heritage = await page.locator('.sports-facts').evaluate(el => {
+          const hex = color => '#' + color.match(/\d+/g).slice(0,3).map(v => Number(v).toString(16).padStart(2,'0')).join('');
+          return { background:hex(getComputedStyle(el).backgroundColor), text:[...el.querySelectorAll('strong,small,span')].filter(node => node.getBoundingClientRect().width).map(node => ({text:node.textContent,color:hex(getComputedStyle(node).color),fits:node.scrollWidth <= node.clientWidth + 1})) };
+        });
+        assert.ok(heritage.text.every(sample => sample.fits && contrastRatio(sample.color,heritage.background) >= 7), `${theme} ${width}: heritage text meets 7:1 and fits`);
+        assert.match(await masthead.textContent(), new RegExp(String(SPORTS_CLUBS[theme].opened)));
+        if (width > 760) {
+          const icons = await page.locator('.sports-stat-icon').evaluateAll(nodes => nodes.map(node => {
+            const box = node.getBoundingClientRect(),badge=node.parentElement.getBoundingClientRect();
+            return {width:box.width,height:box.height,fits:box.left>=badge.left && box.right<=badge.right && box.top>=badge.top && box.bottom<=badge.bottom,color:getComputedStyle(node).color,background:getComputedStyle(node.parentElement).backgroundColor};
+          }));
+          assert.equal(icons.length,4);
+          assert.ok(icons.every(icon => icon.width >= 28 && icon.height >= 28 && icon.fits), `${theme} icons are visible and contained`);
+          const hex = color => '#' + color.match(/\d+/g).slice(0,3).map(v => Number(v).toString(16).padStart(2,'0')).join('');
+          assert.ok(icons.every(icon => contrastRatio(hex(icon.color),hex(icon.background)) >= 3), `${theme} icon contrast meets 3:1`);
+        }
         if (width > 760) assert.ok(await masthead.evaluate(el => {
           const box = el.getBoundingClientRect();
           return [...el.children].filter(child => child.tagName !== 'svg').every(child => {

@@ -4,6 +4,7 @@ import { SportsMotif } from './SportsMotif.jsx';
 import { MetsIdentity, MetsMasthead } from './MetsBrand.jsx';
 import metsLogo from '../assets/sports/mets-logo.svg?inline';
 import { YankeesIdentity, YankeesMasthead } from './YankeesBrand.jsx';
+import { SportsTitles, SportsVenue } from './SportsHeritage.jsx';
 // All logos are inline for Deluge's self-contained JavaScript resource.
 import { SPORTS_CLUBS } from './sports-clubs.js';
 import logo0 from '../assets/sports/yankees-logo.svg?inline';
@@ -35,14 +36,15 @@ const LOGOS = { 'mets': metsLogo, 'yankees': logo0, 'giants': logo1, 'knicks': l
 export function SportsIdentity({ theme, compact = false, fallback = null }) {
   const club = SPORTS_CLUBS[theme];
   if (!club) return fallback;
-  if (theme === 'mets' && !compact) return <MetsIdentity logo={metsLogo} />;
-  if (theme === 'yankees' && !compact) return <YankeesIdentity logo={LOGOS.yankees} />;
+  if (theme === 'mets' && !compact) return <MetsIdentity logo={metsLogo} club={club} />;
+  if (theme === 'yankees' && !compact) return <YankeesIdentity logo={LOGOS.yankees} club={club} />;
   if (compact) return <div className={`sports-mobile-brand sports-mobile-brand-${theme} ${SPORTS_DESIGNS[theme] ? `sports-lettering-${SPORTS_DESIGNS[theme].lettering}` : ''}`}><img src={LOGOS[theme]} alt={club.name} width="32" height="32" /><strong>{club.short}</strong></div>;
   return (
     <div className={`sports-identity sports-identity-${theme} sports-lettering-${SPORTS_DESIGNS[theme].lettering}`}>
       <div className="sports-logo-stage"><SportsMotif theme={theme} /><img src={LOGOS[theme]} alt={club.name} width="88" height="88" /></div>
       <strong className="sports-wordmark">{club.short}</strong>
-      <span className="sports-club-sport">{club.sport} · {club.city}</span>
+      <span className="sports-club-sport">{club.city} · EST. {club.established}</span>
+      <SportsTitles club={club} compact />
     </div>
   );
 }
@@ -50,11 +52,12 @@ export function SportsIdentity({ theme, compact = false, fallback = null }) {
 export function SportsMasthead({ theme }) {
   const club = SPORTS_CLUBS[theme];
   if (!club) return null;
-  if (theme === 'mets') return <MetsMasthead />;
-  if (theme === 'yankees') return <YankeesMasthead logo={LOGOS.yankees} />;
+  if (theme === 'mets') return <MetsMasthead club={club} />;
+  if (theme === 'yankees') return <YankeesMasthead logo={LOGOS.yankees} club={club} />;
   const design = SPORTS_DESIGNS[theme];
-  return <div className={`sports-masthead sports-lettering-${design.lettering}`}>
-    <div className="sports-masthead-title"><img src={LOGOS[theme]} alt="" width="42" height="42" /><strong>{club.short}</strong></div>
+  return <div className={`sports-masthead sports-facts-masthead sports-lettering-${design.lettering}`}>
+    <div className="sports-masthead-title"><img src={LOGOS[theme]} alt="" width="42" height="42" /><div className="sports-name-lockup"><span>{club.city} · EST. {club.established}</span><strong>{club.short}</strong></div></div>
+    <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
     <SportsMotif theme={theme} />
   </div>;
 }

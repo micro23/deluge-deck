@@ -1,4 +1,5 @@
 import React from 'react';
+import { SportsTitles, SportsVenue } from './SportsHeritage.jsx';
 
 // Yankees-specific identity, built around the team's own ballpark history.
 function StadiumLines({ className = 'yankees-stadium-lines' }) {
@@ -9,29 +10,26 @@ function StadiumLines({ className = 'yankees-stadium-lines' }) {
   </svg>;
 }
 
-export function YankeesIdentity({ logo }) {
+export function YankeesIdentity({ logo, club }) {
   return <div className="sports-identity sports-identity-yankees yankees-identity">
     <div className="yankees-crest">
       <StadiumLines />
-      <span className="yankees-crest-year">1923</span>
+      <span className="yankees-crest-year">{club.established}</span>
       <img src={logo} alt="New York Yankees" width="88" height="88" />
     </div>
-    <span className="yankees-kicker">BRONX · NEW YORK</span>
+    <span className="yankees-kicker">BRONX · EST. {club.established}</span>
     <strong className="yankees-wordmark">Yankees</strong>
-    <span className="yankees-identity-caption">27-TIME WORLD SERIES CHAMPIONS</span>
+    <SportsTitles club={club} compact />
   </div>;
 }
 
-export function YankeesMasthead({ logo }) {
-  return <section className="yankees-masthead" aria-label="Yankees heritage">
+export function YankeesMasthead({ logo, club }) {
+  return <section className="yankees-masthead sports-facts-masthead" aria-label="Yankees heritage">
     <div className="yankees-masthead-art"><StadiumLines /></div>
     <div className="yankees-masthead-lockup">
       <img src={logo} alt="" width="52" height="52" />
-      <div><span>NEW YORK · EST. 1903</span><strong>Yankees</strong></div>
+      <div><span>NEW YORK · EST. {club.established}</span><strong>Yankees</strong></div>
     </div>
-    <div className="yankees-masthead-story">
-      <span className="yankees-opened">YANKEE STADIUM <b>·</b> OPENED 1923</span>
-      <span className="yankees-titles"><strong>27</strong><small>WORLD SERIES<br />CHAMPIONSHIPS</small></span>
-    </div>
+    <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
   </section>;
 }

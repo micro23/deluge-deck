@@ -66,6 +66,7 @@ import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
+import { SportsStatIcon } from './app/SportsStatIcon.jsx';
 import { MatrixIdentity, MatrixMasthead } from './app/MatrixTheme.jsx';
 import { USAFlagProgress, USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
@@ -99,6 +100,7 @@ import './themes/darkhand.css';
 import './themes/mets.css';
 import './themes/sports-bespoke.css';
 import './themes/yankees.css';
+import './themes/sports-heritage.css';
 import './windowed-list.css';
 import { createPoller } from '../server/polling.mjs';
 
@@ -5638,7 +5640,7 @@ function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }
   return (
     <div className={`stat-card ${tone}`}>
       <div className="stat-icon">
-        <Icon size={17} />
+        {THEME_CATEGORIES.find(category => category.id === 'sports').themes.includes(theme) ? <SportsStatIcon theme={theme} label={label} /> : <Icon size={17} />}
       </div>
       <div>
         <span>{label}</span>

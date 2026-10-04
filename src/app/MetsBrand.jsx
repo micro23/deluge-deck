@@ -1,4 +1,5 @@
 import React from 'react';
+import { SportsTitles, SportsVenue } from './SportsHeritage.jsx';
 
 // Mets-only identity: Queens skyline, cap mark, and stadium-style typography.
 function QueensSkyline() {
@@ -9,17 +10,19 @@ function QueensSkyline() {
   </svg>;
 }
 
-export function MetsIdentity({ logo }) {
+export function MetsIdentity({ logo, club }) {
   return <div className="sports-identity sports-identity-mets">
     <div className="mets-cap-stage"><QueensSkyline /><img src={logo} alt="New York Mets" width="88" height="88" /></div>
     <strong className="mets-script">Mets</strong>
-    <span className="mets-identity-caption">Baseball · Queens, New York</span>
+    <span className="mets-identity-caption">{club.city} · EST. {club.established}</span>
+    <SportsTitles club={club} compact />
   </div>;
 }
 
-export function MetsMasthead() {
-  return <div className="mets-masthead">
-    <div><small>NEW YORK</small><strong>Mets</strong></div>
+export function MetsMasthead({ club }) {
+  return <div className="mets-masthead sports-facts-masthead">
+    <div className="sports-name-lockup"><small>{club.city} · EST. {club.established}</small><strong>Mets</strong></div>
+    <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
     <QueensSkyline />
   </div>;
 }

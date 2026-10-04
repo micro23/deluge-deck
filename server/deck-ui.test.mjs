@@ -24,6 +24,8 @@ const themeStyles = async () => (await Promise.all([
   readFile(path.join(root, 'src/themes/sports-expansion.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/mets.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/sports-bespoke.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/yankees.css'), 'utf8'),
+  readFile(path.join(root, 'src/themes/sports-heritage.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/darkhand.css'), 'utf8'),
   readFile(path.join(root, 'src/themes/matrix.css'), 'utf8'),
 ])).join('\n');
@@ -40,7 +42,7 @@ test('theme categories cover every persistent theme once with stable sports iden
   const ui = await source();
   assert.match(ui, /role="group" aria-labelledby=\{`theme-category-\$\{category.id\}`\}/);
   assert.match(ui, /querySelectorAll\(\s*'\[role="menuitemradio"\]'/);
-  const sports = (await Promise.all(['sports.css','sports-expansion.css','mets.css','sports-bespoke.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const sports = (await Promise.all(['sports.css','sports-expansion.css','mets.css','sports-bespoke.css','yankees.css','sports-heritage.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   assert.doesNotMatch(sports, /data-theme="(?:dark|light|ocean|forest|sunset|terminal|christmas|halloween|valentine|st-patricks|independence|new-year)"/);
   for (const team of THEME_CATEGORIES.find(({ id }) => id === 'sports').themes) {
     const logo = await readFile(path.join(root, `src/assets/sports/${team}-logo.svg`), 'utf8');
@@ -52,7 +54,7 @@ test('theme categories cover every persistent theme once with stable sports iden
 });
 
 test('sports card text meets AAA against the gradients and decorative stripes', async () => {
-  const css = (await Promise.all(['sports.css','sports-expansion.css','mets.css','sports-bespoke.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
+  const css = (await Promise.all(['sports.css','sports-expansion.css','mets.css','sports-bespoke.css','yankees.css','sports-heritage.css'].map(file => readFile(path.join(root, 'src/themes', file), 'utf8')))).join('\n');
   for (const team of Object.keys(SPORTS_CLUBS)) {
     const declarations = [...css.matchAll(new RegExp(`:root\\[data-theme="${team}"\\]\\s*\\{([^}]*)\\}`, 'g'))].map(match => match[1]).join('\n');
     const variable = name => [...declarations.matchAll(new RegExp(`--${name}:([^;]+);`, 'g'))].at(-1)[1];
