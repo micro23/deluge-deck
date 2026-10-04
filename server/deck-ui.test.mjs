@@ -130,7 +130,7 @@ test('Deluge Preferences is in-app first and browser popup APIs are absent from 
   assert.match(ui, /else preferences\.show\(\)/);
   const preferencesBlock = ui.slice(ui.indexOf('function PreferencesModal'), ui.indexOf('function DeckPreferences'));
   assert.doesNotMatch(preferencesBlock, /theme-grid|THEMES\.map/);
-  assert.match(preferencesBlock, /<kbd>T<\/kbd> cycles themes/);
+  assert.match(preferencesBlock, /<kbd>T<\/kbd> next · <kbd>Shift\+T<\/kbd> previous/);
   assert.match(ui, /import '.\/native-deluge.css'/);
   assert.doesNotMatch(ui, /const openPreferences[^\n]*preferences\.show/);
   assert.doesNotMatch(ui, /window\.(alert|confirm|prompt)\s*\(/);
@@ -411,7 +411,7 @@ test('native skin preserves Ext geometry and plugin toolbars', async () => {
   assert.match(css, /\.x-combo-list,\.x-menu/);
 });
 
-test('global shortcuts are modal-aware, busy-aware, and ignore interactive controls', async () => {
+test('action shortcuts are modal-aware, busy-aware, and ignore interactive controls', async () => {
   const ui = await source();
   assert.match(ui, /const deckModalState = \{ locked: false \}/);
   assert.match(ui, /input,textarea,select,button,a,\[contenteditable="true"\]/);
@@ -422,8 +422,6 @@ test('global shortcuts are modal-aware, busy-aware, and ignore interactive contr
   assert.match(ui, /useEffect\(\(\) => \{\s*const locked = busy \|\| Boolean\(error\);\s*deckModalState\.locked = locked/);
   const shortcutBlock = ui.slice(ui.indexOf('const keys ='), ui.indexOf('const act ='));
   assert.match(shortcutBlock, /event\.key === 'Escape'[\s\S]*active\?\.matches[\s\S]*panelOpen\s*\)\s*return;[\s\S]*event\.key === '\/'/);
-  assert.match(shortcutBlock, /event\.key\.toLowerCase\(\) === 't'[\s\S]*setTheme\(\(current\)[\s\S]*THEMES\.findIndex/);
-  assert.match(shortcutBlock, /event\.key\.toLowerCase\(\) === 't'\s*&&\s*!event\.metaKey\s*&&\s*!event\.ctrlKey\s*&&\s*!event\.altKey\s*&&\s*!event\.repeat\s*\) \{/);
 });
 
 test('mobile torrent checkboxes stay compact', async () => {

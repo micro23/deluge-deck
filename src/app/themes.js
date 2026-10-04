@@ -23,6 +23,8 @@ export const THEME_CATEGORIES = [
   { id: 'sports', label: 'Sports themes', themes: SPORTS_GROUPS.flatMap(group => group.themes), groups: SPORTS_GROUPS },
 ];
 
+export const THEME_ORDER = THEME_CATEGORIES.flatMap(category => category.themes);
+
 export const REFRESH_OPTIONS = [
   [1500, 'Every 1.5 seconds'],
   [3000, 'Every 3 seconds'],

@@ -1,6 +1,6 @@
 {
   "name": "deluge-deck",
-  "version": "1.0.71",
+  "version": "1.0.72",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,7 +18,8 @@
     "test": "node --test server/*.test.mjs",
     "check": "vite build && node --check server/index.mjs && node --check server/hosted-layout-fixture.mjs",
     "verify:performance": "node scripts/verify-performance.mjs",
-    "verify:windowing": "node scripts/verify-windowing-and-themes.mjs"
+    "verify:windowing": "node scripts/verify-windowing-and-themes.mjs",
+    "verify:theme-shortcuts": "node scripts/verify-theme-shortcuts.mjs"
   },
   "dependencies": {
     "lucide-react": "1.38.0",

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.72
+
+- Make T advance one theme and Shift+T go back one theme in the exact theme-switcher order, wrapping through all 37 themes.
+- Allow theme shortcuts throughout the interface, including focused controls, menus, preferences, and torrent details, while preserving typing in text inputs and editable content.
+- Update the keyboard shortcut guide and add browser checks for the complete theme cycle in standalone and hosted plugin fixtures.
+- Rebuild the versioned plugin resources and source-only Python 3.14 egg.
+
 ## 1.0.71
 
 - Preserve the active theme when Deluge executes the stylesheet bootstrap again, preventing Terminal from flashing into a broken generic layout.

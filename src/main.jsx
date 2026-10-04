@@ -64,7 +64,7 @@ import { daemonHostStatus, addedHostId } from '../server/hosted-contracts.mjs';
 import { proxyFormValues, proxyConfig } from './app/preferences.js';
 import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
-import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES } from './app/themes.js';
+import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
@@ -3863,11 +3863,12 @@ function PreferencesModal({
             <div className="shortcut-keys" aria-label="Keyboard shortcuts">
               <kbd title="Add torrent">A</kbd>
               <kbd title="Focus search">/</kbd>
-              <kbd title="Cycle themes">T</kbd>
+              <kbd title="Next theme">T</kbd>
+              <kbd title="Previous theme">Shift+T</kbd>
               <kbd title="Close panels">Esc</kbd>
             </div>
             <span className="shortcut-summary">
-              <kbd>T</kbd> cycles themes
+              <kbd>T</kbd> next · <kbd>Shift+T</kbd> previous
             </span>
           </section>
           <section className="preferences-card native-preferences">
@@ -5099,6 +5100,25 @@ function App() {
     }));
   }, [stats, torrents.length]);
   useEffect(() => {
+    const cycleTheme = event => {
+      if (event.key.toLowerCase() !== 't' || event.metaKey || event.ctrlKey ||
+          event.altKey || event.repeat || event.isComposing) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const isTyping = element => element?.isContentEditable || element?.closest?.(
+        'textarea,[role="textbox"],input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"])',
+      );
+      if (isTyping(target) || isTyping(document.activeElement)) return;
+      event.preventDefault();
+      setTheme(current => {
+        const index = THEME_ORDER.indexOf(current);
+        return THEME_ORDER[(index + (event.shiftKey ? -1 : 1) + THEME_ORDER.length) % THEME_ORDER.length];
+      });
+    };
+    // Capture before menus and dialogs handle keys so cycling works on every page.
+    window.addEventListener('keydown', cycleTheme, true);
+    return () => window.removeEventListener('keydown', cycleTheme, true);
+  }, [theme]);
+  useEffect(() => {
     const keys = (event) => {
       const panelOpen = Boolean(addFiles || detail || menuTorrent);
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -5135,19 +5155,6 @@ function App() {
       if (event.key.toLowerCase() === 'a') {
         event.preventDefault();
         setAddFiles([]);
-      }
-      if (
-        event.key.toLowerCase() === 't' &&
-        !event.metaKey &&
-        !event.ctrlKey &&
-        !event.altKey &&
-        !event.repeat
-      ) {
-        event.preventDefault();
-        setTheme((current) => {
-          const index = THEMES.findIndex(([key]) => key === current);
-          return THEMES[(index + 1 + THEMES.length) % THEMES.length][0];
-        });
       }
     };
     window.addEventListener('keydown', keys);
