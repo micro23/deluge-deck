@@ -1,3 +1,8 @@
+## 1.0.75
+
+- Kept the Darkhand details pane empty until a torrent is selected.
+- Tightened torrent name column spacing in compact layouts.
+
 # Changelog
 
 ## 1.0.74

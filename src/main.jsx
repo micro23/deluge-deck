@@ -5447,7 +5447,7 @@ function App() {
             {theme === 'darkhand' && <>
               <DarkhandOverview stats={stats} counts={torrentCounts} onPreferences={openPreferences} fresh={!refreshError} sourceKey={sessionData?.host?.id || sessionData?.delugeUrl || 'default'} />
               {!mobileLayout && <DarkhandDetails layout={darkhandLayout} setLayout={setDarkhandLayout} torrentHash={detail?.hash}>
-                {detail ? <DetailDrawer key={detail.hash} torrent={detail} inline networkTabs onClose={() => setDetail(null)} onAction={action => act(action, [detail.hash])} /> : <div className="dh-details-empty">Select a torrent to view its details.</div>}
+                {detail && <DetailDrawer key={detail.hash} torrent={detail} inline networkTabs onClose={() => setDetail(null)} onAction={action => act(action, [detail.hash])} />}
               </DarkhandDetails>}
             </>}
           </PanelContainer>
