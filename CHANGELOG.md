@@ -1,3 +1,10 @@
+## 1.0.86
+
+- Replace Matrix transfer fills with crisp green code that reveals the actual completion width in desktop rows, mobile cards, and the detail drawer.
+- Animate falling code for active downloads; keep paused, queued, completed, and reduced-motion progress static, with accessible numeric progress semantics.
+- Add seamless code rain over the city artwork, circuit-style telemetry icons, refined panel lighting, and a sharper selected-row accent.
+- Remove the remaining decorative Matrix footer label and refresh the theme preview, WebUI resources, and source-only plugin egg.
+
 ## 1.0.85
 
 - Remove the Matrix masthead's decorative slogan, source connection phrases, system number, and transmission phrases.

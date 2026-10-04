@@ -67,7 +67,7 @@ import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
 import { SportsStatIcon } from './app/SportsStatIcon.jsx';
-import { MatrixIdentity, MatrixMasthead } from './app/MatrixTheme.jsx';
+import { MatrixCodeProgress, MatrixIdentity, MatrixMasthead, MatrixStatIcon } from './app/MatrixTheme.jsx';
 import { USAFlagProgress, USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
@@ -1399,7 +1399,7 @@ function Progress({ value = 0, state, theme }) {
   const potionId = useId();
   return (
     <div className="progress-wrap">
-      <div className="progress-track">
+      <div className="progress-track" {...(theme === 'matrix' ? { role:'progressbar', 'aria-label':'Transfer progress', 'aria-valuemin':0, 'aria-valuemax':100, 'aria-valuenow':progress } : {})}>
         <div
           className={`progress-bar ${stateKey(state)}${progress >= 99.95 ? ' complete' : ''}`}
           style={{
@@ -1407,6 +1407,7 @@ function Progress({ value = 0, state, theme }) {
           }}
         />
         {theme === 'independence' && <USAFlagProgress progress={progress} id={`${potionId}-usa`} />}
+        {theme === 'matrix' && <MatrixCodeProgress progress={progress} state={stateKey(state)} id={`${potionId}-matrix`} />}
         {theme === 'halloween' && (<svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-inside`}>
@@ -5640,7 +5641,7 @@ function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }
   return (
     <div className={`stat-card ${tone}`}>
       <div className="stat-icon">
-        {THEME_CATEGORIES.find(category => category.id === 'sports').themes.includes(theme) ? <SportsStatIcon theme={theme} label={label} /> : <Icon size={17} />}
+        {theme === 'matrix' ? <MatrixStatIcon label={label} /> : THEME_CATEGORIES.find(category => category.id === 'sports').themes.includes(theme) ? <SportsStatIcon theme={theme} label={label} /> : <Icon size={17} />}
       </div>
       <div>
         <span>{label}</span>
