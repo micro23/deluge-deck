@@ -1,3 +1,8 @@
+## 1.0.94
+
+- Fix stadium artwork asset resolution inside hosted Deluge WebUI plugin mode using base-aware resource paths.
+- Rebuild the versioned WebUI resources and Python plugin egg.
+
 ## 1.0.93
 
 - Refactor sports team themes across all 24 clubs: remove duplicate team logos and wordmarks from the main dashboard masthead while preserving full team marks in the left sidebar.

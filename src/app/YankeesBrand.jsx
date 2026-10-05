@@ -1,4 +1,5 @@
 import React from 'react';
+import { assetUrl } from './api.js';
 import { SportsTitles, SportsVenue } from './SportsHeritage.jsx';
 
 // Yankees-specific identity, built around the team's own ballpark history.
@@ -29,7 +30,7 @@ export function YankeesMasthead({ stadium, club }) {
       <div className="yankees-masthead-art"><StadiumLines /></div>
       <div className="sports-masthead-title yankees-masthead-lockup">
         <div className="sports-stadium-frame">
-          <img src={stadium} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
+          <img src={assetUrl(stadium)} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
         </div>
         <div className="sports-name-lockup">
           <span>NEW YORK · EST. {club.established}</span>

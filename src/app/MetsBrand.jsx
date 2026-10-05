@@ -1,4 +1,5 @@
 import React from 'react';
+import { assetUrl } from './api.js';
 import { SportsTitles, SportsVenue } from './SportsHeritage.jsx';
 
 // Mets-only identity: Queens skyline, cap mark, and stadium-style typography.
@@ -24,7 +25,7 @@ export function MetsMasthead({ stadium, club }) {
     <div className="sports-masthead mets-masthead sports-facts-masthead">
       <div className="sports-masthead-title">
         <div className="sports-stadium-frame">
-          <img src={stadium} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
+          <img src={assetUrl(stadium)} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
         </div>
         <div className="sports-name-lockup">
           <span>{club.city} · EST. {club.established}</span>

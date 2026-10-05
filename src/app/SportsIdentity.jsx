@@ -1,4 +1,5 @@
 import React from 'react';
+import { assetUrl } from './api.js';
 import { SPORTS_DESIGNS } from './sports-designs.js';
 import { SportsMotif } from './SportsMotif.jsx';
 import { MetsIdentity, MetsMasthead } from './MetsBrand.jsx';
@@ -111,7 +112,7 @@ export function SportsMasthead({ theme }) {
     <div className={`sports-masthead sports-facts-masthead sports-lettering-${design?.lettering || 'serif'}`}>
       <div className="sports-masthead-title">
         <div className="sports-stadium-frame">
-          <img src={STADIUMS[theme]} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
+          <img src={assetUrl(STADIUMS[theme])} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
         </div>
         <div className="sports-name-lockup">
           <span>{club.city} · EST. {club.established}</span>

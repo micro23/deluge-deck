@@ -23,6 +23,15 @@ export const pluginMode = () => Boolean(window.__DELUGE_DECK_PLUGIN__);
 export const hostedUrl = (resource) =>
   new URL(resource, new URL('.', document.baseURI)).toString();
 export const endpoint = (resource) => (pluginMode() ? hostedUrl(resource) : resource);
+export const assetUrl = (resource) => {
+  if (!resource || typeof resource !== 'string') return resource;
+  if (resource.startsWith('data:') || resource.startsWith('http://') || resource.startsWith('https://')) return resource;
+  if (pluginMode()) {
+    const filename = resource.split('/').pop();
+    return hostedUrl(`deluge-deck-resources/assets/${filename}`);
+  }
+  return resource;
+};
 const request = (url, options = {}) => fetch(url, { signal: AbortSignal.timeout(60000), ...options });
 
 export async function rpc(method, params = []) {
