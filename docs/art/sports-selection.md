@@ -55,7 +55,7 @@ imply no endorsement or affiliation.
 | Montreal Canadiens | [League asset](https://assets.nhle.com/logos/nhl/svg/MTL_dark.svg) |
 
 Logo files are `src/assets/sports/<team-id>-logo.svg`; venue artwork is
-`src/assets/sports/<team-id>-stadium.webp`. No venue or logo request leaves
+`src/assets/sports/<team-id>-stadium-optimized.webp`. No venue or logo request leaves
 the local server when selecting a theme. Baseball seams, football laces,
 basketball seams, and hockey rink markings are code-native SVG decorations.
 The telemetry cards retain real session values and sparklines.

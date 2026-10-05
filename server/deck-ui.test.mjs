@@ -49,7 +49,7 @@ test('theme categories cover every persistent theme once with stable sports iden
     const logo = await readFile(path.join(root, `src/assets/sports/${team}-logo.svg`), 'utf8');
     assert.match(logo, /<svg/);
     assert.doesNotMatch(logo, /<script|<foreignObject|(?:href|src)="https?:/i);
-    const backdrop = await readFile(path.join(root, `src/assets/sports/${team}-stadium.webp`));
+    const backdrop = await readFile(path.join(root, `src/assets/sports/${team}-stadium-optimized.webp`));
     assert.equal(backdrop.subarray(8, 12).toString(), 'WEBP');
   }
 });
