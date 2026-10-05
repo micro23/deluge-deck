@@ -19,10 +19,19 @@ export function MetsIdentity({ logo, club }) {
   </div>;
 }
 
-export function MetsMasthead({ club }) {
-  return <div className="mets-masthead sports-facts-masthead">
-    <div className="sports-name-lockup"><small>{club.city} · EST. {club.established}</small><strong>Mets</strong></div>
-    <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
-    <QueensSkyline />
-  </div>;
+export function MetsMasthead({ stadium, club }) {
+  return (
+    <div className="sports-masthead mets-masthead sports-facts-masthead">
+      <div className="sports-masthead-title">
+        <div className="sports-stadium-frame">
+          <img src={stadium} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
+        </div>
+        <div className="sports-name-lockup">
+          <span>{club.city} · EST. {club.established}</span>
+        </div>
+      </div>
+      <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
+      <QueensSkyline />
+    </div>
+  );
 }

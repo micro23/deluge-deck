@@ -31,7 +31,59 @@ import logo20 from '../assets/sports/bruins-logo.svg?inline';
 import logo21 from '../assets/sports/maple-leafs-logo.svg?inline';
 import logo22 from '../assets/sports/canadiens-logo.svg?inline';
 
+import stadiumYankees from '../assets/sports/yankees-stadium-optimized.webp';
+import stadiumGiants from '../assets/sports/giants-stadium-optimized.webp';
+import stadiumKnicks from '../assets/sports/knicks-stadium-optimized.webp';
+import stadiumDodgers from '../assets/sports/dodgers-stadium-optimized.webp';
+import stadiumRedSox from '../assets/sports/red-sox-stadium-optimized.webp';
+import stadiumBlueJays from '../assets/sports/blue-jays-stadium-optimized.webp';
+import stadiumCubs from '../assets/sports/cubs-stadium-optimized.webp';
+import stadiumLakers from '../assets/sports/lakers-stadium-optimized.webp';
+import stadiumWarriors from '../assets/sports/warriors-stadium-optimized.webp';
+import stadiumBulls from '../assets/sports/bulls-stadium-optimized.webp';
+import stadiumCavaliers from '../assets/sports/cavaliers-stadium-optimized.webp';
+import stadiumHeat from '../assets/sports/heat-stadium-optimized.webp';
+import stadiumCowboys from '../assets/sports/cowboys-stadium-optimized.webp';
+import stadiumEagles from '../assets/sports/eagles-stadium-optimized.webp';
+import stadiumPatriots from '../assets/sports/patriots-stadium-optimized.webp';
+import stadiumChiefs from '../assets/sports/chiefs-stadium-optimized.webp';
+import stadiumSteelers from '../assets/sports/steelers-stadium-optimized.webp';
+import stadiumRangers from '../assets/sports/rangers-stadium-optimized.webp';
+import stadiumBlackhawks from '../assets/sports/blackhawks-stadium-optimized.webp';
+import stadiumPenguins from '../assets/sports/penguins-stadium-optimized.webp';
+import stadiumBruins from '../assets/sports/bruins-stadium-optimized.webp';
+import stadiumMapleLeafs from '../assets/sports/maple-leafs-stadium-optimized.webp';
+import stadiumCanadiens from '../assets/sports/canadiens-stadium-optimized.webp';
+import stadiumMets from '../assets/sports/mets-stadium-optimized.webp';
+
 const LOGOS = { 'mets': metsLogo, 'yankees': logo0, 'giants': logo1, 'knicks': logo2, 'dodgers': logo3, 'red-sox': logo4, 'blue-jays': logo5, 'cubs': logo6, 'lakers': logo7, 'warriors': logo8, 'bulls': logo9, 'cavaliers': logo10, 'heat': logo11, 'cowboys': logo12, 'eagles': logo13, 'patriots': logo14, 'chiefs': logo15, 'steelers': logo16, 'rangers': logo17, 'blackhawks': logo18, 'penguins': logo19, 'bruins': logo20, 'maple-leafs': logo21, 'canadiens': logo22 };
+
+const STADIUMS = {
+  'yankees': stadiumYankees,
+  'giants': stadiumGiants,
+  'knicks': stadiumKnicks,
+  'dodgers': stadiumDodgers,
+  'red-sox': stadiumRedSox,
+  'blue-jays': stadiumBlueJays,
+  'cubs': stadiumCubs,
+  'lakers': stadiumLakers,
+  'warriors': stadiumWarriors,
+  'bulls': stadiumBulls,
+  'cavaliers': stadiumCavaliers,
+  'heat': stadiumHeat,
+  'cowboys': stadiumCowboys,
+  'eagles': stadiumEagles,
+  'patriots': stadiumPatriots,
+  'chiefs': stadiumChiefs,
+  'steelers': stadiumSteelers,
+  'rangers': stadiumRangers,
+  'blackhawks': stadiumBlackhawks,
+  'penguins': stadiumPenguins,
+  'bruins': stadiumBruins,
+  'maple-leafs': stadiumMapleLeafs,
+  'canadiens': stadiumCanadiens,
+  'mets': stadiumMets,
+};
 
 export function SportsIdentity({ theme, compact = false, fallback = null }) {
   const club = SPORTS_CLUBS[theme];
@@ -52,12 +104,21 @@ export function SportsIdentity({ theme, compact = false, fallback = null }) {
 export function SportsMasthead({ theme }) {
   const club = SPORTS_CLUBS[theme];
   if (!club) return null;
-  if (theme === 'mets') return <MetsMasthead club={club} />;
-  if (theme === 'yankees') return <YankeesMasthead logo={LOGOS.yankees} club={club} />;
+  if (theme === 'mets') return <MetsMasthead stadium={STADIUMS.mets} club={club} />;
+  if (theme === 'yankees') return <YankeesMasthead stadium={STADIUMS.yankees} club={club} />;
   const design = SPORTS_DESIGNS[theme];
-  return <div className={`sports-masthead sports-facts-masthead sports-lettering-${design.lettering}`}>
-    <div className="sports-masthead-title"><img src={LOGOS[theme]} alt="" width="42" height="42" /><div className="sports-name-lockup"><span>{club.city} · EST. {club.established}</span><strong>{club.short}</strong></div></div>
-    <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
-    <SportsMotif theme={theme} />
-  </div>;
+  return (
+    <div className={`sports-masthead sports-facts-masthead sports-lettering-${design?.lettering || 'serif'}`}>
+      <div className="sports-masthead-title">
+        <div className="sports-stadium-frame">
+          <img src={STADIUMS[theme]} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
+        </div>
+        <div className="sports-name-lockup">
+          <span>{club.city} · EST. {club.established}</span>
+        </div>
+      </div>
+      <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
+      <SportsMotif theme={theme} />
+    </div>
+  );
 }

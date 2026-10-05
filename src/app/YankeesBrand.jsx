@@ -23,13 +23,19 @@ export function YankeesIdentity({ logo, club }) {
   </div>;
 }
 
-export function YankeesMasthead({ logo, club }) {
-  return <section className="yankees-masthead sports-facts-masthead" aria-label="Yankees heritage">
-    <div className="yankees-masthead-art"><StadiumLines /></div>
-    <div className="yankees-masthead-lockup">
-      <img src={logo} alt="" width="52" height="52" />
-      <div><span>NEW YORK · EST. {club.established}</span><strong>Yankees</strong></div>
-    </div>
-    <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
-  </section>;
+export function YankeesMasthead({ stadium, club }) {
+  return (
+    <section className="sports-masthead yankees-masthead sports-facts-masthead" aria-label="Yankees heritage">
+      <div className="yankees-masthead-art"><StadiumLines /></div>
+      <div className="sports-masthead-title yankees-masthead-lockup">
+        <div className="sports-stadium-frame">
+          <img src={stadium} alt={club.venue} className="sports-stadium-thumb" width="96" height="54" />
+        </div>
+        <div className="sports-name-lockup">
+          <span>NEW YORK · EST. {club.established}</span>
+        </div>
+      </div>
+      <div className="sports-facts"><SportsVenue club={club} /><SportsTitles club={club} /></div>
+    </section>
+  );
 }

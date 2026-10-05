@@ -484,6 +484,14 @@ test('Darkhand bulk controls sit above the fixed session status rail', async () 
   assert.match(css, /\.bulk-bar\s*\{\s*bottom:48px!important;\s*\}/);
 });
 
+test('Terminal theme positions stats at the bottom of the workspace below the table', async () => {
+  const css = await readFile(path.join(root, 'src/themes/terminal.css'), 'utf8');
+  assert.match(css, /:root\[data-theme="terminal"\]\s+\.workspace\s*\{\s*display:flex!important;\s*flex-direction:column!important;\s*\}/);
+  assert.match(css, /:root\[data-theme="terminal"\]\s+\.workspace>\.table-shell\s*\{\s*order:1!important;\s*flex:1 1 auto!important;/);
+  assert.match(css, /:root\[data-theme="terminal"\]\s+\.workspace>\.stats-grid\s*\{\s*order:2!important;/);
+  assert.match(css, /:root\[data-theme="terminal"\]\s+\.stat-card\s+span\s*\{\s*position:absolute;\s*top:-10px;\s*left:14px;/);
+});
+
 test('Halloween is a strict black, neutral, and orange palette without purple', async () => {
   const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
   const block = css.match(/:root\[data-theme="halloween"\]\s*\{([^}]*)\}/)?.[1] || '';

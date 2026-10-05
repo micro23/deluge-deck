@@ -1,3 +1,9 @@
+## 1.0.93
+
+- Refactor sports team themes across all 24 clubs: remove duplicate team logos and wordmarks from the main dashboard masthead while preserving full team marks in the left sidebar.
+- Add real, high-quality stadium and arena photography thumbnails to the main masthead alongside the founding year badges.
+- Rebuild the versioned WebUI resources and Python 3.14 source-only plugin egg.
+
 ## 1.0.92
 
 - Center stat card metrics, labels, and icons horizontally.

@@ -237,6 +237,31 @@
 :root[data-theme="terminal"] .search-wrap input::placeholder { color:var(--muted-2); }
 :root[data-theme="terminal"] .search-shortcut { border:0; background:none; font-size:17px; }
 
+:root[data-theme="terminal"] .workspace {
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+:root[data-theme="terminal"] .workspace>.table-shell {
+  order:1!important;
+  flex:1 1 auto!important;
+  min-height:0;
+}
+
+:root[data-theme="terminal"] .workspace>.mobile-transfers {
+  order:1!important;
+  flex:1 1 auto!important;
+}
+
+:root[data-theme="terminal"] .workspace>.stats-grid {
+  order:2!important;
+  flex:none!important;
+}
+
+:root[data-theme="terminal"] .workspace>.deck-status-rail {
+  order:3!important;
+}
+
 :root[data-theme="terminal"] .stats-grid .stat-card {
   min-height:104px;
   padding:16px 12px 10px;
@@ -492,7 +517,7 @@
   :root[data-theme="terminal"] .topbar-heading h1 { font-size:17px; font-weight:400; letter-spacing:0; text-transform:uppercase; }
   :root[data-theme="terminal"] .topbar { min-height:62px; padding-inline:18px; }
   :root[data-theme="terminal"] .top-actions { right:18px; }
-  :root[data-theme="terminal"] .stats-grid { margin-top:10px; margin-bottom:22px; }
+  :root[data-theme="terminal"] .stats-grid { order:2!important; margin-top:10px; margin-bottom:8px; }
   :root[data-theme="terminal"] .workspace>.search-wrap { height:34px; }
   :root[data-theme="terminal"] .global-trigger,
   :root[data-theme="terminal"] .theme-trigger { width:auto!important; padding:0 4px!important; font-size:16px; }
@@ -514,6 +539,9 @@
 /* Keep the shared phone layout and touch targets; only its skin changes. */
 @media (max-width:760px), (max-width:950px) and (max-height:540px) {
   :root[data-theme="terminal"] .topbar-heading { display:none!important; }
+  :root[data-theme="terminal"] .workspace { display:flex!important; flex-direction:column!important; }
+  :root[data-theme="terminal"] .workspace>.mobile-transfers { order:1!important; flex:1 1 auto!important; }
+  :root[data-theme="terminal"] .workspace>.stats-grid { order:2!important; flex:none!important; margin:8px 0!important; }
   :root[data-theme="terminal"] .stats-grid .stat-card {
     display:grid!important;
     grid-template-columns:minmax(0,1fr)!important;
@@ -721,11 +749,21 @@
   :root[data-theme="terminal"] body .topbar .avatar::after { content:"]"!important; color:var(--muted-2); }
   :root[data-theme="terminal"] body .topbar .theme-trigger::before { content:"[ T ]"!important; color:var(--muted-2); }
   :root[data-theme="terminal"] body .topbar .mobile-preferences { display:none!important; }
-  :root[data-theme="terminal"] body .workspace { position:relative; padding:0 0 12px!important; min-height:0!important; gap:0; overflow:visible; }
+  :root[data-theme="terminal"] body .workspace {
+    position:relative;
+    display:flex!important;
+    flex-direction:column!important;
+    padding:0 0 12px!important;
+    min-height:0!important;
+    gap:0;
+    overflow:visible;
+  }
   :root[data-theme="terminal"] body .workspace>.library-mobile-controls { display:none; }
   :root[data-theme="terminal"] body .workspace .stats-grid {
+    order:2!important;
+    flex:none!important;
     grid-template-columns:repeat(4,minmax(0,1fr))!important;
-    margin:10px 4px 11px 32%!important;
+    margin:10px 0 8px!important;
     gap:16px!important;
   }
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card {
@@ -752,11 +790,13 @@
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card small { margin:0!important; font-size:16px!important; line-height:21px!important; color:#b9bab3; }
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>.stat-spark { display:block!important; height:12px!important; flex:none; }
   :root[data-theme="terminal"] body .table-shell {
-    flex:0 1 auto!important;
+    order:1!important;
+    flex:1 1 auto!important;
     min-height:0;
     border:0!important;
     border-inline:1px solid #bbbcb5!important;
-    margin-bottom:auto;
+    border-bottom:1px solid #bbbcb5!important;
+    margin-bottom:0!important;
   }
   :root[data-theme="terminal"] body .table-shell table { width:100%; min-width:0; }
   :root[data-theme="terminal"] body .table-shell .table-tools { height:0; min-height:0; }
@@ -835,7 +875,7 @@
   :root[data-theme="terminal"] body .app-shell { --deck-sidebar-size:142px; }
   :root[data-theme="terminal"] body .topbar-heading::before { content:"[ CLI ]"; }
   :root[data-theme="terminal"] body .topbar .avatar::before { content:"["!important; }
-  :root[data-theme="terminal"] body .workspace .stats-grid { margin-left:0!important; margin-top:53px!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid { margin:10px 0 8px!important; }
 }
 @media (max-width:760px), (max-width:950px) and (max-height:540px) {
   :root[data-theme="terminal"] body::before,
@@ -848,7 +888,9 @@
   :root[data-theme="terminal"] body .workspace .stats-grid .stat-card strong { font-size:18px!important; }
   :root[data-theme="terminal"] body .mobile-brand::before { content:"[ CLI TORRENT ]"; font-size:17px; }
   :root[data-theme="terminal"] body .mobile-brand .brand { display:none; }
-  :root[data-theme="terminal"] body .workspace { overflow:auto; }
+  :root[data-theme="terminal"] body .workspace { display:flex!important; flex-direction:column!important; overflow:auto; }
+  :root[data-theme="terminal"] body .workspace>.mobile-transfers { order:1!important; flex:1 1 auto!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid { order:2!important; margin:8px 0!important; }
 }
 :root[data-theme="terminal"] { --deck-seal-size:22px; --deck-seal-mobile-size:20px; }
 :root[data-theme="terminal"] body .stat-card>.theme-detail { display:block!important; }
@@ -903,8 +945,8 @@
 
 @media (min-width:761px) and (max-width:1280px) and (min-height:541px) {
   :root[data-theme="terminal"] body .workspace .stats-grid {
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    margin-left:28%!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    margin-left:0!important;
   }
 }
 

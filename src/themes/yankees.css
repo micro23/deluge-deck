@@ -80,7 +80,7 @@
 :root[data-theme="yankees"] .yankees-masthead-lockup,
 :root[data-theme="yankees"] .yankees-masthead-story { position:relative; z-index:1; display:flex; align-items:center; }
 :root[data-theme="yankees"] .yankees-masthead-lockup { gap:12px; }
-:root[data-theme="yankees"] .yankees-masthead-lockup img { width:50px; height:50px; object-fit:contain; filter:brightness(0) invert(1) drop-shadow(0 2px 3px #000); }
+:root[data-theme="yankees"] .yankees-masthead-lockup img:not(.sports-stadium-thumb) { width:50px; height:50px; object-fit:contain; filter:brightness(0) invert(1) drop-shadow(0 2px 3px #000); }
 :root[data-theme="yankees"] .yankees-masthead-lockup div { display:flex; flex-direction:column; gap:1px; }
 :root[data-theme="yankees"] .yankees-masthead-lockup span,
 :root[data-theme="yankees"] .yankees-opened { color:#d1dbea; font:700 8px/1.4 'DM Mono',monospace; letter-spacing:.17em; }
