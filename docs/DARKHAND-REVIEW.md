@@ -86,10 +86,9 @@ Deluge service user's permissions.
   whenever the core plugin is enabled, regardless of the selected theme.
 - Without the updated core plugin, the chart clearly labels browser-session
   history; it does not claim to have historical data from before the page opened.
-- Darkhand uses local generic tracker icons instead of fetching tracker favicons.
-  Inter and JetBrains Mono fonts retain their upstream OFL licenses in source and
-  egg. Hosted styles embed fonts, so reverse-proxy paths work without external
-  font requests.
+- Darkhand uses tracker favicons like the other themes. Inter and JetBrains
+  Mono fonts retain their upstream OFL licenses in source and egg. Hosted styles
+  embed fonts, so reverse-proxy paths work without external font requests.
 
 ## Feature comparison
 

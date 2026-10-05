@@ -233,7 +233,7 @@ function TrackerFavicon({ host }) {
   const [candidateIndex, setCandidateIndex] = useState(0);
   useEffect(() => setCandidateIndex(0), [host]);
   const src = candidates[candidateIndex];
-  if (!src || document.documentElement.dataset.theme === 'darkhand') return <span className="tracker-favicon-small tracker-favicon-fallback" aria-label={`${host} tracker icon`}><Network size={12} /></span>;
+  if (!src) return <span className="tracker-favicon-small tracker-favicon-fallback" aria-label={`${host} tracker icon`}><Network size={12} /></span>;
   return (
     <img
       className="tracker-favicon-small tracker-favicon-controlled"
@@ -2779,56 +2779,58 @@ function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs 
                   {optionsState.busy ? 'Saving…' : 'Save options'}
                 </button>
               </div>
-              <label className="option-toggle">
-                <input
-                  type="checkbox"
-                  checked={options.is_auto_managed}
-                  onChange={(event) =>
-                    setOptions((current) => ({
-                      ...current,
-                      is_auto_managed: event.target.checked,
-                    }))
-                  }
-                />
-                <span>
-                  <strong>Auto-managed queue</strong>
-                  <small>
-                    Let Deluge place this torrent in the active queue.
-                  </small>
-                </span>
-              </label>
-              <label className="option-toggle">
-                <input
-                  type="checkbox"
-                  checked={options.sequential_download}
-                  onChange={(event) =>
-                    setOptions((current) => ({
-                      ...current,
-                      sequential_download: event.target.checked,
-                    }))
-                  }
-                />
-                <span>
-                  <strong>Sequential download</strong>
-                  <small>Request pieces in file order when possible.</small>
-                </span>
-              </label>
-              <label className="option-toggle">
-                <input
-                  type="checkbox"
-                  checked={options.prioritize_first_last}
-                  onChange={(event) =>
-                    setOptions((current) => ({
-                      ...current,
-                      prioritize_first_last: event.target.checked,
-                    }))
-                  }
-                />
-                <span>
-                  <strong>Prioritize first and last pieces</strong>
-                  <small>Make media previews available sooner.</small>
-                </span>
-              </label>
+              <div className="torrent-options-list">
+                <label className="option-toggle">
+                  <input
+                    type="checkbox"
+                    checked={options.is_auto_managed}
+                    onChange={(event) =>
+                      setOptions((current) => ({
+                        ...current,
+                        is_auto_managed: event.target.checked,
+                      }))
+                    }
+                  />
+                  <span>
+                    <strong>Auto-managed queue</strong>
+                    <small>
+                      Let Deluge place this torrent in the active queue.
+                    </small>
+                  </span>
+                </label>
+                <label className="option-toggle">
+                  <input
+                    type="checkbox"
+                    checked={options.sequential_download}
+                    onChange={(event) =>
+                      setOptions((current) => ({
+                        ...current,
+                        sequential_download: event.target.checked,
+                      }))
+                    }
+                  />
+                  <span>
+                    <strong>Sequential download</strong>
+                    <small>Request pieces in file order when possible.</small>
+                  </span>
+                </label>
+                <label className="option-toggle">
+                  <input
+                    type="checkbox"
+                    checked={options.prioritize_first_last}
+                    onChange={(event) =>
+                      setOptions((current) => ({
+                        ...current,
+                        prioritize_first_last: event.target.checked,
+                      }))
+                    }
+                  />
+                  <span>
+                    <strong>Prioritize first and last pieces</strong>
+                    <small>Make media previews available sooner.</small>
+                  </span>
+                </label>
+              </div>
               {optionsState.error && (
                 <div className="file-action-error" role="alert">
                   {optionsState.error}

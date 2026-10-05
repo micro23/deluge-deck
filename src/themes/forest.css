@@ -156,63 +156,31 @@
 
 .forest-identity {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
   padding: 18px 12px 20px;
   margin-bottom: 18px;
   border-bottom: 1px solid var(--line);
-  color: var(--text);
-  text-align: center;
+  color: var(--cyan);
 }
 
 .forest-identity .forest-mark {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   color: var(--cyan);
-  filter: drop-shadow(0 0 10px rgba(239, 255, 186, 0.35));
-}
-
-.forest-identity strong {
-  display: block;
-  font-family: Georgia, "Palatino Linotype", serif;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--cyan);
-  text-shadow: 0 0 14px rgba(239, 255, 186, 0.45);
-}
-
-.forest-identity small {
-  display: block;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  color: var(--line-strong);
-  margin-top: 2px;
+  filter: drop-shadow(0 0 12px rgba(239, 255, 186, 0.35));
 }
 
 .forest-identity.compact {
-  flex-direction: row;
+  display: flex;
   margin: 0;
   padding: 0;
   border: 0;
-  gap: 10px;
-  text-align: left;
 }
 
 .forest-identity.compact .forest-mark {
   width: 32px;
   height: 32px;
-}
-
-.forest-identity.compact strong {
-  font-size: 16px;
-  letter-spacing: 0.12em;
-}
-
-.forest-identity.compact small {
-  font-size: 9px;
 }
 
 /* Sidebar navigation */
@@ -280,7 +248,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  height: 156px;
+  height: 160px;
   margin-bottom: 20px;
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -295,7 +263,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(0deg, rgba(16, 37, 31, 0.85) 0%, transparent 60%);
+  background: linear-gradient(0deg, rgba(16, 37, 31, 0.6) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -308,81 +276,7 @@
   z-index: 0;
 }
 
-.forest-masthead-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 100%;
-  padding: 0 28px;
-}
-
-.forest-masthead-title {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(25, 52, 43, 0.82);
-  border: 1px solid var(--line);
-  border-left: 3px solid var(--cyan);
-  border-radius: 8px;
-  padding: 14px 22px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 8px 24px rgba(4, 14, 10, 0.4);
-}
-
-.forest-masthead-seal {
-  width: 44px;
-  height: 44px;
-  color: var(--cyan);
-  flex: none;
-  filter: drop-shadow(0 0 8px rgba(239, 255, 186, 0.4));
-}
-
-.forest-masthead-title h1 {
-  margin: 0;
-  font-family: Georgia, "Palatino Linotype", serif;
-  font-size: clamp(22px, 2.5vw, 32px);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--cyan);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
-}
-
-.forest-masthead-title p {
-  margin: 4px 0 0;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  color: var(--line-strong);
-}
-
-.forest-telemetry-badge {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 8px 14px;
-  background: rgba(16, 37, 31, 0.85);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--cyan);
-  box-shadow: 0 4px 14px rgba(4, 14, 10, 0.35);
-}
-
-.forest-status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 8px var(--cyan);
-  animation: forest-pulse 2.2s infinite alternate ease-in-out;
-}
-
-/* Fireflies drifting over the canopy */
+/* Fireflies drifting over the forest canopy */
 .forest-fireflies {
   position: absolute;
   inset: 0;
@@ -423,7 +317,7 @@
 }
 
 /* ==========================================================================
-   STAT CARDS WITH CARVED BOTANICAL CORNER FILIGREES
+   STAT CARDS — CENTERED DATA & CLEAN ICONS
    ========================================================================== */
 
 :root[data-theme="forest"] body .workspace .stats-grid {
@@ -433,10 +327,14 @@
 
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card {
   position: relative!important;
-  display: block!important;
-  height: 132px!important;
-  min-height: 132px!important;
-  padding: 18px 20px!important;
+  display: flex!important;
+  flex-direction: column!important;
+  align-items: center!important;
+  justify-content: center!important;
+  text-align: center!important;
+  height: 136px!important;
+  min-height: 136px!important;
+  padding: 14px 16px!important;
   background: linear-gradient(155deg, rgba(25, 52, 43, 0.94), rgba(16, 37, 31, 0.98))!important;
   border: 1px solid var(--line)!important;
   border-radius: 12px!important;
@@ -452,48 +350,30 @@
   transform: translateY(-2px);
 }
 
-/* Ornate corner filigrees on stat cards */
-:root[data-theme="forest"] body .workspace .stats-grid .stat-card::before {
-  content: ""!important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 44px;
-  height: 44px;
-  background: url('../assets/forest-corner-tl.svg') no-repeat top left;
-  background-size: contain;
-  opacity: 0.65;
-  pointer-events: none;
-  z-index: 1;
-}
-
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card::before,
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card::after {
-  content: ""!important;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 44px;
-  height: 44px;
-  background: url('../assets/forest-corner-br.svg') no-repeat bottom right;
-  background-size: contain;
-  opacity: 0.65;
-  pointer-events: none;
-  z-index: 1;
+  content: none!important;
 }
 
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card > div:nth-child(2) {
-  display: block!important;
+  display: flex!important;
+  flex-direction: column!important;
+  align-items: center!important;
+  justify-content: center!important;
+  text-align: center!important;
+  width: 100%!important;
   position: relative;
   z-index: 2;
-  text-align: left!important;
 }
 
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card span {
+  display: block!important;
   color: var(--line-strong)!important;
   font-size: 11px!important;
   font-weight: 700!important;
   letter-spacing: 0.12em!important;
   text-transform: uppercase;
+  text-align: center!important;
 }
 
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card strong {
@@ -502,47 +382,50 @@
   font-weight: 700!important;
   color: var(--cyan)!important;
   letter-spacing: -0.02em!important;
-  margin: 6px 0 3px!important;
+  margin: 4px 0 2px!important;
+  text-align: center!important;
   text-shadow: 0 0 12px rgba(239, 255, 186, 0.3);
   font-variant-numeric: tabular-nums;
+  padding: 0!important;
 }
 
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card small {
+  display: block!important;
   color: var(--muted-2)!important;
   font-size: 11px!important;
   letter-spacing: 0.02em;
+  text-align: center!important;
 }
 
-/* Stat Icon */
+/* Stat Icon - Centered above label */
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card > .stat-icon {
-  display: grid!important;
-  place-items: center;
-  position: absolute!important;
-  top: 16px;
-  right: 18px;
-  width: 38px!important;
-  height: 38px!important;
-  margin: 0!important;
+  display: flex!important;
+  align-items: center;
+  justify-content: center;
+  position: static!important;
+  width: 32px!important;
+  height: 32px!important;
+  margin: 0 auto 6px auto!important;
   border-radius: 8px!important;
-  background: rgba(33, 66, 55, 0.5)!important;
+  background: rgba(33, 66, 55, 0.4)!important;
   border: 1px solid var(--line)!important;
   color: var(--cyan)!important;
-  box-shadow: 0 4px 12px rgba(4, 14, 10, 0.35)!important;
+  box-shadow: 0 2px 8px rgba(4, 14, 10, 0.3)!important;
   z-index: 2;
 }
 
 .forest-stat-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   color: var(--cyan);
 }
 
 /* Sparklines with glowing emerald sap */
 :root[data-theme="forest"] body .workspace .stats-grid .stat-card > .stat-spark {
   position: absolute!important;
-  inset: auto 18px 12px 18px!important;
+  inset: auto 18px 8px 18px!important;
   width: calc(100% - 36px)!important;
-  height: 18px!important;
+  height: 16px!important;
   z-index: 2;
 }
 

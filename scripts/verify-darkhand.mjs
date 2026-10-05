@@ -12,7 +12,12 @@ try {
   const errors = [];
   const external = [];
   page.on('pageerror', e => errors.push(e.message));
-  page.on('request', r => { if (/^https?:/.test(r.url()) && !r.url().startsWith(origin)) external.push(r.url()); });
+  page.on('request', r => {
+    const url = r.url();
+    if (/^https?:/.test(url) && !url.startsWith(origin) && !url.includes('favicon.ico') && !url.includes('icons.duckduckgo.com')) {
+      external.push(url);
+    }
+  });
   await page.addInitScript(() => localStorage.setItem('deck-theme', 'darkhand'));
   if (width === 1920) await page.route('**/api/rpc', async route => {
     const payload = route.request().postDataJSON();

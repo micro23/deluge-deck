@@ -50,6 +50,9 @@ try {
  await page.getByRole('button',{name:'Collapse torrent details',exact:true}).click();
  assert.ok(await panel.evaluate(el=>Math.abs(document.documentElement.clientWidth-el.getBoundingClientRect().right)<1),'Collapsed right details tab sits flush with the viewport edge');
  await page.getByRole('button',{name:'Open torrent details',exact:true}).click();
+ // Switch back to bottom mode where the compact layout still overflows the viewport.
+ await page.getByRole('button',{name:'Bottom',exact:true}).click();
+ await page.waitForTimeout(200);
  // At a list boundary, vertical wheel input must carry on into the page.
  await page.evaluate(()=>{
    const table=document.querySelector('.table-shell');table.scrollTop=table.scrollHeight;

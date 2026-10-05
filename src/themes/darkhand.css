@@ -103,9 +103,11 @@
 :root[data-theme="darkhand"][data-theme] body .dh-details-toggle { display:block; margin:0 auto; background:transparent; border:0; color:var(--muted); font-size:10px; padding:5px 12px; }
 :root[data-theme="darkhand"][data-theme] body .dh-details-empty { color:var(--muted); padding:24px; }
 :root[data-theme="darkhand"][data-theme] body .dh-inline-details { position:static!important; inset:auto!important; width:100%!important; height:auto!important; max-height:none!important; border:0!important; border-radius:0!important; background:transparent!important; box-shadow:none!important; padding:0!important; animation:none; }
-:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-head { padding:8px 16px; }
-:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-head h2 { font-size:14px; }
-:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-body { padding:12px 16px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-head { padding:6px 16px 4px; min-height:36px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-head h2 { font-size:13px; margin:2px 0; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-tabs { padding:0 14px; min-height:28px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-tabs button { padding:6px 10px 5px; font-size:10.5px; margin:0 3px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-body { padding:8px 16px; }
 :root[data-theme="darkhand"][data-theme] body .deck-status-rail { position:fixed; bottom:0; left:0; width:100%; height:34px!important; padding:0 24px; margin:0!important; border-radius:0!important; background:var(--bg)!important; border:0; border-top:1px solid var(--line); z-index:30; }
 :root[data-theme="darkhand"][data-theme] body :is(.add-modal,.preferences-modal,.context-menu,.column-chooser-modal,.global-popover,.account-popover,.theme-popover,.detail-drawer) { background:var(--surface)!important; border-color:var(--line)!important; border-radius:18px; background-image:none!important; }
 :root[data-theme="darkhand"][data-theme] body :is(.theme-detail,.stat-spark) { display:none!important; }
@@ -162,11 +164,23 @@
 :root[data-theme="darkhand"][data-theme] body .table-shell :is(.state-icon,.row-icon) { width:20px!important; height:20px!important; background:none!important; border:0!important; }
 :root[data-theme="darkhand"][data-theme] body .dh-switches { margin:0; position:absolute; top:12px; right:0; padding-right:0; }
 :root[data-theme="darkhand"][data-theme] body .workspace>.search-wrap { top:-38px; right:330px; width:240px; }
-:root[data-theme="darkhand"][data-theme] body .dh-chart .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
-:root[data-theme="darkhand"][data-theme] body .dh-inline-details .detail-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
-:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-content { padding:12px 16px; }
-:root[data-theme="darkhand"][data-theme] body .dh-inline-details .detail-grid :is(strong,span) { font-size:12px; }
-:root[data-theme="darkhand"][data-theme] body .dh-details-right .dh-inline-details .detail-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .detail-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px 16px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-content { padding:8px 16px 4px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .detail-grid :is(strong,span) { font-size:11.5px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .detail-item { min-width:0; overflow:hidden; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .detail-item span { font-size:10px; color:var(--muted); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .detail-item strong { font-size:11.5px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .torrent-options { margin-top:8px; padding-top:8px; border-top:1px solid var(--line); }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .torrent-options-head { margin-bottom:6px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .torrent-options-head h3 { font-size:11.5px; margin:0; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .torrent-options-head .drawer-eyebrow { font-size:9px; letter-spacing:.08em; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .torrent-options-head button { min-height:24px; height:24px; padding:0 10px; font-size:10.5px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .torrent-options-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .option-toggle { padding:2px 0; border:0; gap:8px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .option-toggle strong { font-size:10.5px; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .option-toggle small { font-size:9.5px; margin-top:1px; }
+:root[data-theme="darkhand"][data-theme] body .dh-details-right .dh-inline-details .detail-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 10px; }
+:root[data-theme="darkhand"][data-theme] body .dh-details-right .dh-inline-details .torrent-options-list { grid-template-columns:1fr; gap:2px; }
 @media (max-width:1600px) {
  :root[data-theme="darkhand"][data-theme] body .dh-switches { position:static; }
  :root[data-theme="darkhand"][data-theme] body .workspace>.search-wrap { width:100%; }
@@ -250,8 +264,8 @@
 :root[data-theme="darkhand"][data-theme] body { overflow:auto!important; }
 :root[data-theme="darkhand"][data-theme] body .app-shell { height:auto!important; max-height:none!important; overflow:visible!important; padding-bottom:50px; }
 :root[data-theme="darkhand"][data-theme] body .main-content { height:auto!important; max-height:none!important; overflow:visible!important; }
-:root[data-theme="darkhand"][data-theme] body .workspace { height:auto!important; max-height:none!important; overflow:visible!important; }
-:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-footer { position:static!important; width:100%!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-footer { position:static!important; width:100%!important; padding:6px 16px 10px!important; display:flex; gap:8px; border-top:1px solid var(--line); margin-top:4px; background:transparent!important; }
+:root[data-theme="darkhand"][data-theme] body .dh-inline-details .drawer-footer .secondary-button { min-height:28px; height:28px; padding:0 14px; font-size:11px; }
 @media (min-width:761px) and (max-width:1600px) {
  :root[data-theme="darkhand"][data-theme] body .workspace>.search-wrap { max-width:calc(100% - 360px)!important; min-width:130px; margin-right:auto!important; }
  :root[data-theme="darkhand"][data-theme] body .topbar { width:auto!important; }
@@ -346,7 +360,7 @@
 :root[data-theme="darkhand"][data-theme] body .dh-dashboard.dh-details-right .workspace { padding-right:0!important; }
 
 /* Tight table frame with a compact, deliberate column menu in its top rail. */
-:root[data-theme="darkhand"][data-theme] body .app-shell.dh-dashboard { padding-top:4px!important; padding-bottom:0!important; }
+:root[data-theme="darkhand"][data-theme] body .app-shell.dh-dashboard { padding-top:4px!important; padding-bottom:52px!important; }
 :root[data-theme="darkhand"][data-theme] body .table-shell { padding-top:2px!important; padding-bottom:0!important; }
 :root[data-theme="darkhand"][data-theme] body .table-shell>.table-tools { height:26px!important; min-height:26px!important; padding:0 5px; align-items:center; }
 :root[data-theme="darkhand"][data-theme] body .table-shell .column-menu-trigger { position:relative; inset:auto!important; width:26px!important; height:24px!important; min-width:26px!important; min-height:24px!important; border-radius:7px!important; background:var(--surface-2)!important; border-color:var(--line-strong)!important; }

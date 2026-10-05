@@ -1,3 +1,11 @@
+## 1.0.92
+
+- Center stat card metrics, labels, and icons horizontally.
+- Redesign Forest stat icons and remove corner filigrees for a clean, modern aesthetic.
+- Tighten checkbox column spacing across all themes to remove dead whitespace next to row state icons.
+- Polish Darkhand dashboard inline details, footer action spacing, and interaction scripts.
+- Rebuild the versioned WebUI resources and Python 3.14 source-only plugin egg.
+
 ## 1.0.91
 
 - Overhaul Forest theme with AAA design: sacred Tree of Life botanical mark, Sylvan Canopy identity, mycelium/seedling stat icons, living vine progress bar with glowing sap nodes, bioluminescent firefly overlay, and cinematic redwood masthead.
