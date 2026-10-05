@@ -21,13 +21,9 @@ There are 23 sports themes and 35 themes total. Sports subgroups have 5
 baseball, 6 basketball, 6 football, and 6 hockey teams. Sources are selection
 references; the menu presents teams by sport without displaying live rankings.
 
-## Added artwork
+## Authentic Stadium Photography
 
-Each of the 20 added teams has a separately generated venue backdrop, created
-with the built-in image-generation tool. These are cinematic venue-inspired
-illustrations, not documentary photographs. Exact prompts and output paths
-are in [sports-expansion-prompts.json](sports-expansion-prompts.json). The
-established three teams’ artwork remains unchanged.
+All 24 sports themes feature 100% authentic, real photographs of each club's actual home venue (sourced from Wikimedia Commons / public domain), precision cropped to a 16:9 ratio and optimized into lightweight WebP images (~100–350 KB each). No stadium backdrops are AI-generated. The header masthead showcases the genuine arena/stadium with clean EST badges and city identifiers, while club logos and identities remain neatly housed in the left navigation sidebar.
 
 SVG marks are fetched from the leagues' official CDNs and bundled inline in
 the JavaScript resource. NHL SVG view boxes are tightened around their

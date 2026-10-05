@@ -1,3 +1,9 @@
+## 1.0.95
+
+- Replace all sports club stadium backdrops with 100% authentic, real photographs of the actual home venues (sourced from Wikimedia Commons / public domain).
+- Precision crop and encode all 24 stadium photographs to clean, lightweight WebP assets (~80–350 KB).
+- Rebuild the versioned WebUI resources and Python plugin egg.
+
 ## 1.0.94
 
 - Fix stadium artwork asset resolution inside hosted Deluge WebUI plugin mode using base-aware resource paths.
