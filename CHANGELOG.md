@@ -1,3 +1,9 @@
+## 1.0.91
+
+- Overhaul Forest theme with AAA design: sacred Tree of Life botanical mark, Sylvan Canopy identity, mycelium/seedling stat icons, living vine progress bar with glowing sap nodes, bioluminescent firefly overlay, and cinematic redwood masthead.
+- Center the search box across all themes in the top navigation bar.
+- Rebuild the versioned WebUI resources and Python 3.14 source-only plugin egg.
+
 ## 1.0.90
 
 - Remove theme names from the Midnight, Paper, Ocean, Forest, and Sunset sidebar identities and mastheads.

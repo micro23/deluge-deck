@@ -1,0 +1,720 @@
+/* ==========================================================================
+   FOREST THEME (AAA) — DELUGE SYLVA
+   Ancient Redwood Canopy, Bioluminescent Glass Conservatory & Living Foliage
+   ========================================================================== */
+
+:root[data-theme="forest"] {
+  color-scheme: dark;
+  --bg: #10251f;
+  --surface: #19342b;
+  --surface-2: #214237;
+  --surface-3: #315748;
+  --line: #829a66;
+  --line-strong: #bbca8a;
+  --text: #f2f4d9;
+  --muted: #f0f4d5;
+  --muted-2: #eff6d5;
+  --cyan: #efffba;
+  --accent-fg: #243018;
+  --cyan-soft: rgba(239, 255, 186, 0.2);
+  --violet: #fff1ea;
+  --amber: #fff3d8;
+  --green: #eeffce;
+  --danger: #fff0f0;
+  --signature-ink: var(--cyan);
+  --theme-panel: var(--surface);
+  --theme-card: var(--surface);
+  --theme-topbar: var(--bg);
+  --theme-sidebar: var(--surface-2);
+  --theme-edge: var(--line);
+  --theme-radius: 12px;
+  --theme-control-radius: 8px;
+  --theme-control-shadow: 0 4px 14px rgba(4, 18, 12, 0.45), inset 0 1px 0 rgba(239, 255, 186, 0.2);
+  --theme-card-shadow: 0 8px 24px rgba(4, 18, 12, 0.5), inset 0 1px 0 rgba(239, 255, 186, 0.12);
+  --forest-gold: #efffba;
+  --forest-moss: #5a8553;
+  --forest-bark: #2d4536;
+  --forest-jade: #1b4930;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Base app shell with high-res bioluminescent conservatory artwork */
+:root[data-theme="forest"] body .app-shell {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 50% 12%, rgba(118, 212, 139, 0.16), transparent 55%),
+    linear-gradient(180deg, rgba(12, 28, 22, 0.85) 0%, rgba(16, 37, 31, 0.72) 40%, rgba(10, 24, 18, 0.92) 100%),
+    url('../assets/forest-bioluminescent-conservatory-optimized.webp') center 45%/cover fixed!important;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+:root[data-theme="forest"] body .app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 80% 25%, rgba(239, 255, 186, 0.08), transparent 45%),
+    radial-gradient(circle at 15% 75%, rgba(62, 118, 86, 0.14), transparent 50%),
+    linear-gradient(125deg, transparent 40%, rgba(118, 212, 139, 0.03) 50%, transparent 60%);
+  opacity: 1!important;
+}
+
+/* ==========================================================================
+   TOPBAR & CENTERED SEARCH BOX
+   ========================================================================== */
+
+:root[data-theme="forest"] body .topbar {
+  position: relative!important;
+  display: flex!important;
+  align-items: center!important;
+  height: 62px!important;
+  min-height: 62px!important;
+  padding: 0 24px!important;
+  background: linear-gradient(90deg, rgba(16, 37, 31, 0.94), rgba(21, 48, 38, 0.88) 55%, rgba(16, 37, 31, 0.94))!important;
+  backdrop-filter: blur(16px) saturate(1.3)!important;
+  border-bottom: 2px solid var(--line)!important;
+  box-shadow: 0 8px 24px rgba(4, 14, 10, 0.5), inset 0 -1px 0 rgba(239, 255, 186, 0.12)!important;
+  z-index: 30;
+}
+
+/* The search box is centered on top, not pushed to the left */
+:root[data-theme="forest"] body .topbar .search-wrap {
+  position: absolute!important;
+  left: 50%!important;
+  top: 50%!important;
+  transform: translate(-50%, -50%)!important;
+  display: flex!important;
+  align-items: center!important;
+  width: min(520px, calc(100% - 320px))!important;
+  max-width: 520px!important;
+  height: 38px!important;
+  margin: 0!important;
+  padding: 0 14px!important;
+  background: rgba(25, 52, 43, 0.88)!important;
+  border: 1px solid var(--line-strong)!important;
+  border-radius: 9px!important;
+  box-shadow: 0 4px 16px rgba(4, 14, 10, 0.4), inset 0 1px 0 rgba(239, 255, 186, 0.15)!important;
+  backdrop-filter: blur(12px)!important;
+  color: var(--text)!important;
+  z-index: 35;
+}
+
+:root[data-theme="forest"] body .topbar .search-wrap:focus-within {
+  border-color: var(--cyan)!important;
+  box-shadow: 0 0 0 2px var(--cyan), 0 0 20px rgba(239, 255, 186, 0.35)!important;
+}
+
+:root[data-theme="forest"] body .topbar .search-wrap > svg {
+  color: var(--cyan)!important;
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+
+:root[data-theme="forest"] body .topbar .search-wrap input {
+  color: var(--text)!important;
+  font-size: 13px!important;
+  letter-spacing: 0.02em;
+}
+
+:root[data-theme="forest"] body .topbar .search-wrap input::placeholder {
+  color: var(--muted-2)!important;
+  opacity: 0.9;
+}
+
+:root[data-theme="forest"] body .topbar .search-shortcut {
+  background: rgba(49, 87, 72, 0.6)!important;
+  border: 1px solid var(--line)!important;
+  color: var(--cyan)!important;
+  border-radius: 4px;
+}
+
+:root[data-theme="forest"] body .topbar .top-actions {
+  position: static!important;
+  margin-left: auto!important;
+  display: flex!important;
+  align-items: center!important;
+  gap: 8px!important;
+  z-index: 32;
+}
+
+/* ==========================================================================
+   SIDEBAR & BRANDING
+   ========================================================================== */
+
+:root[data-theme="forest"] body .sidebar {
+  position: relative;
+  background: linear-gradient(180deg, rgba(18, 42, 33, 0.96), rgba(12, 28, 22, 0.98))!important;
+  border-right: 2px solid var(--line)!important;
+  box-shadow: 4px 0 24px rgba(4, 14, 10, 0.45)!important;
+  backdrop-filter: blur(16px)!important;
+  z-index: 20;
+}
+
+.forest-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 12px 20px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  text-align: center;
+}
+
+.forest-identity .forest-mark {
+  width: 48px;
+  height: 48px;
+  color: var(--cyan);
+  filter: drop-shadow(0 0 10px rgba(239, 255, 186, 0.35));
+}
+
+.forest-identity strong {
+  display: block;
+  font-family: Georgia, "Palatino Linotype", serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--cyan);
+  text-shadow: 0 0 14px rgba(239, 255, 186, 0.45);
+}
+
+.forest-identity small {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--line-strong);
+  margin-top: 2px;
+}
+
+.forest-identity.compact {
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  gap: 10px;
+  text-align: left;
+}
+
+.forest-identity.compact .forest-mark {
+  width: 32px;
+  height: 32px;
+}
+
+.forest-identity.compact strong {
+  font-size: 16px;
+  letter-spacing: 0.12em;
+}
+
+.forest-identity.compact small {
+  font-size: 9px;
+}
+
+/* Sidebar navigation */
+:root[data-theme="forest"] body .sidebar .nav-label {
+  color: var(--line-strong)!important;
+  font-size: 11px!important;
+  font-weight: 700!important;
+  letter-spacing: 0.14em!important;
+  text-transform: uppercase;
+}
+
+:root[data-theme="forest"] body .sidebar .nav-item {
+  color: var(--muted-2)!important;
+  border-radius: 8px!important;
+  margin-bottom: 3px;
+  transition: all 0.18s ease;
+}
+
+:root[data-theme="forest"] body .sidebar .nav-item:hover {
+  background: rgba(33, 66, 55, 0.65)!important;
+  color: var(--cyan)!important;
+}
+
+:root[data-theme="forest"] body .sidebar .nav-item.active {
+  background: linear-gradient(90deg, rgba(49, 87, 72, 0.8), rgba(33, 66, 55, 0.4))!important;
+  color: var(--cyan)!important;
+  box-shadow: inset 3px 0 var(--cyan), 0 4px 14px rgba(4, 14, 10, 0.35)!important;
+  font-weight: 600;
+}
+
+:root[data-theme="forest"] body .sidebar .nav-item b {
+  color: var(--line-strong)!important;
+  background: rgba(16, 37, 31, 0.8);
+  border: 1px solid var(--line);
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+/* Add Torrent action button */
+:root[data-theme="forest"] body .sidebar .add-button,
+:root[data-theme="forest"] body .primary-button {
+  background: linear-gradient(135deg, #2b613e, #1a442a)!important;
+  border: 1px solid var(--line-strong)!important;
+  color: #efffba!important;
+  border-radius: 9px!important;
+  box-shadow: 0 4px 14px rgba(4, 14, 10, 0.5), inset 0 1px 0 rgba(239, 255, 186, 0.25)!important;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+}
+
+:root[data-theme="forest"] body .sidebar .add-button:hover,
+:root[data-theme="forest"] body .primary-button:hover {
+  background: linear-gradient(135deg, #377d50, #225636)!important;
+  box-shadow: 0 6px 18px rgba(239, 255, 186, 0.25), inset 0 1px 0 rgba(239, 255, 186, 0.4)!important;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   AAA FOREST MASTHEAD
+   ========================================================================== */
+
+.forest-masthead {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  height: 156px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 70% 20%, rgba(239, 255, 186, 0.16), transparent 50%),
+    linear-gradient(135deg, #19342b 0%, #10251f 75%);
+  box-shadow: 0 10px 30px rgba(4, 14, 10, 0.5), inset 0 1px 0 rgba(239, 255, 186, 0.15);
+}
+
+.forest-masthead::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(0deg, rgba(16, 37, 31, 0.85) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.forest-canopy-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.forest-masthead-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 28px;
+}
+
+.forest-masthead-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(25, 52, 43, 0.82);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--cyan);
+  border-radius: 8px;
+  padding: 14px 22px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(4, 14, 10, 0.4);
+}
+
+.forest-masthead-seal {
+  width: 44px;
+  height: 44px;
+  color: var(--cyan);
+  flex: none;
+  filter: drop-shadow(0 0 8px rgba(239, 255, 186, 0.4));
+}
+
+.forest-masthead-title h1 {
+  margin: 0;
+  font-family: Georgia, "Palatino Linotype", serif;
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--cyan);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.forest-masthead-title p {
+  margin: 4px 0 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--line-strong);
+}
+
+.forest-telemetry-badge {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  background: rgba(16, 37, 31, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--cyan);
+  box-shadow: 0 4px 14px rgba(4, 14, 10, 0.35);
+}
+
+.forest-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: forest-pulse 2.2s infinite alternate ease-in-out;
+}
+
+/* Fireflies drifting over the canopy */
+.forest-fireflies {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.forest-firefly {
+  position: absolute;
+  border-radius: 50%;
+  background: #efffba;
+  box-shadow: 0 0 8px #efffba, 0 0 16px #76d48b;
+  opacity: 0;
+  animation: forest-drift infinite ease-in-out;
+}
+
+@keyframes forest-drift {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  70% {
+    transform: translateY(-24px) translateX(12px) scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-40px) translateX(-8px) scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes forest-pulse {
+  0% { opacity: 0.45; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 12px var(--cyan); }
+}
+
+/* ==========================================================================
+   STAT CARDS WITH CARVED BOTANICAL CORNER FILIGREES
+   ========================================================================== */
+
+:root[data-theme="forest"] body .workspace .stats-grid {
+  gap: 14px!important;
+  margin-bottom: 20px!important;
+}
+
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card {
+  position: relative!important;
+  display: block!important;
+  height: 132px!important;
+  min-height: 132px!important;
+  padding: 18px 20px!important;
+  background: linear-gradient(155deg, rgba(25, 52, 43, 0.94), rgba(16, 37, 31, 0.98))!important;
+  border: 1px solid var(--line)!important;
+  border-radius: 12px!important;
+  box-shadow: 0 8px 24px rgba(4, 14, 10, 0.45), inset 0 1px 0 rgba(239, 255, 186, 0.15)!important;
+  backdrop-filter: blur(12px)!important;
+  overflow: hidden!important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card:hover {
+  border-color: var(--line-strong)!important;
+  box-shadow: 0 10px 28px rgba(4, 14, 10, 0.55), inset 0 1px 0 rgba(239, 255, 186, 0.25)!important;
+  transform: translateY(-2px);
+}
+
+/* Ornate corner filigrees on stat cards */
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card::before {
+  content: ""!important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  background: url('../assets/forest-corner-tl.svg') no-repeat top left;
+  background-size: contain;
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 1;
+}
+
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card::after {
+  content: ""!important;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  background: url('../assets/forest-corner-br.svg') no-repeat bottom right;
+  background-size: contain;
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 1;
+}
+
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card > div:nth-child(2) {
+  display: block!important;
+  position: relative;
+  z-index: 2;
+  text-align: left!important;
+}
+
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card span {
+  color: var(--line-strong)!important;
+  font-size: 11px!important;
+  font-weight: 700!important;
+  letter-spacing: 0.12em!important;
+  text-transform: uppercase;
+}
+
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card strong {
+  display: block!important;
+  font-size: clamp(20px, 1.9vw, 28px)!important;
+  font-weight: 700!important;
+  color: var(--cyan)!important;
+  letter-spacing: -0.02em!important;
+  margin: 6px 0 3px!important;
+  text-shadow: 0 0 12px rgba(239, 255, 186, 0.3);
+  font-variant-numeric: tabular-nums;
+}
+
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card small {
+  color: var(--muted-2)!important;
+  font-size: 11px!important;
+  letter-spacing: 0.02em;
+}
+
+/* Stat Icon */
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card > .stat-icon {
+  display: grid!important;
+  place-items: center;
+  position: absolute!important;
+  top: 16px;
+  right: 18px;
+  width: 38px!important;
+  height: 38px!important;
+  margin: 0!important;
+  border-radius: 8px!important;
+  background: rgba(33, 66, 55, 0.5)!important;
+  border: 1px solid var(--line)!important;
+  color: var(--cyan)!important;
+  box-shadow: 0 4px 12px rgba(4, 14, 10, 0.35)!important;
+  z-index: 2;
+}
+
+.forest-stat-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--cyan);
+}
+
+/* Sparklines with glowing emerald sap */
+:root[data-theme="forest"] body .workspace .stats-grid .stat-card > .stat-spark {
+  position: absolute!important;
+  inset: auto 18px 12px 18px!important;
+  width: calc(100% - 36px)!important;
+  height: 18px!important;
+  z-index: 2;
+}
+
+:root[data-theme="forest"] body .stat-spark polyline {
+  stroke: var(--cyan)!important;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 4px rgba(239, 255, 186, 0.5));
+}
+
+:root[data-theme="forest"] body .stat-spark polygon {
+  fill: var(--cyan-soft)!important;
+}
+
+/* ==========================================================================
+   LIVING VINE PROGRESS TRACK & METERS
+   ========================================================================== */
+
+:root[data-theme="forest"] body .progress-track {
+  position: relative!important;
+  height: 20px!important;
+  background: rgba(16, 37, 31, 0.95)!important;
+  border: 1px solid var(--line)!important;
+  border-radius: 6px!important;
+  overflow: hidden!important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(239, 255, 186, 0.1)!important;
+  padding: 0!important;
+}
+
+.forest-progress {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.forest-runner .forest-bud-glow {
+  filter: drop-shadow(0 0 6px #efffba);
+  animation: forest-pulse 1.8s infinite alternate ease-in-out;
+}
+
+/* ==========================================================================
+   TORRENT TABLE (BOTANICAL CONSERVATORY FINISH)
+   ========================================================================== */
+
+:root[data-theme="forest"] body .table-shell {
+  background: rgba(25, 52, 43, 0.88)!important;
+  border: 1px solid var(--line)!important;
+  border-radius: 12px!important;
+  box-shadow: 0 12px 36px rgba(4, 14, 10, 0.5), inset 0 1px 0 rgba(239, 255, 186, 0.12)!important;
+  backdrop-filter: blur(14px)!important;
+  overflow: hidden!important;
+}
+
+:root[data-theme="forest"] body .table-shell th {
+  background: linear-gradient(180deg, #244b3c, #1a3c2f)!important;
+  color: var(--cyan)!important;
+  border-bottom: 2px solid var(--line-strong)!important;
+  font-family: Georgia, "Palatino Linotype", serif!important;
+  font-size: 12px!important;
+  font-weight: 700!important;
+  letter-spacing: 0.06em!important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="forest"] body .table-shell td {
+  height: 48px!important;
+  background: transparent!important;
+  border-bottom: 1px solid rgba(130, 154, 102, 0.35)!important;
+  color: var(--text)!important;
+}
+
+:root[data-theme="forest"] body .table-shell tbody tr:nth-child(even) td {
+  background: rgba(33, 66, 55, 0.35)!important;
+}
+
+:root[data-theme="forest"] body .table-shell tbody tr:hover td {
+  background: rgba(49, 87, 72, 0.55)!important;
+  box-shadow: inset 0 0 12px rgba(239, 255, 186, 0.08);
+}
+
+:root[data-theme="forest"] body .table-shell tbody tr.selected td {
+  background: rgba(49, 87, 72, 0.75)!important;
+  color: var(--cyan)!important;
+}
+
+:root[data-theme="forest"] body .table-shell .torrent-name strong {
+  color: var(--text)!important;
+  font-size: 13.5px!important;
+  font-weight: 600;
+}
+
+:root[data-theme="forest"] body .table-shell .torrent-name strong:hover {
+  color: var(--cyan)!important;
+}
+
+/* Status rail */
+:root[data-theme="forest"] body .deck-status-rail {
+  background: rgba(25, 52, 43, 0.92)!important;
+  border: 1px solid var(--line)!important;
+  border-radius: 8px!important;
+  color: var(--muted-2)!important;
+  box-shadow: 0 4px 16px rgba(4, 14, 10, 0.4)!important;
+  backdrop-filter: blur(12px)!important;
+}
+
+:root[data-theme="forest"] body .deck-status-rail .status-ip {
+  background: rgba(49, 87, 72, 0.7)!important;
+  border: 1px solid var(--line)!important;
+  color: var(--cyan)!important;
+  border-radius: 999px;
+}
+
+/* Modals & drawers */
+:root[data-theme="forest"] body :is(.modal-card, .detail-drawer, .context-menu, .global-popover, .theme-popover) {
+  background: rgba(25, 52, 43, 0.96)!important;
+  border: 1px solid var(--line-strong)!important;
+  border-radius: 12px!important;
+  box-shadow: 0 18px 48px rgba(4, 14, 10, 0.65), inset 0 1px 0 rgba(239, 255, 186, 0.15)!important;
+  backdrop-filter: blur(16px)!important;
+  color: var(--text)!important;
+}
+
+/* Custom Forest Scrollbars */
+:root[data-theme="forest"] ::-webkit-scrollbar-track {
+  background: rgba(16, 37, 31, 0.85);
+}
+
+:root[data-theme="forest"] ::-webkit-scrollbar-thumb {
+  background: #3c6d48;
+  border: 2px solid rgba(16, 37, 31, 0.85);
+  border-radius: 6px;
+}
+
+:root[data-theme="forest"] ::-webkit-scrollbar-thumb:hover {
+  background: #5a9368;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .forest-masthead {
+    height: 118px;
+    margin-bottom: 14px;
+  }
+  .forest-masthead-title {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .forest-masthead-title h1 {
+    font-size: 19px;
+  }
+  .forest-masthead-seal {
+    width: 28px;
+    height: 28px;
+  }
+  .forest-telemetry-badge {
+    display: none;
+  }
+  :root[data-theme="forest"] body .workspace .stats-grid .stat-card {
+    height: 92px!important;
+    min-height: 92px!important;
+    padding: 10px 12px!important;
+  }
+  :root[data-theme="forest"] body .workspace .stats-grid .stat-card strong {
+    font-size: 19px!important;
+  }
+  :root[data-theme="forest"] body .workspace .stats-grid .stat-card::before,
+  :root[data-theme="forest"] body .workspace .stats-grid .stat-card::after {
+    width: 28px;
+    height: 28px;
+  }
+}

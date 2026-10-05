@@ -82,7 +82,7 @@
 :root[data-theme="independence"] ::selection { background:#14283b; color:#fff8eb; }
 @media (min-width:761px) and (min-height:541px) {
   :root[data-theme="independence"] body .topbar { position:relative!important; height:52px!important; min-height:52px!important; display:flex!important; padding:0 16px!important; border:0!important; background:var(--bg)!important; }
-  :root[data-theme="independence"] body .topbar .search-wrap { display:flex!important; flex:1; width:auto!important; max-width:560px!important; height:34px!important; margin-right:16px; padding:0 10px!important; }
+  :root[data-theme="independence"] body .topbar .search-wrap { display:flex!important; position:absolute!important; left:50%!important; top:50%!important; transform:translate(-50%,-50%)!important; width:min(520px,calc(100% - 320px))!important; max-width:520px!important; height:34px!important; margin:0!important; padding:0 10px!important; }
   :root[data-theme="independence"] body .topbar .top-actions { position:static!important; inset:auto!important; margin-left:auto!important; gap:6px!important; }
   :root[data-theme="independence"] body .topbar .session-quick-actions { border:0; background:transparent; padding:0; gap:5px; }
   :root[data-theme="independence"] body .topbar .session-quick-actions button { height:29px!important; padding:0 9px!important; font-size:10px!important; }

@@ -149,7 +149,7 @@
 :root[data-theme="matrix"] ::selection { color:var(--accent-fg); background:var(--cyan); }
 @media (min-width:761px) and (min-height:541px) {
   :root[data-theme="matrix"] body .topbar { position:relative!important; height:64px!important; min-height:64px!important; display:flex!important; padding:0 20px!important; border:0!important; background:var(--bg)!important; }
-  :root[data-theme="matrix"] body .topbar .search-wrap { display:flex!important; flex:1; width:auto!important; max-width:600px!important; height:38px!important; padding:0 12px!important; margin-right:16px; }
+  :root[data-theme="matrix"] body .topbar .search-wrap { display:flex!important; position:absolute!important; left:50%!important; top:50%!important; transform:translate(-50%,-50%)!important; width:min(520px,calc(100% - 320px))!important; max-width:520px!important; height:38px!important; padding:0 12px!important; margin:0!important; }
   :root[data-theme="matrix"] body .topbar .top-actions { position:static!important; inset:auto!important; gap:6px!important; margin-left:auto!important; }
   :root[data-theme="matrix"] body .topbar .session-quick-actions { border:1px solid #ffffff12; padding:2px; background:#0f1512; }
   :root[data-theme="matrix"] body .topbar .session-quick-actions button { height:30px!important; padding:0 10px!important; font-size:10px!important; background:transparent!important; }

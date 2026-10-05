@@ -9,14 +9,14 @@
 
 @media (min-width:761px) and (max-width:900px) {
   :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="st-patricks"]) .workspace>.search-wrap {
-    width:min(320px,calc(100% - 150px))!important;
-    margin-left:0!important;
-    margin-right:0!important;
+    width:min(420px,calc(100% - 40px))!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
   }
   :root:is([data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="independence"],[data-theme="new-year"]) .workspace>.search-wrap {
-    width:min(330px,calc(100% - 165px))!important;
-    margin-left:0!important;
-    margin-right:0!important;
+    width:min(420px,calc(100% - 40px))!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
   }
   :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="st-patricks"],[data-theme="independence"],[data-theme="new-year"],[data-theme="terminal"]) .deck-status-rail>span:nth-child(3),
   :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"],[data-theme="christmas"],[data-theme="halloween"],[data-theme="valentine"],[data-theme="st-patricks"],[data-theme="independence"],[data-theme="new-year"],[data-theme="terminal"]) .deck-status-rail .status-ip { display:none!important; }

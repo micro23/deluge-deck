@@ -78,7 +78,7 @@
 :root[data-theme="sunset"] body .workspace .stats-grid .stat-card { border-top:2px solid #ffd0ae!important; }
 @media (min-width:761px) and (min-height:541px) {
 :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"]) body .topbar { position:relative!important; display:flex!important; height:60px!important; min-height:60px!important; padding:0 20px!important; }
-:root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"]) body .topbar .search-wrap { position:relative!important; inset:auto!important; transform:none!important; display:flex!important; flex:1; max-width:560px!important; width:auto!important; height:36px!important; margin-right:16px; }
+:root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"]) body .topbar .search-wrap { position:absolute!important; left:50%!important; top:50%!important; transform:translate(-50%,-50%)!important; display:flex!important; max-width:520px!important; width:min(520px,calc(100% - 320px))!important; height:36px!important; margin:0!important; }
 :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"]) body .topbar .top-actions { position:static!important; inset:auto!important; margin-left:auto!important; gap:7px!important; }
 :root:is([data-theme="dark"],[data-theme="light"],[data-theme="ocean"],[data-theme="forest"],[data-theme="sunset"]) body .workspace { padding:0 20px 16px!important; }
 }

@@ -60,7 +60,7 @@ try {
     await page.waitForTimeout(800);
     const visible = await page.locator('tbody tr[role="button"]').count();
     assert.ok(visible > 0 && visible < 80, `${mode}: bounded desktop rows: ${visible}`);
-    assert.equal(requests.filter(url => /\/themes\/(?!dark-)[\w-]+\.json/.test(url)).length, 0, `${mode}: only the selected theme loads initially`);
+    assert.equal(requests.filter(url => /\/themes\/(?!forest-)[\w-]+\.json/.test(url)).length, 0, `${mode}: only the selected theme loads initially`);
     assert.equal(requests.filter(url => /theme-previews|\/gallery-/.test(url)).length, 0);
     await page.getByRole('checkbox', { name: `Select ${names[0]}`, exact: true }).check();
     await page.locator('.table-shell').evaluate(element => { element.scrollTop = element.scrollHeight; });
@@ -92,19 +92,19 @@ try {
 
     const choose = async label => { await page.locator('.theme-trigger').click(); await page.getByRole('menuitemradio', { name: new RegExp(`^${label}:`) }).click(); };
     // Simulate a failed theme request: the current theme remains intact.
-    await page.route('**/themes/forest-*.json', route => route.fulfill({ status: 503, body: '' }));
-    await choose('Forest');
+    await page.route('**/themes/sunset-*.json', route => route.fulfill({ status: 503, body: '' }));
+    await choose('Sunset');
     await page.getByText('Theme resources could not be loaded. Please try again.', { exact: true }).waitFor();
-    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
-    assert.equal(await page.evaluate(() => localStorage.getItem('deck-theme')), 'dark');
-    await page.unroute('**/themes/forest-*.json');
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'forest');
+    assert.equal(await page.evaluate(() => localStorage.getItem('deck-theme')), 'forest');
+    await page.unroute('**/themes/sunset-*.json');
     delayForest = 400;
-    await choose('Forest'); await choose('Ocean');
+    await choose('Sunset'); await choose('Ocean');
     await page.waitForFunction(() => document.documentElement.dataset.theme === 'ocean');
     await page.waitForTimeout(500); delayForest = 0;
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'ocean', 'Late theme replies cannot replace a newer choice');
     const oceanRequests = requests.filter(url => /\/themes\/ocean-/.test(url)).length;
-    await choose('Midnight'); await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+    await choose('Forest'); await page.waitForFunction(() => document.documentElement.dataset.theme === 'forest');
     await choose('Ocean'); await page.waitForFunction(() => document.documentElement.dataset.theme === 'ocean');
     assert.equal(requests.filter(url => /\/themes\/ocean-/.test(url)).length, oceanRequests, 'Warm switches reuse cached theme rules');
 

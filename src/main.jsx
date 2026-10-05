@@ -70,6 +70,7 @@ import { SportsStatIcon } from './app/SportsStatIcon.jsx';
 import { MatrixCodeProgress, MatrixIdentity, MatrixMasthead, MatrixStatIcon } from './app/MatrixTheme.jsx';
 import { CORE_THEMES, CoreIdentity, CoreMasthead, CoreProgress, CoreStatIcon } from './app/CoreThemes.jsx';
 import { USAFlagProgress, USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
+import { ForestIdentity, ForestMasthead, ForestProgress, ForestStatIcon } from './app/ForestTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
 import { DarkhandOverview, DarkhandSwitches, DarkhandDetails } from './app/Darkhand.jsx';
@@ -103,6 +104,7 @@ import './themes/sports-bespoke.css';
 import './themes/yankees.css';
 import './themes/sports-heritage.css';
 import './themes/core-refined.css';
+import './themes/forest.css';
 import './windowed-list.css';
 import { createPoller } from '../server/polling.mjs';
 
@@ -393,7 +395,7 @@ function Sidebar({
         className={`sidebar ${collapsed ? 'collapsed' : ''}`}
       >
         <SportsIdentity theme={theme} />
-        <CoreIdentity theme={theme} />
+        {theme === 'forest' ? <ForestIdentity /> : <CoreIdentity theme={theme} />}
         {theme === 'darkhand' && <div className="dh-brand"><svg width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2C12 8 3 15 3 22a11 11 0 0 0 22 0C25 15 16 8 14 2Z" fill="#094491" stroke="#4c90e8" strokeWidth="2" /><path d="M14 13c-3 3-6 6-6 10a6 6 0 0 0 12 0c0-3-3-5-6-5-3 0-5 2-4 5 1 3 5 3 6 0" fill="none" stroke="#4c90e8" strokeWidth="2" /></svg><span>DELUGE</span></div>}
         {theme === 'terminal' && <pre className="terminal-cli-logo" role="img" aria-label="CLI">{'  CCC  L      III\n C     L       I\n C     L       I\n C     L       I\n  CCC  LLLLL  III'}</pre>}
         {theme === 'matrix' && <MatrixIdentity />}
@@ -1346,7 +1348,7 @@ function Topbar({
     <>
       <header className="topbar">
         <div className="mobile-brand">
-          {theme === 'matrix' ? <MatrixIdentity /> : theme === 'independence' ? <USAIdentity /> : <SportsIdentity theme={theme} compact fallback={<CoreIdentity theme={theme} compact fallback={<Brand />} />} />}
+          {theme === 'forest' ? <ForestIdentity compact /> : theme === 'matrix' ? <MatrixIdentity /> : theme === 'independence' ? <USAIdentity /> : <SportsIdentity theme={theme} compact fallback={<CoreIdentity theme={theme} compact fallback={<Brand />} />} />}
         </div>
         <div className="topbar-heading">
           <h1>Deluge</h1>
@@ -1409,9 +1411,10 @@ function Progress({ value = 0, state, theme }) {
             width: `${progress}%`,
           }}
         />
+        {theme === 'forest' && <ForestProgress progress={progress} state={stateKey(state)} id={`${potionId}-forest`} />}
         {theme === 'independence' && <USAFlagProgress progress={progress} id={`${potionId}-usa`} />}
         {theme === 'matrix' && <MatrixCodeProgress progress={progress} state={stateKey(state)} id={`${potionId}-matrix`} />}
-        {CORE_THEMES[theme] && <CoreProgress theme={theme} progress={progress} state={stateKey(state)} id={`${potionId}-core`} />}
+        {theme !== 'forest' && CORE_THEMES[theme] && <CoreProgress theme={theme} progress={progress} state={stateKey(state)} id={`${potionId}-core`} />}
         {theme === 'halloween' && (<svg className="potion-vial" viewBox="0 0 160 32" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <clipPath id={`${potionId}-inside`}>
@@ -4872,7 +4875,7 @@ function App() {
   const [theme, setThemeState] = useState(
     () => {
       const saved = localStorage.getItem('deck-theme');
-      return THEMES.some(([key]) => key === saved) ? saved : 'darkhand';
+      return THEMES.some(([key]) => key === saved) ? saved : 'forest';
     },
   );
   const [refreshMs, setRefreshMs] = useState(
@@ -5343,7 +5346,7 @@ function App() {
             </button>
           </div>}
           <SportsMasthead theme={theme} />
-          <CoreMasthead theme={theme} />
+          {theme === 'forest' ? <ForestMasthead /> : <CoreMasthead theme={theme} />}
           {theme === 'matrix' && <MatrixMasthead />}
           {theme === 'independence' && <USAMasthead />}
           {theme !== 'darkhand' && <div className="stats-grid">
@@ -5646,7 +5649,7 @@ function Stat({ theme, icon: Icon, label, value, detail, tone = '', trend = [] }
   return (
     <div className={`stat-card ${tone}`}>
       <div className="stat-icon">
-        {CORE_THEMES[theme] ? <CoreStatIcon theme={theme} label={label} /> : theme === 'matrix' ? <MatrixStatIcon label={label} /> : THEME_CATEGORIES.find(category => category.id === 'sports').themes.includes(theme) ? <SportsStatIcon theme={theme} label={label} /> : <Icon size={17} />}
+        {theme === 'forest' ? <ForestStatIcon label={label} /> : CORE_THEMES[theme] ? <CoreStatIcon theme={theme} label={label} /> : theme === 'matrix' ? <MatrixStatIcon label={label} /> : THEME_CATEGORIES.find(category => category.id === 'sports').themes.includes(theme) ? <SportsStatIcon theme={theme} label={label} /> : <Icon size={17} />}
       </div>
       <div>
         <span>{label}</span>
@@ -5681,14 +5684,14 @@ const mount = async () => {
   }
   mounted = true;
   let theme = localStorage.getItem('deck-theme');
-  if (!THEMES.some(([key]) => key === theme)) theme = 'darkhand';
+  if (!THEMES.some(([key]) => key === theme)) theme = 'forest';
   try {
     await prepareTheme(theme);
     await activateTheme(theme);
   } catch (error) {
     window.__DELUGE_DECK_THEME_ERROR__ = error.message;
-    localStorage.setItem('deck-theme', 'darkhand');
-    try { await prepareTheme('darkhand'); await activateTheme('darkhand'); } catch { /* Shared styles keep login usable during a resource failure. */ }
+    localStorage.setItem('deck-theme', 'forest');
+    try { await prepareTheme('forest'); await activateTheme('forest'); } catch { /* Shared styles keep login usable during a resource failure. */ }
   }
   createRoot(root).render(<App />);
 };
