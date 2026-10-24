@@ -1,0 +1,75 @@
+/* Shared menu geometry. Themes provide colors, while controls keep one layout. */
+#deluge-deck-viewport-overlay :is(.detail-drawer,.detail-backdrop,.context-menu,.modal-backdrop) { pointer-events:auto!important; }
+:root[data-theme][data-theme] body .preferences-modal {
+  width:min(860px,calc(100vw - 32px));
+  padding:0 24px;
+  background:var(--surface);
+  border-radius:16px;
+}
+:root[data-theme][data-theme] body .preferences-head { min-height:76px; gap:16px; }
+:root[data-theme][data-theme] body .preferences-heading h2 { font-size:22px; line-height:1.25; white-space:normal; }
+:root[data-theme][data-theme] body .preferences-content { gap:14px; padding:0 8px 8px 0; }
+:root[data-theme][data-theme] body .preferences-content > .preferences-card {
+  grid-template-columns:36px minmax(0,1fr)!important;
+  gap:14px;
+  min-height:0;
+  padding:18px!important;
+  align-items:start;
+  background:var(--surface-2);
+  border-radius:10px;
+  box-shadow:none;
+}
+:root[data-theme][data-theme] body .preferences-card-icon { width:36px; height:36px; border-radius:9px; }
+:root[data-theme][data-theme] body .preferences-card-copy { grid-column:2; display:grid; gap:10px; min-width:0; }
+:root[data-theme][data-theme] body .preferences-card-copy > strong { font-size:15px; line-height:1.35; }
+:root[data-theme][data-theme] body .preferences-card-copy > span { font-size:12px; line-height:1.5; }
+:root[data-theme][data-theme] body .preferences-card > :is(.secondary-button,.preferences-select,.shortcut-keys,.shortcut-summary) {
+  grid-column:2!important;
+  width:auto!important;
+  justify-self:end;
+  min-height:40px;
+  margin:0!important;
+}
+:root[data-theme][data-theme] body .preferences-card .path-setting {
+  display:grid;
+  grid-template-columns:156px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+}
+:root[data-theme][data-theme] body .preferences-card .path-setting > span { min-width:0; font-size:12px; line-height:1.4; }
+:root[data-theme][data-theme] body .preferences-card .path-setting :is(input,select) {
+  width:100%; min-width:0; max-width:100%; min-height:40px;
+  box-sizing:border-box; font-size:13px;
+}
+:root[data-theme][data-theme] body .preferences-card .path-check { gap:10px; line-height:1.5; }
+:root[data-theme][data-theme] body .preferences-card .path-check input { flex:none; }
+:root[data-theme][data-theme] body .preferences-footer { min-height:72px; gap:20px; margin-top:8px; }
+:root[data-theme][data-theme] body .preferences-footer > span { max-width:520px; font-size:11px; line-height:1.5; }
+.preferences-load-error { margin:0; padding:12px; border:1px solid var(--danger); border-radius:8px; color:var(--danger); }
+:root[data-theme] body :is(.context-menu,.account-popover) { padding:8px; }
+:root[data-theme] body .context-menu > button,
+:root[data-theme] body .account-popover > button { min-height:40px; gap:10px; padding:10px 12px; font-size:12px; line-height:1.4; }
+:root[data-theme] body .context-menu button svg { flex:none; }
+:root[data-theme] body .context-menu .queue-action-grid { gap:8px; }
+:root[data-theme] body .global-popover { padding:16px; }
+:root[data-theme] body .limit-form { gap:12px; }
+:root[data-theme] body .manager-links > button { min-height:44px; padding:10px; }
+@media (max-width:760px) {
+  :root[data-theme][data-theme] body .preferences-modal { padding:0 12px!important; }
+  :root[data-theme][data-theme] body .preferences-head { min-height:68px; }
+  :root[data-theme][data-theme] body .preferences-heading h2 { font-size:19px!important; }
+  :root[data-theme][data-theme] body .preferences-content { padding-right:2px; gap:12px; }
+  :root[data-theme][data-theme] body .preferences-content > .preferences-card { grid-template-columns:32px minmax(0,1fr)!important; gap:12px; padding:14px!important; }
+  :root[data-theme][data-theme] body .preferences-card-icon { width:32px; height:32px; }
+  :root[data-theme][data-theme] body .preferences-card-copy { display:contents; }
+  :root[data-theme][data-theme] body .preferences-card-copy > strong { grid-column:2; align-self:center; }
+  :root[data-theme][data-theme] body .preferences-card-copy > :not(strong),
+  :root[data-theme][data-theme] body .preferences-card > :is(.secondary-button,.preferences-select,.shortcut-keys,.shortcut-summary) { grid-column:1/-1!important; width:100%!important; }
+  :root[data-theme][data-theme] body .preferences-card .path-setting { grid-template-columns:1fr; gap:6px; }
+  :root[data-theme][data-theme] body .preferences-card .path-setting :is(input,select) { min-height:44px; }
+  :root[data-theme][data-theme] body .preferences-card > .secondary-button { min-height:44px; justify-content:center; }
+  :root[data-theme][data-theme] body .preferences-footer { gap:12px; min-height:70px; }
+  :root[data-theme] body .context-menu .queue-action-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  :root[data-theme] body .context-menu > button { min-height:44px; font-size:13px; }
+  :root[data-theme] body .limit-form label { grid-template-columns:minmax(0,1fr) minmax(120px,1fr); }
+}

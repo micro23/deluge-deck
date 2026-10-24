@@ -1,0 +1,40 @@
+// Run against the same empty disposable daemon as verify-live-menu-actions.
+import assert from 'node:assert/strict';
+import {readdir} from 'node:fs/promises';
+import {chromium} from 'playwright';
+const base=process.env.DELUGE_TEST_URL;
+if(process.env.DECK_ALLOW_TEST_WRITES!=='1'||!base||!process.env.DELUGE_TEST_PASSWORD||!['localhost','127.0.0.1'].includes(new URL(base).hostname))throw new Error('Requires explicit disposable loopback Deluge test settings.');
+const browser=await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{});
+const page=await browser.newPage({viewport:{width:1280,height:900}});
+page.setDefaultTimeout(10000);
+const rpc=async(method,params=[])=>{const response=await page.request.post(base+'/json',{data:{method,params,id:Date.now()}});const value=await response.json();if(value.error)throw new Error(value.error.message);return value.result;};
+let original;
+try{
+ assert.equal(await rpc('auth.login',[process.env.DELUGE_TEST_PASSWORD]),true);
+ const hosts=await rpc('web.get_hosts');await rpc('web.connect',[hosts[0][0]]);
+ assert.equal(Object.keys((await rpc('web.update_ui',[['name'],{}])).torrents).length,0,'Disposable daemon must be empty');
+ original=await rpc('core.get_config');
+ await page.goto(base);await page.waitForFunction(()=>window.deluge?.preferences && window.deluge?.client?.core);
+ const css=(await readdir('dist/assets')).find(name=>name.endsWith('.css'));
+ await page.addStyleTag({path:'dist/assets/'+css});
+ await page.addScriptTag({path:'plugin/deluge_deck/data/deluge-deck-plugin.js'});
+ await page.evaluate(()=>{document.documentElement.classList.remove('deluge-deck-loading');document.documentElement.classList.add('deluge-deck-ready');window.__DELUGE_DECK_SHOW_NATIVE_PREFERENCES__();});
+ await page.locator('.deck-preferences-window input[name="download_location"]').fill('/downloads/menu-check/native');
+ await page.locator('.deck-preferences-window input[name="download_location"]').press('Tab');
+ await page.getByRole('button',{name:'Apply',exact:true}).click();
+ await page.waitForTimeout(300);
+ assert.equal((await rpc('core.get_config')).download_location,'/downloads/menu-check/native');
+ await page.evaluate(()=>deluge.preferences.selectPage('Cache'));
+ await page.locator('.deck-preferences-window input[name="cache_size"]').fill('2048');
+ await page.locator('.deck-preferences-window input[name="cache_size"]').press('Tab');
+ await page.getByRole('button',{name:'Apply',exact:true}).click();
+ await page.waitForTimeout(300);
+ assert.equal((await rpc('core.get_config')).cache_size,2048);
+ await page.getByRole('button',{name:'OK',exact:true}).click();
+ assert.equal(await page.evaluate(()=>deluge.preferences.isVisible()),false);
+ await page.evaluate(()=>window.__DELUGE_DECK_SHOW_NATIVE_PREFERENCES__());
+ await page.evaluate(()=>deluge.preferences.selectPage('Cache'));
+ assert.equal(await page.locator('.deck-preferences-window input[name="cache_size"]').inputValue(),'2048');
+ await page.getByRole('button',{name:'Close',exact:true}).click();
+ console.log('Verified original Deluge Preferences handlers: path and cache Apply reach the real daemon; OK closes; reopen reloads saved values; Close works.');
+}finally{if(original)await rpc('core.set_config',[{download_location:original.download_location,cache_size:original.cache_size}]);await browser.close();}

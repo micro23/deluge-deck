@@ -12,6 +12,7 @@ let heldUpload;
 let releaseUpload;
 const json = (res, value) => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify(value)); };
 const proxy = { type: 3, hostname: 'proxy.test', port: 1080, username: 'fixture', password: 'fixture', force_proxy: true, proxy_tracker_connections: true };
+let config = { proxy, download_location: '/tmp' };
 const feed = { connected: true, torrents: { fixture: { name: 'Fixture torrent', state: 'Paused', queue: 0, total_size: 12, progress: 0 } }, stats: {} };
 const server = http.createServer(async (req, res) => {
   try {
@@ -31,7 +32,8 @@ const server = http.createServer(async (req, res) => {
       else if (method === 'web.get_host_status') result = ['host-id', 'Connected', '2.1'];
       else if (method === 'web.add_host') result = [true, 'added-id'];
       else if (method === 'web.get_plugins') result = { enabled_plugins: [], available_plugins: [] };
-      else if (method === 'core.get_config') result = { proxy, download_location: '/tmp' };
+      else if (method === 'core.get_config') result = config;
+      else if (method === 'core.set_config') { config = { ...config, ...params[0] }; result = null; }
       else if (method === 'core.get_free_space') result = 1024;
       else if (method === 'web.add_torrents') result = [[true, 'fixture-hash']];
       if (['core.set_config', 'web.add_torrents', 'web.add_host'].includes(method)) writes.push({ method, params });
@@ -51,6 +53,7 @@ try {
   browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
   for (const pathname of ['/', '/deluge/']) {
     writes = [];
+    config = { proxy, download_location: '/tmp' };
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));

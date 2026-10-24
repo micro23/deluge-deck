@@ -438,7 +438,7 @@ test('portrait layout uses compact controls and a horizontally scrollable torren
   const css = await readFile(path.join(root, 'src/styles.css'), 'utf8');
   assert.match(css, /\.topbar-heading,\.mobile-stats\{display:none!important\}/);
   assert.match(css, /\.global-controls \.session-quick-actions\{display:none\}/);
-  assert.match(css, /input:not\(\[type="checkbox"\]\):not\(\[type="radio"\]\),select,textarea\{font-size:16px!important\}/);
+  assert.match(css, /:where\(#root,#deluge-deck-root,#deluge-deck-viewport-overlay\) :is\(input:not\(\[type="checkbox"\]\):not\(\[type="radio"\]\),select,textarea\)\{font-size:16px!important\}/);
   assert.match(css, /\.table-shell\{overflow-x:auto!important;overflow-y:hidden!important/);
   assert.match(css, /min-width:780px!important;table-layout:auto!important/);
   assert.match(css, /th:nth-child\(2\),\.table-shell td:nth-child\(2\)\{position:sticky/);
@@ -775,7 +775,7 @@ test('add torrent review keeps large torrent and payload lists independently scr
 test('add torrent review supports full and compact storage allocation', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /const \[allocation, setAllocation\] = useState\('full'\)/);
-  assert.match(ui, /compact_allocation: allocation === 'compact'/);
+  assert.match(ui, /pre_allocate_storage: allocation === 'full'/);
   assert.match(ui, /Full allocation/);
   assert.match(ui, /Compact allocation/);
   assert.match(css, /\.allocation-label/);

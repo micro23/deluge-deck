@@ -1,3 +1,10 @@
+## 1.0.96
+
+- Align menu spacing and preference controls across desktop and mobile themes, and keep floating dialogs above the dashboard.
+- Isolate the classic Deluge layout from torrent table styles; repair collapsed folder inputs, resized settings pages, native footer alignment, and nested-dialog dismissal.
+- Map torrent controls to Deluge's writable auto-management, first/last-piece, and storage-allocation options. Show disk cache in the original 16 KiB units.
+- Wait for settings to load before editing, confirm saves by reading the connected daemon, and report per-torrent removal failures.
+
 ## 1.0.95
 
 - Replace all sports club stadium backdrops with 100% authentic, real photographs of the actual home venues (sourced from Wikimedia Commons / public domain).

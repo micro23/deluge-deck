@@ -22,7 +22,7 @@ test('hosted bridge narrowly suppresses an ExtJS login window and leaves an exis
   assert.match(bridge, /const showNativePreferences = \(\) =>/);
   assert.match(bridge, /preferences\.setSize\?\.\(width, height\)/);
   assert.match(bridge, /preferences\.center\?\.\(\)/);
-  assert.match(bridge, /preferences\.doLayout\?\.\(\)/);
+  assert.match(bridge, /preferences\.doLayout\?\.\(false, true\)/);
   assert.match(bridge, /afterlayout/);
   assert.match(bridge, /layoutNativePreferences/);
   assert.doesNotMatch(bridge, /deck-native-preferences-actions/);

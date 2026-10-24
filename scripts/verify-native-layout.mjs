@@ -29,15 +29,21 @@ try {
           const r = button.getBoundingClientRect();
           return r.width > 0 && r.left >= win.left && r.right <= win.right + 1 && r.bottom <= innerHeight;
         });
-        const clipped = [...pref.pages[pref.currentPage].el.dom.querySelectorAll('.x-fieldset')].some(field => field.scrollWidth > field.clientWidth + 2);
+        const clipped = [...pref.pages[pref.currentPage].el.dom.querySelectorAll('.x-fieldset')].some(field => {
+          const r = field.getBoundingClientRect();
+          return field.scrollWidth > field.clientWidth + 2 || r.right > panel.right + 1;
+        });
+        const collapsed = [...pref.pages[pref.currentPage].el.dom.querySelectorAll('.x-toggle-field input[type="text"]')]
+          .some(input => input.getBoundingClientRect().width < 100);
         return { within:win.left >= 0 && win.top >= 0 && win.right <= innerWidth + 1 && win.bottom <= innerHeight + 1,
           panel:panel.width > 300 && panel.left >= win.left && panel.right <= win.right + 1,
           active:active.width > 0 && active.left < panel.right && active.right > panel.left,
-          footer:footer.length === 3 && footer.every(Boolean), clipped };
+          footer:footer.length === 3 && footer.every(Boolean), clipped, collapsed };
       });
       assert.ok(result.within && result.panel && result.active && result.footer, `${width} ${name}: ${JSON.stringify(result)}`);
       // Legacy plugins may intentionally scroll tables, but form cards must fit.
       assert.equal(result.clipped, false, `${width} ${name}: fieldset clips controls`);
+      assert.equal(result.collapsed, false, `${width} ${name}: folder input collapsed during Ext layout`);
       if (process.env.SCREENSHOT_DIR) await page.screenshot({path:`${process.env.SCREENSHOT_DIR}/${width}-${name}.png`});
       count++;
     }

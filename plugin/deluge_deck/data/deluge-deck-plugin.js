@@ -1,3 +1,7 @@
+(() => {
+// Deluge can re-execute plugin resources after connection or plugin changes.
+if (window.__DELUGE_DECK_BRIDGE_READY__) return;
+window.__DELUGE_DECK_BRIDGE_READY__ = true;
 // Pre-React duties only. The initial ExtJS shell is marked before React's
 // mount turn; later additions are limited to a LoginWindow with a login marker
 // and its ExtJS mask, never generic native dialogs such as Preferences.
@@ -67,6 +71,7 @@ const isLegacyShellNode = (node) => {
 };
 let stockLoginWindow = null;
 const isAssociatedLoginMask = (mask) => {
+  if (mask === window.deluge?.login?.mask?.dom) return true;
   if (!stockLoginWindow || !(mask instanceof Element)) return false;
   if (stockLoginWindow.contains(mask)) return true;
   const loginId = stockLoginWindow.id;
@@ -103,6 +108,12 @@ const disableStockConnectionManager = () => {
   if (!manager) return false;
   const element = manager.getEl?.()?.dom || manager.el?.dom;
   if (element) hideStockConnectionElement(element);
+  // Hiding the window with CSS can make isVisible() false before Ext removes
+  // its modal mask. Hide only this manager's owned mask, never native dialogs.
+  if (manager.mask?.dom) {
+    manager.mask.dom.dataset.delugeDeckStockConnection = 'true';
+    manager.mask.hide?.();
+  }
   if (!patchedStockConnectionManagers.has(manager) && typeof manager.show === 'function') {
     manager.show = function suppressDeckStockConnectionManager() {
       const currentElement = this.getEl?.()?.dom || this.el?.dom;
@@ -175,6 +186,7 @@ const autoConnectHostedDaemon = () => {
   return hostedAutoConnect;
 };
 const scanStockConnectionWindows = () => {
+  hideAssociatedLoginMasks();
   document.querySelectorAll(windowSelector).forEach((node) => {
     if (!isDeckOverlayNode(node)
       && hasStockConnectionMarker(node)) {
@@ -197,7 +209,7 @@ const layoutNativePreferences = (preferences) => {
     preferences.list?.setSize?.(bodyWidth, 52);
     preferences.configPanel.setPosition?.(0, 60);
     preferences.configPanel.setSize?.(bodyWidth, Math.max(80, bodyHeight - 60));
-    preferences.configPanel.doLayout?.();
+    preferences.configPanel.doLayout?.(false, true);
   } else {
     element?.classList.remove('deck-preferences-compact');
     if (navigation?.body) preferences.list?.setSize?.(navigation.body.getWidth(true), navigation.body.getHeight(true));
@@ -209,6 +221,11 @@ const showNativePreferences = () => {
   if (typeof preferences?.show !== 'function') return false;
   if (!fittedPreferences.has(preferences)) {
     preferences.on?.('afterlayout', () => layoutNativePreferences(preferences));
+    // CardLayout can reuse a page measured at a previous window width. Force
+    // the newly active page's nested forms to measure their current container.
+    preferences.configPanel?.on?.('afterlayout', () => {
+      preferences.configPanel.getLayout?.().activeItem?.doLayout?.(false, true);
+    });
     fittedPreferences.add(preferences);
   }
   const fitAndReveal = () => {
@@ -237,7 +254,7 @@ const showNativePreferences = () => {
     });
     preferences.setSize?.(width, height);
     preferences.center?.();
-    preferences.doLayout?.();
+    preferences.doLayout?.(false, true);
     layoutNativePreferences(preferences);
   };
   if (!preferences.rendered && typeof preferences.on === 'function') {
@@ -262,6 +279,14 @@ const closeNativePreferences = (event) => {
   const preferences = window.deluge?.preferences;
   const element = preferences?.getEl?.()?.dom;
   if (!element || element.hidden || element.style.display === 'none' || element.dataset.delugeDeckNativeWindow !== 'true') return;
+  // Let Ext dismiss the active dropdown or child dialog before its parent.
+  if (event.type === 'keydown' && [...document.querySelectorAll('.x-combo-list,.x-menu,.x-window')]
+    .some(node => {
+      const rect = node.getBoundingClientRect();
+      return node !== element && !element.contains(node) && rect.width > 0 && rect.height > 0
+        && rect.right > 0 && rect.bottom > 0 && rect.left < innerWidth && rect.top < innerHeight
+        && getComputedStyle(node).visibility !== 'hidden';
+    })) return;
   // ExtJS appends combo menus and child windows to body. They still belong to
   // this settings interaction and must not trigger outside-click dismissal.
   if (event.type === 'pointerdown' && (element.contains(event.target)
@@ -321,3 +346,5 @@ const ensureRoot = () => {
 // Deluge injects plugin scripts after body creation in normal hosted use, so
 // this synchronous call hides the pre-existing shell before its next paint.
 if (document.body) ensureRoot(); else document.addEventListener('DOMContentLoaded', ensureRoot, { once: true });
+
+})();

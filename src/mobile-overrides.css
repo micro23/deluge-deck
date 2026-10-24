@@ -30,7 +30,7 @@
   .theme-name { display:none!important; }
   body .workspace { display:flex!important; flex-direction:column; width:100%!important; max-width:none; min-height:0!important; margin:0!important; padding:10px max(10px,env(safe-area-inset-right)) calc(90px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))!important; overflow:visible!important; }
   .workspace>.search-wrap { order:1; height:44px!important; flex:none!important; width:100%; max-width:none; margin:0 0 8px!important; border-radius:9px!important; background:var(--surface)!important; }
-  input:not([type=checkbox]):not([type=radio]),select,textarea { font-size:16px!important; }
+  :where(#root,#deluge-deck-root,#deluge-deck-viewport-overlay) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { font-size:16px!important; }
   .page-heading { display:none!important; }
   body .stats-grid { order:0; display:flex!important; gap:16px!important; margin:0 0 10px!important; padding:0 2px; }
   body .stats-grid .stat-card { display:flex!important; flex:1; min-width:0; min-height:0!important; gap:6px!important; padding:0!important; border:0!important; background:transparent!important; box-shadow:none!important; backdrop-filter:none!important; transform:none!important; text-align:left!important; }

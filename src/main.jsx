@@ -62,6 +62,7 @@ import { api, pluginMode, rpc } from './app/api.js';
 import { decodeTorrentMetadata } from './app/torrent-metadata.js';
 import { daemonHostStatus, addedHostId } from '../server/hosted-contracts.mjs';
 import { proxyFormValues, proxyConfig } from './app/preferences.js';
+import { saveDaemonConfig, assertRemovalResult, torrentOptionConfig } from './app/action-results.js';
 import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
@@ -106,6 +107,7 @@ import './themes/sports-heritage.css';
 import './themes/core-refined.css';
 import './themes/forest.css';
 import './windowed-list.css';
+import './menu-layout.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -733,7 +735,7 @@ function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentA
     setError('');
     setMessage('');
     try {
-      await rpc('core.set_config', [config]);
+      await saveDaemonConfig(rpc, config);
       setMessage('Global limits saved.');
       await onRefresh();
     } catch (reason) {
@@ -2643,7 +2645,7 @@ function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs 
   const saveOptions = async () => {
     setOptionsState({ busy: true, message: '', error: '' });
     try {
-      await rpc('core.set_torrent_options', [torrent.hash, options]);
+      await rpc('core.set_torrent_options', [[torrent.hash], torrentOptionConfig(options)]);
       setOptionsState({ busy: false, message: 'Options saved.', error: '' });
     } catch (reason) {
       setOptionsState({
@@ -3522,6 +3524,8 @@ function PreferencesModal({
   proxyMessage,
   cacheBusy,
   cacheMessage,
+  settingsReady,
+  settingsError,
   onClose,
   onOpenNative,
 }) {
@@ -3564,6 +3568,7 @@ function PreferencesModal({
           </button>
         </div>
         <div className="preferences-content">
+          {settingsError && <p className="preferences-load-error" role="alert">{settingsError}</p>}
           <section className="preferences-card refresh-preference">
             <div className="preferences-card-icon">
               <RefreshCw size={22} />
@@ -3597,6 +3602,7 @@ function PreferencesModal({
               <label className="path-setting">
                 <span>Download to</span>
                 <input
+                  disabled={!settingsReady || pathsBusy}
                   value={downloadLocation}
                   onChange={(event) =>
                     onPathChange('downloadLocation', event.target.value)
@@ -3608,6 +3614,7 @@ function PreferencesModal({
               <label className="path-setting">
                 <span>Move completed to</span>
                 <input
+                  disabled={!settingsReady || pathsBusy}
                   value={completedPath}
                   onChange={(event) =>
                     onPathChange('completedPath', event.target.value)
@@ -3618,6 +3625,7 @@ function PreferencesModal({
               </label>
               <label className="path-check">
                 <input
+                  disabled={!settingsReady || pathsBusy}
                   type="checkbox"
                   checked={moveCompleted}
                   onChange={(event) =>
@@ -3635,7 +3643,7 @@ function PreferencesModal({
             <button
               className="secondary-button"
               onClick={onSavePaths}
-              disabled={pathsBusy || !downloadLocation.trim()}
+              disabled={!settingsReady || pathsBusy || !downloadLocation.trim()}
             >
               {pathsBusy ? 'Saving…' : 'Save paths'}
             </button>
@@ -3650,6 +3658,7 @@ function PreferencesModal({
               <label className="path-setting">
                 <span>Listen port</span>
                 <input
+                  disabled={!settingsReady || networkBusy}
                   type="number"
                   min="1"
                   max="65535"
@@ -3662,6 +3671,7 @@ function PreferencesModal({
               </label>
               <label className="path-check">
                 <input
+                  disabled={!settingsReady || networkBusy}
                   type="checkbox"
                   checked={randomPort}
                   onChange={(event) =>
@@ -3679,7 +3689,7 @@ function PreferencesModal({
             <button
               className="secondary-button"
               onClick={onSaveNetwork}
-              disabled={networkBusy}
+              disabled={!settingsReady || networkBusy}
             >
               {networkBusy ? 'Saving…' : 'Save network'}
             </button>
@@ -3693,6 +3703,7 @@ function PreferencesModal({
               <span>Route tracker and peer connections through a proxy.</span>
               <label className="path-check">
                 <input
+                  disabled={!settingsReady || proxyBusy}
                   type="checkbox"
                   checked={proxyEnabled}
                   onChange={(event) =>
@@ -3704,6 +3715,7 @@ function PreferencesModal({
               <label className="path-setting">
                 <span>Type</span>
                 <select
+                  disabled={!settingsReady || proxyBusy}
                   value={proxyType}
                   onChange={(event) =>
                     onPathChange('proxyType', event.target.value)
@@ -3721,6 +3733,7 @@ function PreferencesModal({
               <label className="path-setting">
                 <span>Host</span>
                 <input
+                  disabled={!settingsReady || proxyBusy}
                   value={proxyHost}
                   onChange={(event) =>
                     onPathChange('proxyHost', event.target.value)
@@ -3732,6 +3745,7 @@ function PreferencesModal({
               <label className="path-setting">
                 <span>Port</span>
                 <input
+                  disabled={!settingsReady || proxyBusy}
                   type="number"
                   min="1"
                   max="65535"
@@ -3751,7 +3765,7 @@ function PreferencesModal({
             <button
               className="secondary-button"
               onClick={onSaveProxy}
-              disabled={proxyBusy}
+              disabled={!settingsReady || proxyBusy}
             >
               {proxyBusy ? 'Saving…' : 'Save proxy'}
             </button>
@@ -3764,23 +3778,25 @@ function PreferencesModal({
               <strong>Disk cache</strong>
               <span>Control the cache size and expiry used by Deluge.</span>
               <label className="path-setting">
-                <span>Cache size (MiB)</span>
+                <span>Cache size (16 KiB blocks)</span>
                 <input
+                  disabled={!settingsReady || cacheBusy}
                   type="number"
-                  min="0"
+                  min="-1"
                   step="1"
                   value={cacheSize}
                   onChange={(event) =>
                     onPathChange('cacheSize', event.target.value)
                   }
-                  aria-label="Cache size in MiB"
+                  aria-label="Cache size in 16 KiB blocks"
                 />
               </label>
               <label className="path-setting">
                 <span>Expiry (seconds)</span>
                 <input
+                  disabled={!settingsReady || cacheBusy}
                   type="number"
-                  min="0"
+                  min="-1"
                   step="1"
                   value={cacheExpiry}
                   onChange={(event) =>
@@ -3798,7 +3814,7 @@ function PreferencesModal({
             <button
               className="secondary-button"
               onClick={onSaveCache}
-              disabled={cacheBusy}
+              disabled={!settingsReady || cacheBusy}
             >
               {cacheBusy ? 'Saving…' : 'Save cache'}
             </button>
@@ -3892,7 +3908,7 @@ function PreferencesModal({
           </section>
         </div>
         <div className="preferences-footer">
-          <span>Settings are saved locally in your browser.</span>
+          <span>Save buttons update the connected Deluge server. Refresh and celebrations are saved in this browser.</span>
           <button className="primary-button" onClick={onClose}>
             Done
           </button>
@@ -3902,6 +3918,8 @@ function PreferencesModal({
   );
 }
 function DeckPreferences({ onClose }) {
+  const [settingsReady, setSettingsReady] = useState(false);
+  const [settingsError, setSettingsError] = useState('');
   const [refreshMs, setRefreshMs] = useState(
     () => {
       const saved = Number(localStorage.getItem('deck-refresh-ms'));
@@ -3965,10 +3983,11 @@ function DeckPreferences({ onClose }) {
             cacheSize: String(config?.cache_size ?? 512),
             cacheExpiry: String(config?.cache_expiry ?? 60),
           });
+          setSettingsReady(true);
         }
       })
-      .catch(() => {
-        if (active) setPathsMessage('Unable to load Deluge paths.');
+      .catch((reason) => {
+        if (active) setSettingsError(reason.message || 'Unable to load settings from Deluge. Close Preferences and reconnect before saving.');
       });
     return () => {
       active = false;
@@ -3992,16 +4011,19 @@ function DeckPreferences({ onClose }) {
     setCacheMessage('');
   };
   const onSavePaths = async () => {
+    if (!settingsReady) return;
+    if (paths.moveCompleted && !paths.completedPath.trim()) {
+      setPathsMessage('Enter a completed download folder on the Deluge server.');
+      return;
+    }
     setPathsBusy(true);
     setPathsMessage('');
     try {
-      await rpc('core.set_config', [
-        {
-          download_location: paths.downloadLocation.trim(),
-          move_completed_path: paths.completedPath.trim(),
-          move_completed: paths.moveCompleted,
-        },
-      ]);
+      await saveDaemonConfig(rpc, {
+        download_location: paths.downloadLocation.trim(),
+        move_completed_path: paths.completedPath.trim(),
+        move_completed: paths.moveCompleted,
+      });
       setPathsMessage('Paths saved.');
     } catch (reason) {
       setPathsMessage(reason.message || 'Unable to save paths.');
@@ -4010,23 +4032,22 @@ function DeckPreferences({ onClose }) {
     }
   };
   const onSaveCache = async () => {
+    if (!settingsReady) return;
     const size = Number(paths.cacheSize);
     const expiry = Number(paths.cacheExpiry);
     if (
       !Number.isInteger(size) ||
-      size < 0 ||
+      size < -1 ||
       !Number.isInteger(expiry) ||
-      expiry < 0
+      expiry < -1
     ) {
-      setCacheMessage('Enter non-negative whole numbers for cache settings.');
+      setCacheMessage('Enter whole numbers of -1 or greater, as in classic Deluge.');
       return;
     }
     setCacheBusy(true);
     setCacheMessage('');
     try {
-      await rpc('core.set_config', [
-        { cache_size: size, cache_expiry: expiry },
-      ]);
+      await saveDaemonConfig(rpc, { cache_size: size, cache_expiry: expiry });
       setCacheMessage('Cache settings saved.');
     } catch (reason) {
       setCacheMessage(reason.message || 'Unable to save cache settings.');
@@ -4035,6 +4056,7 @@ function DeckPreferences({ onClose }) {
     }
   };
   const onSaveProxy = async () => {
+    if (!settingsReady) return;
     const port = Number(paths.proxyPort);
     if (
       paths.proxyEnabled &&
@@ -4049,11 +4071,9 @@ function DeckPreferences({ onClose }) {
     setProxyBusy(true);
     setProxyMessage('');
     try {
-      await rpc('core.set_config', [
-        {
-          proxy: proxyConfig(proxySettings.current, paths),
-        },
-      ]);
+      await saveDaemonConfig(rpc, {
+        proxy: proxyConfig(proxySettings.current, paths),
+      });
       setProxyMessage('Proxy settings saved.');
     } catch (reason) {
       setProxyMessage(reason.message || 'Unable to save proxy settings.');
@@ -4062,6 +4082,7 @@ function DeckPreferences({ onClose }) {
     }
   };
   const onSaveNetwork = async () => {
+    if (!settingsReady) return;
     const port = Number(paths.networkPort);
     if (!Number.isInteger(port) || port < 1 || port > 65535) {
       setNetworkMessage('Enter a port from 1 to 65535.');
@@ -4070,9 +4091,7 @@ function DeckPreferences({ onClose }) {
     setNetworkBusy(true);
     setNetworkMessage('');
     try {
-      await rpc('core.set_config', [
-        { listen_ports: [port, port], random_port: paths.randomPort },
-      ]);
+      await saveDaemonConfig(rpc, { listen_ports: [port, port], random_port: paths.randomPort });
       setNetworkMessage('Network settings saved.');
     } catch (reason) {
       setNetworkMessage(reason.message || 'Unable to save network settings.');
@@ -4119,6 +4138,8 @@ function DeckPreferences({ onClose }) {
       onSaveCache={onSaveCache}
       cacheBusy={cacheBusy}
       cacheMessage={cacheMessage}
+      settingsReady={settingsReady}
+      settingsError={settingsError}
       onClose={onClose}
       onOpenNative={openNative}
     />
@@ -4139,7 +4160,8 @@ function AddModal({
         onClose={onClose}
         onModalState={onModalState}
         onRemove={async (removeData) => {
-          await rpc('core.remove_torrents', [initialFiles.targets, removeData]);
+          const result = await rpc('core.remove_torrents', [initialFiles.targets, removeData]);
+          assertRemovalResult(result);
           await onAdded();
           onClose();
         }}
@@ -4338,7 +4360,7 @@ function AddTorrentModal({
             download_location: path,
             add_paused: paused,
             sequential_download: sequential,
-            compact_allocation: allocation === 'compact',
+            pre_allocate_storage: allocation === 'full',
           },
         ]);
       else if (tab === 'url' && url.trim())
@@ -4348,7 +4370,7 @@ function AddTorrentModal({
             download_location: path,
             add_paused: paused,
             sequential_download: sequential,
-            compact_allocation: allocation === 'compact',
+            pre_allocate_storage: allocation === 'full',
           },
         ]);
       else if (tab === 'files' && files.length && selectedAddFiles.size) {
@@ -4391,7 +4413,7 @@ function AddTorrentModal({
               download_location: path,
               add_paused: paused,
               sequential_download: sequential,
-              compact_allocation: allocation === 'compact',
+              pre_allocate_storage: allocation === 'full',
               file_priorities: selected[index]
                 ? torrentPayloads[selected[index].name]?.files.map((entry) =>
                     (selectedPayloadFiles[selected[index].name]?.has(entry.index)
@@ -4837,8 +4859,8 @@ function AddTorrentModal({
 }
 function App() {
   const mobileLayout = useMobileLayout();
-  const mobileOverlayHost = useViewportOverlayHost();
-  const mobileOverlay = children => mobileLayout ? createPortal(children, mobileOverlayHost) : children;
+  const viewportOverlayHost = useViewportOverlayHost();
+  const viewportOverlay = children => createPortal(children, viewportOverlayHost);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () => localStorage.getItem('deck-sidebar-collapsed') === 'true',
   );
@@ -5503,7 +5525,7 @@ function App() {
           </div>
         </div>
       )}
-      {detail && (theme !== 'darkhand' || mobileLayout) && mobileOverlay(
+      {detail && (theme !== 'darkhand' || mobileLayout) && viewportOverlay(
         <DetailDrawer
           key={detail.hash}
           torrent={detail}
@@ -5512,7 +5534,7 @@ function App() {
           onAction={(action) => act(action, [detail.hash])}
         />
       )}
-      {menuTorrent && mobileOverlay(
+      {menuTorrent && viewportOverlay(
         <>
         {mobileLayout && <div className="mobile-menu-backdrop" onClick={() => setMenuTorrent(null)} />}
         <div className="context-menu" style={menuPosition || {}}>
@@ -5627,7 +5649,7 @@ function App() {
           onSearch={() => document.querySelector('.search-wrap input')?.focus()}
         />
       )}
-      {addFiles && mobileOverlay(
+      {addFiles && viewportOverlay(
         <AddModal
           initialFiles={addFiles}
           existingNames={torrents.map((torrent) => torrent.name)}
