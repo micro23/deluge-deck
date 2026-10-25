@@ -1,5 +1,28 @@
 # Menu and action repair — 1.0.96
 
+## Add-flow follow-up — 1.0.97
+
+Torrent adds now require a confirmed torrent ID. File batches inspect every
+Deluge result and retain only failed torrents for retry. Upload responses must
+include every selected torrent; each selected torrent needs a payload selection.
+Invalid server folders produce an actionable error instead of a misleading
+free-space total. Magnet names keep literal percent characters, and the preview
+uses the content column rather than collapsing into the icon column.
+
+Verified October 25, 2026:
+
+- 154 Node tests, production build, package integrity, and release metadata pass.
+- `scripts/verify-reliability.mjs` covers failed magnet/URL adds, incomplete
+  uploads, invalid folders, empty payload selections, partial-batch retries,
+  preserved review values, and existing regressions in companion/hosted modes.
+- `scripts/verify-add-layout.mjs` checks all 38 themes at 1280, 390, and 320 pixels
+  (114 combinations), including long magnet names and reachable Add buttons.
+- Real Deluge 2.2 actions pass in companion and installed-plugin modes using a
+  disposable Docker daemon. The same egg also passes all five entry-point
+  loader checks on Python 3.12. Production stations were not changed.
+
+## Original menu repair
+
 Shared settings now use consistent label, input, and action spacing on desktop
 and phones. Floating torrent dialogs and menus use the viewport overlay so
 header controls cannot cover their buttons. Classic Deluge keeps its original

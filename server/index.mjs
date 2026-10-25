@@ -164,7 +164,9 @@ function demoRpc(method, params) {
   if (method === 'core.rename_files') { const renamed = params[1]?.[0]?.[1]; if (demoTorrents.has(params[0]) && renamed) demoTorrents.get(params[0]).name = String(renamed).split('/').pop(); return true; }
   if (method === 'core.rename_folder') { if (demoTorrents.has(params[0]) && params[2]) demoTorrents.get(params[0]).name = String(params[2]).split('/').pop(); return true; }
   if (method === 'core.remove_torrents') ids.forEach((id) => demoTorrents.delete(id));
-  if (method === 'core.add_torrent_magnet') { const id = `demo-${Date.now()}`; demoTorrents.set(id, { name: String(params[0]).slice(0, 52), state: 'Downloading', progress: 0, total_size: 0, total_done: 0, total_uploaded: 0, download_payload_rate: 0, upload_payload_rate: 0, eta: 0, ratio: 0, num_seeds: 0, total_seeds: 0, num_peers: 0, total_peers: 0, queue: demoTorrents.size + 1, tracker_host: 'magnet', save_path: 'D:\\Media', time_added: Math.floor(Date.now() / 1000), label: '', message: '' }); return id; }
+  if (method === 'web.add_torrents') return params[0].map(file => [true, demoRpc('core.add_torrent_magnet', [file.path, file.options])]);
+  if (method === 'core.add_torrent_url') return demoRpc('core.add_torrent_magnet', params);
+  if (method === 'core.add_torrent_magnet') { const id = `demo-${Date.now()}-${demoTorrents.size}`; demoTorrents.set(id, { name: String(params[0]).slice(0, 52), state: 'Downloading', progress: 0, total_size: 0, total_done: 0, total_uploaded: 0, download_payload_rate: 0, upload_payload_rate: 0, eta: 0, ratio: 0, num_seeds: 0, total_seeds: 0, num_peers: 0, total_peers: 0, queue: demoTorrents.size + 1, tracker_host: 'magnet', save_path: 'D:\\Media', time_added: Math.floor(Date.now() / 1000), label: '', message: '' }); return id; }
   return true;
 }
 let client = DEMO ? null : new DelugeClient();
@@ -202,7 +204,13 @@ async function route(req, res) {
       return send(res, 200, { result: await client.rpc(input.method, input.params) });
     }
     if (req.method === 'POST' && pathname === '/api/upload') {
-      if (DEMO) return send(res, 200, { success: true, files: ['C:\\Temp\\demo-upload.torrent'] });
+      if (DEMO) {
+        const form = await new Request('http://localhost/api/upload', {
+          method: 'POST', headers: { 'content-type': req.headers['content-type'] || '' }, body: await bodyBuffer(req),
+        }).formData();
+        const files = form.getAll('file').filter(file => typeof file.name === 'string');
+        return send(res, 200, { success: files.length > 0, files: files.map((file, index) => `/demo/${index}-${file.name}`) });
+      }
       const session = await client.session(); if (!session.authenticated) return error(res, 401, 'Your Deluge session expired. Sign in again.');
       return send(res, 200, await client.upload(req));
     }

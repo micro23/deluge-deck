@@ -117,3 +117,21 @@ test('global limits, connection health, hosts, and plugins are live in demo mode
   assert.ok(plugins.available_plugins.includes('Blocklist'));
   assert.equal(await call('core.resume_session'), true);
 });
+
+test('demo multi-file uploads and adds follow real Deluge result contracts', async () => {
+  const form = new FormData();
+  for (const name of ['first.torrent', 'second.torrent']) form.append('file', new Blob(['fixture']), name);
+  const upload = await fetch(`${base}/api/upload`, { method: 'POST', body: form }).then(response => response.json());
+  assert.equal(upload.success, true);
+  assert.equal(upload.files.length, 2);
+  const call = (method, params) => fetch(`${base}/api/rpc`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ method, params }) }).then(response => response.json()).then(payload => payload.result);
+  const result = await call('web.add_torrents', [upload.files.map(file => ({ path: file, options: {} }))]);
+  assert.equal(result.length, 2);
+  assert.ok(result.every(([success, id]) => success === true && typeof id === 'string'));
+  assert.notEqual(result[0][1], result[1][1]);
+  const urlId = await call('core.add_torrent_url', ['https://example.test/demo.torrent', {}]);
+  assert.equal(typeof urlId, 'string');
+  const feed = await fetch(`${base}/api/torrents`).then(response => response.json());
+  for (const id of [...result.map(item => item[1]), urlId]) assert.ok(feed.torrents[id]);
+  await call('core.remove_torrents', [[...result.map(item => item[1]), urlId], false]);
+});

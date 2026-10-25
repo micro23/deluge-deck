@@ -1,5 +1,9 @@
 /* Shared menu geometry. Themes provide colors, while controls keep one layout. */
 #deluge-deck-viewport-overlay :is(.detail-drawer,.detail-backdrop,.context-menu,.modal-backdrop) { pointer-events:auto!important; }
+.link-panel { grid-template-columns:25px minmax(0,1fr); }
+.link-panel > label { min-width:0; }
+.link-panel > .magnet-preview { grid-column:2; min-width:0; max-width:100%; }
+.magnet-preview strong { overflow-wrap:anywhere; }
 :root[data-theme][data-theme] body .preferences-modal {
   width:min(860px,calc(100vw - 32px));
   padding:0 24px;

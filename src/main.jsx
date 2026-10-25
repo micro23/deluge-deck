@@ -62,7 +62,7 @@ import { api, pluginMode, rpc } from './app/api.js';
 import { decodeTorrentMetadata } from './app/torrent-metadata.js';
 import { daemonHostStatus, addedHostId } from '../server/hosted-contracts.mjs';
 import { proxyFormValues, proxyConfig } from './app/preferences.js';
-import { saveDaemonConfig, assertRemovalResult, torrentOptionConfig } from './app/action-results.js';
+import { saveDaemonConfig, assertRemovalResult, torrentOptionConfig, assertTorrentAdded, torrentBatchResult } from './app/action-results.js';
 import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
@@ -4340,7 +4340,7 @@ function AddTorrentModal({
         ? {
             hash,
             name: name
-              ? decodeURIComponent(name)
+              ? name
               : 'Name will be fetched from metadata',
           }
         : null;
@@ -4354,7 +4354,7 @@ function AddTorrentModal({
     setError('');
     try {
       if (tab === 'magnet' && magnet.trim())
-        await rpc('core.add_torrent_magnet', [
+        assertTorrentAdded(await rpc('core.add_torrent_magnet', [
           magnet.trim(),
           {
             download_location: path,
@@ -4362,9 +4362,9 @@ function AddTorrentModal({
             sequential_download: sequential,
             pre_allocate_storage: allocation === 'full',
           },
-        ]);
+        ]));
       else if (tab === 'url' && url.trim())
-        await rpc('core.add_torrent_url', [
+        assertTorrentAdded(await rpc('core.add_torrent_url', [
           url.trim(),
           {
             download_location: path,
@@ -4372,7 +4372,7 @@ function AddTorrentModal({
             sequential_download: sequential,
             pre_allocate_storage: allocation === 'full',
           },
-        ]);
+        ]));
       else if (tab === 'files' && files.length && selectedAddFiles.size) {
         const selected = files.filter((file) =>
           selectedAddFiles.has(file.name),
@@ -4387,8 +4387,9 @@ function AddTorrentModal({
             torrentPayloads[unreadable.name]?.error ||
               `Could not read the files inside ${unreadable.name}.`,
           );
-        if (!selected.some((file) => selectedPayloadFiles[file.name]?.size))
-          throw new Error('Select at least one payload file to download.');
+        const emptySelection = selected.find((file) => !selectedPayloadFiles[file.name]?.size);
+        if (emptySelection)
+          throw new Error(`Select at least one payload file in ${emptySelection.name}, or deselect that torrent.`);
         const requiredBytes = selected.reduce(
           (total, file) =>
             total +
@@ -4397,16 +4398,16 @@ function AddTorrentModal({
               .reduce((bytes, entry) => bytes + Number(entry.size || 0), 0),
           0,
         );
-        const availableBytes = Number(
-          await rpc('core.get_free_space', [path || '']),
-        );
+        const availableBytes = await rpc('core.get_free_space', [path.trim()]);
         setFreeSpace(availableBytes);
-        if (Number.isFinite(availableBytes) && availableBytes < requiredBytes)
+        if (!Number.isFinite(availableBytes) || availableBytes < 0)
+          throw new Error('Deluge could not check free space for this folder. Check that the download folder exists and is accessible on the Deluge server.');
+        if (availableBytes < requiredBytes)
           throw new Error(
             `Not enough free space. ${formatBytes(availableBytes)} available, ${formatBytes(requiredBytes)} required.`,
           );
         const uploaded = await api.upload(selected);
-        await rpc('web.add_torrents', [
+        const result = await rpc('web.add_torrents', [
           uploaded.map((file, index) => ({
             path: file,
             options: {
@@ -4424,6 +4425,13 @@ function AddTorrentModal({
             },
           })),
         ]);
+        const { added, failed } = torrentBatchResult(result, selected.map(file => file.name));
+        if (failed.length) {
+          setSelectedAddFiles(new Set(failed.map(file => file.name)));
+          setActiveTorrentName(failed[0].name);
+          if (added.length) await onAdded();
+          throw new Error(`${added.length ? `${added.length} torrent(s) added. Only failed torrents remain selected for retry. ` : ''}${failed.map(file => `${file.name}: ${file.reason}`).join(' ')}`);
+        }
       } else if (files.length)
         throw new Error('Select at least one torrent file to add.');
       else
@@ -4763,6 +4771,7 @@ function AddTorrentModal({
             <label>
               Magnet URI
               <textarea
+                aria-label="Magnet URI"
                 value={magnet}
                 onChange={(event) => setMagnet(event.target.value)}
                 placeholder="magnet:?xt=urn:btih:…"
@@ -4826,7 +4835,9 @@ function AddTorrentModal({
           <div className="free-space-status" role="status">
             {freeSpace == null
               ? 'Free space is checked before adding'
-              : `Free space: ${formatBytes(freeSpace)}`}
+              : !Number.isFinite(freeSpace) || freeSpace < 0
+                ? 'Free space unavailable for this folder'
+                : `Free space: ${formatBytes(freeSpace)}`}
           </div>
           <label className="allocation-label">
             Storage allocation

@@ -10,6 +10,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let writes = [];
 let heldUpload;
 let releaseUpload;
+let uploadPaths = ['/tmp/fixture.torrent'];
+let addResult = [[true, 'fixture-hash']];
+let freeBytes = 1024;
+let linkResult = null;
 const json = (res, value) => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify(value)); };
 const proxy = { type: 3, hostname: 'proxy.test', port: 1080, username: 'fixture', password: 'fixture', force_proxy: true, proxy_tracker_connections: true };
 let config = { proxy, download_location: '/tmp' };
@@ -20,7 +24,7 @@ const server = http.createServer(async (req, res) => {
     if (req.url === '/api/torrents') return json(res, feed);
     if (req.url.endsWith('/upload')) {
       if (heldUpload) await new Promise(resolve => { releaseUpload = resolve; });
-      return json(res, { success: true, files: ['/tmp/fixture.torrent'] });
+      return json(res, { success: true, files: uploadPaths });
     }
     if (req.method === 'POST') {
       const chunks = [];
@@ -34,8 +38,9 @@ const server = http.createServer(async (req, res) => {
       else if (method === 'web.get_plugins') result = { enabled_plugins: [], available_plugins: [] };
       else if (method === 'core.get_config') result = config;
       else if (method === 'core.set_config') { config = { ...config, ...params[0] }; result = null; }
-      else if (method === 'core.get_free_space') result = 1024;
-      else if (method === 'web.add_torrents') result = [[true, 'fixture-hash']];
+      else if (method === 'core.get_free_space') result = freeBytes;
+      else if (method === 'web.add_torrents') result = addResult;
+      else if (['core.add_torrent_magnet', 'core.add_torrent_url'].includes(method)) result = linkResult;
       if (['core.set_config', 'web.add_torrents', 'web.add_host'].includes(method)) writes.push({ method, params });
       return json(res, { result });
     }
@@ -53,8 +58,12 @@ try {
   browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
   for (const pathname of ['/', '/deluge/']) {
     writes = [];
+    uploadPaths = ['/tmp/fixture.torrent'];
+    addResult = [[true, 'fixture-hash']];
+    freeBytes = 1024;
     config = { proxy, download_location: '/tmp' };
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    page.setDefaultTimeout(8000);
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(`http://127.0.0.1:${server.address().port}${pathname}`);
@@ -95,12 +104,73 @@ try {
     assert.equal(writes.filter(call => call.method === 'web.add_torrents').length, 1);
     assert.deepEqual(writes.at(-1).params[0][0].options.file_priorities, [4]);
 
+    const openAdd = () => page.getByRole('button', { name: 'Add torrent', exact: true }).first().click();
+    const submitAdd = () => page.getByRole('button', { name: 'Add to Deluge', exact: true }).click();
+    const returnToReview = async () => {
+      await page.getByRole('button', { name: 'Return to review', exact: true }).click();
+      await page.getByRole('dialog', { name: 'Review torrent', exact: true }).waitFor();
+    };
+    const addError = page.getByRole('dialog', { name: 'Deluge could not add this torrent', exact: true });
+    await openAdd();
+    await page.getByRole('button', { name: 'Magnet link', exact: true }).click();
+    await page.getByLabel('Magnet URI', { exact: true }).fill('magnet:?xt=urn:btih:0123456789012345678901234567890123456789&dn=100%25%20complete');
+    assert.equal(await page.locator('.magnet-preview strong').textContent(), '100% complete');
+    await submitAdd();
+    await addError.waitFor();
+    assert.match(await addError.textContent(), /did not add this torrent/);
+    await returnToReview();
+    assert.match(await page.getByLabel('Magnet URI', { exact: true }).inputValue(), /100%25/);
+    await page.getByRole('button', { name: 'Torrent URL', exact: true }).click();
+    await page.getByPlaceholder('https://example.com/file.torrent', { exact: true }).fill('https://example.test/duplicate.torrent');
+    await submitAdd();
+    await addError.waitFor();
+    assert.match(await addError.textContent(), /did not add this torrent/);
+    await page.getByRole('button', { name: 'Close add error', exact: true }).click();
+
+    await openAdd();
+    const metadata = name => ({ name, mimeType: 'application/x-bittorrent', buffer: Buffer.from('d4:infod6:lengthi12e4:name8:test.txtee') });
+    await page.locator('input[type="file"]').setInputFiles([metadata('first.torrent'), metadata('second.torrent')]);
+    await page.getByText('test.txt', { exact: true }).waitFor();
+    await page.getByRole('button', { name: 'Select none', exact: true }).click();
+    await submitAdd();
+    await addError.waitFor();
+    assert.match(await addError.textContent(), /Select at least one payload file in first.torrent/);
+    await returnToReview();
+    await page.getByRole('button', { name: 'Select all', exact: true }).click();
+    freeBytes = -1;
+    await submitAdd();
+    await addError.waitFor();
+    assert.match(await addError.textContent(), /folder exists and is accessible/);
+    await returnToReview();
+    freeBytes = 1024;
+    const writesBeforeMismatch = writes.filter(call => call.method === 'web.add_torrents').length;
+    await submitAdd();
+    await addError.waitFor();
+    assert.match(await addError.textContent(), /did not accept those torrent files/);
+    assert.equal(writes.filter(call => call.method === 'web.add_torrents').length, writesBeforeMismatch);
+    await returnToReview();
+    uploadPaths = ['/tmp/first.torrent', '/tmp/second.torrent'];
+    addResult = [[true, 'first-id'], [true, null]];
+    await submitAdd();
+    await addError.waitFor();
+    assert.match(await addError.textContent(), /1 torrent\(s\) added/);
+    assert.match(await addError.textContent(), /second.torrent/);
+    await returnToReview();
+    assert.equal(await page.getByLabel('Select first.torrent for adding', { exact: true }).isChecked(), false);
+    assert.equal(await page.getByLabel('Select second.torrent for adding', { exact: true }).isChecked(), true);
+    uploadPaths = ['/tmp/second.torrent'];
+    addResult = [[true, 'second-id']];
+    await submitAdd();
+    await page.getByRole('dialog', { name: 'Review torrent', exact: true }).waitFor({ state: 'hidden' });
+    assert.equal(writes.at(-1).params[0].length, 1);
+    assert.equal(writes.at(-1).params[0][0].path, '/tmp/second.torrent');
+
     await page.setViewportSize({ width: 390, height: 844 });
     await page.getByRole('checkbox', { name: 'Select Fixture torrent', exact: true }).waitFor();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     assert.deepEqual(errors, []);
     await page.close();
-    console.log(`Verified ${pathname === '/' ? 'companion' : 'hosted'}: proxy contract, malformed torrent handling, in-flight Add dismissal protection, payload priorities, mobile bounds.`);
+    console.log(`Verified ${pathname === '/' ? 'companion' : 'hosted'}: proxy contract, malformed metadata, in-flight Add protection, payload priorities, magnet preview, failed link adds, invalid download folders, incomplete uploads, partial batch retry, mobile bounds.`);
   }
 } finally {
   releaseUpload?.();

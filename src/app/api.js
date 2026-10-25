@@ -109,7 +109,9 @@ export const api = {
       { method: 'POST', credentials: 'same-origin', body: form },
     );
     const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.success || !result.files?.length)
+    if (!response.ok || !result.success || !Array.isArray(result.files) ||
+        result.files.length !== files.length ||
+        result.files.some(file => typeof file !== 'string' || !file.trim()))
       throw new Error(
         result.error || 'Deluge did not accept those torrent files.',
       );

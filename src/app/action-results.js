@@ -25,3 +25,25 @@ export function assertRemovalResult(result) {
   }
   if (result === false) throw new Error('Deluge could not remove the selected torrents.');
 }
+
+export function assertTorrentAdded(result) {
+  if (typeof result !== 'string' || !result.trim())
+    throw new Error('Deluge did not add this torrent. It may already be in the session, or its metadata could not be read.');
+}
+
+// web.add_torrents returns one [success, torrent ID or error] pair per upload.
+export function torrentBatchResult(result, names) {
+  const added = [];
+  const failed = [];
+  const valid = Array.isArray(result) && result.length === names.length;
+  names.forEach((name, index) => {
+    const item = valid ? result[index] : null;
+    if (Array.isArray(item) && item[0] === true && typeof item[1] === 'string' && item[1].trim()) {
+      added.push(name);
+    } else {
+      const detail = item?.[0] === false && typeof item[1] === 'string' ? item[1] : '';
+      failed.push({ name, reason: detail || 'Deluge did not confirm the add. Check for an existing torrent or invalid metadata.' });
+    }
+  });
+  return { added, failed };
+}

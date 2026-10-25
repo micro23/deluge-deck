@@ -1,3 +1,10 @@
+## 1.0.97
+
+- Confirm torrent IDs and per-file results before reporting successful adds; retain failed torrents for retry without resubmitting successful ones.
+- Reject incomplete uploads and empty payload selections, and explain when the daemon cannot access the download folder.
+- Repair collapsed magnet previews, preserve percent characters in magnet names, and keep the magnet field accessible after an error.
+- Make demo batch uploads and URL adds follow the real Deluge response contracts.
+
 ## 1.0.96
 
 - Align menu spacing and preference controls across desktop and mobile themes, and keep floating dialogs above the dashboard.
