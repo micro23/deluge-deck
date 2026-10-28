@@ -5040,12 +5040,9 @@ function App() {
       .session()
       .then((result) => {
         setSessionData(result);
-        setConnected(
-          Boolean(
-            result.authenticated &&
-            (result.connected || result.mode === 'demo'),
-          ),
-        );
+        // A disconnected daemon does not invalidate the browser's login.
+        // Keep the dashboard and Connection Manager available for recovery.
+        setConnected(Boolean(result.authenticated));
         result.authenticated ? refresh() : setLoading(false);
       })
       .catch(() => setLoading(false))

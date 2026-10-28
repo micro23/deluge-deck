@@ -1,5 +1,6 @@
 import {
   authenticateAndConnectHosted,
+  connectHostedDaemon,
   serializeRpcRequest,
   readRpcResponse,
 } from '../../server/hosted-contracts.mjs';
@@ -52,8 +53,11 @@ export const api = {
         return response.json();
       });
     const authenticated = await rpc('auth.check_session').catch(() => false);
+    // Restoring a valid Web session must also restore its daemon connection.
+    // The bridge's background auto-connect can finish after this check; do not
+    // mistake that disconnected state for a missing authentication cookie.
     const connected = authenticated
-      ? await rpc('web.connected').catch(() => false)
+      ? await connectHostedDaemon(rpc).catch(() => false)
       : false;
     return {
       mode: 'plugin',

@@ -1,3 +1,8 @@
+## 1.0.98
+
+- Restore an existing hosted login by reconnecting the Deluge daemon before entering the dashboard.
+- Keep authenticated users on the dashboard with access to the Connection Manager when their daemon is offline, instead of asking for their password again.
+
 ## 1.0.97
 
 - Confirm torrent IDs and per-file results before reporting successful adds; retain failed torrents for retry without resubmitting successful ones.
