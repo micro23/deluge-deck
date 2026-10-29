@@ -19,3 +19,9 @@
 :root[data-theme][data-theme] body .table-shell .column-resize-handle { right:0!important; }
 :root[data-theme][data-theme] body .table-shell .row-menu { display:grid; place-items:center; padding:0!important; }
 :root[data-theme][data-theme] body .table-shell .row-menu svg { max-width:100%; }
+/* Names use all space after the compact controls, including wrapped lines. */
+:root[data-theme][data-theme] body .table-shell table.auto-sized-table td[data-column='name'] { text-align:left!important; padding-inline:3px!important; }
+:root[data-theme][data-theme] body .table-shell table.auto-sized-table .name-content { display:flex; width:100%; gap:4px; align-items:flex-start; justify-content:flex-start; text-align:left!important; }
+:root[data-theme][data-theme] body .table-shell table.auto-sized-table .torrent-name { flex:1 1 0%; width:auto!important; min-width:0; max-width:none!important; margin:0; padding:0; text-align:left!important; }
+:root[data-theme][data-theme] body .table-shell table.auto-sized-table .torrent-name strong { text-align:left!important; margin:0; padding:0; }
+:root[data-theme][data-theme] body .table-shell table.auto-sized-table .name-content > :not(.torrent-name) { flex-shrink:0; }
