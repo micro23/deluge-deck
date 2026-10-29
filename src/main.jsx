@@ -1,3 +1,4 @@
+import { fitColumnWidths } from './app/fit-column-widths.js';
 import React, { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
@@ -108,6 +109,7 @@ import './themes/core-refined.css';
 import './themes/forest.css';
 import './windowed-list.css';
 import './menu-layout.css';
+import './fit-columns.css';
 import { createPoller } from '../server/polling.mjs';
 
 const VERSION = APP_VERSION;
@@ -1740,9 +1742,7 @@ function TorrentTable({
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const [draggingColumn, setDraggingColumn] = useState(null);
   const mobile = useMobileLayout();
-  const clampWidth = (key, width) => theme === 'terminal'
-    ? Math.min(MAX_COLUMN_WIDTHS[key], Math.max(key === 'name' ? 180 : Math.min(terminalColumnWidths[key], MIN_COLUMN_WIDTHS[key]), Math.round(width)))
-    : clampColumnWidth(key, width);
+  const clampWidth = (_key, width) => Math.max(24, Math.round(width));
   const columnResizeStart = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const scopedTheme = theme === 'terminal' || theme === 'valentine' || theme === 'halloween' || theme === 'darkhand';
@@ -1828,10 +1828,7 @@ function TorrentTable({
     const updateManualResize = (event) => {
       const resize = columnResizeStart.current;
       if (!resize) return;
-      const width = clampWidth(
-        resize.key,
-        resize.startWidth + event.clientX - resize.startX,
-      );
+      const width = Math.max(24, resize.startWidth + event.clientX - resize.startX);
       setColumnWidths((current) =>
         current[resize.key] === width
           ? current
@@ -1894,18 +1891,26 @@ function TorrentTable({
       }),
     [torrents, sort],
   );
-  const rows = useWindowedRows(sortedTorrents, { listRef: bodyRef, scrollRef, enabled: !loading && !mobile, uniform: true, resetKey: `${theme}:${sort.key}:${sort.direction}` });
-  const resolvedColumnWidths = useMemo(
+  const rows = useWindowedRows(sortedTorrents, { listRef: bodyRef, scrollRef, enabled: !loading && !mobile, uniform: false, resetKey: `${theme}:${sort.key}:${sort.direction}` });
+  const preferredColumnWidths = useMemo(
     () => ({ ...(theme === 'terminal' ? terminalColumnWidths : autoColumnWidths), ...columnWidths }),
     [autoColumnWidths, columnWidths, theme],
   );
-  const tableMinimumWidth = useMemo(
-    () =>
-      (theme === 'terminal' ? 47 : TABLE_FIXED_CHROME_WIDTH) +
-      visibleColumns
-        .reduce((total, key) => total + resolvedColumnWidths[key], 0),
-    [resolvedColumnWidths, visibleColumns, theme],
-  );
+  const [tableAvailableWidth, setTableAvailableWidth] = useState(0);
+  useLayoutEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const measure = () => setTableAvailableWidth(container.clientWidth);
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    measure();
+    return () => observer.disconnect();
+  }, [mobile, theme]);
+  const resolvedColumnWidths = useMemo(() => {
+    const space = Math.max(0, tableAvailableWidth - (theme === 'terminal' ? 47 : TABLE_FIXED_CHROME_WIDTH));
+    const widths = fitColumnWidths(visibleColumns.map(key => preferredColumnWidths[key]), space);
+    return Object.fromEntries(visibleColumns.map((key, index) => [key, widths[index]]));
+  }, [preferredColumnWidths, visibleColumns, tableAvailableWidth, theme]);
 
   // Measure an unconstrained clone so auto widths can both grow and shrink as
   // data changes. Measuring the live fixed-layout table would only ever report
@@ -2090,7 +2095,7 @@ function TorrentTable({
         ref={tableRef}
         className="auto-sized-table"
         aria-rowcount={sortedTorrents.length + 1}
-        style={{ minWidth: `${tableMinimumWidth}px` }}
+        style={{ width: '100%', minWidth: 0, tableLayout: 'fixed' }}
       >
         <thead>
           <tr>
@@ -2160,7 +2165,7 @@ function TorrentTable({
                   role="separator"
                   aria-orientation="vertical"
                   aria-label={`Resize ${TABLE_COLUMN_LABELS[key]} column`}
-                  aria-valuemin={MIN_COLUMN_WIDTHS[key]}
+                  aria-valuemin={24}
                   aria-valuemax={MAX_COLUMN_WIDTHS[key]}
                   aria-valuenow={resolvedColumnWidths[key]}
                   tabIndex="0"
@@ -2169,6 +2174,7 @@ function TorrentTable({
                     if (event.button !== 0) return;
                     event.preventDefault();
                     event.stopPropagation();
+                    setColumnWidths({ ...resolvedColumnWidths });
                     columnResizeStart.current = {
                       key,
                       startX: event.clientX,
@@ -2200,11 +2206,8 @@ function TorrentTable({
                     const delta = (event.shiftKey ? 24 : 8) *
                       (event.key === 'ArrowRight' ? 1 : -1);
                     setColumnWidths((current) => ({
-                      ...current,
-                      [key]: clampWidth(
-                        key,
-                        (current[key] ?? resolvedColumnWidths[key]) + delta,
-                      ),
+                      ...resolvedColumnWidths,
+                      [key]: Math.max(24, resolvedColumnWidths[key] + delta),
                     }));
                   }}
                 />

@@ -825,7 +825,7 @@ test('torrent table headers support horizontal resizing', async () => {
   assert.match(ui, /name: 'Torrent'/);
   assert.doesNotMatch(ui, /key !== 'name' && \(/);
   assert.match(ui, /role="separator"/);
-  assert.match(ui, /aria-valuemin=\{MIN_COLUMN_WIDTHS\[key\]\}/);
+  assert.match(ui, /aria-valuemin=\{24\}/);
   assert.match(ui, /\['ArrowLeft', 'ArrowRight', 'Home'\]/);
   assert.match(css, /\.column-resize-handle \{/);
   assert.match(css, /cursor:col-resize/);
@@ -839,7 +839,7 @@ test('torrent table persists resized column widths', async () => {
   assert.match(ui, /window\.addEventListener\('pointermove', updateManualResize\)/);
   assert.match(ui, /window\.addEventListener\('pointerup', finishManualResize\)/);
   assert.match(ui, /width: `\$\{resolvedColumnWidths\[key\]\}px`/);
-  assert.doesNotMatch(ui.slice(ui.indexOf('function TorrentTable')), /new ResizeObserver/);
+  assert.match(ui.slice(ui.indexOf('function TorrentTable')), /new ResizeObserver/);
 });
 
 test('torrent table supports column visibility toggles', async () => {
