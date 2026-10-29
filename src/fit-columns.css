@@ -1,0 +1,21 @@
+/* Final shared overrides: theme-specific minimum canvases must not win. */
+:root[data-theme] body .table-shell { min-width:0!important; max-width:100%; overflow-x:hidden; }
+:root[data-theme] body .table-shell table.auto-sized-table:not(.column-measure-table) { width:100%!important; min-width:0!important; max-width:100%!important; table-layout:fixed!important; }
+:root[data-theme] body .table-shell table.auto-sized-table:not(.column-measure-table) :is(th,td) { min-width:0!important; max-width:none!important; white-space:normal!important; overflow-wrap:anywhere; }
+:root[data-theme] body .table-shell :is(.name-content,.torrent-name,.progress-wrap,.progress-track) { min-width:0!important; max-width:100%!important; }
+:root[data-theme] body .table-shell .torrent-name strong { white-space:normal!important; display:block!important; overflow:visible!important; -webkit-line-clamp:unset; }
+:root[data-theme] body .table-shell .sort-button { white-space:normal!important; overflow-wrap:anywhere; padding-right:8px; }
+:root[data-theme] body .table-shell tbody tr:not(.virtual-spacer) { height:auto!important; }
+:root[data-theme] body .table-shell td { height:auto!important; }
+:root[data-theme][data-theme] body .table-shell table.auto-sized-table:not(.column-measure-table) th { padding:4px!important; }
+:root[data-theme][data-theme] body .table-shell .sort-button { min-width:0!important; width:100%; padding:2px 6px 2px 0!important; font-size:11px; overflow-wrap:normal; }
+:root[data-theme][data-theme] body .table-shell .row-menu { min-width:0!important; max-width:100%!important; box-sizing:border-box; }
+:root[data-theme][data-theme] body .table-shell td:last-child { padding-left:0!important; padding-right:0!important; }
+@media (min-width:761px) {
+  :root[data-theme][data-theme] body .table-shell table.auto-sized-table:not(.column-measure-table) :is(th,td)[data-column] { display:table-cell!important; }
+}
+:root[data-theme][data-theme] body .dh-network-scroll table { width:100%!important; min-width:0!important; table-layout:fixed; }
+:root[data-theme][data-theme] body .dh-network-scroll :is(th,td) { white-space:normal!important; overflow-wrap:anywhere; min-width:0!important; }
+:root[data-theme][data-theme] body .table-shell .column-resize-handle { right:0!important; }
+:root[data-theme][data-theme] body .table-shell .row-menu { display:grid; place-items:center; padding:0!important; }
+:root[data-theme][data-theme] body .table-shell .row-menu svg { max-width:100%; }

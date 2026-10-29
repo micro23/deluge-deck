@@ -1,5 +1,11 @@
 ## 1.0.98
 
+## 1.0.99 — columns that fit the available pane
+
+- Redistribute visible column widths to fill the available pane, including saved oversized preferences.
+- Keep resizing within the pane and wrap long values vertically.
+- Align the WebUI and desktop fitting policy across all themes.
+
 - Restore an existing hosted login by reconnecting the Deluge daemon before entering the dashboard.
 - Keep authenticated users on the dashboard with access to the Connection Manager when their daemon is offline, instead of asking for their password again.
 
