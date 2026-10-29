@@ -1,5 +1,9 @@
 ## 1.0.98
 
+## 1.0.100 — optional Uploaded column
+
+- Add an optional Uploaded column showing total uploaded bytes, with numeric sorting and saved visibility preferences. Upload continues to show transfer speed.
+
 ## 1.0.99 — columns that fit the available pane
 
 - Redistribute visible column widths to fill the available pane, including saved oversized preferences.

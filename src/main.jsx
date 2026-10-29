@@ -1549,6 +1549,7 @@ const TABLE_COLUMN_ORDER = [
   'seeds',
   'peers',
   'seedingTime',
+  'uploaded',
   'added',
   'tracker',
   'queue',
@@ -1569,6 +1570,7 @@ const DEFAULT_COLUMN_VISIBILITY = {
   peers: true,
   added: false,
   seedingTime: true,
+  uploaded: false,
   tracker: false,
   queue: false,
 };
@@ -1590,6 +1592,7 @@ const AUTO_COLUMN_FALLBACKS = {
   seedingTime: 116,
   tracker: 150,
   queue: 70,
+  uploaded: 100,
 };
 const MIN_COLUMN_WIDTHS = {
   name: 220,
@@ -1606,6 +1609,7 @@ const MIN_COLUMN_WIDTHS = {
   seedingTime: 104,
   tracker: 112,
   queue: 60,
+  uploaded: 80,
 };
 const MAX_COLUMN_WIDTHS = {
   name: 720,
@@ -1622,6 +1626,7 @@ const MAX_COLUMN_WIDTHS = {
   seedingTime: 158,
   tracker: 240,
   queue: 92,
+  uploaded: 160,
 };
 const TABLE_FIXED_CHROME_WIDTH = 96;
 const clampColumnWidth = (key, width) =>
@@ -1657,6 +1662,7 @@ const TABLE_COLUMN_LABELS = {
   seedingTime: 'Seeding time',
   tracker: 'Tracker',
   queue: 'Queue',
+  uploaded: 'Uploaded',
 };
 const TABLE_SORT_KEYS = {
   name: 'name',
@@ -1673,6 +1679,7 @@ const TABLE_SORT_KEYS = {
   seedingTime: 'seeding_time',
   tracker: 'tracker_host',
   queue: 'queue',
+  uploaded: 'total_uploaded',
 };
 
 const MOBILE_QUERY = '(max-width:760px), (max-width:950px) and (max-height:540px)';
@@ -2006,6 +2013,8 @@ function TorrentTable({
           <Progress value={torrent.progress} state={torrent.state} theme={theme} />
         </td>
       );
+    if (key === 'uploaded')
+      return <td key={key} data-column={key}>{formatBytes(torrent.total_uploaded)}</td>;
     if (key === 'size')
       return <td key={key} data-column={key}>{formatBytes(torrent.total_size)}</td>;
     if (key === 'download')
