@@ -19,6 +19,16 @@ try {
       assert.ok(bounds.scroll <= bounds.available + 1, `${theme} ${width}: horizontal overflow ${JSON.stringify(bounds)}`);
       assert.equal(bounds.hidden,0,`${theme}: no enabled columns hidden`);
     }
+    const nameLayout = await page.locator('.torrent-name').first().evaluate(name => {
+      const box = name.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(name.querySelector('strong'));
+      return {
+        rightGap:name.parentElement.getBoundingClientRect().right-box.right,
+        indents:[...range.getClientRects()].map(line=>Math.abs(line.left-box.left)),
+      };
+    });
+    assert.ok(nameLayout.rightGap<=2 && nameLayout.indents.every(indent=>indent<=1), `${theme}: names use all remaining width and align left`);
     await page.close();
     console.log(`PASS ${theme}: columns fit wide and narrow panes`);
   }

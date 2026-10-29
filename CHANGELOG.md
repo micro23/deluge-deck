@@ -1,5 +1,9 @@
 ## 1.0.98
 
+## 1.0.101 — full-width left-aligned torrent names
+
+- Left-align wrapped torrent names, use all remaining cell width, and reduce space around the row controls.
+
 ## 1.0.100 — optional Uploaded column
 
 - Add an optional Uploaded column showing total uploaded bytes, with numeric sorting and saved visibility preferences. Upload continues to show transfer speed.
