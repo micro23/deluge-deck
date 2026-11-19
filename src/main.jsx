@@ -1,4 +1,4 @@
-import { fitColumnWidths } from './app/fit-column-widths.js';
+import { columnWidthFloors, fitColumnWidths, resizeColumnWidths } from './app/fit-column-widths.js';
 import React, { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
@@ -242,6 +242,8 @@ function TrackerFavicon({ host }) {
     <img
       className="tracker-favicon-small tracker-favicon-controlled"
       src={src}
+      referrerPolicy="no-referrer"
+      loading="lazy"
       alt={`${host} favicon`}
       onError={() => setCandidateIndex((index) => index + 1)}
     />
@@ -277,6 +279,7 @@ const icons = {
   error: AlertTriangle,
 };
 const deckModalState = { locked: false };
+const modalStack = [];
 
 function Brand() {
   return (
@@ -293,8 +296,8 @@ function Brand() {
     </div>
   );
 }
-function Login({ onConnect, mode, sessionMessage = '' }) {
-  const [url, setUrl] = useState('http://127.0.0.1:8112');
+function Login({ onConnect, mode, delugeUrl, sessionMessage = '' }) {
+  const [url, setUrl] = useState(delugeUrl || 'http://127.0.0.1:8112');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -600,13 +603,13 @@ function usePopoverDismiss(open, setOpen, ref) {
       const insidePortalPopover =
         event.target instanceof Element &&
         event.target.closest?.('.portal-popover');
-      if (
-        event.key === 'Escape' ||
-        (event.type === 'pointerdown' &&
-          !ref.current?.contains(event.target) &&
-          !insidePortalPopover)
-      )
+      if (event.key === 'Escape' && !modalStack.length) {
+        event.preventDefault();
+        event.stopPropagation();
         setOpen(false);
+      } else if (event.type === 'pointerdown' && !ref.current?.contains(event.target) && !insidePortalPopover) {
+        setOpen(false);
+      }
     };
     document.addEventListener('keydown', dismiss, true);
     document.addEventListener('pointerdown', dismiss, true);
@@ -615,6 +618,16 @@ function usePopoverDismiss(open, setOpen, ref) {
       document.removeEventListener('pointerdown', dismiss, true);
     };
   }, [open, setOpen, ref]);
+}
+function usePopoverFocus(open, triggerRef, focusRef) {
+  useLayoutEffect(() => {
+    if (!open) return;
+    const trigger = triggerRef.current;
+    focusRef.current?.focus({ preventScroll: true });
+    return () => {
+      if (document.activeElement === document.body && trigger?.isConnected) trigger.focus({ preventScroll: true });
+    };
+  }, [open, triggerRef, focusRef]);
 }
 function useDialogDismiss(onClose, ref, blocked = false, enabled = true) {
   useEffect(() => {
@@ -625,7 +638,7 @@ function useDialogDismiss(onClose, ref, blocked = false, enabled = true) {
         event.type === 'pointerdown' &&
         ref.current &&
         !ref.current.contains(event.target);
-      if (!escape && !outside) return;
+      if ((!escape && !outside) || modalStack.at(-1) !== ref) return;
       event.preventDefault();
       event.stopPropagation();
       if (!blocked) onClose();
@@ -659,7 +672,8 @@ function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentA
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const anchor = useRef();
-  const popoverRef = useRef();
+  const popoverRef = useRef(null);
+  const triggerRef = useRef(null);
   const portalHost = useViewportOverlayHost();
   const [limits, setLimits] = useState({
     down: '-1',
@@ -667,6 +681,7 @@ function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentA
     connections: '-1',
   });
   usePopoverDismiss(open, setOpen, anchor);
+  usePopoverFocus(open, triggerRef, popoverRef);
   useEffect(() => {
     const close = (event) => {
       if (event.detail !== 'global') setOpen(false);
@@ -675,14 +690,6 @@ function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentA
     return () =>
       window.removeEventListener('deluge-deck:close-popovers', close);
   }, []);
-  useEffect(() => {
-    anchor.current
-      ?.querySelector('.global-trigger')
-      ?.setAttribute(
-        'aria-label',
-        open ? 'Close global session controls' : 'Open global session controls',
-      );
-  }, [open]);
   useEffect(() => {
     if (open)
       setLimits({
@@ -752,8 +759,10 @@ function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentA
     createPortal(
       <section
         ref={popoverRef}
+        id="global-session-panel"
         className="global-popover portal-popover"
         role="dialog"
+        tabIndex={-1}
         aria-label="Global session controls"
       >
         <div className="popover-heading">
@@ -927,12 +936,15 @@ function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentA
       </div>
       <button
         className="icon-button global-trigger"
+        ref={triggerRef}
         onClick={() => {
           signalPopover('global');
           setOpen((value) => !value);
         }}
-        aria-label="Open global session controls"
+        aria-label={open ? 'Close global session controls' : 'Open global session controls'}
         aria-expanded={open}
+        aria-haspopup="dialog"
+        aria-controls={open ? 'global-session-panel' : undefined}
         title="Global session controls"
       >
         <SlidersHorizontal size={18} />
@@ -942,9 +954,8 @@ function GlobalControls({ stats, torrents, selectedCount, actionBusy, onTorrentA
   );
 }
 function ConnectionManagerModal({ onClose, onConnected }) {
-  useRestoreFocus();
   const modalRef = useRef(null);
-  useFocusTrap(modalRef);
+  useModalFocus(modalRef);
   const [hosts, setHosts] = useState([]);
   const [busy, setBusy] = useState('load');
   useDialogDismiss(onClose, modalRef, Boolean(busy));
@@ -1251,8 +1262,11 @@ function ConnectionManagerModal({ onClose, onConnected }) {
 function AccountMenu({ session, onLogout }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const anchor = useRef();
+  const anchor = useRef(null);
+  const triggerRef = useRef(null);
+  const logoutRef = useRef(null);
   usePopoverDismiss(open, setOpen, anchor);
+  usePopoverFocus(open, triggerRef, logoutRef);
   useEffect(() => {
     const close = (event) => {
       if (event.detail !== 'account') setOpen(false);
@@ -1284,12 +1298,14 @@ function AccountMenu({ session, onLogout }) {
     <div className="account-menu" ref={anchor}>
       <button
         className="avatar"
+        ref={triggerRef}
         onClick={() => {
           signalPopover('account');
           setOpen((value) => !value);
         }}
         aria-label="Open account menu"
         aria-expanded={open}
+        aria-haspopup="menu"
       >
         DD
         <span className="avatar-presence" />
@@ -1313,6 +1329,7 @@ function AccountMenu({ session, onLogout }) {
           </div>
           <button
             className="logout-button"
+            ref={logoutRef}
             onClick={logout}
             disabled={busy}
             role="menuitem"
@@ -1473,10 +1490,9 @@ function Progress({ value = 0, state, theme }) {
   );
 }
 function ColumnChooser({ columns, visibility, onToggle, onClose }) {
-  useRestoreFocus();
   const overlayHost = useViewportOverlayHost();
   const dialogRef = useRef(null);
-  useFocusTrap(dialogRef);
+  useModalFocus(dialogRef);
   useDialogDismiss(onClose, dialogRef);
   const visibleCount = columns.filter(({ key }) => visibility[key]).length;
   return createPortal(
@@ -1506,8 +1522,8 @@ function ColumnChooser({ columns, visibility, onToggle, onClose }) {
         </header>
         <div className="column-chooser-content">
           <p>
-            {visibleCount} of {columns.length} columns shown. Turn columns on or
-            off here; drag visible table headers to change their order.
+            {visibleCount} of {columns.length} optional columns shown. To change
+            their order, drag a heading or focus it and press Shift with the left or right arrow key.
           </p>
           <div
             className="column-chooser-options"
@@ -1528,7 +1544,7 @@ function ColumnChooser({ columns, visibility, onToggle, onClose }) {
         </div>
         <footer className="column-chooser-foot">
           <span>Changes are saved automatically.</span>
-          <button className="primary-button" onClick={onClose}>
+          <button className="primary-button" onClick={onClose} aria-label="Done">
             Done
           </button>
         </footer>
@@ -1628,7 +1644,26 @@ const MAX_COLUMN_WIDTHS = {
   queue: 92,
   uploaded: 160,
 };
-const TABLE_FIXED_CHROME_WIDTH = 96;
+const TABLE_FIXED_CHROME_WIDTH = 75;
+const COMPACT_TABLE_FIXED_CHROME_WIDTH = 59;
+const TERMINAL_TABLE_FIXED_CHROME_WIDTH = 45;
+const TABLE_COLUMN_FLOORS = {
+  name: 120,
+  state: 98,
+  size: 50,
+  progress: 57,
+  download: 55,
+  upload: 55,
+  eta: 36,
+  ratio: 39,
+  seeds: 42,
+  peers: 42,
+  added: 61,
+  seedingTime: 62,
+  uploaded: 61,
+  tracker: 71,
+  queue: 32,
+};
 const clampColumnWidth = (key, width) =>
   Math.min(
     MAX_COLUMN_WIDTHS[key],
@@ -1664,6 +1699,14 @@ const TABLE_COLUMN_LABELS = {
   queue: 'Queue',
   uploaded: 'Uploaded',
 };
+const COMPACT_COLUMN_LABELS = {
+  progress: '%',
+  download: 'Down',
+  upload: 'Up',
+  seedingTime: 'Seed time',
+};
+const DARKHAND_COLUMN_LABELS = { name: 'Name', download: 'Down speed', upload: 'Up speed', queue: '#' };
+const RATE_COLUMN_LABELS = { download: '↓ Download', upload: '↑ Upload' };
 const TABLE_SORT_KEYS = {
   name: 'name',
   state: 'state',
@@ -1718,7 +1761,7 @@ function MobileTorrentList({ torrents, theme, selected, setSelected, onOpen, onM
         {rows.slots.map(slot => {
           if (slot.type === 'spacer') return <React.Fragment key={slot.key}><li className="virtual-spacer" aria-hidden="true" style={{ height: slot.height }} />{slot.parity === 0 && <li className="virtual-spacer" aria-hidden="true" style={{ height: 0 }} />}</React.Fragment>;
           const index = slot.index, t = torrents[index];
-          return <li data-virtual-index={index} key={t.hash} onKeyDown={event => rows.tabAcrossBoundary(event, index, 'button.row-menu', 'input')} className={`mobile-transfer ${selected.has(t.hash) ? 'selected' : ''}`}>
+          return <li data-virtual-index={index} data-virtual-hash={t.hash} key={t.hash} onKeyDown={event => rows.tabAcrossBoundary(event, index, 'button.row-menu', 'input')} className={`mobile-transfer ${selected.has(t.hash) ? 'selected' : ''}`}>
           <label className="mobile-row-select"><input type="checkbox" aria-label={`Select ${t.name}`} checked={selected.has(t.hash)} onChange={() => setSelected(current => { const next = new Set(current); next.has(t.hash) ? next.delete(t.hash) : next.add(t.hash); return next; })} /></label>
           <button className="mobile-transfer-open" aria-label={`Open details for ${t.name}`} onKeyDown={event => rows.navigate(event, index, '.mobile-transfer-open')} onClick={() => onOpen(t)}>
             <strong className="mobile-transfer-name">{t.name}</strong>
@@ -1749,7 +1792,7 @@ function TorrentTable({
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const [draggingColumn, setDraggingColumn] = useState(null);
   const mobile = useMobileLayout();
-  const clampWidth = (_key, width) => Math.max(24, Math.round(width));
+  const clampWidth = (_key, width) => Math.max(1, width);
   const columnResizeStart = useRef(null);
   const [columnVisibility, setColumnVisibility] = useState(() => {
     const scopedTheme = theme === 'terminal' || theme === 'valentine' || theme === 'halloween' || theme === 'darkhand';
@@ -1835,12 +1878,10 @@ function TorrentTable({
     const updateManualResize = (event) => {
       const resize = columnResizeStart.current;
       if (!resize) return;
-      const width = Math.max(24, resize.startWidth + event.clientX - resize.startX);
-      setColumnWidths((current) =>
-        current[resize.key] === width
-          ? current
-          : { ...current, [resize.key]: width },
-      );
+      const width = resize.startWidth + event.clientX - resize.startX;
+      if (width === resize.startWidth && !resize.moved) return;
+      resize.moved = true;
+      setColumnWidths((current) => ({ ...current, ...resize.apply(width) }));
     };
     const finishManualResize = () => {
       if (!columnResizeStart.current) return;
@@ -1870,11 +1911,12 @@ function TorrentTable({
   const toggleColumn = (key) =>
     setColumnVisibility((current) => ({ ...current, [key]: !current[key] }));
   const moveColumn = (source, target) => {
-    if (!source || source === 'name' || source === target) return;
+    if (!source || !target || source === 'name' || target === 'name' || source === target) return;
     setColumnOrder((current) => {
+      const targetIndex = current.indexOf(target);
+      if (targetIndex < 0 || !current.includes(source)) return current;
       const next = current.filter((key) => key !== source);
-      const targetIndex = Math.max(1, next.indexOf(target));
-      next.splice(targetIndex < 0 ? next.length : targetIndex, 0, source);
+      next.splice(targetIndex, 0, source);
       return next;
     });
   };
@@ -1898,7 +1940,7 @@ function TorrentTable({
       }),
     [torrents, sort],
   );
-  const rows = useWindowedRows(sortedTorrents, { listRef: bodyRef, scrollRef, enabled: !loading && !mobile, uniform: false, resetKey: `${theme}:${sort.key}:${sort.direction}` });
+  const rows = useWindowedRows(sortedTorrents, { listRef: bodyRef, scrollRef, enabled: !loading && !mobile, resetKey: `${theme}:${sort.key}:${sort.direction}` });
   const preferredColumnWidths = useMemo(
     () => ({ ...(theme === 'terminal' ? terminalColumnWidths : autoColumnWidths), ...columnWidths }),
     [autoColumnWidths, columnWidths, theme],
@@ -1913,11 +1955,25 @@ function TorrentTable({
     measure();
     return () => observer.disconnect();
   }, [mobile, theme]);
+  const fixedChrome = theme === 'terminal' ? TERMINAL_TABLE_FIXED_CHROME_WIDTH : TABLE_FIXED_CHROME_WIDTH;
+  const compactColumns = (tableAvailableWidth - fixedChrome) / visibleColumns.length < 72;
+  const tableDataWidth = Math.max(0, tableAvailableWidth - (compactColumns && theme !== 'terminal' ? COMPACT_TABLE_FIXED_CHROME_WIDTH : fixedChrome));
+  const themeLabels = theme === 'terminal' ? terminalColumnLabels : theme === 'darkhand' ? DARKHAND_COLUMN_LABELS : {};
+  const columnHeading = (key) => {
+    if (compactColumns && theme !== 'terminal' && COMPACT_COLUMN_LABELS[key]) return COMPACT_COLUMN_LABELS[key];
+    return themeLabels[key] || (compactColumns && COMPACT_COLUMN_LABELS[key]) || RATE_COLUMN_LABELS[key] || TABLE_COLUMN_LABELS[key];
+  };
+  const minimums = useMemo(() => visibleColumns.map(key => TABLE_COLUMN_FLOORS[key]), [visibleColumns]);
+  const floors = useMemo(() => columnWidthFloors(minimums, tableDataWidth), [minimums, tableDataWidth]);
+  const resizeRoom = tableDataWidth - floors.reduce((sum, width) => sum + width, 0);
   const resolvedColumnWidths = useMemo(() => {
-    const space = Math.max(0, tableAvailableWidth - (theme === 'terminal' ? 47 : TABLE_FIXED_CHROME_WIDTH));
-    const widths = fitColumnWidths(visibleColumns.map(key => preferredColumnWidths[key]), space);
+    const widths = fitColumnWidths(visibleColumns.map(key => preferredColumnWidths[key]), tableDataWidth, minimums);
     return Object.fromEntries(visibleColumns.map((key, index) => [key, widths[index]]));
-  }, [preferredColumnWidths, visibleColumns, tableAvailableWidth, theme]);
+  }, [preferredColumnWidths, visibleColumns, tableDataWidth, minimums]);
+  const resizeColumn = (index, width) => {
+    const next = resizeColumnWidths(visibleColumns.map(key => resolvedColumnWidths[key]), floors, index, width);
+    return Object.fromEntries(visibleColumns.map((key, position) => [key, next[position]]));
+  };
 
   // Measure an unconstrained clone so auto widths can both grow and shrink as
   // data changes. Measuring the live fixed-layout table would only ever report
@@ -1983,7 +2039,7 @@ function TorrentTable({
         : 'descending'
       : 'none';
   if (mobile) return <MobileTorrentList torrents={sortedTorrents} theme={theme} selected={selected} setSelected={setSelected} onOpen={onOpen} onMenu={onMenu} loading={loading} onAdd={onAdd} sort={sort} setSort={setSort} />;
-  const renderCell = (key, torrent, Icon) => {
+  const renderCell = (key, torrent, Icon, index) => {
     if (key === 'name')
       return (
         <td key={key} className="name-cell" data-column={key}>
@@ -1993,7 +2049,14 @@ function TorrentTable({
             </div>
             {torrent.tracker_host && <TrackerFavicon host={torrent.tracker_host} />}
             <div className="torrent-name">
-              <strong title={torrent.name}>{torrent.name}</strong>
+              <button
+                className="torrent-open"
+                aria-label={`Open details for ${torrent.name}`}
+                onClick={() => onOpen(torrent)}
+                onKeyDown={event => rows.navigate(event, index, '.torrent-open')}
+              >
+                <strong title={torrent.name}>{torrent.name}</strong>
+              </button>
             </div>
           </div>
         </td>
@@ -2003,13 +2066,13 @@ function TorrentTable({
         <td key={key} data-column={key}>
           <span className={`state-badge ${stateKey(torrent.state)}`}>
             <i />
-            {torrent.state}
+            <span className="table-state-label" title={torrent.state}>{torrent.state}</span>
           </span>
         </td>
       );
     if (key === 'progress')
       return (
-        <td key={key} data-column={key}>
+        <td key={key} data-column={key} className={resolvedColumnWidths.progress < (theme === 'darkhand' ? 52 : 104) ? 'stacked-progress' : undefined}>
           <Progress value={torrent.progress} state={torrent.state} theme={theme} />
         </td>
       );
@@ -2074,7 +2137,7 @@ function TorrentTable({
     );
   };
   return (
-    <div className="table-shell" ref={scrollRef}>
+    <div className={`table-shell${compactColumns ? ' compact-columns' : ''}${resolvedColumnWidths.name < 180 ? ' compact-name' : ''}`} ref={scrollRef}>
       <div className="table-tools">
         <span className="sort-announcement" role="status" aria-live="polite">
           Sorted by {sortLabel},{' '}
@@ -2103,11 +2166,12 @@ function TorrentTable({
       <table
         ref={tableRef}
         className="auto-sized-table"
+        aria-label="Torrents"
         aria-rowcount={sortedTorrents.length + 1}
         style={{ width: '100%', minWidth: 0, tableLayout: 'fixed' }}
       >
         <thead>
-          <tr>
+          <tr aria-rowindex="1">
             <th className="check-cell">
               <input
                 type="checkbox"
@@ -2122,7 +2186,9 @@ function TorrentTable({
                 aria-label="Select all filtered torrents"
               />
             </th>
-            {visibleColumns.map((key) => (
+            {visibleColumns.map((key, index) => {
+              const heading = columnHeading(key);
+              return (
               <th
                 key={key}
                 aria-sort={sortValue(TABLE_SORT_KEYS[key])}
@@ -2156,38 +2222,41 @@ function TorrentTable({
                 <button
                   className="sort-button"
                   onClick={() => toggleSort(TABLE_SORT_KEYS[key])}
+                  aria-label={heading.includes(TABLE_COLUMN_LABELS[key])
+                    ? undefined
+                    : `${heading} (${TABLE_COLUMN_LABELS[key]})`}
+                  aria-keyshortcuts={key === 'name' ? undefined : 'Shift+ArrowLeft Shift+ArrowRight'}
+                  onKeyDown={(event) => {
+                    if (key === 'name' || !event.shiftKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+                    event.preventDefault();
+                    const step = event.key === 'ArrowLeft' ? -1 : 1;
+                    moveColumn(key, visibleColumns[visibleColumns.indexOf(key) + step]);
+                    // Moving a focused header can make the browser lose focus.
+                    const button = event.currentTarget;
+                    requestAnimationFrame(() => button.focus({ preventScroll: true }));
+                  }}
                 >
-                  {theme === 'darkhand' && ({ name: 'Name', download: 'Down speed', upload: 'Up speed', queue: '#' })[key]
-                    ? ({ name: 'Name', download: 'Down speed', upload: 'Up speed', queue: '#' })[key]
-                    : theme === 'terminal' && terminalColumnLabels[key]
-                    ? terminalColumnLabels[key]
-                    : key === 'download'
-                    ? '↓ Download'
-                    : key === 'upload'
-                      ? '↑ Upload'
-                      : key === 'name'
-                        ? 'Torrent'
-                        : TABLE_COLUMN_LABELS[key]}
+                  {heading}
                 </button>
                 <span
                   className="column-resize-handle"
                   role="separator"
                   aria-orientation="vertical"
                   aria-label={`Resize ${TABLE_COLUMN_LABELS[key]} column`}
-                  aria-valuemin={24}
-                  aria-valuemax={MAX_COLUMN_WIDTHS[key]}
-                  aria-valuenow={resolvedColumnWidths[key]}
+                  aria-valuemin={Math.round(floors[index])}
+                  aria-valuemax={Math.round(floors[index] + resizeRoom)}
+                  aria-valuenow={Math.round(resolvedColumnWidths[key])}
+                  aria-valuetext={`${Math.round(resolvedColumnWidths[key])} pixels`}
                   tabIndex="0"
                   title="Drag to resize · Double-click to auto-size"
                   onPointerDown={(event) => {
                     if (event.button !== 0) return;
                     event.preventDefault();
                     event.stopPropagation();
-                    setColumnWidths({ ...resolvedColumnWidths });
                     columnResizeStart.current = {
-                      key,
                       startX: event.clientX,
                       startWidth: resolvedColumnWidths[key],
+                      apply: width => resizeColumn(index, width),
                     };
                     document.body.classList.add('resizing-table-column');
                   }}
@@ -2215,13 +2284,14 @@ function TorrentTable({
                     const delta = (event.shiftKey ? 24 : 8) *
                       (event.key === 'ArrowRight' ? 1 : -1);
                     setColumnWidths((current) => ({
-                      ...resolvedColumnWidths,
-                      [key]: Math.max(24, resolvedColumnWidths[key] + delta),
+                      ...current,
+                      ...resizeColumn(index, resolvedColumnWidths[key] + delta),
                     }));
                   }}
                 />
               </th>
-            ))}
+              );
+            })}
             <th />
           </tr>
         </thead>
@@ -2247,23 +2317,15 @@ function TorrentTable({
                 <tr
                   key={torrent.hash}
                   data-virtual-index={index}
+                  data-virtual-hash={torrent.hash}
                   className={selected.has(torrent.hash) ? 'selected' : ''}
                   onClick={(event) => {
                     if (event.target.closest('button,input,select,a')) return;
+                    event.currentTarget.querySelector('.torrent-open')?.focus({ preventScroll: true });
                     onOpen(torrent);
                   }}
-                  tabIndex="0"
-                  role="button"
-                  aria-label={`Open details for ${torrent.name}`}
-                  onKeyDown={(event) => {
-                    rows.tabAcrossBoundary(event, index, 'button.row-menu');
-                    if (event.target !== event.currentTarget) return;
-                    if (rows.navigate(event, index)) return;
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      onOpen(torrent);
-                    }
-                  }}
+                  aria-rowindex={index + 2}
+                  onKeyDown={event => rows.tabAcrossBoundary(event, index, 'button.row-menu', 'input')}
                 >
                   <td className="check-cell">
                     <input
@@ -2281,7 +2343,7 @@ function TorrentTable({
                       aria-label={`Select ${torrent.name}`}
                     />
                   </td>
-                  {visibleColumns.map((key) => renderCell(key, torrent, Icon))}
+                  {visibleColumns.map((key) => renderCell(key, torrent, Icon, index))}
                   <td>
                     <button
                       className="row-menu"
@@ -2334,24 +2396,20 @@ function CommandPalette({
   onRefresh,
   onSearch,
 }) {
-  useRestoreFocus();
-  const input = useRef(null);
   const paletteRef = useRef(null);
-  useFocusTrap(paletteRef);
-  useEffect(() => {
-    input.current?.focus();
-    const dismiss = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', dismiss);
-    return () => window.removeEventListener('keydown', dismiss);
-  }, [onClose]);
+  const [query, setQuery] = useState('');
+  useModalFocus(paletteRef);
+  useDialogDismiss(onClose, paletteRef);
   const commands = [
     ['Add torrent', onAdd, Plus],
     ['Open Preferences', onPreferences, Settings2],
     ['Refresh torrents', onRefresh, RefreshCw],
     ['Focus search', onSearch, Search],
-  ];
+  ].filter(([label]) => label.toLowerCase().includes(query.trim().toLowerCase()));
+  const run = (action) => {
+    onClose();
+    action();
+  };
   return (
     <div
       className="modal-backdrop command-backdrop"
@@ -2367,19 +2425,24 @@ function CommandPalette({
         <div className="command-search">
           <Search size={17} />
           <input
-            ref={input}
+            value={query}
+            onChange={event => setQuery(event.target.value)}
+            onKeyDown={event => {
+              if (event.key === 'Enter' && !event.nativeEvent.isComposing && commands.length) {
+                event.preventDefault();
+                run(commands[0][1]);
+              }
+            }}
             placeholder="Type a command…"
             aria-label="Command search"
           />
         </div>
         <div className="command-list">
+          {!commands.length && <p className="command-empty" role="status">No matching commands.</p>}
           {commands.map(([label, action, Icon]) => (
             <button
               key={label}
-              onClick={() => {
-                action();
-                onClose();
-              }}
+              onClick={() => run(action)}
             >
               <Icon size={16} />
               <span>{label}</span>
@@ -2486,9 +2549,8 @@ function InlineRename({ initialName, onSave, onCancel, busy = false }) {
   );
 }
 function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs = false }) {
-  useRestoreFocus();
   const drawerRef = useRef(null);
-  useFocusTrap(drawerRef, !inline);
+  useModalFocus(drawerRef, !inline);
   useDialogDismiss(onClose, drawerRef, false, !inline);
   const [tab, setTab] = useState('overview');
   const tabs = networkTabs ? ['overview', 'files', 'peers', 'trackers'] : ['overview', 'files'];
@@ -3066,9 +3128,8 @@ function DetailDrawer({ torrent, onClose, onAction, inline = false, networkTabs 
   );
 }
 function RemoveModal({ targets, onClose, onRemove, onModalState }) {
-  useRestoreFocus();
   const modalRef = useRef(null);
-  useFocusTrap(modalRef);
+  useModalFocus(modalRef);
   const [busy, setBusy] = useState(false);
   useDialogDismiss(onClose, modalRef, Boolean(busy));
   const [error, setError] = useState('');
@@ -3177,9 +3238,8 @@ function RemoveModal({ targets, onClose, onRemove, onModalState }) {
   );
 }
 function MoveStorageModal({ torrent, onClose, onMoved, onModalState }) {
-  useRestoreFocus();
   const modalRef = useRef(null);
-  useFocusTrap(modalRef);
+  useModalFocus(modalRef);
   const [destination, setDestination] = useState(
     torrent.save_path || torrent.download_location || '',
   );
@@ -3259,7 +3319,7 @@ function MoveStorageModal({ torrent, onClose, onMoved, onModalState }) {
                   onChange={(event) => setDestination(event.target.value)}
                   onFocus={(event) => event.target.select()}
                   placeholder="/path/on/deluge/host"
-                  autoFocus
+                  data-initial-focus
                 />
               </div>
             </label>
@@ -3294,9 +3354,8 @@ function MoveStorageModal({ torrent, onClose, onMoved, onModalState }) {
   );
 }
 function RenameTorrentModal({ torrent, onClose, onRenamed, onModalState }) {
-  useRestoreFocus();
   const modalRef = useRef(null);
-  useFocusTrap(modalRef);
+  useModalFocus(modalRef);
   const [target, setTarget] = useState(null);
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
@@ -3434,7 +3493,7 @@ function RenameTorrentModal({ torrent, onClose, onRenamed, onModalState }) {
                   onFocus={(event) => event.target.select()}
                   placeholder="New name"
                   disabled={!target || busy}
-                  autoFocus
+                  data-initial-focus
                 />
               </div>
             </label>
@@ -3472,40 +3531,54 @@ function RenameTorrentModal({ torrent, onClose, onRenamed, onModalState }) {
     </div>
   );
 }
-function useRestoreFocus() {
-  const previous = useRef(null);
-  useEffect(() => {
-    previous.current = document.activeElement;
-    return () => {
-      if (previous.current && typeof previous.current.focus === 'function')
-        previous.current.focus();
-    };
-  }, []);
+function modalTabStops(dialog) {
+  return [...dialog.querySelectorAll('button, input, select, textarea, a[href], [tabindex]')]
+    .filter(element => element.tabIndex >= 0 && !element.matches(':disabled')
+      && element.getClientRects().length && getComputedStyle(element).visibility === 'visible');
 }
-function useFocusTrap(ref, enabled = true) {
-  useEffect(() => {
+
+function focusModal(dialog) {
+  const stops = modalTabStops(dialog);
+  const initial = stops.find(element => element.hasAttribute('data-initial-focus')) || stops[0];
+  if (!initial) dialog.tabIndex = -1;
+  (initial || dialog).focus({ preventScroll: true });
+}
+
+function useModalFocus(ref, enabled = true) {
+  useLayoutEffect(() => {
     if (!enabled) return;
-    const onKeyDown = (event) => {
-      if (event.key !== 'Tab' || !ref.current) return;
-      const focusable = [
-        ...ref.current.querySelectorAll(
-          'button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href]',
-        ),
-      ];
-      if (!focusable.length) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
+    const opener = document.activeElement;
+    modalStack.push(ref);
+    const handleTab = (event) => {
+      const dialog = ref.current;
+      if (event.key !== 'Tab' || modalStack.at(-1) !== ref || !dialog) return;
+      const stops = modalTabStops(dialog);
+      const index = stops.indexOf(document.activeElement);
+      const edge = event.shiftKey ? index <= 0 : index === stops.length - 1 || index === -1;
+      if (!edge) return;
+      event.preventDefault();
+      (event.shiftKey ? stops.at(-1) : stops[0])?.focus();
     };
-    document.addEventListener('keydown', onKeyDown, true);
-    return () => document.removeEventListener('keydown', onKeyDown, true);
+    const keepFocusInside = (event) => {
+      const dialog = ref.current;
+      if (modalStack.at(-1) === ref && dialog && !dialog.contains(event.target)) focusModal(dialog);
+    };
+    document.addEventListener('keydown', handleTab, true);
+    document.addEventListener('focusin', keepFocusInside, true);
+    return () => {
+      document.removeEventListener('keydown', handleTab, true);
+      document.removeEventListener('focusin', keepFocusInside, true);
+      const index = modalStack.lastIndexOf(ref);
+      const wasTop = index === modalStack.length - 1;
+      modalStack.splice(index, 1);
+      if (wasTop && opener?.isConnected) opener.focus({ preventScroll: true });
+    };
   }, [ref, enabled]);
+  useLayoutEffect(() => {
+    const dialog = ref.current;
+    // The Add review can replace its contents with an error while staying open.
+    if (enabled && modalStack.at(-1) === ref && dialog && !dialog.contains(document.activeElement)) focusModal(dialog);
+  });
 }
 function PreferencesModal({
   refreshMs,
@@ -3541,9 +3614,8 @@ function PreferencesModal({
   onClose,
   onOpenNative,
 }) {
-  useRestoreFocus();
   const dialogRef = useRef(null);
-  useFocusTrap(dialogRef);
+  useModalFocus(dialogRef);
   useDialogDismiss(onClose, dialogRef);
   const nativeAvailable =
     pluginMode() && typeof window.deluge?.preferences?.show === 'function';
@@ -4162,6 +4234,7 @@ function AddModal({
   existingNames = [],
   onClose,
   onAdded,
+  onRemoved,
   onModalState,
 }) {
   const preferencesOverlayHost = useViewportOverlayHost();
@@ -4176,6 +4249,7 @@ function AddModal({
           assertRemovalResult(result);
           await onAdded();
           onClose();
+          onRemoved();
         }}
       />
     );
@@ -4218,9 +4292,8 @@ function AddTorrentModal({
   onAdded,
   onModalState,
 }) {
-  useRestoreFocus();
   const modalRef = useRef(null);
-  useFocusTrap(modalRef);
+  useModalFocus(modalRef);
   const [tab, setTab] = useState('files');
   const [files, setFiles] = useState(initialFiles);
   const [selectedAddFiles, setSelectedAddFiles] = useState(
@@ -4485,7 +4558,7 @@ function AddTorrentModal({
           </div>
           <div className="modal-foot">
             <span>Your review details are still available.</span>
-            <button className="primary-button" onClick={() => setError('')}>
+            <button className="primary-button" data-initial-focus onClick={() => setError('')}>
               Return to review
             </button>
           </div>
@@ -4919,6 +4992,17 @@ function App() {
   const [addFiles, setAddFiles] = useState(null);
   const [menuTorrent, setMenuTorrent] = useState(null);
   const [menuPosition, setMenuPosition] = useState(null);
+  const menuRef = useRef(null);
+  const menuTrigger = useRef(null);
+  const menuHash = menuTorrent?.hash;
+  useLayoutEffect(() => {
+    if (!menuHash) return;
+    const trigger = menuTrigger.current;
+    menuRef.current?.querySelector('button')?.focus({ preventScroll: true });
+    return () => {
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
+    };
+  }, [menuHash]);
   const [theme, setThemeState] = useState(
     () => {
       const saved = localStorage.getItem('deck-theme');
@@ -4963,13 +5047,35 @@ function App() {
   const previousStates = useRef(new Map());
   const refreshFailures = useRef(0);
   const refreshGate = useRef(createRequestGate());
-  const removalFocusPending = useRef(false);
+  const closeSession = (sessionMessage = '') => {
+    refreshGate.current.cancel();
+    refreshFailures.current = 0;
+    previousStates.current.clear();
+    setSessionData(current => ({ ...current, authenticated: false, connected: false, sessionMessage }));
+    setConnected(false);
+    setLoading(false);
+    setTorrents([]);
+    setStats({});
+    setSelected(new Set());
+    setDetail(null);
+    setAddFiles(null);
+    setMenuTorrent(null);
+    setCommandPaletteOpen(false);
+    setRefreshError('');
+    setNotice('');
+    setCopied('');
+    setCelebration('');
+    setTelemetryHistory({ download: [], upload: [], connections: [], library: [] });
+  };
   useEffect(() => {
     if (!menuTorrent) return undefined;
     const dismiss = (event) => {
       const target = event.target instanceof Element ? event.target : null;
-      if (event.type === 'keydown' && event.key === 'Escape')
+      if (event.type === 'keydown' && event.key === 'Escape' && !modalStack.length) {
+        event.preventDefault();
+        event.stopPropagation();
         setMenuTorrent(null);
+      }
       if (
         event.type === 'pointerdown' &&
         !target?.closest('.context-menu, .row-menu')
@@ -5027,17 +5133,11 @@ function App() {
       refreshFailures.current = Math.min(refreshFailures.current + 1, 5);
       setRefreshError(reason?.message || 'Unable to reach Deluge.');
       if (
-        /(session expired|not authenticated|unauthorized|authentication)/i.test(
+        reason?.status === 401 || /(session expired|not authenticated|unauthorized|authentication)/i.test(
           reason?.message || '',
         )
       ) {
-        setSessionData((current) => ({
-          ...(current || {}),
-          authenticated: false,
-          connected: false,
-          sessionMessage: 'Your session expired. Sign in again to continue.',
-        }));
-        setConnected(false);
+        closeSession('Your session expired. Sign in again to continue.');
       }
     } finally {
       if (refreshGate.current.isCurrent(token)) setLoading(false);
@@ -5055,7 +5155,7 @@ function App() {
         // A disconnected daemon does not invalidate the browser's login.
         // Keep the dashboard and Connection Manager available for recovery.
         setConnected(Boolean(result.authenticated));
-        result.authenticated ? refresh() : setLoading(false);
+        if (!result.authenticated) setLoading(false);
       })
       .catch(() => setLoading(false))
       .finally(() => setSessionReady(true));
@@ -5096,13 +5196,6 @@ function App() {
     localStorage.setItem('deck-filter', filter);
     setSelected(new Set());
   }, [filter]);
-  useEffect(() => {
-    if (!removalFocusPending.current) return;
-    removalFocusPending.current = false;
-    requestAnimationFrame(() =>
-      document.querySelector('tbody tr[role="button"]')?.focus(),
-    );
-  }, [torrents]);
   useEffect(() => {
     if (!copied) return undefined;
     const timer = setTimeout(() => setCopied(''), 3500);
@@ -5165,10 +5258,14 @@ function App() {
     return () => window.removeEventListener('keydown', cycleTheme, true);
   }, [theme]);
   useEffect(() => {
+    if (!connected) return;
     const keys = (event) => {
       const panelOpen = Boolean(addFiles || detail || menuTorrent);
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        if (modalStack.length || event.defaultPrevented) return;
         event.preventDefault();
+        signalPopover('command');
+        setMenuTorrent(null);
         setCommandPaletteOpen(true);
         return;
       }
@@ -5205,7 +5302,11 @@ function App() {
     };
     window.addEventListener('keydown', keys);
     return () => window.removeEventListener('keydown', keys);
-  }, [addFiles, detail, menuTorrent, theme]);
+  }, [connected, addFiles, detail, menuTorrent, theme]);
+  const openDetails = (torrent) => {
+    setDetail(torrent);
+    if (theme === 'darkhand') setDarkhandLayout(current => ({ ...current, collapsed: false }));
+  };
   const copyMagnet = async (torrent) => {
     setMenuTorrent(null);
     try {
@@ -5223,7 +5324,6 @@ function App() {
   const act = async (action, target = [...selected]) => {
     if (!target.length || actionBusy) return;
     if (action === 'remove') {
-      removalFocusPending.current = true;
       setMenuTorrent(null);
       setAddFiles({ kind: 'remove', targets: target });
       return;
@@ -5271,19 +5371,20 @@ function App() {
     );
     if (!files.length) return;
     event.preventDefault();
-    setAddFiles(files);
+    if (!modalStack.length) setAddFiles(files);
   };
   if (!sessionReady) return <div className="deck-boot-splash">Deluge</div>;
   if (!connected)
     return (
       <Login
         mode={sessionData?.mode}
+        delugeUrl={sessionData?.delugeUrl}
         sessionMessage={sessionData?.sessionMessage}
         onConnect={async (url, password) => {
           const result = await api.connect(url, password);
           setSessionData(result);
-          setConnected(result.connected);
-          await refresh();
+          setLoading(true);
+          setConnected(result.authenticated);
         }}
       />
     );
@@ -5341,19 +5442,7 @@ function App() {
           }}
           disconnect={async () => {
             await api.disconnect();
-            refreshGate.current.cancel();
-            setSessionData(null);
-            setConnected(false);
-            setTorrents([]);
-            setStats({});
-            setSelected(new Set());
-            setDetail(null);
-            setAddFiles(null);
-            setMenuTorrent(null);
-            setCommandPaletteOpen(false);
-            setRefreshError('');
-            setNotice('');
-            previousStates.current.clear();
+            closeSession();
           }}
         />
         <section className="workspace">
@@ -5470,11 +5559,9 @@ function App() {
               theme={theme}
               selected={selected}
               setSelected={setSelected}
-              onOpen={torrent => {
-                setDetail(torrent);
-                if (theme === 'darkhand') setDarkhandLayout(current => ({ ...current, collapsed: false }));
-              }}
+              onOpen={openDetails}
               onMenu={(torrent, event) => {
+                menuTrigger.current = event.currentTarget;
                 const rect = event.currentTarget.getBoundingClientRect();
                 const width = 224;
                 const height = 420;
@@ -5557,12 +5644,12 @@ function App() {
       {menuTorrent && viewportOverlay(
         <>
         {mobileLayout && <div className="mobile-menu-backdrop" onClick={() => setMenuTorrent(null)} />}
-        <div className="context-menu" style={menuPosition || {}}>
+        <div ref={menuRef} className="context-menu" role="group" aria-label={`Actions for ${menuTorrent.name}`} style={menuPosition || {}}>
           {mobileLayout && <button className="mobile-menu-close" onClick={() => setMenuTorrent(null)} aria-label="Close torrent actions"><X size={18} />Close</button>}
           <strong>{menuTorrent.name}</strong>
           <button
             onClick={() => {
-              setDetail(menuTorrent);
+              openDetails(menuTorrent);
               setMenuTorrent(null);
             }}
           >
@@ -5666,7 +5753,7 @@ function App() {
           onAdd={() => setAddFiles([])}
           onPreferences={openPreferences}
           onRefresh={refresh}
-          onSearch={() => document.querySelector('.search-wrap input')?.focus()}
+          onSearch={() => requestAnimationFrame(() => document.querySelector('.search-wrap input')?.focus())}
         />
       )}
       {addFiles && viewportOverlay(
@@ -5675,6 +5762,10 @@ function App() {
           existingNames={torrents.map((torrent) => torrent.name)}
           onClose={() => setAddFiles(null)}
           onAdded={refresh}
+          onRemoved={() => requestAnimationFrame(() => {
+            if (document.activeElement === document.body)
+              document.querySelector('.torrent-open, .mobile-transfer-open, .empty-table button, .mobile-list-empty button')?.focus();
+          })}
         />
       )}
     </div>

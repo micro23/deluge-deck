@@ -17,6 +17,10 @@ def number(value, low, high):
         return low
 
 
+def bucket_sample(bucket):
+    return [bucket[4], round(bucket[1] / bucket[3]), round(bucket[2] / bucket[3])]
+
+
 class SpeedHistory:
     def __init__(self):
         self.rows = [deque(maxlen=keep // step + 2) for step, keep in TIERS]
@@ -32,7 +36,7 @@ class SpeedHistory:
             key = t // step
             bucket = self.pending[i]
             if bucket and key != bucket[0]:
-                self.rows[i + 1].append([bucket[4], round(bucket[1] / bucket[3]), round(bucket[2] / bucket[3])])
+                self.rows[i + 1].append(bucket_sample(bucket))
                 bucket = None
             if bucket is None:
                 bucket = [key, 0, 0, 0, t]
@@ -58,7 +62,7 @@ class SpeedHistory:
         if tier and self.pending[tier - 1]:
             b = self.pending[tier - 1]
             if now - span <= b[4] <= now:
-                samples.append([b[4], round(b[1] / b[3]), round(b[2] / b[3])])
+                samples.append(bucket_sample(b))
         # Uniform time buckets bound the RPC response without fabricating gaps.
         if len(samples) > points:
             step = max(step, math.ceil(span / (points - 1)))
@@ -80,9 +84,12 @@ class SpeedHistory:
         if len(data) > 2 * 1024 * 1024:
             raise ValueError('Speed history file is too large')
         data = json.loads(data)
-        if data.get('version') != 1:
+        if not isinstance(data, dict) or data.get('version') != 1:
             return
-        for i, rows in enumerate(data.get('tiers', [])[:3]):
+        tiers = data.get('tiers')
+        if not isinstance(tiers, list):
+            return
+        for i, rows in enumerate(tiers[:3]):
             if not isinstance(rows, list):
                 continue
             valid = []
@@ -92,6 +99,18 @@ class SpeedHistory:
                         now - TIERS[i][1] <= row[0] <= now):
                     valid.append(row)
             self.rows[i].extend(sorted({r[0]: r for r in valid}.values()))
+        pending = data.get('pending')
+        if isinstance(pending, list):
+            for i, bucket in enumerate(pending[:2]):
+                step, _ = TIERS[i + 1]
+                rows = self.rows[i + 1]
+                if (isinstance(bucket, list) and len(bucket) == 5 and
+                        all(type(v) is int and 0 <= v <= (2**53 - 1) * step for v in bucket) and
+                        0 < bucket[3] <= step and bucket[0] == bucket[4] // step and
+                        rows and rows[-1] == bucket_sample(bucket)):
+                    # Restore the accumulator and remove its compatibility snapshot.
+                    rows.pop()
+                    self.pending[i] = bucket
 
     def save(self, path):
         # mkstemp creates a private file and cannot follow an attacker-made .tmp.
@@ -101,8 +120,10 @@ class SpeedHistory:
                 tiers = [list(rows) for rows in self.rows]
                 for i, b in enumerate(self.pending):
                     if b:
-                        tiers[i + 1].append([b[4], round(b[1] / b[3]), round(b[2] / b[3])])
-                json.dump({'version': 1, 'tiers': tiers}, target, separators=(',', ':'))
+                        tiers[i + 1].append(bucket_sample(b))
+                # Older builds can still read the aggregate snapshot in tiers.
+                json.dump({'version': 1, 'tiers': tiers, 'pending': self.pending},
+                          target, separators=(',', ':'))
             os.replace(temporary, path)
         finally:
             if os.path.exists(temporary):

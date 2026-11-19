@@ -11,7 +11,7 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   await page.addInitScript(() => localStorage.setItem('deck-theme', 'darkhand'));
   await page.goto(origin);
-  await page.locator('tbody tr[role="button"]').first().waitFor();
+  await page.locator('tbody tr[data-virtual-index]').first().waitFor();
   const theme = () => page.locator('html').getAttribute('data-theme');
   const press = async (key, expected) => {
     await page.keyboard.press(key);
@@ -28,10 +28,10 @@ try {
   for (const id of [...THEME_ORDER.slice(1), THEME_ORDER[0]]) await press('t', id);
   for (const id of [...THEME_ORDER.slice(1).reverse(), THEME_ORDER[0]]) await press('Shift+T', id);
   await page.keyboard.press('Escape');
-  await page.locator('tbody tr[role="button"]').first().focus();
+  await page.locator('.torrent-open').first().focus();
   await press('t', 'terminal');
   await press('d', 'darkhand');
-  await page.locator('tbody tr[role="button"]').first().dblclick();
+  await page.locator('tbody tr[data-virtual-index]').first().dblclick();
   await page.locator('.dh-inline-details,.dh-details-scroll .drawer').first().waitFor();
   await page.locator('.dh-details-card button').first().focus();
   await press('Shift+T', THEME_ORDER.at(-1));

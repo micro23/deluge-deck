@@ -1,3 +1,4 @@
+import { UI_KEYS } from './hosted-contracts.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -204,16 +205,11 @@ test('completion celebrations are optional and reduced-motion aware', async () =
   assert.match(css, /\.celebration-toast/);
 });
 
-test('torrent rows can open details from the keyboard', async () => {
+test('torrent rows expose a real details button while retaining table semantics', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
-  assert.match(ui, /role="button"\s+aria-label=\{`Open details for/);
-  assert.match(ui, /event\.key === 'Enter' \|\| event\.key === ' '/);
-  assert.match(css, /tbody tr\[role="button"\]:focus-visible/);
-});
-
-test('torrent row keyboard opening ignores nested controls', async () => {
-  const ui = await source();
-  assert.match(ui, /if \(event\.target !== event\.currentTarget\) return/);
+  assert.match(ui, /<button\s+className="torrent-open"\s+aria-label=\{`Open details for/);
+  assert.match(ui, /aria-rowindex=\{index \+ 2\}/);
+  assert.match(css, /\.torrent-open:focus-visible/);
 });
 
 test('torrent table announces sort changes accessibly', async () => {
@@ -246,10 +242,9 @@ test('theme menu supports arrow, Home, and End keyboard navigation', async () =>
 
 test('preferences restore focus to the opener when dismissed', async () => {
   const ui = await source();
-  assert.match(ui, /function useRestoreFocus/);
-  assert.match(ui, /previous\.current = document\.activeElement/);
-  assert.match(ui, /previous\.current\.focus\(\)/);
-  assert.match(ui, /useRestoreFocus\(\)/);
+  assert.match(ui, /function useModalFocus/);
+  assert.match(ui, /const opener = document\.activeElement/);
+  assert.match(ui, /opener\.focus\(/);
 });
 
 test('detail drawer tabs support arrow navigation and tab panels', async () => {
@@ -297,9 +292,9 @@ test('torrent actions announce successful completion', async () => {
 
 test('preferences trap keyboard focus inside the dialog', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
-  assert.match(ui, /function useFocusTrap/);
+  assert.match(ui, /function useModalFocus/);
   assert.match(ui, /event\.key !== 'Tab'/);
-  assert.match(ui, /event\.shiftKey && document\.activeElement === first/);
+  assert.match(ui, /event\.shiftKey \? index <= 0/);
   assert.match(ui, /className="preferences-modal"/);
   assert.match(css, /\.preferences-backdrop \{[\s\S]*display:grid!important;[\s\S]*place-items:center;[\s\S]*overflow:hidden!important/);
   assert.match(css, /\.preferences-modal \{[\s\S]*display:flex!important;[\s\S]*height:min\(800px,calc\(100dvh - 32px\)\)!important;[\s\S]*overflow:hidden!important/);
@@ -318,8 +313,7 @@ test('preferences checkboxes have a consistent field and an explicit checked mar
 test('detail drawer is a focus-trapped dialog with focus restoration and outside dismissal', async () => {
   const [ui, css] = await Promise.all([source(), readFile(path.join(root, 'src/styles.css'), 'utf8')]);
   assert.match(ui, /function DetailDrawer/);
-  assert.match(ui, /useRestoreFocus\(\)/);
-  assert.match(ui, /useFocusTrap\(drawerRef, !inline\)/);
+  assert.match(ui, /useModalFocus\(drawerRef, !inline\)/);
   assert.match(ui, /className=\{`detail-drawer[\s\S]*role=\{inline \? 'region' : 'dialog'\}[\s\S]*aria-modal=\{inline \? undefined : true\}/);
   assert.match(ui, /className="detail-backdrop"\s+onMouseDown=\{onClose\}/);
   assert.match(css, /\.detail-backdrop\{position:fixed/);
@@ -328,24 +322,21 @@ test('detail drawer is a focus-trapped dialog with focus restoration and outside
 test('remove dialog traps focus and restores it after dismissal', async () => {
   const ui = await source();
   const removeBlock = ui.slice(ui.indexOf('function RemoveModal'), ui.indexOf('function MoveStorageModal'));
-  assert.match(removeBlock, /useRestoreFocus\(\)/);
-  assert.match(removeBlock, /useFocusTrap\(modalRef\)/);
+  assert.match(removeBlock, /useModalFocus\(modalRef\)/);
   assert.match(removeBlock, /ref=\{modalRef\}/);
   assert.match(removeBlock, /role="dialog"\s+aria-modal="true"/);
 });
 
-test('removing torrents returns focus to a remaining torrent row', async () => {
+test('successful removal restores focus to a remaining torrent or the Add action', async () => {
   const ui = await source();
-  assert.match(ui, /const removalFocusPending = useRef\(false\)/);
-  assert.match(ui, /removalFocusPending\.current = true/);
-  assert.match(ui, /requestAnimationFrame\(\(\) =>\s*document\.querySelector\('tbody tr\[role="button"\]'\)\?\.focus\(\),?\s*\)/);
+  assert.match(ui, /assertRemovalResult\(result\);\s+await onAdded\(\);\s+onClose\(\);\s+onRemoved\(\);/);
+  assert.match(ui, /document\.querySelector\('\.torrent-open, \.mobile-transfer-open, \.empty-table button, \.mobile-list-empty button'\)\?\.focus\(\)/);
 });
 
 test('add torrent review traps focus and restores it after dismissal', async () => {
   const ui = await source();
   const addBlock = ui.slice(ui.indexOf('function AddTorrentModal'), ui.indexOf('function App'));
-  assert.match(addBlock, /useRestoreFocus\(\)/);
-  assert.match(addBlock, /useFocusTrap\(modalRef\)/);
+  assert.match(addBlock, /useModalFocus\(modalRef\)/);
   assert.match(addBlock, /ref=\{modalRef\}/);
   assert.match(addBlock, /role="dialog"\s+aria-modal="true"/);
 });
@@ -353,8 +344,7 @@ test('add torrent review traps focus and restores it after dismissal', async () 
 test('command palette traps focus and restores it after dismissal', async () => {
   const ui = await source();
   const palette = ui.slice(ui.indexOf('function CommandPalette'), ui.indexOf('function swarmCount'));
-  assert.match(palette, /useRestoreFocus\(\)/);
-  assert.match(palette, /useFocusTrap\(paletteRef\)/);
+  assert.match(palette, /useModalFocus\(paletteRef\)/);
   assert.match(palette, /ref=\{paletteRef\}/);
   assert.match(palette, /role="dialog"\s+aria-modal="true"\s+aria-label="Command palette"/);
 });
@@ -362,8 +352,7 @@ test('command palette traps focus and restores it after dismissal', async () => 
 test('connection manager traps focus and restores it after dismissal', async () => {
   const ui = await source();
   const manager = ui.slice(ui.indexOf('function ConnectionManagerModal'), ui.indexOf('function AccountMenu'));
-  assert.match(manager, /useRestoreFocus\(\)/);
-  assert.match(manager, /useFocusTrap\(modalRef\)/);
+  assert.match(manager, /useModalFocus\(modalRef\)/);
   assert.match(manager, /ref=\{modalRef\}/);
   assert.match(manager, /role="dialog"\s+aria-modal="true"\s+aria-labelledby="connections-title"/);
 });
@@ -391,17 +380,15 @@ test('connection manager provides confirmed host removal', async () => {
 test('move storage dialog traps focus and restores it after dismissal', async () => {
   const ui = await source();
   const move = ui.slice(ui.indexOf('function MoveStorageModal'), ui.indexOf('function RenameTorrentModal'));
-  assert.match(move, /useRestoreFocus\(\)/);
-  assert.match(move, /useFocusTrap\(modalRef\)/);
+  assert.match(move, /useModalFocus\(modalRef\)/);
   assert.match(move, /ref=\{modalRef\}/);
   assert.match(move, /role="dialog"\s+aria-modal="true"\s+aria-labelledby="move-storage-title"/);
 });
 
 test('rename dialog traps focus and restores it after dismissal', async () => {
   const ui = await source();
-  const rename = ui.slice(ui.indexOf('function RenameTorrentModal'), ui.indexOf('function useRestoreFocus'));
-  assert.match(rename, /useRestoreFocus\(\)/);
-  assert.match(rename, /useFocusTrap\(modalRef\)/);
+  const rename = ui.slice(ui.indexOf('function RenameTorrentModal'), ui.indexOf('function modalTabStops'));
+  assert.match(rename, /useModalFocus\(modalRef\)/);
   assert.match(rename, /ref=\{modalRef\}/);
   assert.match(rename, /role="dialog"\s+aria-modal="true"\s+aria-labelledby="rename-torrent-title"/);
 });
@@ -422,7 +409,7 @@ test('action shortcuts are modal-aware, busy-aware, and ignore interactive contr
   assert.match(ui, /const panelOpen = Boolean\(addFiles \|\| detail \|\| menuTorrent\)/);
   assert.match(ui, /if \(event\.key === 'Escape'\) \{[\s\S]*setAddFiles\(null\);[\s\S]*setDetail\(null\);[\s\S]*setMenuTorrent\(null\)/);
   assert.match(ui, /function ThemeMenu[\s\S]*closeOnEscape[\s\S]*event\.key === 'Escape'/);
-  assert.match(ui, /onClick=\{\(\) => \{\s*setDetail\(menuTorrent\);\s*setMenuTorrent\(null\);\s*\}\}/);
+  assert.match(ui, /onClick=\{\(\) => \{\s*openDetails\(menuTorrent\);\s*setMenuTorrent\(null\);\s*\}\}/);
   assert.match(ui, /useEffect\(\(\) => \{\s*const locked = busy \|\| Boolean\(error\);\s*deckModalState\.locked = locked/);
   const shortcutBlock = ui.slice(ui.indexOf('const keys ='), ui.indexOf('const act ='));
   assert.match(shortcutBlock, /event\.key === 'Escape'[\s\S]*active\?\.matches[\s\S]*panelOpen\s*\)\s*return;[\s\S]*event\.key === '\/'/);
@@ -579,9 +566,9 @@ test('torrent details show total uploaded data', async () => {
 });
 
 test('torrent details request and show piece count and piece size', async () => {
-  const [ui, server] = await Promise.all([source(), readFile(path.join(root, 'server/index.mjs'), 'utf8')]);
-  assert.match(ui, /'num_pieces',\s+'piece_length'/);
-  assert.match(server, /'num_pieces',\s+'piece_length'/);
+  const ui = await source();
+  assert.ok(UI_KEYS.includes('num_pieces'));
+  assert.ok(UI_KEYS.includes('piece_length'));
   assert.match(ui, /Detail\s+label="Pieces"\s+value=\{pieceCount\(torrent\.num_pieces\)\}/);
   assert.match(ui, /Detail\s+label="Piece size"\s+value=\{pieceSize\(torrent\.piece_length\)\}/);
 });
@@ -616,7 +603,7 @@ test('torrent details expose editable transfer behavior options', async () => {
   assert.match(ui, /Save options/);
   assert.match(css, /\.torrent-options/);
   assert.match(server, /core\.set_torrent_options/);
-  assert.match(server, /sequential_download/);
+  assert.ok(UI_KEYS.includes('sequential_download'));
 });
 
 test('torrent row menu exposes all four queue movement controls', async () => {
@@ -825,7 +812,7 @@ test('torrent table headers support horizontal resizing', async () => {
   assert.match(ui, /name: 'Torrent'/);
   assert.doesNotMatch(ui, /key !== 'name' && \(/);
   assert.match(ui, /role="separator"/);
-  assert.match(ui, /aria-valuemin=\{24\}/);
+  assert.match(ui, /aria-valuemax=\{Math\.round\(floors\[index\] \+ resizeRoom\)\}/);
   assert.match(ui, /\['ArrowLeft', 'ArrowRight', 'Home'\]/);
   assert.match(css, /\.column-resize-handle \{/);
   assert.match(css, /cursor:col-resize/);

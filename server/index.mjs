@@ -2,7 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { connectHostedDaemon, readRpcResponse } from './hosted-contracts.mjs';
+import { connectHostedDaemon, readRpcResponse, UI_KEYS } from './hosted-contracts.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PACKAGE = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8'));
@@ -11,13 +11,6 @@ const PORT = Number(process.env.PORT || 8118);
 const HOST = process.env.HOST || '127.0.0.1';
 const DEMO = process.env.DELUGE_DEMO === '1';
 const MAX_BODY = 64 * 1024 * 1024;
-const UI_KEYS = [
-  'queue', 'name', 'state', 'progress', 'total_size', 'total_done', 'total_uploaded',
-  'download_payload_rate', 'upload_payload_rate', 'eta', 'ratio', 'num_seeds',
-  'total_seeds', 'num_peers', 'total_peers', 'num_pieces', 'piece_length', 'tracker_host', 'tracker_status', 'save_path', 'download_location',
-  'time_added', 'completed_time', 'active_time', 'seeding_time', 'num_files', 'message',
-  'is_auto_managed', 'sequential_download', 'prioritize_first_last', 'max_download_speed', 'max_upload_speed', 'distributed_copies',
-];
 const ALLOWED_METHODS = new Set([
   'delugedeck.get_speed_history',
   'auth.login', 'auth.check_session', 'auth.delete_session', 'web.connected', 'web.connect', 'web.disconnect',
@@ -84,6 +77,7 @@ class DelugeClient {
     if (!password) throw new Error('Enter your Deluge Web password.');
     const ok = await this.rpc('auth.login', [password]).catch((e) => { throw new Error(`Could not reach Deluge Web: ${e.message}`); });
     if (!ok) throw new Error('Deluge rejected that password.');
+    if (!this.cookie) throw new Error('Deluge did not create a Web session.');
     if (hostId) {
       if (await this.rpc('web.connected')) await this.rpc('web.disconnect');
       const hosts = await this.rpc('web.get_hosts');
@@ -92,12 +86,12 @@ class DelugeClient {
       await this.rpc('web.connect', [hostId]);
       if (!await this.rpc('web.connected')) throw new Error('Deluge Web could not connect to the selected daemon host.');
       this.host = { id: host[0], host: host[1], port: host[2], status: 'Connected' };
+      this.connected = true;
     } else {
-      await connectHostedDaemon((method, params) => this.rpc(method, params));
+      this.connected = await connectHostedDaemon((method, params) => this.rpc(method, params)).catch(() => false);
     }
-    this.connected = true;
-    this.methods = await this.rpc('system.listMethods', []).catch(() => []);
-    return this.session();
+    if (this.connected) this.methods = await this.rpc('system.listMethods', []).catch(() => []);
+    return { mode: 'live', authenticated: true, connected: this.connected, delugeUrl: this.baseUrl, host: this.host, methods: this.methods };
   }
   async session() {
     if (!this.cookie) return { mode: 'live', authenticated: false, connected: false, delugeUrl: this.baseUrl };

@@ -41,6 +41,7 @@ jobs:
           '
       - run: npm ci
       - run: npm test
+      - run: python scripts/test-speed-history.py
       - run: npm run check
       # Deluge and this plugin still use pkg_resources; newer setuptools may
       # remove it. Keep the legacy egg builder reproducible for the source-only egg.

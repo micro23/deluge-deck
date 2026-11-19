@@ -53,3 +53,19 @@ test('a valid cookie remains authenticated when all daemon hosts are offline', a
   assert.equal((await api.session()).authenticated, false);
   assert.deepEqual(calls, ['auth.check_session'], 'Expired sessions must still require login');
 });
+
+test('hosted login signs in once and opens the dashboard even with no online daemon', async (t) => {
+  globalThis.window = { __DELUGE_DECK_PLUGIN__: true, location: { origin: 'https://deluge.example' } };
+  globalThis.document = { baseURI: 'https://deluge.example/deck/' };
+  t.after(() => { delete globalThis.window; delete globalThis.document; });
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (_url, options) => {
+    const { method } = JSON.parse(options.body);
+    calls.push(method);
+    return Response.json({ result: { 'auth.login': true, 'web.connected': false, 'web.get_hosts': [] }[method] });
+  });
+  assert.deepEqual(await api.connect('', 'fixture'), {
+    mode: 'plugin', authenticated: true, connected: false, delugeUrl: 'https://deluge.example',
+  });
+  assert.deepEqual(calls, ['auth.login', 'web.connected', 'web.get_hosts']);
+});

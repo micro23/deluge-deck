@@ -9,8 +9,8 @@ try {
    localStorage.setItem('deck-darkhand-layout',JSON.stringify({stats:'below',details:'bottom',collapsed:true,height:140,width:400}));
  });
  await page.goto(origin);
- await page.locator('tbody tr[role="button"]').first().waitFor();
- await page.locator('tbody tr[role="button"]').first().dblclick();
+ await page.locator('tbody tr[data-virtual-index]').first().waitFor();
+ await page.locator('tbody tr[data-virtual-index]').first().dblclick();
  await page.locator('.dh-inline-details').waitFor();
  await page.waitForTimeout(250);
  const panel=page.locator('.dh-details-card');
@@ -20,7 +20,7 @@ try {
  await page.keyboard.press('Escape');
  assert.ok(await panel.evaluate(el=>el.classList.contains('dh-collapsed')),'Escape collapses the panel');
  assert.equal(await page.locator('.dh-inline-details').count(),0);
- await page.locator('tbody tr[role="button"]').first().dblclick();
+ await page.locator('tbody tr[data-virtual-index]').first().dblclick();
  await page.locator('.dh-inline-details').waitFor();
  assert.ok(await panel.evaluate(el=>!el.classList.contains('dh-collapsed')),'Selecting a torrent reopens collapsed details');
  await page.evaluate(()=>document.fonts.ready);
@@ -41,7 +41,7 @@ try {
  await page.waitForFunction(previous=>document.querySelector('.dh-details-card').getBoundingClientRect().height<previous,before);
  assert.ok(await panel.evaluate((el,previous)=>el.getBoundingClientRect().height<previous,before),'Manual keyboard resizing still works');
  await page.getByRole('button',{name:'Collapse torrent details',exact:true}).click();
- await page.locator('tbody tr[role="button"]').first().dblclick();
+ await page.locator('tbody tr[data-virtual-index]').first().dblclick();
  await page.locator('.dh-inline-details').waitFor();
  assert.ok(await panel.evaluate(el=>el.classList.contains('dh-auto-fit')),'Reopening the same torrent restores automatic sizing');
  await page.getByRole('button',{name:'Right',exact:true}).click();

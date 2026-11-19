@@ -36,11 +36,11 @@ try {
     await page.route('**/api/torrents', route => route.fulfill({ json: { torrents, connected: true, stats: { download_rate: 0, upload_rate: 0 } } }));
     const started = Date.now();
     await page.goto(origin);
-    await page.waitForFunction(() => document.querySelectorAll('tbody tr[role="button"]').length > 0);
+    await page.waitForFunction(() => document.querySelectorAll('tbody tr[data-virtual-index], tbody tr[role=button]').length > 0);
     const readyMs = Date.now() - started;
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(300);
-    const initial = await page.evaluate(() => ({ nodes: document.querySelectorAll('.auto-sized-table *').length, ornaments: document.querySelectorAll('.progress-wrap svg').length, measurements: window.tableMeasurements }));
+    const initial = await page.evaluate(() => ({ nodes: document.querySelectorAll('.auto-sized-table *').length, ornaments: document.querySelectorAll('.progress-wrap :is(.potion-vial, .candy-cane, .independence-flag)').length, measurements: window.tableMeasurements }));
     await page.getByRole('checkbox', { name: 'Select Performance fixture 0', exact: true }).check();
     await page.waitForTimeout(200);
     const selectionMeasurements = await page.evaluate(() => window.tableMeasurements);
@@ -60,8 +60,8 @@ try {
       for (const [theme, selector] of [['independence', '.independence-flag'], ['halloween', '.potion-vial'], ['christmas', '.candy-cane']]) {
         await page.evaluate(theme => { localStorage.setItem('deck-theme', theme); }, theme);
         await page.reload();
-        await page.waitForFunction(() => document.querySelectorAll('tbody tr[role="button"]').length > 0);
-        const visible = await page.locator('tbody tr[role="button"]').count();
+        await page.waitForFunction(() => document.querySelectorAll('tbody tr[data-virtual-index]').length > 0);
+        const visible = await page.locator('tbody tr[data-virtual-index]').count();
         assert.ok(visible > 0 && visible < 100);
         assert.equal(await page.locator(`.progress-wrap ${selector}`).count(), visible);
         assert.equal(await page.locator('.progress-wrap svg').count(), visible);

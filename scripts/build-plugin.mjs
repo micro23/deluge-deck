@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { Script } from 'node:vm';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { version } = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
@@ -42,7 +43,11 @@ mkdirSync(path.join(resources, 'assets'), { recursive: true });
 for (const name of builtAssetNames) {
   if (!name.endsWith('.js') && !name.endsWith('.css')) copyFileSync(path.join(builtAssets, name), path.join(resources, 'assets', name));
 }
-copyFileSync(findAsset('.js'), path.join(dataDir, `deluge-deck-${version}.js`));
+// Deluge loads plugin resources as classic scripts. Keep Vite's minified
+// bindings private so they cannot replace names provided by the native WebUI.
+const hostedApp = `(() => {\n${readFileSync(findAsset('.js'), 'utf8')}\n})();\n`;
+new Script(hostedApp, { filename: 'Deluge Deck WebUI bundle' });
+writeFileSync(path.join(dataDir, `deluge-deck-${version}.js`), hostedApp);
 // Retain the optional CSS filename for older hosts without duplicating rules.
 writeFileSync(path.join(dataDir, `deluge-deck-${version}.css`), '/* Shared styles and on-demand themes are supplied by the versioned style loader. */\n');
 const css = readFileSync(cssAsset, 'utf8');

@@ -3,18 +3,8 @@ import {
   connectHostedDaemon,
   serializeRpcRequest,
   readRpcResponse,
+  UI_KEYS,
 } from '../../server/hosted-contracts.mjs';
-
-export const UI_KEYS = [
-  'queue', 'name', 'state', 'progress', 'total_size', 'total_done',
-  'total_uploaded', 'download_payload_rate', 'upload_payload_rate', 'eta',
-  'ratio', 'num_seeds', 'total_seeds', 'num_peers', 'total_peers',
-  'num_pieces', 'piece_length', 'tracker_host', 'tracker_status', 'save_path',
-  'download_location', 'time_added', 'completed_time', 'active_time',
-  'seeding_time', 'num_files', 'message',
-  'is_auto_managed', 'sequential_download', 'prioritize_first_last',
-  'max_download_speed', 'max_upload_speed', 'distributed_copies',
-];
 
 // Bootstrap and the compiled app are injected as separate Deluge Web scripts.
 // Keep this dynamic so an early app evaluation adopts hosted mode once
@@ -74,7 +64,11 @@ export const api = {
         }))
       : request('/api/torrents').then(async (response) => {
           const payload = await response.json().catch(() => null);
-          if (!response.ok) throw new Error(payload?.error?.message || payload?.error || (response.status === 401 ? 'Session expired' : 'Unable to reach Deluge.'));
+          if (!response.ok) {
+            const error = new Error(payload?.error?.message || payload?.error || (response.status === 401 ? 'Session expired' : 'Unable to reach Deluge.'));
+            error.status = response.status;
+            throw error;
+          }
           return payload;
         }));
     if (!data || typeof data.torrents !== 'object' || !data.torrents || Array.isArray(data.torrents))
@@ -83,13 +77,8 @@ export const api = {
   },
   connect: async (url, password) => {
     if (pluginMode()) {
-      await authenticateAndConnectHosted(rpc, password);
-      const result = await api.session();
-      if (!result.connected)
-        throw new Error(
-          'Deluge Web is authenticated but has not connected to a daemon host.',
-        );
-      return result;
+      const connected = await authenticateAndConnectHosted(rpc, password);
+      return { mode: 'plugin', authenticated: true, connected, delugeUrl: window.location.origin };
     }
     const response = await request('/api/session/connect', {
       method: 'POST',
@@ -97,7 +86,7 @@ export const api = {
       body: JSON.stringify({ url, password }),
     });
     const result = await response.json();
-    if (!response.ok || !result.authenticated || !result.connected)
+    if (!response.ok || !result.authenticated)
       throw new Error(result.error || 'Unable to connect to Deluge.');
     return result;
   },

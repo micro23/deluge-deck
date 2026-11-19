@@ -56,15 +56,18 @@ try {
     const errors = [], requests = [];
     page.on('pageerror', error => errors.push(error.message)); page.on('request', request => requests.push(request.url()));
     await page.goto(origin + pathname);
-    await page.locator('tbody tr[role="button"]').first().waitFor();
+    await page.locator('tbody tr[data-virtual-index]').first().waitFor();
     await page.waitForTimeout(800);
-    const visible = await page.locator('tbody tr[role="button"]').count();
+    const visible = await page.locator('tbody tr[data-virtual-index]').count();
     assert.ok(visible > 0 && visible < 80, `${mode}: bounded desktop rows: ${visible}`);
     assert.equal(requests.filter(url => /\/themes\/(?!forest-)[\w-]+\.json/.test(url)).length, 0, `${mode}: only the selected theme loads initially`);
     assert.equal(requests.filter(url => /theme-previews|\/gallery-/.test(url)).length, 0);
     await page.getByRole('checkbox', { name: `Select ${names[0]}`, exact: true }).check();
     await page.locator('.table-shell').evaluate(element => { element.scrollTop = element.scrollHeight; });
-    await page.getByRole('checkbox', { name: `Select ${names[4999]}`, exact: true }).check();
+    const finalCheckbox = page.getByRole('checkbox', { name: `Select ${names[4999]}`, exact: true });
+    await finalCheckbox.check();
+    await page.locator('.table-shell').evaluate(element => { element.scrollTop = element.scrollHeight; });
+    assert.equal(await finalCheckbox.isChecked(), true, `${mode}: final selection stays mounted at the end of the scroll range`);
     assert.match(await page.locator('.bulk-count').textContent(), /2 selected/);
     await page.locator('.table-shell').evaluate(element => { element.scrollTop = 0; });
     await page.getByRole('checkbox', { name: `Select ${names[0]}`, exact: true }).waitFor();
@@ -76,19 +79,19 @@ try {
     await page.getByRole('checkbox', { name: `Select ${names[4999]}`, exact: true }).waitFor();
     assert.equal(await page.getByRole('checkbox', { name: `Select ${names[4999]}`, exact: true }).isChecked(), true);
     await page.getByRole('checkbox', { name: 'Select all filtered torrents', exact: true }).uncheck();
-    await page.locator('tbody tr[role="button"]').first().focus();
+    await page.locator('.torrent-open').first().focus();
     await page.keyboard.press('End');
-    await page.waitForFunction(() => document.activeElement?.dataset.virtualIndex === '4999');
+    await page.waitForFunction(() => document.activeElement?.closest('[data-virtual-index]')?.dataset.virtualIndex === '4999');
     await page.keyboard.press('ArrowUp');
-    await page.waitForFunction(() => document.activeElement?.dataset.virtualIndex === '4998');
+    await page.waitForFunction(() => document.activeElement?.closest('[data-virtual-index]')?.dataset.virtualIndex === '4998');
     await page.keyboard.press('Home');
-    await page.waitForFunction(() => document.activeElement?.dataset.virtualIndex === '0');
+    await page.waitForFunction(() => document.activeElement?.closest('[data-virtual-index]')?.dataset.virtualIndex === '0');
     await page.keyboard.press('PageDown');
-    assert.ok(Number(await page.evaluate(() => document.activeElement?.dataset.virtualIndex)) > 0);
+    assert.ok(Number(await page.evaluate(() => document.activeElement?.closest('[data-virtual-index]')?.dataset.virtualIndex)) > 0);
     await page.locator('.search-wrap input').first().fill('04999');
-    await page.waitForFunction(() => document.querySelectorAll('tbody tr[role="button"]').length === 1);
+    await page.waitForFunction(() => document.querySelectorAll('tbody tr[data-virtual-index]').length === 1);
     await page.locator('.search-wrap input').first().fill('');
-    await page.locator('tbody tr[role="button"]').first().waitFor();
+    await page.locator('tbody tr[data-virtual-index]').first().waitFor();
 
     const choose = async label => { await page.locator('.theme-trigger').click(); await page.getByRole('menuitemradio', { name: new RegExp(`^${label}:`) }).click(); };
     // Simulate a failed theme request: the current theme remains intact.

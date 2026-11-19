@@ -69,14 +69,59 @@ try {
     await page.goto(`http://127.0.0.1:${server.address().port}${pathname}`);
     await page.getByRole('checkbox', { name: 'Select Fixture torrent', exact: true }).waitFor();
 
-    await page.getByRole('button', { name: 'Open Deluge Preferences', exact: true }).click();
+    const preferences = page.getByRole('button', { name: 'Open Deluge Preferences', exact: true });
+    const closePreferences = page.getByRole('button', { name: 'Close preferences', exact: true });
+    const isFocused = locator => locator.evaluate(element => document.activeElement === element);
+    await preferences.click();
+    assert.ok(await isFocused(closePreferences), 'Preferences receives focus on open');
+    await page.keyboard.press('Shift+Tab');
+    assert.ok(await isFocused(page.getByRole('dialog', { name: 'Deluge Preferences', exact: true }).getByRole('button', { name: 'Done', exact: true })));
+    await page.keyboard.press('Tab');
+    assert.ok(await isFocused(closePreferences), 'Tab wraps to the first control');
     await page.waitForFunction(() => document.querySelector('[aria-label="Proxy host"]')?.value === 'proxy.test');
     await page.getByLabel('Proxy host', { exact: true }).fill('changed.test');
     assert.equal(await page.getByLabel('Proxy type', { exact: true }).inputValue(), 'SOCKS5_AUTH');
     await page.getByRole('button', { name: 'Save proxy', exact: true }).click();
     await page.getByText('Proxy settings saved.', { exact: true }).waitFor();
     assert.deepEqual(writes.at(-1).params[0].proxy, { ...proxy, hostname: 'changed.test' });
-    await page.getByRole('button', { name: 'Close preferences', exact: true }).click();
+    await closePreferences.click();
+    assert.ok(await isFocused(preferences), 'Closing Preferences restores the opener');
+
+    const details = page.getByRole('table', { name: 'Torrents' }).getByRole('row')
+      .getByRole('button', { name: 'Open details for Fixture torrent', exact: true });
+    await details.press('Enter');
+    assert.ok(await isFocused(page.getByRole('button', { name: 'Close details', exact: true })));
+    await page.keyboard.press('Escape');
+    assert.ok(await isFocused(details));
+
+    const actions = page.getByRole('button', { name: 'Actions for Fixture torrent', exact: true });
+    await actions.press('Enter');
+    assert.ok(await isFocused(page.getByRole('button', { name: 'View details', exact: true })));
+    await page.keyboard.press('Escape');
+    assert.ok(await isFocused(actions));
+
+    const globalControls = page.getByRole('button', { name: 'Open global session controls', exact: true });
+    await globalControls.press('Enter');
+    assert.ok(await isFocused(page.getByRole('dialog', { name: 'Global session controls', exact: true })));
+    await page.keyboard.press('Tab');
+    assert.ok(await isFocused(page.getByRole('dialog', { name: 'Global session controls', exact: true }).getByRole('spinbutton').first()));
+    await page.keyboard.press('Escape');
+    assert.ok(await isFocused(globalControls));
+
+    const account = page.getByRole('button', { name: 'Open account menu', exact: true });
+    await account.press('Enter');
+    assert.ok(await isFocused(page.getByRole('menuitem', { name: /Log out/ })));
+    await page.keyboard.press('Escape');
+    assert.ok(await isFocused(account));
+
+    await page.keyboard.press('Control+k');
+    const commandSearch = page.getByRole('textbox', { name: 'Command search', exact: true });
+    assert.ok(await isFocused(commandSearch));
+    await commandSearch.fill('no matching command');
+    await page.getByText('No matching commands.', { exact: true }).waitFor();
+    await commandSearch.fill('focus search');
+    await commandSearch.press('Enter');
+    await page.waitForFunction(() => document.activeElement?.getAttribute('aria-label') === 'Search torrents');
 
     await page.getByRole('button', { name: 'Add torrent', exact: true }).first().click();
     await page.locator('input[type="file"]').setInputFiles({ name: 'broken.torrent', mimeType: 'application/x-bittorrent', buffer: Buffer.from('d') });
@@ -118,6 +163,7 @@ try {
     await submitAdd();
     await addError.waitFor();
     assert.match(await addError.textContent(), /did not add this torrent/);
+    assert.ok(await isFocused(page.getByRole('button', { name: 'Return to review', exact: true })));
     await returnToReview();
     assert.match(await page.getByLabel('Magnet URI', { exact: true }).inputValue(), /100%25/);
     await page.getByRole('button', { name: 'Torrent URL', exact: true }).click();
@@ -170,7 +216,7 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     assert.deepEqual(errors, []);
     await page.close();
-    console.log(`Verified ${pathname === '/' ? 'companion' : 'hosted'}: proxy contract, malformed metadata, in-flight Add protection, payload priorities, magnet preview, failed link adds, invalid download folders, incomplete uploads, partial batch retry, mobile bounds.`);
+    console.log(`Verified ${pathname === '/' ? 'companion' : 'hosted'}: keyboard focus and command search, proxy contract, malformed metadata, in-flight Add protection, payload priorities, magnet preview, failed link adds, invalid download folders, incomplete uploads, partial batch retry, mobile bounds.`);
   }
 } finally {
   releaseUpload?.();

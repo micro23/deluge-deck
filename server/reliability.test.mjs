@@ -62,8 +62,8 @@ test('RPC rejects broken responses but accepts null results and preserves authen
   for (const body of ['<html>bad</html>', '{}', 'null'])
     await assert.rejects(() => readRpcResponse(new Response(body)), /invalid RPC/);
   assert.equal(await readRpcResponse(new Response('{"result":null}')), null);
-  await assert.rejects(() => readRpcResponse(new Response('{"error":{"message":"Not authenticated"}}')), /Not authenticated/);
-  await assert.rejects(() => readRpcResponse(new Response('{}', { status: 401 })), /session expired/);
+  await assert.rejects(() => readRpcResponse(new Response('{"error":{"code":1,"message":"Not authenticated"}}')), { message: 'Not authenticated', status: 401 });
+  await assert.rejects(() => readRpcResponse(new Response('{}', { status: 401 })), { message: /session expired/, status: 401 });
 });
 
 test('proxy settings use numeric Deluge types while preserving credentials and routing flags', () => {

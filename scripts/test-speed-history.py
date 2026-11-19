@@ -39,6 +39,21 @@ class HistoryTests(unittest.TestCase):
             self.assertEqual(result['samples'][0][1:], [150, 75])
             self.assertGreater(result['samples'][1][0] - result['samples'][0][0], result['interval'] * 2.5)
 
+    def test_restart_continues_the_same_bucket_without_duplicate_points(self):
+        history = module.SpeedHistory()
+        history.add(100000, 100, 50)
+        history.add(102000, 200, 100)
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, 'history.json')
+            history.save(path)
+            history = module.SpeedHistory()
+            history.load(path, 104000)
+            history.add(104000, 300, 150)
+            history.add(900000, 600, 300)
+            for span in (7200000, 3 * module.DAY):
+                self.assertEqual(history.query(902000, span)['samples'],
+                                 [[104000, 200, 100], [900000, 600, 300]])
+
     def test_invalid_rates_corrupt_file_and_symlink(self):
         h = module.SpeedHistory()
         h.add(1000, -1, float('nan'))

@@ -1,4 +1,10 @@
-## 1.0.98
+## 1.0.102 — readable columns and a more reliable Deluge Web plugin
+
+- Keep enabled columns within the pane, preserve readable widths when resizing, and support keyboard column reordering. Fix clipped Terminal telemetry at tablet widths.
+- Give torrent rows accessible Details buttons, keep keyboard focus in dialogs, and make the command palette search and run commands.
+- Keep the end of large torrent libraries stable while scrolling. Preserve Web authentication when the daemon is offline and clear stale dashboard state when a session expires.
+- Resume speed history in the current aggregation bucket after a restart.
+- Isolate the hosted bundle from Deluge WebUI globals so native dialogs work correctly, and update build dependencies to address audit findings.
 
 ## 1.0.101 — full-width left-aligned torrent names
 
@@ -13,6 +19,8 @@
 - Redistribute visible column widths to fill the available pane, including saved oversized preferences.
 - Keep resizing within the pane and wrap long values vertically.
 - Align the WebUI and desktop fitting policy across all themes.
+
+## 1.0.98
 
 - Restore an existing hosted login by reconnecting the Deluge daemon before entering the dashboard.
 - Keep authenticated users on the dashboard with access to the Connection Manager when their daemon is offline, instead of asking for their password again.

@@ -8,3 +8,9 @@
   display:block!important; min-height:0!important; padding:0!important; margin:0!important;
   border:0!important; background:transparent!important; pointer-events:none;
 }
+
+/* A virtual spacer is an estimate, so it cannot serve as a browser scroll anchor. */
+.table-shell:has(.virtual-spacer),
+.mobile-transfer-list:has(.virtual-spacer) {
+  overflow-anchor: none;
+}

@@ -1,3 +1,14 @@
+export const UI_KEYS = [
+  'queue', 'name', 'state', 'progress', 'total_size', 'total_done',
+  'total_uploaded', 'download_payload_rate', 'upload_payload_rate', 'eta',
+  'ratio', 'num_seeds', 'total_seeds', 'num_peers', 'total_peers',
+  'num_pieces', 'piece_length', 'tracker_host', 'tracker_status', 'save_path',
+  'download_location', 'time_added', 'completed_time', 'active_time',
+  'seeding_time', 'num_files', 'message',
+  'is_auto_managed', 'sequential_download', 'prioritize_first_last',
+  'max_download_speed', 'max_upload_speed', 'distributed_copies',
+];
+
 export function normalizeTorrentFiles(payload) {
   const rows = [];
   const join = (prefix, part = '') => {
@@ -62,7 +73,11 @@ export async function readRpcResponse(response) {
   const payload = await response.json().catch(() => null);
   if (!response.ok || payload?.error) {
     const reason = payload?.error;
-    throw new Error(reason?.message || (typeof reason === 'string' && reason) || (response.status === 401 ? 'Your Deluge session expired. Sign in again.' : `Deluge returned HTTP ${response.status}.`));
+    const message = reason?.message || (typeof reason === 'string' && reason);
+    const unauthorized = response.status === 401 || reason?.code === 1 || message === 'Not authenticated';
+    const error = new Error(message || (unauthorized ? 'Your Deluge session expired. Sign in again.' : `Deluge returned HTTP ${response.status}.`));
+    if (unauthorized) error.status = 401;
+    throw error;
   }
   if (!payload || !Object.hasOwn(payload, 'result'))
     throw new Error('Deluge returned an invalid RPC response.');
@@ -87,7 +102,7 @@ export async function connectHostedDaemon(call) {
 
 export async function authenticateAndConnectHosted(call, password) {
   if (!await call('auth.login', [password])) throw new Error('Deluge rejected that password.');
-  return connectHostedDaemon(call);
+  return connectHostedDaemon(call).catch(() => false);
 }
 
 export function serializeRpcRequest(request) {

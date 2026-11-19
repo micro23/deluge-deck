@@ -38,7 +38,7 @@ try {
   }
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${width}: viewport overflow`);
   if (width > 760) {
-   await page.locator('tbody tr[role="button"]').first().click();
+   await page.locator('tbody tr[data-virtual-index]').first().click();
    await page.getByRole('region', { name: 'Torrent details', exact: true }).waitFor();
    if (width === 1920) {
      await page.getByRole('tab', { name: 'peers', exact: true }).click();

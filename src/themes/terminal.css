@@ -876,6 +876,8 @@
   :root[data-theme="terminal"] body .topbar-heading::before { content:"[ CLI ]"; }
   :root[data-theme="terminal"] body .topbar .avatar::before { content:"["!important; }
   :root[data-theme="terminal"] body .workspace .stats-grid { margin:10px 0 8px!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card>div:nth-child(2) { width:100%!important; }
+  :root[data-theme="terminal"] body .workspace .stats-grid .stat-card span { left:50%; transform:translateX(-50%); }
 }
 @media (max-width:760px), (max-width:950px) and (max-height:540px) {
   :root[data-theme="terminal"] body::before,

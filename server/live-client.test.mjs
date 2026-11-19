@@ -64,12 +64,17 @@ test('live companion discovers an online daemon, uses reverse-proxy paths, and i
   assert.ok(calls.every(call => call.url === '/other/json'));
 });
 
-test('live login fails when the daemon remains disconnected or sends invalid RPC JSON', async () => {
+test('live login preserves authentication while the daemon is offline and rejects invalid login responses', async () => {
   connected = false;
   denyConnection = true;
   let response = await connect();
-  assert.equal(response.status, 500);
-  assert.match((await response.json()).error, /could not connect/);
+  assert.equal(response.status, 200);
+  const session = await response.json();
+  assert.equal(session.authenticated, true);
+  assert.equal(session.connected, false);
+  const restored = await fetch(`${base}/api/session`).then(result => result.json());
+  assert.equal(restored.authenticated, true);
+  assert.equal(restored.connected, false);
   denyConnection = false;
   invalidResponse = true;
   response = await connect();
