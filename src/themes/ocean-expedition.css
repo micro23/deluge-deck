@@ -1,0 +1,209 @@
+/* Ocean uses the viewing gallery for its masthead and quieter instrument
+   surfaces around the live library. Keep the photograph in this theme pack. */
+:root[data-theme="ocean"] {
+  --bg:#05131f;
+  --surface:#0a2231;
+  --surface-2:#0b2c40;
+  --surface-3:#133a4b;
+  --line:#426b7c;
+  --line-strong:#81bcce;
+  --text:#edfaff;
+  --muted:#c1dce6;
+  --muted-2:#b9d9e2;
+  --cyan:#86f4ea;
+  --accent-fg:#032423;
+  --violet:#b9d9ff;
+  --amber:#ffe1a0;
+  --green:#a0f4ce;
+  --danger:#ffc6cf;
+  --core-radius:8px;
+}
+
+:root[data-theme="ocean"] body .ocean-masthead {
+  display:grid;
+  align-items:end;
+  height:clamp(145px,13.6vw,194px);
+  box-sizing:border-box;
+  margin-bottom:12px;
+  padding:0 clamp(22px,3vw,48px) clamp(22px,2vw,31px);
+  border:1px solid #518398;
+  border-radius:4px 16px 4px 4px;
+  background-color:#071e30;
+  background-image:
+    linear-gradient(90deg,#061b2b 1%,#082338f5 17%,#07314abf 29%,#07344b22 52%,transparent 75%),
+    url("../assets/ocean-deep-sea-habitat-optimized.webp");
+  background-position:center,right 44%;
+  background-size:cover,78% auto;
+  background-repeat:no-repeat;
+}
+
+:root[data-theme="ocean"] .ocean-masthead h1 {
+  z-index:1;
+  margin:0;
+  font:650 clamp(46px,6vw,83px)/.96 "Avenir Next",Inter,system-ui,sans-serif;
+  letter-spacing:-.055em;
+  color:#f3ffff;
+}
+
+:root[data-theme="ocean"] .ocean-masthead::after {
+  inset:auto 0 0;
+  z-index:1;
+  height:3px;
+  background:linear-gradient(90deg,#87fcf0 0 17%,#358da3 17% 32%,#214356 32% 100%);
+}
+
+:root[data-theme="ocean"] .ocean-contours {
+  position:absolute;
+  inset:-12% auto auto -1%;
+  width:45%;
+  height:115%;
+  color:#77deed;
+  opacity:.38;
+  mask-image:linear-gradient(100deg,#0009,#000 36%,transparent 94%);
+  pointer-events:none;
+}
+
+:root[data-theme="ocean"] .ocean-frame {
+  position:absolute;
+  inset:15px;
+  pointer-events:none;
+  background:
+    linear-gradient(#99efed,#99efed) left top/17px 1px,
+    linear-gradient(#99efed,#99efed) left top/1px 12px,
+    linear-gradient(#99efed,#99efed) right bottom/17px 1px,
+    linear-gradient(#99efed,#99efed) right bottom/1px 12px;
+  background-repeat:no-repeat;
+}
+
+:root[data-theme="ocean"] body .sidebar {
+  background:
+    radial-gradient(ellipse at 112% 100%,#0e4054 1%,transparent 55%),
+    linear-gradient(160deg,#103249,#071b2b 44%,#061723)!important;
+}
+:root[data-theme="ocean"] .sidebar .core-identity {
+  position:relative;
+  background:radial-gradient(circle at center,#24627b38 0 24px,transparent 25px 31px,#74d8e45c 32px,transparent 33px 39px,#74d8e438 40px,transparent 41px);
+}
+:root[data-theme="ocean"] body .sidebar .nav-item.active {
+  color:#f0ffff!important;
+  background:linear-gradient(90deg,#1a5666,#0c2c3f)!important;
+  box-shadow:inset 3px 0 var(--cyan)!important;
+}
+:root[data-theme="ocean"] body .topbar {
+  background:linear-gradient(90deg,#061b29,#082637 75%,#071b29)!important;
+}
+
+:root[data-theme="ocean"] body .workspace .stats-grid .stat-card {
+  --ocean-dial:var(--cyan);
+  border-color:#487184!important;
+  border-radius:5px 12px 5px 5px!important;
+  background:
+    linear-gradient(115deg,#113348,#092333 68%,#072332)!important;
+  box-shadow:inset 0 2px var(--ocean-dial)!important;
+}
+:root[data-theme="ocean"] .workspace .stats-grid .stat-card.violet { --ocean-dial:var(--violet); }
+:root[data-theme="ocean"] .workspace .stats-grid .stat-card.amber { --ocean-dial:var(--amber); }
+:root[data-theme="ocean"] .workspace .stats-grid .stat-card.green { --ocean-dial:var(--green); }
+:root[data-theme="ocean"] body .workspace .stats-grid .stat-card .stat-icon {
+  color:var(--ocean-dial)!important;
+}
+:root[data-theme="ocean"] body .workspace .stats-grid .stat-card > div:nth-child(2) > span {
+  font-family:"SFMono-Regular",Consolas,monospace!important;
+  text-transform:uppercase;
+  letter-spacing:.07em!important;
+  color:var(--ocean-dial)!important;
+}
+:root[data-theme="ocean"] body .workspace .stats-grid .stat-spark {
+  background:repeating-linear-gradient(90deg,#9fdfea29 0 1px,transparent 1px 16px) left bottom/100% 3px no-repeat;
+}
+:root[data-theme="ocean"] body .workspace .stats-grid .stat-spark polyline {
+  stroke:var(--ocean-dial)!important;
+}
+:root[data-theme="ocean"] body .workspace .stats-grid .stat-spark polygon {
+  fill:var(--ocean-dial)!important;
+  opacity:.13;
+}
+
+:root[data-theme="ocean"] body .table-shell {
+  /* The opaque data cells cover the rings when the library fills the pane. */
+  background:
+    radial-gradient(ellipse at 92% 134%,transparent 37%,#1d4a5d66 37.4%,transparent 38% 43%,
+      #1d4a5d59 43.4%,transparent 44% 49%,#1d4a5d4a 49.4%,transparent 50% 55%,
+      #1d4a5d40 55.4%,transparent 56% 61%,#1d4a5d30 61.4%,transparent 62%)
+      right bottom/min(60%,620px) 165px no-repeat,
+    linear-gradient(175deg,#0b2636,#071c2a 78%)!important;
+  border-radius:7px!important;
+  border-color:#497183!important;
+}
+:root[data-theme="ocean"] body .table-shell th {
+  background:#10374a!important;
+  border-bottom-color:#6bafbf!important;
+}
+:root[data-theme="ocean"] body .table-shell tbody tr.selected td {
+  background:#12394a!important;
+}
+:root[data-theme="ocean"] body .deck-status-rail {
+  background:#082130!important;
+  border-color:#456c80!important;
+}
+:root[data-theme="ocean"] body .mobile-transfer {
+  background:linear-gradient(105deg,#0d3042,#091e2e)!important;
+  border-radius:6px!important;
+}
+:root[data-theme="ocean"] body .mobile-transfer.selected {
+  background:#12394a!important;
+  box-shadow:inset 3px 0 var(--cyan);
+}
+
+:root[data-theme="ocean"] .detail-drawer .drawer-head {
+  align-items:center;
+  background:
+    radial-gradient(ellipse at 100% -90%,transparent 62%,#39657a 62.5%,transparent 63% 73%,#2b5268 73.5%,transparent 74%),
+    linear-gradient(110deg,#102f44,#092333 66%,#123b4a);
+  border-bottom:1px solid #5795a4;
+}
+:root[data-theme="ocean"] .detail-drawer .drawer-head h2 {
+  flex:1;
+  min-width:0;
+  max-width:none;
+  overflow-wrap:anywhere;
+  color:var(--text);
+}
+:root[data-theme="ocean"] .detail-drawer .drawer-head .icon-button {
+  flex:none;
+  color:var(--cyan);
+  background:#082130;
+  border:1px solid var(--line-strong);
+}
+:root[data-theme="ocean"] .detail-drawer .drawer-tabs { background:#071e2d; }
+:root[data-theme="ocean"] .detail-drawer .drawer-tabs button[aria-selected="true"] {
+  background:#123547;
+  color:var(--cyan);
+  box-shadow:inset 0 -3px var(--cyan);
+}
+:root[data-theme="ocean"] .detail-drawer .drawer-tabs button:focus-visible {
+  outline:2px solid var(--text);
+  outline-offset:-3px;
+}
+
+@media (max-width:760px), (max-width:950px) and (max-height:540px) {
+  :root[data-theme="ocean"] body .ocean-masthead {
+    height:clamp(100px,28vw,124px);
+    margin-bottom:10px;
+    padding:0 17px 17px;
+    background-size:cover,80% auto;
+    background-position:center,right 43%;
+  }
+  :root[data-theme="ocean"] .ocean-masthead h1 { font-size:clamp(35px,9vw,45px); }
+  :root[data-theme="ocean"] .ocean-frame { inset:8px; }
+}
+
+@media (orientation:landscape) and (max-width:950px) and (max-height:540px) {
+  :root[data-theme="ocean"] body .ocean-masthead {
+    height:clamp(42px,12dvh,58px);
+    padding:0 20px 8px;
+    margin-bottom:6px;
+  }
+  :root[data-theme="ocean"] .ocean-masthead h1 { font-size:30px; }
+  :root[data-theme="ocean"] .ocean-frame { inset:5px; }
+}

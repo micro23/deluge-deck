@@ -11,6 +11,11 @@ const output = process.env.SCREENSHOT_DIR || '/tmp/deck-theme-review';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel:'chrome', headless:true });
 const results = [];
+const photographicMastheads = {
+  light: { selector: '.paper-folio-plate', asset: 'paper-observatory-atrium' },
+  ocean: { selector: '.ocean-masthead', asset: 'ocean-deep-sea-habitat' },
+  sunset: { selector: '.sunset-masthead', pseudo: '::before', asset: 'sunset-desert-observatory' },
+};
 const requested = process.env.DECK_VERIFY_THEMES?.split(',');
 if (requested) assert.ok(requested.every(id => THEMES.some(([theme]) => theme === id)), 'Unknown verification theme');
 try {
@@ -28,6 +33,32 @@ try {
       await page.evaluate(() => document.fonts.ready);
       // Auto sizing runs after font loading and ResizeObserver delivery.
       await page.waitForTimeout(250);
+      if (photographicMastheads[theme]) {
+        const { selector, pseudo, asset } = photographicMastheads[theme];
+        const artwork = page.locator(selector);
+        assert.ok(await artwork.isVisible(), `${theme} ${width}: masthead photo is visible`);
+        const imageLoaded = await artwork.evaluate(async (element, { pseudo, asset }) => {
+          const background = getComputedStyle(element, pseudo).backgroundImage;
+          const url = [...background.matchAll(/url\("([^"]+)"\)/g)].map(match => match[1]).find(url => url.includes(asset));
+          if (!url) return false;
+          const image = new Image();
+          image.src = url;
+          await image.decode();
+          return image.naturalWidth > 0;
+        }, { pseudo, asset });
+        assert.ok(imageLoaded, `${theme} ${width}: missing or undecodable masthead image`);
+        const colors = await page.locator('html').evaluate(root => {
+          const style = getComputedStyle(root);
+          const tokens = ['bg','surface','surface-2','surface-3','text','muted','muted-2','cyan','green','amber','danger','violet','accent-fg'];
+          return Object.fromEntries(tokens.map(key => [key,style.getPropertyValue('--' + key).trim()]));
+        });
+        for (const role of ['text','muted','muted-2','cyan','green','amber','danger','violet']) {
+          for (const surface of ['bg','surface','surface-2','surface-3']) {
+            assert.ok(contrastRatio(colors[role], colors[surface]) >= 7, `${theme}: ${role} on ${surface} falls below 7:1`);
+          }
+        }
+        assert.ok(contrastRatio(colors['accent-fg'], colors.cyan) >= 7, `${theme}: primary button text falls below 7:1`);
+      }
       if (SPORTS_CLUBS[theme]) {
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${theme} layout fits the viewport`);
         const masthead = page.locator(theme === 'mets' ? '.mets-masthead' : theme === 'yankees' ? '.yankees-masthead' : '.sports-masthead');

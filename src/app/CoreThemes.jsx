@@ -1,4 +1,8 @@
 import React from 'react';
+import { ForestMasthead } from './ForestTheme.jsx';
+import { OceanMasthead } from './OceanMasthead.jsx';
+import { PaperMasthead } from './PaperMasthead.jsx';
+import { SunsetMasthead } from './SunsetMasthead.jsx';
 
 export const CORE_THEMES = { dark:'Midnight', light:'Paper', ocean:'Ocean', forest:'Forest', sunset:'Sunset' };
 
@@ -18,20 +22,30 @@ export function CoreIdentity({ theme, compact = false, fallback = null }) {
   return <div className={`core-identity${compact ? ' compact' : ''}`} aria-label={`${CORE_THEMES[theme]} theme`}><CoreMark theme={theme} /></div>;
 }
 
-function CoreArtwork({ theme }) {
-  const art = {
-    dark:<><path d="M75 126h330M95 126V82h78v44m17 0V57h89v69m17 0V34h82v92"/><path d="M207 57V38h54v19m-42-19V24h30v14M296 75h55m-55 13h55m-55 13h55M108 95h48m-48 13h48"/><circle cx="337" cy="51" r="13"/><path d="M337 18v10m0 46v10m-33-33h10m46 0h10m-56-23 7 7m32 32 7 7m0-46-7 7m-32 32-7 7"/></>,
-    light:<><path d="M86 37h230v102H86zM99 49h204v78H99zM109 139h184M125 127v12m150-12v12M72 145h260"/><path d="M121 67h43v60h-43zm59-7h42v67h-42zm57 17h48v50h-48z"/><path d="M132 80h21m-21 11h21m-21 11h21m37-30h21m-21 11h21m-21 11h21m37-8h26m-26 11h26"/><circle cx="350" cy="57" r="24"/><path d="M350 26v8m0 46v8m-31-31h8m46 0h8"/></>,
-    ocean:<><path d="M57 121c28-23 55-23 83 0s55 23 83 0 55-23 83 0 55 23 83 0 55-23 83 0M57 143c28-23 55-23 83 0s55 23 83 0 55-23 83 0 55 23 83 0 55-23 83 0"/><path d="M100 93h76l18-37h71l22 37h79v28H100z"/><path d="M211 56V37h40v19m-31-19V25h22v12M123 100v15m19-15v15m20-15v15m141-15v15m20-15v15m19-15v15"/><circle cx="337" cy="49" r="12"/><path d="M337 23v8m0 36v8m-26-26h8m36 0h8"/></>,
-    forest:<><path d="M82 139c38-57 75-86 132-104-6 45-25 81-62 104M148 139c21-48 56-79 112-99 4 42-15 76-51 99M214 139c18-39 53-63 105-73 1 34-18 59-51 73M82 139h267"/><path d="M114 111c-22-7-33-22-36-43 25-1 44 10 52 33m68-32c-6-23 1-41 18-57 17 17 20 36 7 57m68 12c12-21 30-31 55-28-6 24-21 38-47 41"/><circle cx="363" cy="115" r="20" strokeDasharray="2 6"/></>,
-    sunset:<><path d="M72 136h300M103 136a115 115 0 0 1 230 0"/><path d="M117 112h202M128 91h180M146 70h144M173 51h90M200 35h36"/><path d="M58 136l55-22 47 22 62-28 49 28 54-19 62 19"/><path d="M105 149h238M137 160h175"/></>,
-  }[theme];
-  return <svg className="core-artwork" viewBox="0 0 440 160" fill="none" stroke="currentColor" strokeWidth=".8" aria-hidden="true">{art}</svg>;
+function MidnightMasthead() {
+  return (
+    <header className="core-masthead" aria-label="Midnight theme artwork">
+      <svg className="core-artwork" viewBox="0 0 440 160" fill="none" stroke="currentColor" strokeWidth=".8" aria-hidden="true">
+        <path d="M75 126h330M95 126V82h78v44m17 0V57h89v69m17 0V34h82v92" />
+        <path d="M207 57V38h54v19m-42-19V24h30v14M296 75h55m-55 13h55m-55 13h55M108 95h48m-48 13h48" />
+        <circle cx="337" cy="51" r="13" />
+        <path d="M337 18v10m0 46v10m-33-33h10m46 0h10m-56-23 7 7m32 32 7 7m0-46-7 7m-32 32-7 7" />
+      </svg>
+    </header>
+  );
 }
 
+const mastheads = {
+  dark: MidnightMasthead,
+  light: PaperMasthead,
+  ocean: OceanMasthead,
+  forest: ForestMasthead,
+  sunset: SunsetMasthead,
+};
+
 export function CoreMasthead({ theme }) {
-  if (!CORE_THEMES[theme]) return null;
-  return <header className="core-masthead" aria-label={`${CORE_THEMES[theme]} theme artwork`}><CoreArtwork theme={theme} /></header>;
+  const Masthead = mastheads[theme];
+  return Masthead ? <Masthead /> : null;
 }
 
 export function CoreStatIcon({ theme, label }) {

@@ -72,7 +72,7 @@ import { SportsStatIcon } from './app/SportsStatIcon.jsx';
 import { MatrixCodeProgress, MatrixIdentity, MatrixMasthead, MatrixStatIcon } from './app/MatrixTheme.jsx';
 import { CORE_THEMES, CoreIdentity, CoreMasthead, CoreProgress, CoreStatIcon } from './app/CoreThemes.jsx';
 import { USAFlagProgress, USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
-import { ForestIdentity, ForestMasthead, ForestProgress, ForestStatIcon } from './app/ForestTheme.jsx';
+import { ForestIdentity, ForestProgress, ForestStatIcon } from './app/ForestTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
 import { TorrentNetworkDetails } from './app/TorrentNetworkDetails.jsx';
 import { DarkhandOverview, DarkhandSwitches, DarkhandDetails } from './app/Darkhand.jsx';
@@ -107,6 +107,9 @@ import './themes/yankees.css';
 import './themes/sports-heritage.css';
 import './themes/core-refined.css';
 import './themes/forest.css';
+import './themes/paper-folio.css';
+import './themes/ocean-expedition.css';
+import './themes/sunset-horizon.css';
 import './windowed-list.css';
 import './menu-layout.css';
 import './fit-columns.css';
@@ -5498,7 +5501,7 @@ function App() {
             </button>
           </div>}
           <SportsMasthead theme={theme} />
-          {theme === 'forest' ? <ForestMasthead /> : <CoreMasthead theme={theme} />}
+          <CoreMasthead theme={theme} />
           {theme === 'matrix' && <MatrixMasthead />}
           {theme === 'independence' && <USAMasthead />}
           {theme !== 'darkhand' && <div className="stats-grid">

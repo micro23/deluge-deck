@@ -1,3 +1,10 @@
+## 1.0.104 — Paper, Ocean, and Sunset theme redesigns
+
+- Give Paper an ivory letterpress layout, an architectural photo spread, and an oxblood sidebar.
+- Bring an underwater observatory, seafloor contours, and color-coded instrument panels to Ocean.
+- Pair Sunset’s desert panorama with apricot poster lettering and plum transfer panels.
+- Carry each theme into the torrent details drawer, refresh its theme-picker preview, and keep the first transfer visible in phone landscape.
+
 ## 1.0.103 — mobile layout, safer bulk actions, and faster startup
 
 - Restore Darkhand’s Add Torrent and filter controls on phones, recover the empty sidebar space in landscape, and keep column dividers usable at tablet widths.
