@@ -69,3 +69,23 @@ test('hosted login signs in once and opens the dashboard even with no online dae
   });
   assert.deepEqual(calls, ['auth.login', 'web.connected', 'web.get_hosts']);
 });
+
+test('hosted sign-out requires confirmation from Deluge and accepts an expired session', async (t) => {
+  globalThis.window = { __DELUGE_DECK_PLUGIN__: true };
+  globalThis.document = { baseURI: 'https://deluge.example/deck/' };
+  t.after(() => { delete globalThis.window; delete globalThis.document; });
+  let reply;
+  t.mock.method(globalThis, 'fetch', async (url, options) => {
+    assert.equal(url, 'https://deluge.example/deck/json');
+    assert.equal(JSON.parse(options.body).method, 'auth.delete_session');
+    return reply;
+  });
+  reply = Response.json({ result: false });
+  await assert.rejects(api.disconnect(), /did not confirm/);
+  reply = new Response('Proxy requires authentication', { status: 401 });
+  await assert.rejects(api.disconnect(), /denied the sign-out request/);
+  reply = Response.json({ error: { code: 1, message: 'Not authenticated' } });
+  await api.disconnect();
+  reply = Response.json({ result: true });
+  await api.disconnect();
+});

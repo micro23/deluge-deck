@@ -69,6 +69,17 @@ try {
     await page.reload();
     await sizeHeading.waitFor();
     assert.deepEqual((await order()).slice(0, 4), ['name', 'state', 'progress', 'size']);
+    if (theme === 'forest') {
+      await page.setViewportSize({ width: 939, height: 1000 });
+      const divider = page.getByRole('separator', { name: 'Resize State column' });
+      await divider.focus();
+      const before = Number(await divider.getAttribute('aria-valuenow'));
+      await page.keyboard.press('Shift+ArrowRight');
+      await page.waitForFunction(width => {
+        const divider = document.querySelector('[aria-label="Resize State column"]');
+        return Number(divider?.getAttribute('aria-valuenow')) >= width + 10;
+      }, before, { timeout: 3000 });
+    }
     await page.locator('.column-menu-trigger').click();
     const options = page.getByRole('group', { name: 'Column visibility' }).getByRole('checkbox');
     const optionCount = await options.count();

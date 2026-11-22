@@ -16,12 +16,23 @@ try {
     localStorage.setItem('deck-sidebar-collapsed', 'false');
     localStorage.removeItem('deck-darkhand-layout');
   });
-  for (const width of [2048, 1456, 1200, 820, 390, 320]) {
-    await page.setViewportSize({ width, height: 1057 });
+  for (const [width, height] of [[2048, 1057], [1456, 1057], [1200, 1057], [820, 1057], [390, 844], [320, 740], [844, 390], [915, 412]]) {
+    await page.setViewportSize({ width, height });
     await page.goto(origin);
     await page.locator('.dh-stat').first().waitFor();
     await page.evaluate(() => document.fonts.ready);
-    const desktop = width > 760;
+    const desktop = width > 760 && (width > 950 || height > 540);
+    const actions = desktop ? page.locator('.sidebar') : page.locator('.library-mobile-controls');
+    const add = actions.getByRole('button', { name: 'Add torrent', exact: true });
+    assert.ok(await add.isVisible(), `${width}×${height}: Add torrent is visible in the library controls`);
+    await add.click();
+    await page.getByRole('dialog', { name: 'Review torrent' }).waitFor();
+    await page.keyboard.press('Escape');
+    await page.getByRole('dialog', { name: 'Review torrent' }).waitFor({ state: 'hidden' });
+    if (!desktop) {
+      assert.ok(await actions.getByRole('navigation', { name: 'Torrent filters' }).isVisible());
+      assert.ok(await page.getByRole('group', { name: 'Details placement' }).isHidden());
+    }
     for (const stats of ['above', 'below']) {
       await page.getByRole('group', { name: 'Stats placement' }).getByRole('button', { name: stats[0].toUpperCase() + stats.slice(1), exact: true }).click();
       for (const details of desktop ? ['right', 'bottom'] : ['bottom']) {
@@ -42,6 +53,7 @@ try {
         assert.ok(!geometry.overflow, `${width} ${stats}/${details}: page overflow`);
         assert.ok(!geometry.overlaps, `${width} ${stats}/${details}: toolbar overlap`);
         assert.ok(geometry.list.y >= geometry.bar.bottom, 'Panels follow the toolbar');
+        if (!desktop) assert.ok(geometry.list.width >= width - 24, `${width}×${height}: the mobile list uses the width freed by the sidebar`);
         assert.ok(stats === 'above' ? geometry.overview.bottom <= geometry.list.y + 1 : geometry.list.bottom <= geometry.overview.y + 1, 'Stats placement changes only the panel order');
         if (desktop) {
           assert.ok(geometry.counts.every(x => Math.abs(x - geometry.counts[0]) < 1 && x <= geometry.sidebar.right), 'Sidebar counts align inside the panel');
@@ -65,12 +77,25 @@ try {
         assert.equal(await handle.getAttribute('aria-orientation'), details === 'right' && width > 1100 ? 'vertical' : 'horizontal');
         const before = await handle.getAttribute('aria-valuenow');
         await handle.focus();
-        await page.keyboard.press(details === 'right' && width > 1100 ? 'ArrowLeft' : 'ArrowUp');
+        // A right-hand panel may already be capped at 40% of the workspace.
+        await page.keyboard.press(details === 'right' && width > 1100 ? 'ArrowRight' : 'ArrowUp');
         await page.waitForFunction(value => document.querySelector('.dh-details-resize').getAttribute('aria-valuenow') !== value, before);
       }
     }
-    console.log(`Verified Darkhand ${width}: placements, toolbar, sidebar and details collapse`);
+    console.log(`Verified Darkhand ${width}×${height}: placements, toolbar, library controls and details collapse`);
   }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const rightPlacement = page.getByRole('group', { name: 'Details placement' }).getByRole('button', { name: 'Right', exact: true });
+  await rightPlacement.click();
+  for (const [width, height] of [[844, 390], [390, 844]]) {
+    await page.setViewportSize({ width, height });
+    await page.waitForFunction(() => {
+      const rect = document.querySelector('.mobile-transfers')?.getBoundingClientRect();
+      return rect?.left >= 8 && document.documentElement.clientWidth - rect.right >= 8;
+    }, null, { timeout: 3000 });
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  assert.equal(await rightPlacement.getAttribute('aria-pressed'), 'true', 'Rotating the viewport preserves the desktop details preference');
   assert.deepEqual(errors, []);
 } finally {
   await browser.close();

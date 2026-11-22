@@ -62,6 +62,10 @@ const server = http.createServer(async (req, res) => {
       failNext = false;
       return json(res, { error: { message: 'Daemon refused the action.' } });
     }
+    if (method === 'core.remove_torrents') {
+      for (const id of params[0]) delete torrents[id];
+      return json(res, { result: [] });
+    }
     const state = method.includes('pause') ? 'Paused' : 'Downloading';
     const ids = method.endsWith('_session') ? Object.keys(torrents) : params[0];
     for (const id of ids) torrents[id].state = state;
@@ -103,12 +107,15 @@ try {
     { name: names[index], state });
 
     await select(0);
+    const selectAll = page.getByRole('checkbox', { name: 'Select all filtered torrents', exact: true });
+    assert.equal(await selectAll.evaluate(input => input.indeterminate), true, `${mode}: partial selection`);
     await select(2);
     heldAction = true;
     await page.getByRole('button', { name: 'Pause selected torrents', exact: true }).click();
     await page.waitForFunction(() => document.querySelector('.bulk-bar')?.getAttribute('aria-busy') === 'true');
     assert.equal(await page.getByRole('button', { name: 'Resume selected torrents', exact: true }).isDisabled(), true);
     assert.equal(await page.locator('.bulk-bar button').evaluateAll(buttons => buttons.every(button => button.disabled)), true);
+    await select(1);
     while (!releaseAction) await new Promise(resolve => setTimeout(resolve, 10));
     heldAction = false;
     releaseAction();
@@ -116,6 +123,9 @@ try {
     await waitForState(0, 'Paused');
     assert.deepEqual(calls, [{ method: 'core.pause_torrents', params: [['0', '2']] }]);
     assert.equal(torrents['1'].state, 'Seeding');
+    const unrelated = page.getByRole('checkbox', { name: `Select ${names[1]}`, exact: true });
+    assert.equal(await unrelated.isChecked(), true, `${mode}: selection made during a request survives completion`);
+    await unrelated.uncheck();
 
     await select(0);
     await select(2);
@@ -154,9 +164,47 @@ try {
     await page.getByRole('button', { name: 'Resume entire session', exact: true }).click();
     await waitForState(0, 'Downloading');
     assert.deepEqual(calls.slice(-2).map(call => call.method), ['core.resume_session', 'core.resume_torrents']);
+
+    await page.evaluate(() => document.activeElement.blur());
+    for (const selectText of ['Control+a', 'Meta+a']) {
+      await page.keyboard.press(selectText);
+      assert.equal(await page.getByRole('dialog').count(), 0, `${mode}: ${selectText} preserves native text selection`);
+    }
+    await page.keyboard.press('/');
+    const search = page.getByRole('textbox', { name: 'Search torrents', exact: true });
+    assert.equal(await search.evaluate(input => input === document.activeElement), true);
+    await select(0);
+    await select(2);
+    await search.fill(names[0]);
+    assert.equal(await page.locator('.bulk-count').innerText(), '1 selected');
+    await search.fill('');
+    assert.equal(await page.getByRole('checkbox', { name: `Select ${names[2]}`, exact: true }).isChecked(), false);
+
+    await page.getByRole('button', { name: /^Downloading, \d+ torrents$/ }).click();
+    await select(0);
+    await select(2);
+    // A daemon update can remove a selected row from this view between clicks.
+    torrents['2'].state = 'Paused';
+    await page.getByRole('checkbox', { name: `Select ${names[2]}`, exact: true }).waitFor({ state: 'hidden' });
+    assert.equal(await page.locator('.bulk-count').innerText(), '1 selected');
+    await page.getByRole('button', { name: /^All torrents, \d+ torrents$/ }).click();
+    await select(0);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator('.mobile-transfers').waitFor();
+    assert.equal(await selectAll.evaluate(input => input.indeterminate), true);
+    await select(2);
+    await search.fill(names[0]);
+    await page.locator('.bulk-bar').getByRole('button', { name: 'Remove', exact: true }).click();
+    const remove = page.getByRole('dialog', { name: 'Remove 1 torrent?', exact: true });
+    await remove.getByRole('button', { name: /Remove torrent only/ }).click();
+    await remove.waitFor({ state: 'hidden' });
+    assert.deepEqual(calls.at(-1), { method: 'core.remove_torrents', params: [['0'], false] });
+    assert.deepEqual(Object.keys(torrents), ['1', '2']);
+    assert.equal(await selectAll.isDisabled(), true, `${mode}: selection is disabled for zero results`);
+    assert.equal(await page.locator('.bulk-bar').count(), 0);
     assert.deepEqual(errors, []);
     await page.close();
-    console.log(`Verified ${mode}: selected pause/resume, bulk controls, in-flight buttons, visible errors, session controls, and right-click suppression.`);
+    console.log(`Verified ${mode}: selected pause/resume, filtered removal, in-flight selections, keyboard shortcuts, mobile select-all, errors, and session controls.`);
   }
 } finally {
   releaseAction?.();

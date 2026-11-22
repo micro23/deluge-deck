@@ -74,9 +74,11 @@ export async function readRpcResponse(response) {
   if (!response.ok || payload?.error) {
     const reason = payload?.error;
     const message = reason?.message || (typeof reason === 'string' && reason);
-    const unauthorized = response.status === 401 || reason?.code === 1 || message === 'Not authenticated';
+    const sessionExpired = reason?.code === 1 || message === 'Not authenticated';
+    const unauthorized = response.status === 401 || sessionExpired;
     const error = new Error(message || (unauthorized ? 'Your Deluge session expired. Sign in again.' : `Deluge returned HTTP ${response.status}.`));
     if (unauthorized) error.status = 401;
+    if (sessionExpired) error.sessionExpired = true;
     throw error;
   }
   if (!payload || !Object.hasOwn(payload, 'result'))
@@ -103,6 +105,19 @@ export async function connectHostedDaemon(call) {
 export async function authenticateAndConnectHosted(call, password) {
   if (!await call('auth.login', [password])) throw new Error('Deluge rejected that password.');
   return connectHostedDaemon(call).catch(() => false);
+}
+
+export async function endWebSession(call) {
+  try {
+    if (await call('auth.delete_session') !== true)
+      throw new Error('Deluge did not confirm the end of your Web session.');
+  } catch (error) {
+    // An expired Deluge session is signed out. A proxy's HTTP 401 alone cannot
+    // confirm whether the request reached Deluge.
+    if (error.sessionExpired) return;
+    if (error.status === 401) throw new Error('The Web endpoint denied the sign-out request (HTTP 401).');
+    throw error;
+  }
 }
 
 export function serializeRpcRequest(request) {

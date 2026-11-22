@@ -567,7 +567,7 @@ function ThemeMenu({ theme, setTheme }) {
     </div>
   );
 }
-function SearchField({ search, setSearch, placeholder }) {
+function SearchField({ search, setSearch, placeholder = 'Search torrents…' }) {
   return (
     <div className="search-wrap">
       <Search size={17} />
@@ -1259,7 +1259,7 @@ function ConnectionManagerModal({ onClose, onConnected }) {
     </div>
   );
 }
-function AccountMenu({ session, onLogout }) {
+function AccountMenu({ session, onLogout, onError }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const anchor = useRef(null);
@@ -1289,6 +1289,8 @@ function AccountMenu({ session, onLogout }) {
     setBusy(true);
     try {
       await onLogout();
+    } catch (error) {
+      onError(`Sign-out could not be confirmed. ${error?.message || 'Try again.'}`);
     } finally {
       setBusy(false);
       setOpen(false);
@@ -1396,7 +1398,7 @@ function Topbar({
           >
             <Settings2 size={18} />
           </button>
-          <AccountMenu session={session} onLogout={disconnect} />
+          <AccountMenu session={session} onLogout={disconnect} onError={onError} />
         </div>
         <div className="mobile-stats">
           <span>
@@ -1744,14 +1746,32 @@ function useMobileLayout() {
   return mobile;
 }
 
+function SelectAllTorrents({ torrents, selected, setSelected }) {
+  const allSelected = torrents.length > 0 && selected.size === torrents.length;
+  const mixed = selected.size > 0 && !allSelected;
+  const ref = useRef(null);
+  useLayoutEffect(() => {
+    ref.current.indeterminate = mixed;
+  }, [mixed]);
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      aria-label="Select all filtered torrents"
+      checked={allSelected}
+      disabled={!torrents.length}
+      onChange={() => setSelected(allSelected ? new Set() : new Set(torrents.map(torrent => torrent.hash)))}
+    />
+  );
+}
+
 function MobileTorrentList({ torrents, theme, selected, setSelected, onOpen, onMenu, loading, onAdd, sort, setSort }) {
   const listRef = useRef(null);
   const rows = useWindowedRows(torrents, { listRef, enabled: !loading, estimate: 120, resetKey: `${theme}:${sort.key}:${sort.direction}` });
-  const allSelected = torrents.length > 0 && torrents.every(t => selected.has(t.hash));
   return (
     <section className="mobile-transfers" aria-label="Torrent list">
       <div className="mobile-list-toolbar">
-        <label className="mobile-select-all"><input type="checkbox" aria-label="Select all filtered torrents" checked={allSelected} onChange={() => setSelected(allSelected ? new Set() : new Set(torrents.map(t => t.hash)))} />{selected.size ? `${selected.size} selected` : `${torrents.length} torrents`}</label>
+        <label className="mobile-select-all"><SelectAllTorrents torrents={torrents} selected={selected} setSelected={setSelected} />{selected.size ? `${selected.size} selected` : `${torrents.length} torrents`}</label>
         <label className="mobile-sort">Sort<select aria-label="Sort torrents" value={sort.key} onChange={e => setSort({ key: e.target.value, direction: 1 })}>
           <option value="queue">Queue</option><option value="name">Name</option><option value="state">State</option><option value="progress">Progress</option><option value="total_size">Size</option><option value="download_payload_rate">Download</option><option value="upload_payload_rate">Upload</option><option value="ratio">Ratio</option>
         </select></label>
@@ -1786,8 +1806,6 @@ function TorrentTable({
   loading,
   onAdd,
 }) {
-  const allSelected =
-    torrents.length && torrents.every((torrent) => selected.has(torrent.hash));
   const [sort, setSort] = useState({ key: 'queue', direction: 1 });
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const [draggingColumn, setDraggingColumn] = useState(null);
@@ -2173,18 +2191,7 @@ function TorrentTable({
         <thead>
           <tr aria-rowindex="1">
             <th className="check-cell">
-              <input
-                type="checkbox"
-                checked={Boolean(allSelected)}
-                onChange={() =>
-                  setSelected(
-                    allSelected
-                      ? new Set()
-                      : new Set(torrents.map((torrent) => torrent.hash)),
-                  )
-                }
-                aria-label="Select all filtered torrents"
-              />
+              <SelectAllTorrents torrents={torrents} selected={selected} setSelected={setSelected} />
             </th>
             {visibleColumns.map((key, index) => {
               const heading = columnHeading(key);
@@ -2238,7 +2245,7 @@ function TorrentTable({
                 >
                   {heading}
                 </button>
-                <span
+                {visibleColumns.length > 1 && <span
                   className="column-resize-handle"
                   role="separator"
                   aria-orientation="vertical"
@@ -2288,7 +2295,7 @@ function TorrentTable({
                       ...resizeColumn(index, resolvedColumnWidths[key] + delta),
                     }));
                   }}
-                />
+                />}
               </th>
               );
             })}
@@ -4340,10 +4347,11 @@ function AddTorrentModal({
       }));
       try {
         if (file.size > 64 * 1024 * 1024) throw new Error('This torrent metadata file is too large.');
-        const payloadFiles = decodeTorrentMetadata(await file.arrayBuffer());
+        const metadataFiles = decodeTorrentMetadata(await file.arrayBuffer());
+        const payloadFiles = metadataFiles.filter(entry => !entry.padding);
         setTorrentPayloads((current) => ({
           ...current,
-          [file.name]: { status: 'ready', files: payloadFiles },
+          [file.name]: { status: 'ready', files: payloadFiles, fileCount: metadataFiles.length },
         }));
         setSelectedPayloadFiles((current) => ({
           ...current,
@@ -4500,13 +4508,13 @@ function AddTorrentModal({
               add_paused: paused,
               sequential_download: sequential,
               pre_allocate_storage: allocation === 'full',
-              file_priorities: selected[index]
-                ? torrentPayloads[selected[index].name]?.files.map((entry) =>
-                    (selectedPayloadFiles[selected[index].name]?.has(entry.index)
-                      ? Number(addFilePriorities[selected[index].name] ?? 4)
-                      : 0),
-                  )
-                : undefined,
+              // Deluge expects one slot per original file, including padding.
+              file_priorities: Array.from(
+                { length: torrentPayloads[selected[index].name].fileCount },
+                (_, fileIndex) => selectedPayloadFiles[selected[index].name].has(fileIndex)
+                  ? Number(addFilePriorities[selected[index].name] ?? 4)
+                  : 0,
+              ),
             },
           })),
         ]);
@@ -5117,11 +5125,6 @@ function App() {
         next.map((torrent) => [torrent.hash, torrent.state]),
       );
       setTorrents(next);
-      const liveHashes = new Set(next.map((torrent) => torrent.hash));
-      setSelected((current) => {
-        const nextSelection = new Set([...current].filter((hash) => liveHashes.has(hash)));
-        return nextSelection.size === current.size ? current : nextSelection;
-      });
       setStats(data.stats || {});
       setDetail(
         (current) =>
@@ -5221,6 +5224,16 @@ function App() {
     },
     [torrents, filter, search],
   );
+  useLayoutEffect(() => {
+    setSelected(current => {
+      if (!current.size) return current;
+      const visibleSelection = new Set();
+      for (const torrent of filtered) {
+        if (current.has(torrent.hash)) visibleSelection.add(torrent.hash);
+      }
+      return visibleSelection.size === current.size ? current : visibleSelection;
+    });
+  }, [filtered]);
   const torrentCounts = useMemo(() => countTorrentStates(torrents), [torrents]);
   const [telemetryHistory, setTelemetryHistory] = useState({
     download: [], upload: [], connections: [], library: [],
@@ -5281,6 +5294,8 @@ function App() {
         }
         return;
       }
+      if (event.defaultPrevented || event.isComposing || event.repeat ||
+          event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
       const selector =
         'input,textarea,select,button,a,[contenteditable="true"],[role="button"],[role="menuitem"],[tabindex]:not([tabindex="-1"])';
       const active = document.activeElement;
@@ -5352,7 +5367,11 @@ function App() {
     setNotice('');
     try {
       if (methods[action]) await rpc(methods[action], [target]);
-      setSelected(new Set());
+      setSelected(current => {
+        const next = new Set(current);
+        for (const hash of target) next.delete(hash);
+        return next.size === current.size ? current : next;
+      });
       setMenuTorrent(null);
       await refresh();
       setCopied(

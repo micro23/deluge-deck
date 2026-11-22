@@ -1,3 +1,11 @@
+## 1.0.103 — mobile layout, safer bulk actions, and faster startup
+
+- Restore Darkhand’s Add Torrent and filter controls on phones, recover the empty sidebar space in landscape, and keep column dividers usable at tablet widths.
+- Keep bulk actions within the current search and filter results, preserve new selections while a request is in flight, and show when only some results are selected.
+- Load the active sports theme’s logo on demand. The packaged dashboard JavaScript is 30% smaller than in 1.0.102.
+- Review single-file hybrid torrents, exclude padding from the file picker and disk-space estimate, and preserve the original file indexes when applying priorities.
+- Confirm sign-out with Deluge, show a retryable error when confirmation fails, and preserve a newer companion login if an earlier logout finishes late.
+
 ## 1.0.102 — readable columns and a more reliable Deluge Web plugin
 
 - Keep enabled columns within the pane, preserve readable widths when resizing, and support keyboard column reordering. Fix clipped Terminal telemetry at tablet widths.

@@ -31,7 +31,10 @@ try {
         const logo = page.locator(width > 760 ? '.sports-identity img' : '.sports-mobile-brand img');
         await logo.evaluate(image => image.decode());
         assert.ok(await logo.evaluate(image => image.naturalWidth > 0), `${theme} logo loads inside the hosted plugin`);
-        assert.match(await logo.getAttribute('src'), /^data:image\/svg\+xml/, 'Team logos must be bundled without Vite asset requests');
+        const logoUrl = new URL(await logo.getAttribute('src'), origin);
+        assert.equal(logoUrl.origin, new URL(origin).origin);
+        assert.ok(logoUrl.pathname.startsWith(new URL('deluge-deck-resources/assets/', page.url()).pathname));
+        assert.ok(logoUrl.pathname.split('/').pop().startsWith(`${theme}-logo-`), 'Active team logo comes from the packaged resources');
       }
       await page.evaluate(() => {
         Object.defineProperty(document,'hidden',{value:true,configurable:true});

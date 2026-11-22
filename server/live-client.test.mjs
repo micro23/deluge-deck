@@ -9,6 +9,7 @@ let upstreamUrl;
 let connected = false;
 let denyConnection = false;
 let invalidResponse = false;
+let logoutReply = async () => ({ result: true });
 const calls = [];
 const listen = async (instance) => {
   await new Promise(resolve => instance.listen(0, '127.0.0.1', resolve));
@@ -24,6 +25,9 @@ before(async () => {
     if (method === 'auth.login') {
       res.setHeader('set-cookie', 'session=fixture; Path=/');
       result = true;
+    } else if (method === 'auth.delete_session') {
+      res.setHeader('content-type', 'application/json');
+      return res.end(JSON.stringify(await logoutReply()));
     } else if (method === 'auth.check_session') result = true;
     else if (method === 'web.connected') result = connected;
     else if (method === 'web.disconnect') { connected = false; result = true; }
@@ -92,6 +96,42 @@ test('companion rejects malformed RPC inputs and unknown API routes with client 
   assert.equal((await fetch(`${base}/`, { method: 'POST' })).status, 405);
   assert.equal((await fetch(`${base}/assets/missing.js`)).status, 404);
   assert.equal((await fetch(`${base}/api/rpc`, { method: 'POST', body: 'x'.repeat(1024 * 1024 + 1) })).status, 413);
+});
+
+test('companion logout can retry a failed revocation and preserves a newer login', { timeout: 5000 }, async (t) => {
+  const previousReply = logoutReply;
+  t.after(() => { logoutReply = previousReply; });
+  const logout = () => fetch(`${base}/api/session/disconnect`, { method: 'POST' });
+  const session = () => fetch(`${base}/api/session`).then(response => response.json());
+
+  await connect();
+  logoutReply = async () => ({ result: false });
+  assert.equal((await logout()).ok, false);
+  assert.equal((await session()).authenticated, true);
+
+  let finishLogout;
+  const heldReply = new Promise(resolve => { finishLogout = resolve; });
+  const started = new Promise(resolve => {
+    logoutReply = () => { resolve(); return heldReply; };
+  });
+  const oldLogout = logout();
+  try {
+    await started;
+    assert.equal((await connect(`${upstreamUrl}/new-session`)).ok, true);
+  } finally {
+    finishLogout({ result: true });
+  }
+  assert.equal((await oldLogout).ok, true);
+  assert.equal((await session()).authenticated, true);
+
+  logoutReply = async () => ({ error: { code: 1, message: 'Not authenticated' } });
+  assert.equal((await logout()).ok, true);
+  const signedOut = await session();
+  assert.equal(signedOut.authenticated, false);
+  assert.equal(signedOut.delugeUrl, `${upstreamUrl}/new-session`);
+  const count = calls.length;
+  assert.equal((await logout()).ok, true);
+  assert.equal(calls.length, count);
 });
 
 test('loopback origin validation rejects unrelated ports, hostile hosts, and cross-site requests', async () => {

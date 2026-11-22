@@ -14,6 +14,7 @@ let uploadPaths = ['/tmp/fixture.torrent'];
 let addResult = [[true, 'fixture-hash']];
 let freeBytes = 1024;
 let linkResult = null;
+let rejectLogout = false;
 const json = (res, value) => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify(value)); };
 const proxy = { type: 3, hostname: 'proxy.test', port: 1080, username: 'fixture', password: 'fixture', force_proxy: true, proxy_tracker_connections: true };
 let config = { proxy, download_location: '/tmp' };
@@ -21,6 +22,10 @@ const feed = { connected: true, torrents: { fixture: { name: 'Fixture torrent', 
 const server = http.createServer(async (req, res) => {
   try {
     if (req.url === '/api/session') return json(res, { authenticated: true, connected: true, mode: 'live' });
+    if (req.url === '/api/session/disconnect') {
+      if (rejectLogout) res.statusCode = 503;
+      return json(res, rejectLogout ? { error: 'Fixture session service unavailable.' } : { ok: true });
+    }
     if (req.url === '/api/torrents') return json(res, feed);
     if (req.url.endsWith('/upload')) {
       if (heldUpload) await new Promise(resolve => { releaseUpload = resolve; });
@@ -31,6 +36,8 @@ const server = http.createServer(async (req, res) => {
       for await (const chunk of req) chunks.push(chunk);
       const { method, params } = JSON.parse(Buffer.concat(chunks));
       let result = true;
+      if (method === 'auth.delete_session' && rejectLogout)
+        return json(res, { error: { code: 4, message: 'Fixture session service unavailable.' } });
       if (method === 'web.update_ui') result = feed;
       else if (method === 'web.get_hosts') result = [['host-id', '127.0.0.1', 58846, 'username']];
       else if (method === 'web.get_host_status') result = ['host-id', 'Connected', '2.1'];
@@ -156,6 +163,19 @@ try {
       await page.getByRole('dialog', { name: 'Review torrent', exact: true }).waitFor();
     };
     const addError = page.getByRole('dialog', { name: 'Deluge could not add this torrent', exact: true });
+    // The daemon has room for the two payloads, but not their alignment padding.
+    await openAdd();
+    const padded = 'd4:infod5:filesld6:lengthi3e4:pathl1:aee' +
+      'd4:attr1:p6:lengthi16381e4:pathl4:.pad5:16381ee' +
+      'd6:lengthi2e4:pathl1:beeeee';
+    await page.locator('input[type="file"]').setInputFiles({ name: 'padded.torrent',
+      mimeType: 'application/x-bittorrent', buffer: Buffer.from(padded) });
+    await page.getByText('2 of 2 selected · 5 B', { exact: true }).waitFor();
+    await page.getByRole('checkbox', { name: 'Download a', exact: true }).uncheck();
+    await submitAdd();
+    await page.getByRole('dialog', { name: 'Review torrent', exact: true }).waitFor({ state: 'hidden' });
+    assert.deepEqual(writes.at(-1).params[0][0].options.file_priorities, [0, 0, 4]);
+
     await openAdd();
     await page.getByRole('button', { name: 'Magnet link', exact: true }).click();
     await page.getByLabel('Magnet URI', { exact: true }).fill('magnet:?xt=urn:btih:0123456789012345678901234567890123456789&dn=100%25%20complete');
@@ -214,6 +234,16 @@ try {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.getByRole('checkbox', { name: 'Select Fixture torrent', exact: true }).waitFor();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    const logout = page.getByRole('menuitem', { name: /Log out/ });
+    rejectLogout = true;
+    await account.click();
+    await logout.click();
+    await page.getByText(/Sign-out could not be confirmed.*Fixture session service unavailable/).waitFor();
+    assert.equal(await account.isVisible(), true);
+    rejectLogout = false;
+    await account.click();
+    await logout.click();
+    await page.locator('input[type="password"]').waitFor();
     assert.deepEqual(errors, []);
     await page.close();
     console.log(`Verified ${pathname === '/' ? 'companion' : 'hosted'}: keyboard focus and command search, proxy contract, malformed metadata, in-flight Add protection, payload priorities, magnet preview, failed link adds, invalid download folders, incomplete uploads, partial batch retry, mobile bounds.`);

@@ -2,7 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { connectHostedDaemon, readRpcResponse, UI_KEYS } from './hosted-contracts.mjs';
+import { connectHostedDaemon, endWebSession, readRpcResponse, UI_KEYS } from './hosted-contracts.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PACKAGE = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8'));
@@ -184,7 +184,18 @@ async function route(req, res) {
       return send(res, 200, session);
     }
     if (req.method === 'POST' && pathname === '/api/session/disconnect') {
-      if (!DEMO) { await client.rpc('auth.delete_session', []).catch(() => {}); client.cookie = ''; client.connected = false; } else demoSession = false;
+      if (DEMO) {
+        demoSession = false;
+      } else {
+        const previous = client;
+        if (previous.cookie) await endWebSession(method => previous.rpc(method));
+        // In-flight RPCs can still refresh cookies on the old client, and another
+        // tab can complete a new login while upstream logout is in progress.
+        if (client === previous) {
+          client = new DelugeClient();
+          client.baseUrl = previous.baseUrl;
+        }
+      }
       return send(res, 200, { ok: true });
     }
     if (req.method === 'GET' && pathname === '/api/torrents') {

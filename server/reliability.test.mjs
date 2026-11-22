@@ -21,6 +21,24 @@ test('torrent review reads single and multi-file metadata with UTF-8 names and b
   ] } })), [{ index: 0, path: 'folder/日本語.txt', size: 42 }, { index: 1, path: 'empty.txt', size: 0 }]);
 });
 
+test('torrent review preserves binary piece-layer keys in single-file hybrid metadata', () => {
+  const info = encode({ 'file tree': { 'one.txt': { '': { length: 3 } } },
+    length: 3, 'meta version': 2, name: 'one.txt', pieces: 'a'.repeat(20) });
+  const key = Buffer.alloc(32, 0xff);
+  const other = Buffer.from(key);
+  other[0] = 0xfe;
+  const metadata = Buffer.concat([Buffer.from('d4:info' + info + '12:piece layersd32:'), other,
+    Buffer.from('0:32:'), key, Buffer.from('0:ee')]);
+  assert.deepEqual(decodeTorrentMetadata(metadata), [{ index: 0, path: 'one.txt', size: 3 }]);
+});
+
+test('padding keeps its original priority slot and only the padding attribute marks it', () => {
+  const info = { files: [{ path: ['a.txt'], length: 3 }, { attr: 'hp', length: 16381 },
+    { path: ['.pad', 'real.txt'], length: 2 }] };
+  assert.deepEqual(decode(encode({ info })), [{ index: 0, path: 'a.txt', size: 3 },
+    { index: 1, padding: true, size: 16381 }, { index: 2, path: '.pad/real.txt', size: 2 }]);
+});
+
 for (const raw of ['', 'd', 'l', 'i12', 'i-0e', 'i01e', 'i9007199254740992e', 'x', '4:ab', '-1:a', '01:a', 'd1:ae', 'di1ei2ee', 'd1:ai1e1:ai2ee', 'letrailing']) {
   test(`torrent parser rejects malformed input ${JSON.stringify(raw)}`, () => assert.throws(() => decode(raw), /invalid|missing/));
 }

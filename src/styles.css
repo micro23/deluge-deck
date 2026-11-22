@@ -493,6 +493,15 @@ html.deluge-deck-hosted [data-deluge-deck-legacy="true"],html.deluge-deck-hosted
 @media (prefers-reduced-motion: reduce) { .celebration-toast { animation:none!important; } }
 .torrent-open { display:block; width:100%; border:0; padding:0; background:none; color:inherit; text-align:inherit; }
 .torrent-open:focus-visible { outline:2px solid var(--cyan); outline-offset:1px; }
+:where(:root:not([data-theme="terminal"])) :where(.check-cell, .mobile-select-all) input[type=checkbox]:indeterminate::before {
+  content:"−";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:var(--text);
+  font:bold 14px/1 sans-serif;
+}
 .command-empty { color:var(--muted); margin:8px 0; }
 .sort-announcement { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 .table-shell table.hide-queue th:nth-child(15),.table-shell table.hide-queue td:nth-child(14){display:none;}

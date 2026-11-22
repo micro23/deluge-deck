@@ -1,6 +1,7 @@
 import {
   authenticateAndConnectHosted,
   connectHostedDaemon,
+  endWebSession,
   serializeRpcRequest,
   readRpcResponse,
   UI_KEYS,
@@ -90,10 +91,13 @@ export const api = {
       throw new Error(result.error || 'Unable to connect to Deluge.');
     return result;
   },
-  disconnect: () =>
-    pluginMode()
-      ? rpc('auth.delete_session').catch(() => undefined)
-      : request('/api/session/disconnect', { method: 'POST' }),
+  disconnect: async () => {
+    if (pluginMode()) return endWebSession(rpc);
+    const response = await request('/api/session/disconnect', { method: 'POST' });
+    const result = await response.json().catch(() => null);
+    if (!response.ok || result?.ok !== true)
+      throw new Error(result?.error || 'The companion did not confirm sign-out.');
+  },
   upload: async (files) => {
     const form = new FormData();
     files.forEach((file) => form.append('file', file));

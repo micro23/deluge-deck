@@ -487,6 +487,7 @@
 
 :root[data-theme="valentine"] .table-shell input[type="checkbox"]::before { content:"♥"; color:#b28a49; text-shadow:0 1px #fff2d8; }
 :root[data-theme="valentine"] .table-shell input[type="checkbox"]:checked::before { content:"♥"; color:#a73351; text-shadow:0 1px #fbe5ca; }
+:root[data-theme="valentine"] .table-shell input[type="checkbox"]:indeterminate::before { content:"−"; color:var(--text); }
 :root[data-theme="valentine"] .table-shell input[type="checkbox"]::after { content:none!important; }
 
 :root[data-theme="valentine"] .state-badge {
