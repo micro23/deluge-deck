@@ -68,9 +68,12 @@ import { storage as localStorage } from './app/storage.js';
 import { APP_VERSION } from './app/version.js';
 import { REFRESH_OPTIONS, THEMES, THEME_CATEGORIES, THEME_ORDER } from './app/themes.js';
 import { SportsIdentity, SportsMasthead } from './app/SportsIdentity.jsx';
+import { PaperRuling } from './app/PaperMasthead.jsx';
 import { SportsStatIcon } from './app/SportsStatIcon.jsx';
 import { MatrixCodeProgress, MatrixIdentity, MatrixMasthead, MatrixStatIcon } from './app/MatrixTheme.jsx';
 import { CORE_THEMES, CoreIdentity, CoreMasthead, CoreProgress, CoreStatIcon } from './app/CoreThemes.jsx';
+import { MidnightObservationStrip } from './app/MidnightTheme.jsx';
+import { SunsetTicketStrip } from './app/SunsetMasthead.jsx';
 import { USAFlagProgress, USAIdentity, USAMasthead } from './app/IndependenceTheme.jsx';
 import { ForestIdentity, ForestProgress, ForestStatIcon } from './app/ForestTheme.jsx';
 import { terminalColumnWidths, terminalColumnLabels, tableStorageKey } from './app/terminal-theme.js';
@@ -110,6 +113,7 @@ import './themes/forest.css';
 import './themes/paper-folio.css';
 import './themes/ocean-expedition.css';
 import './themes/sunset-horizon.css';
+import './themes/midnight-observatory.css';
 import './windowed-list.css';
 import './menu-layout.css';
 import './fit-columns.css';
@@ -1377,7 +1381,7 @@ function Topbar({
           {theme === 'forest' ? <ForestIdentity compact /> : theme === 'matrix' ? <MatrixIdentity /> : theme === 'independence' ? <USAIdentity /> : <SportsIdentity theme={theme} compact fallback={<CoreIdentity theme={theme} compact fallback={<Brand />} />} />}
         </div>
         <div className="topbar-heading">
-          <h1>Deluge</h1>
+          <h1>{{ dark: 'Midnight', sunset: 'Deluge Deck' }[theme] || 'Deluge'}</h1>
         </div>
         {layoutControls}
         {(theme === 'darkhand' || ((theme === 'terminal' || theme === 'matrix' || theme === 'independence' || CORE_THEMES[theme]) && !mobile)) && <SearchField search={search} setSearch={setSearch} placeholder={['matrix', 'independence'].includes(theme) || CORE_THEMES[theme] ? 'Search torrents…' : undefined} />}
@@ -2387,6 +2391,7 @@ function TorrentTable({
           )}
         </tbody>
       </table>
+      {theme === 'light' && <PaperRuling tableRef={tableRef} columns={visibleColumns} />}
     </div>
   );
 }
@@ -5242,11 +5247,15 @@ function App() {
     download: [], upload: [], connections: [], library: [],
   });
   useEffect(() => {
+    if (!Object.hasOwn(stats, 'download_rate') && !Object.hasOwn(stats, 'upload_rate')) return;
+    const appendSample = (series, value) => Number.isFinite(value) && value >= 0
+      ? [...series, value].slice(-14)
+      : series;
     setTelemetryHistory((current) => ({
-      download: [...current.download, Number(stats.download_rate) || 0].slice(-14),
-      upload: [...current.upload, Number(stats.upload_rate) || 0].slice(-14),
-      connections: [...current.connections, Number(stats.num_connections) || 0].slice(-14),
-      library: [...current.library, torrents.length].slice(-14),
+      download: appendSample(current.download, stats.download_rate),
+      upload: appendSample(current.upload, stats.upload_rate),
+      connections: appendSample(current.connections, stats.num_connections),
+      library: appendSample(current.library, torrents.length),
     }));
   }, [stats, torrents.length]);
   useEffect(() => {
@@ -5411,6 +5420,11 @@ function App() {
       />
     );
   const PanelContainer = theme === 'darkhand' ? 'div' : React.Fragment;
+  const DashboardHeader = { dark: MidnightObservationStrip, sunset: SunsetTicketStrip }[theme] || React.Fragment;
+  const libraryHeading = {
+    all: theme === 'sunset' ? 'Transfer manifest' : 'Torrents',
+    active: 'Active now', downloading: 'Downloading', seeding: 'Seeding', paused: 'Paused',
+  }[filter] || 'Torrents';
   return (
     <div
       className={`app-shell ${theme === 'darkhand' ? `dh-dashboard dh-stats-${darkhandLayout.stats} dh-details-${darkhandLayout.details} ${darkhandLayout.collapsed ? 'dh-details-collapsed' : ''}` : ''} ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
@@ -5500,52 +5514,64 @@ function App() {
               <Plus size={17} /> Add torrent
             </button>
           </div>}
-          <SportsMasthead theme={theme} />
-          <CoreMasthead theme={theme} />
-          {theme === 'matrix' && <MatrixMasthead />}
-          {theme === 'independence' && <USAMasthead />}
-          {theme !== 'darkhand' && <div className="stats-grid">
-            <Stat
+          <DashboardHeader>
+            <SportsMasthead theme={theme} />
+            <CoreMasthead
               theme={theme}
-              icon={Download}
-              label="Download"
-              value={rate(stats.download_rate)}
-              detail="Current payload"
-              trend={telemetryHistory.download}
+              filter={filter}
+              onFilter={setFilter}
+              stats={stats}
+              torrents={torrents}
+              telemetryHistory={telemetryHistory}
             />
-            <Stat
-              theme={theme}
-              icon={UploadCloud}
-              label="Upload"
-              value={rate(stats.upload_rate)}
-              detail="Current payload"
-              tone="violet"
-              trend={telemetryHistory.upload}
-            />
-            <Stat
-              theme={theme}
-              icon={Network}
-              label="Connections"
-              value={stats.num_connections || 0}
-              detail={Number(stats.dht_nodes) > 0 ? `${stats.dht_nodes} DHT nodes` : ''}
-              tone="amber"
-              trend={telemetryHistory.connections}
-            />
-            <Stat
-              theme={theme}
-              icon={HardDriveDownload}
-              label="Library"
-              value={torrents.length}
-              detail={`${torrentCounts.seeding} seeding`}
-              tone="green"
-              trend={telemetryHistory.library}
-            />
+            {theme === 'matrix' && <MatrixMasthead />}
+            {theme === 'independence' && <USAMasthead />}
+            {theme !== 'darkhand' && theme !== 'ocean' && <div className="stats-grid">
+              <Stat
+                theme={theme}
+                icon={Download}
+                label="Download"
+                value={rate(stats.download_rate)}
+                detail="Current payload"
+                trend={telemetryHistory.download}
+              />
+              <Stat
+                theme={theme}
+                icon={UploadCloud}
+                label="Upload"
+                value={rate(stats.upload_rate)}
+                detail="Current payload"
+                tone="violet"
+                trend={telemetryHistory.upload}
+              />
+              <Stat
+                theme={theme}
+                icon={Network}
+                label="Connections"
+                value={stats.num_connections || 0}
+                detail={Number(stats.dht_nodes) > 0 ? `${stats.dht_nodes} DHT nodes` : ''}
+                tone="amber"
+                trend={telemetryHistory.connections}
+              />
+              <Stat
+                theme={theme}
+                icon={HardDriveDownload}
+                label="Library"
+                value={torrents.length}
+                detail={`${torrentCounts.seeding} seeding`}
+                tone="green"
+                trend={telemetryHistory.library}
+              />
+            </div>}
+          </DashboardHeader>
+          {theme === 'dark' && !mobileLayout && <div className="midnight-library-heading">
+            <h2>{libraryHeading}</h2><span>{filtered.length}</span>
           </div>}
           <div className="library-mobile-controls">
             <div className="list-heading">
               <div>
                 <h2>
-                  {{ all: 'Torrents', active: 'Active now', downloading: 'Downloading', seeding: 'Seeding', paused: 'Paused' }[filter] || 'Torrents'} <span>{filtered.length}</span>
+                  {libraryHeading} <span>{filtered.length}</span>
                 </h2>
                 <p className="library-caption">{search ? 'Matching torrents in this view' : 'Your transfers, at a glance'}</p>
               </div>

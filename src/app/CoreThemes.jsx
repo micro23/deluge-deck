@@ -1,7 +1,7 @@
 import React from 'react';
 import { ForestMasthead } from './ForestTheme.jsx';
-import { OceanMasthead } from './OceanMasthead.jsx';
-import { PaperMasthead } from './PaperMasthead.jsx';
+import { OceanIdentity, OceanMasthead } from './OceanMasthead.jsx';
+import { PaperIdentity } from './PaperMasthead.jsx';
 import { SunsetMasthead } from './SunsetMasthead.jsx';
 
 export const CORE_THEMES = { dark:'Midnight', light:'Paper', ocean:'Ocean', forest:'Forest', sunset:'Sunset' };
@@ -17,35 +17,24 @@ export function CoreMark({ theme, className = '' }) {
   return <svg className={`core-mark ${className}`} viewBox="0 0 44 44" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{drawing}</svg>;
 }
 
+const coreIdentities = { light: PaperIdentity, ocean: OceanIdentity };
+
 export function CoreIdentity({ theme, compact = false, fallback = null }) {
   if (!CORE_THEMES[theme]) return fallback;
+  const Identity = coreIdentities[theme];
+  if (Identity) return <Identity compact={compact} />;
   return <div className={`core-identity${compact ? ' compact' : ''}`} aria-label={`${CORE_THEMES[theme]} theme`}><CoreMark theme={theme} /></div>;
 }
 
-function MidnightMasthead() {
-  return (
-    <header className="core-masthead" aria-label="Midnight theme artwork">
-      <svg className="core-artwork" viewBox="0 0 440 160" fill="none" stroke="currentColor" strokeWidth=".8" aria-hidden="true">
-        <path d="M75 126h330M95 126V82h78v44m17 0V57h89v69m17 0V34h82v92" />
-        <path d="M207 57V38h54v19m-42-19V24h30v14M296 75h55m-55 13h55m-55 13h55M108 95h48m-48 13h48" />
-        <circle cx="337" cy="51" r="13" />
-        <path d="M337 18v10m0 46v10m-33-33h10m46 0h10m-56-23 7 7m32 32 7 7m0-46-7 7m-32 32-7 7" />
-      </svg>
-    </header>
-  );
-}
-
 const mastheads = {
-  dark: MidnightMasthead,
-  light: PaperMasthead,
   ocean: OceanMasthead,
   forest: ForestMasthead,
   sunset: SunsetMasthead,
 };
 
-export function CoreMasthead({ theme }) {
+export function CoreMasthead({ theme, ...props }) {
   const Masthead = mastheads[theme];
-  return Masthead ? <Masthead /> : null;
+  return Masthead ? <Masthead {...props} /> : null;
 }
 
 export function CoreStatIcon({ theme, label }) {

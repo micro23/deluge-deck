@@ -1,209 +1,384 @@
-/* Ocean uses the viewing gallery for its masthead and quieter instrument
-   surfaces around the live library. Keep the photograph in this theme pack. */
+/* Ocean is a live instrument console. Its casing, glass, scales and traces
+   remain legible with every decorative image disabled. */
 :root[data-theme="ocean"] {
-  --bg:#05131f;
-  --surface:#0a2231;
-  --surface-2:#0b2c40;
-  --surface-3:#133a4b;
-  --line:#426b7c;
-  --line-strong:#81bcce;
-  --text:#edfaff;
-  --muted:#c1dce6;
-  --muted-2:#b9d9e2;
-  --cyan:#86f4ea;
-  --accent-fg:#032423;
-  --violet:#b9d9ff;
-  --amber:#ffe1a0;
-  --green:#a0f4ce;
-  --danger:#ffc6cf;
-  --core-radius:8px;
+  color-scheme:dark; --violet:#c0ddff;
+  --amber:#ffda97; --green:#bcf4b7; --danger:#ffc3c0; --core-radius:3px;
+  --o-mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  --o-stud:radial-gradient(circle at center,#0b1315 0 1px,#a4aca3 1.5px,#68746b 2.3px,#162421 3.3px,transparent 4px);
+  --o-bolts:var(--o-stud) 1px 1px/14px 14px no-repeat,var(--o-stud) right 1px top 1px/14px 14px no-repeat,
+    var(--o-stud) left 1px bottom 1px/14px 14px no-repeat,var(--o-stud) right 1px bottom 1px/14px 14px no-repeat;
+  --bg:#091820; --surface:#0c2029; --surface-2:#15333d; --surface-3:#1e4049;
+  --line:#466974; --line-strong:#89b6b9; --text:#eaf4ee; --muted:#c3dcd9;
+  --muted-2:#bad7d3; --cyan:#8ff2da; --accent-fg:#062a23; --o-screen:#071b21;
+  --o-grain:repeating-linear-gradient(1deg,#c2d9dd0b 0 1px,transparent 1px 3px,#00141b14 3px 4px,transparent 4px 6px);
+  --o-metal:var(--o-grain),linear-gradient(124deg,#557580 0%,#34525c 9%,#1b343d 27%,#162b33 65%,#223b43 84%,#405e65);
+  --o-panel:linear-gradient(165deg,#29454c,#132d33 60%,#17383c);
 }
-
-:root[data-theme="ocean"] body .ocean-masthead {
-  display:grid;
-  align-items:end;
-  height:clamp(145px,13.6vw,194px);
-  box-sizing:border-box;
-  margin-bottom:12px;
-  padding:0 clamp(22px,3vw,48px) clamp(22px,2vw,31px);
-  border:1px solid #518398;
-  border-radius:4px 16px 4px 4px;
-  background-color:#071e30;
-  background-image:
-    linear-gradient(90deg,#061b2b 1%,#082338f5 17%,#07314abf 29%,#07344b22 52%,transparent 75%),
-    url("../assets/ocean-deep-sea-habitat-optimized.webp");
-  background-position:center,right 44%;
-  background-size:cover,78% auto;
-  background-repeat:no-repeat;
-}
-
-:root[data-theme="ocean"] .ocean-masthead h1 {
-  z-index:1;
-  margin:0;
-  font:650 clamp(46px,6vw,83px)/.96 "Avenir Next",Inter,system-ui,sans-serif;
-  letter-spacing:-.055em;
-  color:#f3ffff;
-}
-
-:root[data-theme="ocean"] .ocean-masthead::after {
-  inset:auto 0 0;
-  z-index:1;
-  height:3px;
-  background:linear-gradient(90deg,#87fcf0 0 17%,#358da3 17% 32%,#214356 32% 100%);
-}
-
-:root[data-theme="ocean"] .ocean-contours {
-  position:absolute;
-  inset:-12% auto auto -1%;
-  width:45%;
-  height:115%;
-  color:#77deed;
-  opacity:.38;
-  mask-image:linear-gradient(100deg,#0009,#000 36%,transparent 94%);
-  pointer-events:none;
-}
-
-:root[data-theme="ocean"] .ocean-frame {
-  position:absolute;
-  inset:15px;
-  pointer-events:none;
-  background:
-    linear-gradient(#99efed,#99efed) left top/17px 1px,
-    linear-gradient(#99efed,#99efed) left top/1px 12px,
-    linear-gradient(#99efed,#99efed) right bottom/17px 1px,
-    linear-gradient(#99efed,#99efed) right bottom/1px 12px;
-  background-repeat:no-repeat;
-}
-
-:root[data-theme="ocean"] body .sidebar {
-  background:
-    radial-gradient(ellipse at 112% 100%,#0e4054 1%,transparent 55%),
-    linear-gradient(160deg,#103249,#071b2b 44%,#061723)!important;
-}
-:root[data-theme="ocean"] .sidebar .core-identity {
-  position:relative;
-  background:radial-gradient(circle at center,#24627b38 0 24px,transparent 25px 31px,#74d8e45c 32px,transparent 33px 39px,#74d8e438 40px,transparent 41px);
-}
-:root[data-theme="ocean"] body .sidebar .nav-item.active {
-  color:#f0ffff!important;
-  background:linear-gradient(90deg,#1a5666,#0c2c3f)!important;
-  box-shadow:inset 3px 0 var(--cyan)!important;
+:root[data-theme="ocean"] body .app-shell {
+  background:repeating-linear-gradient(115deg,#9ea99b06 0 1px,transparent 1px 5px),#172522!important;
 }
 :root[data-theme="ocean"] body .topbar {
-  background:linear-gradient(90deg,#061b29,#082637 75%,#071b29)!important;
+  border-bottom:1px solid #020e0c!important;
+  background:var(--o-bolts),var(--o-grain),linear-gradient(#3f6069,#1d3842 46%,#10262e 84%,#23424a)!important;
+  box-shadow:inset 0 1px #789294,inset 0 -2px #405f66!important;
 }
+:root[data-theme="ocean"] body .search-wrap {
+  background:#0c211e!important; border:1px solid #5c766b!important;
+  border-radius:3px!important; box-shadow:inset 0 2px 4px #0008!important;
+}
+:root[data-theme="ocean"] body :is(.theme-trigger,.icon-button,.sidebar-toggle,.secondary-button) {
+  background:linear-gradient(#384946,#263632)!important; color:var(--text);
+  border:1px solid #62776b!important; border-radius:4px!important;
+  box-shadow:inset 0 1px #95a39755,0 2px 1px #070f0c!important;
+}
+:root[data-theme="ocean"] body .sidebar .add-button,
+:root[data-theme="ocean"] body .primary-button {
+  color:#071e14!important;
+  border-radius:3px!important; border:1px solid #bddeac!important;
+  box-shadow:inset 0 -2px #63876b,0 2px 0 #07120d!important;
+  background:linear-gradient(#a3e9d9,#67bbaf)!important; border-color:#b3ebdf!important;
+}
+:root[data-theme="ocean"] body .sidebar {
+  border-color:#819187!important; box-shadow:inset -3px 0 #09150e!important;
+  background:var(--o-bolts),var(--o-grain),linear-gradient(90deg,#32505a,#1c353e 12%,#122730 90%,#35565e)!important;
+}
+:root[data-theme="ocean"] .ocean-identity {
+  display:grid; place-items:center; align-content:center; gap:9px; margin:8px 2px 20px; min-height:112px;
+  border-bottom:1px solid #536959; color:#dfe9d5;
+}
+:root[data-theme="ocean"] .ocean-impeller {
+  display:grid; place-items:center; width:46px; height:46px; border-radius:50%;
+  background:radial-gradient(circle at 45% 40%,#33473c,#0d1e19 64%,#869580 66%,#202e24 71%,#839383 74%,#283629 79%,#07100a 84%);
+  box-shadow:0 2px 4px #06100a; color:#b7dcaf;
+}
+:root[data-theme="ocean"] .ocean-impeller svg { width:26px; height:26px; }
+:root[data-theme="ocean"] .ocean-identity-name {
+  font:700 13px/1.2 var(--o-mono); letter-spacing:.19em; text-transform:uppercase;
+}
+:root[data-theme="ocean"] .ocean-identity.compact { display:flex; gap:7px; min-height:0; margin:0; border:0; }
+:root[data-theme="ocean"] .ocean-identity.compact .ocean-impeller { width:30px; height:30px; }
+:root[data-theme="ocean"] .ocean-identity.compact .ocean-impeller svg { width:17px; height:17px; }
+:root[data-theme="ocean"] .ocean-identity.compact .ocean-identity-name { font-size:11px; }
+:root[data-theme="ocean"] body .sidebar > nav .nav-item {
+  border:1px solid #405a50; border-radius:3px!important;
+  box-shadow:inset 0 1px #70807635,inset 0 -2px #101f18!important; background:#132a31;
+}
+:root[data-theme="ocean"] body .sidebar > nav .nav-item.active {
+  border-color:#829a73;
+  color:#e4fff8!important; background:linear-gradient(100deg,#275756,#18383c)!important;
+  box-shadow:inset 3px 0 #86e8d8,inset 0 1px #73b1a766!important;
+}
+:root[data-theme="ocean"] body .sidebar > nav .nav-item b { color:#d7e9cf; font:11px var(--o-mono); }
 
-:root[data-theme="ocean"] body .workspace .stats-grid .stat-card {
-  --ocean-dial:var(--cyan);
-  border-color:#487184!important;
-  border-radius:5px 12px 5px 5px!important;
+:root[data-theme="ocean"] .ocean-monitor-heading,
+:root[data-theme="ocean"] .ocean-bandwidth-module,
+:root[data-theme="ocean"] .ocean-sonar-module,
+:root[data-theme="ocean"] .ocean-systems-module {
+  box-sizing:border-box; min-width:0;
+  border:1px solid #82a4aa; border-bottom-color:#243a40;
+  padding:14px;
+  --o-cut:14px;
+  clip-path:polygon(var(--o-cut) 0,calc(100% - var(--o-cut)) 0,100% var(--o-cut),100% calc(100% - var(--o-cut)),calc(100% - var(--o-cut)) 100%,var(--o-cut) 100%,0 calc(100% - var(--o-cut)),0 var(--o-cut));
+  border-radius:0;
   background:
-    linear-gradient(115deg,#113348,#092333 68%,#072332)!important;
-  box-shadow:inset 0 2px var(--ocean-dial)!important;
+    linear-gradient(135deg,#75a0a4 0 7px,#4d747a 8px 9px,#a0ded9 10px 11px,#19323a 12px 13px,transparent 14px) left top/17px 17px no-repeat,
+    linear-gradient(225deg,#75a0a4 0 7px,#4d747a 8px 9px,#a0ded9 10px 11px,#19323a 12px 13px,transparent 14px) right top/17px 17px no-repeat,
+    linear-gradient(45deg,#395a61 0 7px,#10262d 8px 9px,#78b3ae 10px 11px,#213d43 12px 13px,transparent 14px) left bottom/17px 17px no-repeat,
+    linear-gradient(315deg,#395a61 0 7px,#10262d 8px 9px,#78b3ae 10px 11px,#213d43 12px 13px,transparent 14px) right bottom/17px 17px no-repeat,
+    var(--o-bolts),var(--o-metal);
+  box-shadow:inset 0 1px #c3d7d9,inset 0 0 0 2px #496971,inset 0 0 0 3px #799697,inset 0 0 0 5px #11272f,inset 0 0 0 6px #42616a,inset 0 -12px 16px -11px #000;
 }
-:root[data-theme="ocean"] .workspace .stats-grid .stat-card.violet { --ocean-dial:var(--violet); }
-:root[data-theme="ocean"] .workspace .stats-grid .stat-card.amber { --ocean-dial:var(--amber); }
-:root[data-theme="ocean"] .workspace .stats-grid .stat-card.green { --ocean-dial:var(--green); }
-:root[data-theme="ocean"] body .workspace .stats-grid .stat-card .stat-icon {
-  color:var(--ocean-dial)!important;
+:root[data-theme="ocean"] .ocean-monitor-heading {
+  display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 6px;
+  min-height:clamp(94px,8vw,127px); padding:18px clamp(16px,2vw,32px);
 }
-:root[data-theme="ocean"] body .workspace .stats-grid .stat-card > div:nth-child(2) > span {
-  font-family:"SFMono-Regular",Consolas,monospace!important;
-  text-transform:uppercase;
-  letter-spacing:.07em!important;
-  color:var(--ocean-dial)!important;
+:root[data-theme="ocean"] .ocean-library-size {
+  display:flex; align-items:center; gap:8px; padding:6px 8px; color:#cce7e1;
+  border:1px solid #50747b; border-radius:3px; background:#102c31; font:11px/1.3 var(--o-mono);
 }
-:root[data-theme="ocean"] body .workspace .stats-grid .stat-spark {
-  background:repeating-linear-gradient(90deg,#9fdfea29 0 1px,transparent 1px 16px) left bottom/100% 3px no-repeat;
+:root[data-theme="ocean"] .ocean-library-size b { color:#a8f0dd; font-size:17px; }
+
+:root[data-theme="ocean"] .ocean-monitor-top,
+:root[data-theme="ocean"] .ocean-module-label {
+  display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; color:#ebf3e9;
 }
-:root[data-theme="ocean"] body .workspace .stats-grid .stat-spark polyline {
-  stroke:var(--ocean-dial)!important;
+:root[data-theme="ocean"] .ocean-monitor-top { margin:0; gap:12px; color:#a0e8dc; }
+:root[data-theme="ocean"] .ocean-monitor-top h1 {
+  margin:0; color:#baf6eb; font:700 clamp(26px,2.3vw,36px)/1.1 system-ui,sans-serif;
+  letter-spacing:-.035em; text-shadow:0 1px #15201c;
 }
-:root[data-theme="ocean"] body .workspace .stats-grid .stat-spark polygon {
-  fill:var(--ocean-dial)!important;
-  opacity:.13;
+:root[data-theme="ocean"] .ocean-trace-case {
+  display:grid; grid-template-columns:minmax(112px,.85fr) minmax(0,1fr); gap:7px; padding:8px;
+  border:1px solid #89968b; border-radius:4px; background:var(--o-screen);
+  box-shadow:inset 0 0 0 3px #06100a,inset 0 3px 12px #000,0 1px #819081;
 }
+:root[data-theme="ocean"] .ocean-rates { display:grid; gap:10px; }
+:root[data-theme="ocean"] .ocean-rates > div { min-width:0; }
+:root[data-theme="ocean"] .ocean-rates span {
+  display:flex; gap:4px; align-items:center; font:650 10px/1.1 var(--o-mono);
+  letter-spacing:.075em; color:#a6d9bd; text-transform:uppercase;
+}
+:root[data-theme="ocean"] .ocean-rates strong {
+  display:block; margin-top:2px; color:#b1f7d0; font:600 clamp(14px,1.3vw,20px)/1.15 var(--o-mono);
+  letter-spacing:-.065em; white-space:nowrap;
+}
+:root[data-theme="ocean"] .ocean-rates > div:nth-child(2) :is(strong,span) { color:#f9d494; }
+:root[data-theme="ocean"] .ocean-trace {
+  display:flex; flex-direction:column; align-items:stretch; justify-content:center; min-width:0; position:relative;
+}
+:root[data-theme="ocean"] .ocean-trace svg {
+  width:100%; height:66px;
+  background:repeating-linear-gradient(0deg,#9de3ba23 0 1px,transparent 1px 16px),
+    repeating-linear-gradient(90deg,#9de3ba23 0 1px,transparent 1px 22px),linear-gradient(#123029,#0a1d19);
+  border-block:1px solid #4c7766;
+}
+:root[data-theme="ocean"] .ocean-trace span { margin-top:3px; text-align:right; color:#b7cec0; font:10px/1.2 var(--o-mono); }
+:root[data-theme="ocean"] .ocean-down { stroke:#a4f5c7; stroke-width:2; }
+:root[data-theme="ocean"] .ocean-up { stroke:#ffd087; stroke-width:2; stroke-dasharray:4 2; }
+
+:root[data-theme="ocean"] .ocean-instruments { min-width:0; }
+:root[data-theme="ocean"] .ocean-instrument-body { display:grid; gap:8px; min-width:0; }
+:root[data-theme="ocean"] .ocean-instrument-toggle { display:none; }
+:root[data-theme="ocean"] .ocean-mini-sonar { width:24px; height:24px; flex:none; }
+:root[data-theme="ocean"] .ocean-module-label { color:#eef1db; padding:1px 4px 10px; }
+:root[data-theme="ocean"] .ocean-module-label h2 {
+  margin:0; font:700 13px/1.2 system-ui,sans-serif; letter-spacing:.095em; text-transform:uppercase; margin-right:auto;
+}
+:root[data-theme="ocean"] .ocean-module-label span {
+  padding:2px 6px; border:1px solid #839283; color:#e5ead5; font:12px/1 var(--o-mono);
+}
+:root[data-theme="ocean"] .ocean-porthole {
+  position:relative; aspect-ratio:1; max-width:clamp(220px,31vh,310px); margin:0 auto 11px;
+  border-radius:50%; padding:8px;
+  border:2px solid #92b8ba;
+  background:radial-gradient(closest-side,transparent 94%,#061b2599 96%,#9bbbc133 98%,#142b34 100%),repeating-conic-gradient(#789597 0 1deg,#2b4952 1deg 3deg);
+  box-shadow:inset 0 2px #def3ec99,inset 0 -3px #091a21,0 1px 0 2px #0d222b,0 2px 1px 3px #45616a,0 5px 7px #040e14;
+}
+:root[data-theme="ocean"] .ocean-sonar {
+  display:block; width:100%; height:100%; border-radius:50%; border:2px solid #1e2f24;
+  box-shadow:0 0 0 1px #76a99d,inset 1px 4px 14px #001614,inset 0 -1px 2px #276b63; background:radial-gradient(circle at 38% 30%,#154543,#072b29 63%,#001715 92%);
+}
+:root[data-theme="ocean"] .ocean-sonar-face { fill:none; }
+:root[data-theme="ocean"] .ocean-graticule { stroke-width:.85; opacity:.68; stroke:#75bcaa; }
+:root[data-theme="ocean"] .ocean-sector-labels { font:700 7px system-ui,sans-serif; letter-spacing:.045em; fill:#d4ffed; }
+:root[data-theme="ocean"] .ocean-legend,
+:root[data-theme="ocean"] .ocean-readouts { margin:0; padding:0; }
+:root[data-theme="ocean"] .ocean-legend {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:8px; row-gap:5px;
+  background:#0e211a; border:1px solid #657b6a; border-radius:3px; padding:5px 8px;
+}
+:root[data-theme="ocean"] .ocean-readouts > div { display:flex; align-items:baseline; justify-content:space-between; gap:4px; border-bottom:1px solid #72837388; padding:6px 3px; }
+:root[data-theme="ocean"] .ocean-readouts dd { margin:0; color:#e6f1df; font:600 12px/1.35 var(--o-mono); }
+:root[data-theme="ocean"] .ocean-sonar-key { margin:7px 3px 0; color:#d6e7e3; font:11px/1.28 system-ui,sans-serif; }
+:root[data-theme="ocean"] .ocean-sonar-key span { white-space:nowrap; }
+:root[data-theme="ocean"] .ocean-gauge-row {
+  display:flex; align-items:center; justify-content:space-around; gap:6px; padding:8px;
+  background:var(--o-screen); border:1px solid #698070; border-radius:4px;
+}
+:root[data-theme="ocean"] .ocean-gauge { width:45%; max-width:114px; color:#a9e1bd; }
+:root[data-theme="ocean"] .ocean-gauge-row strong { display:block; color:#bbefd1; font:600 26px/1.2 var(--o-mono); }
+:root[data-theme="ocean"] .ocean-gauge-row small { display:block; color:#c1d3c3; font:10px/1.3 var(--o-mono); }
+:root[data-theme="ocean"] .ocean-readouts { margin-top:8px; }
+:root[data-theme="ocean"] .ocean-readouts dt { color:#d8e7e1; font:12px/1.35 system-ui,sans-serif; }
 
 :root[data-theme="ocean"] body .table-shell {
-  /* The opaque data cells cover the rings when the library fills the pane. */
+  border-radius:4px!important;
   background:
-    radial-gradient(ellipse at 92% 134%,transparent 37%,#1d4a5d66 37.4%,transparent 38% 43%,
-      #1d4a5d59 43.4%,transparent 44% 49%,#1d4a5d4a 49.4%,transparent 50% 55%,
-      #1d4a5d40 55.4%,transparent 56% 61%,#1d4a5d30 61.4%,transparent 62%)
-      right bottom/min(60%,620px) 165px no-repeat,
-    linear-gradient(175deg,#0b2636,#071c2a 78%)!important;
-  border-radius:7px!important;
-  border-color:#497183!important;
+    linear-gradient(90deg,#46646c 0 1px,transparent 1px) 14px calc(100% - 14px)/22px 3px repeat-x,
+    radial-gradient(ellipse at 90% 115%,#13363d,transparent 50%),
+    #0b2027!important;
+  border:3px solid #405f68!important; border-top-color:#61848c!important;
+  box-shadow:inset 0 0 0 2px #071820,0 0 0 1px #08151a,0 2px 3px #030d10!important;
 }
 :root[data-theme="ocean"] body .table-shell th {
-  background:#10374a!important;
-  border-bottom-color:#6bafbf!important;
+  color:#e7efdf!important;
+  border-bottom:2px solid #799382!important; background:linear-gradient(#294c55,#17343d)!important;
 }
-:root[data-theme="ocean"] body .table-shell tbody tr.selected td {
-  background:#12394a!important;
+:root[data-theme="ocean"] body .table-shell .sort-button {
+  color:inherit; font-variant-numeric:tabular-nums; font-family:system-ui,sans-serif!important; letter-spacing:0;
 }
+:root[data-theme="ocean"] .table-shell .rate-cell { font-variant-numeric:tabular-nums; }
+:root[data-theme="ocean"] .progress-wrap .progress-track {
+  border-color:#728e79!important; border-radius:2px!important;
+  background:repeating-linear-gradient(90deg,#102921 0 5px,#394f40 5px 6px)!important;
+}
+:root[data-theme="ocean"] .progress-track .core-progress { color:#a8e9bd; }
+:root[data-theme="ocean"] .progress-track .core-progress.queued { color:#ffce83; }
+:root[data-theme="ocean"] .progress-track .core-progress.paused { color:#becdc2; }
 :root[data-theme="ocean"] body .deck-status-rail {
-  background:#082130!important;
-  border-color:#456c80!important;
+  min-width:0; border:1px solid #59715d!important;
+  border-radius:3px!important; padding-inline:15px; background:var(--o-bolts),#16313b!important;
 }
+:root[data-theme="ocean"] body .mobile-transfers,
 :root[data-theme="ocean"] body .mobile-transfer {
-  background:linear-gradient(105deg,#0d3042,#091e2e)!important;
-  border-radius:6px!important;
+  border-radius:3px!important; border-color:#4d6c5d!important; background:#142a25!important;
 }
-:root[data-theme="ocean"] body .mobile-transfer.selected {
-  background:#12394a!important;
-  box-shadow:inset 3px 0 var(--cyan);
+:root[data-theme="ocean"] body .mobile-transfer.selected { box-shadow:inset 3px 0 var(--cyan); }
+:root[data-theme="ocean"] body .mobile-list-toolbar { border-bottom:2px solid #78987c; background:#203d47; }
+:root[data-theme="ocean"] body .mobile-library-filters { border-radius:3px; background:#182d24; }
+
+:root[data-theme="ocean"] body :is(.detail-drawer,.add-modal,.preferences-modal,.global-popover,.context-menu) { border:1px solid #718675!important;
+  border-radius:5px; color:var(--text); box-shadow:inset 0 1px #83938066,0 12px 35px #020b05aa; background:linear-gradient(135deg,#243d42,#10272e)!important; border-color:#64848a!important;
+}
+:root[data-theme="ocean"] .detail-drawer .drawer-head,
+:root[data-theme="ocean"] .add-modal .modal-head {
+  align-items:center; background:var(--o-bolts),var(--o-metal); border-bottom:2px solid #72947c;
+}
+:root[data-theme="ocean"] .detail-drawer .drawer-head h2 { flex:1; min-width:0; max-width:none; overflow-wrap:anywhere; color:var(--text); }
+:root[data-theme="ocean"] .detail-drawer .drawer-head .icon-button { flex:none; }
+:root[data-theme="ocean"] .detail-drawer .drawer-tabs button[aria-selected=true] { box-shadow:inset 0 -3px #a5dfaf; color:#d8fbf0; background:#284d50;
+}
+:root[data-theme="ocean"] .detail-drawer .drawer-tabs button:focus-visible { outline:2px solid var(--text); outline-offset:-3px; }
+:root[data-theme="ocean"] .ocean-monitor-top svg { color:#88d9cb; order:-1; width:28px; height:28px; }
+:root[data-theme="ocean"] .ocean-monitor-top::after {
+  content:""; order:1; height:3px; flex:1; min-width:25px; max-width:60px; margin-left:5px; margin-right:2px;
+  transform:skewX(-23deg); background:#83dfd4; box-shadow:0 0 5px #61d3c77a;
+}
+:root[data-theme="ocean"] .ocean-module-label::before {
+  content:""; width:12px; height:4px; flex:none; background:#91e7d7; box-shadow:0 0 5px #58bead77; transform:skewX(-24deg);
 }
 
-:root[data-theme="ocean"] .detail-drawer .drawer-head {
-  align-items:center;
-  background:
-    radial-gradient(ellipse at 100% -90%,transparent 62%,#39657a 62.5%,transparent 63% 73%,#2b5268 73.5%,transparent 74%),
-    linear-gradient(110deg,#102f44,#092333 66%,#123b4a);
-  border-bottom:1px solid #5795a4;
+:root[data-theme="ocean"] .ocean-legend button,
+:root[data-theme="ocean"] .ocean-legend-count {
+  display:grid; grid-template-columns:5px minmax(0,1fr) auto; align-items:center; gap:4px;
+  min-height:26px; min-width:0; padding:3px 4px; text-align:left; font:12px/1.3 system-ui,sans-serif; color:#eef9f5;
 }
-:root[data-theme="ocean"] .detail-drawer .drawer-head h2 {
-  flex:1;
-  min-width:0;
-  max-width:none;
-  overflow-wrap:anywhere;
-  color:var(--text);
-}
-:root[data-theme="ocean"] .detail-drawer .drawer-head .icon-button {
-  flex:none;
-  color:var(--cyan);
-  background:#082130;
-  border:1px solid var(--line-strong);
-}
-:root[data-theme="ocean"] .detail-drawer .drawer-tabs { background:#071e2d; }
-:root[data-theme="ocean"] .detail-drawer .drawer-tabs button[aria-selected="true"] {
-  background:#123547;
-  color:var(--cyan);
-  box-shadow:inset 0 -3px var(--cyan);
-}
-:root[data-theme="ocean"] .detail-drawer .drawer-tabs button:focus-visible {
-  outline:2px solid var(--text);
-  outline-offset:-3px;
+:root[data-theme="ocean"] .ocean-legend button { background:#192e2d; border:1px solid #526c64; border-radius:2px; }
+:root[data-theme="ocean"] .ocean-legend button[aria-pressed=true] { background:#2e5750; border-color:#9de2c8; }
+:root[data-theme="ocean"] .ocean-legend button:focus-visible { outline:2px solid white; outline-offset:1px; }
+:root[data-theme="ocean"] .ocean-legend i { width:5px; height:5px; border-radius:50%; }
+:root[data-theme="ocean"] .ocean-legend b { font:600 11px/1.2 var(--o-mono); }
+:root[data-theme="ocean"] .detail-drawer .drawer-tabs { background:#0b2026; }
+:root[data-theme="ocean"] body .table-shell :is(th,td) { font-family:system-ui,sans-serif; }
+:root[data-theme="ocean"] body .table-shell tbody tr.selected td,:root[data-theme="ocean"] body .mobile-transfer.selected { background:#22444a!important; }
+:root[data-theme="ocean"] body .mobile-transfer,
+:root[data-theme="ocean"] body .mobile-transfers { background:#112a30!important; }
+@media (min-width:1101px) {
+  :root[data-theme="ocean"] body .app-shell,
+  :root[data-theme="ocean"] body .app-shell:not(.sidebar-collapsed) { --deck-sidebar-size:164px; }
+  :root[data-theme="ocean"] body .app-shell.sidebar-collapsed { --deck-sidebar-size:70px; }
+  :root[data-theme="ocean"] body .app-shell {
+    padding:9px 9px 8px; gap:8px;
+    border:2px solid #243c40; border-top-color:#689396;
+    background:repeating-linear-gradient(135deg,#0d2024 0 3px,#132b2e 3px 4px)!important;
+    box-shadow:inset 0 0 0 3px #091317,inset 0 0 0 5px #315154,inset 0 0 0 6px #142529;
+  }
+  :root[data-theme="ocean"] body .sidebar { padding:10px!important; border:1px solid #50787c; border-radius:6px; }
+  :root[data-theme="ocean"] body .sidebar.collapsed .ocean-identity-name,
+  :root[data-theme="ocean"] body .sidebar.collapsed .nav-label { display:none!important; }
+  :root[data-theme="ocean"] body .sidebar > nav .nav-item { grid-template-columns:16px minmax(0,1fr) 16px; gap:5px; padding:0 7px!important; }
+  :root[data-theme="ocean"] body .sidebar .nav-item span { font-size:12px; }
+  :root[data-theme="ocean"] body .sidebar .add-button { width:100%!important; padding-inline:5px!important; }
+  :root[data-theme="ocean"] body .sidebar-bottom { flex-wrap:wrap; gap:4px; background:transparent; }
+  :root[data-theme="ocean"] body .sidebar .sidebar-bottom .nav-item { width:96px; padding-inline:3px!important; gap:4px; }
+  :root[data-theme="ocean"] body .sidebar.collapsed .sidebar-bottom .nav-item { width:38px; }
+  :root[data-theme="ocean"] body .sidebar-bottom .sidebar-toggle { width:29px; min-width:29px; }
+  :root[data-theme="ocean"] body .main-content { background:transparent; }
+  :root[data-theme="ocean"] body .topbar { position:relative!important; flex:none; height:54px!important; padding-inline:12px!important; margin-bottom:8px; border:1px solid #50767b!important; border-radius:4px; }
+  :root[data-theme="ocean"] body .workspace {
+    display:grid!important; padding:0!important;
+    grid-template-columns:minmax(0,1fr) clamp(252px,27%,370px);
+    grid-template-rows:auto auto auto auto minmax(0,1fr) auto;
+    column-gap:10px; align-items:stretch; align-content:stretch; min-height:0;
+  }
+  :root[data-theme="ocean"] .workspace > .connection-recovery { grid-column:1 / -1; grid-row:1; }
+  :root[data-theme="ocean"] .workspace > .form-error { grid-column:1 / -1; grid-row:2; }
+  :root[data-theme="ocean"] .ocean-monitor-heading { grid-column:1; grid-row:3; }
+  :root[data-theme="ocean"] .workspace > .search-note { grid-column:1; grid-row:4; }
+  :root[data-theme="ocean"] body .workspace > .table-shell { grid-column:1; grid-row:5; min-height:0!important; height:100%; }
+  :root[data-theme="ocean"] .ocean-systems-module { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); column-gap:9px; align-items:center; }
+  :root[data-theme="ocean"] .ocean-systems-module .ocean-module-label { grid-column:1/-1; }
+  :root[data-theme="ocean"] .ocean-systems-module .ocean-gauge-row { gap:4px; padding:6px; }
+  :root[data-theme="ocean"] .ocean-readouts { margin:0; }
+  :root[data-theme="ocean"] .ocean-gauge-row strong { font-size:21px; }
+  :root[data-theme="ocean"] .ocean-instruments { grid-column:2; grid-row:3 / 6; overflow:auto; min-height:0; scrollbar-width:thin; }
+  :root[data-theme="ocean"] body .deck-status-rail { grid-column:1 / -1; grid-row:6; margin:8px 0 0!important; }
+  :root[data-theme="ocean"] body .sidebar { height:100%!important; }
+  :root[data-theme="ocean"] body .topbar::before {
+    content:""; display:block!important; position:absolute; inset:19px auto auto 20px; height:10px;
+    width:clamp(40px,calc(100% - 910px),210px); pointer-events:none;
+    background:linear-gradient(0deg,#0c222b 0 1px,#314e54 2px 3px,#1b7374 4px,#a6f7e3 5px 6px,#40928b 7px,#132c2f 8px);
+    transform:skewX(-28deg); border-inline:8px solid #0e242b; box-shadow:0 2px 0 #375058,0 -1px 0 #719292;
+  }
+  :root[data-theme="ocean"] body .workspace > .table-shell {
+    border-bottom:6px solid #528583!important; border-inline-color:#477c81!important;
+    clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 11px),calc(100% - 11px) 100%,11px 100%,0 calc(100% - 11px),0 8px);
+    background:
+      linear-gradient(0deg,#14313a 0 2px,#609b99 2px 3px,#9edfd4 3px 4px,#38676d 4px 5px,#10252b 5px 6px) center bottom/18% 7px no-repeat,
+      linear-gradient(45deg,#50777b 0 6px,#17373c 7px 9px,#8bada9 10px 11px,transparent 12px) left bottom/20px 20px no-repeat,
+      linear-gradient(315deg,#50777b 0 6px,#17373c 7px 9px,#8bada9 10px 11px,transparent 12px) right bottom/20px 20px no-repeat,
+      radial-gradient(ellipse at right bottom,#32596155,transparent 62%) right bottom/60% 32% no-repeat,
+      repeating-linear-gradient(90deg,transparent 0 8px,#668c8550 8px 9px,transparent 9px 14px) center calc(100% - 4px)/calc(100% - 24px) 3px no-repeat,
+      linear-gradient(120deg,#102930,#0a1e23 75%)!important;
+  }
 }
 
+@media (min-width:1300px) {
+  :root[data-theme="ocean"] body .workspace { grid-template-columns:minmax(0,1fr) min(25vw,400px); }
+}
+
+@media (max-width:1100px) {
+  :root[data-theme="ocean"] body .app-shell:not(.sidebar-collapsed) { --deck-sidebar-size:165px; }
+  :root[data-theme="ocean"] body .sidebar-bottom { flex-wrap:wrap; }
+  :root[data-theme="ocean"] .ocean-monitor-heading,
+  :root[data-theme="ocean"] .ocean-bandwidth-module .ocean-module-label {
+    position:absolute; width:1px; height:1px; min-height:0; padding:0; margin:-1px;
+    overflow:hidden; clip-path:inset(50%); white-space:nowrap;
+  }
+  :root[data-theme="ocean"] .ocean-trace-case { grid-template-columns:minmax(140px,.65fr) minmax(0,1fr); padding:8px 10px; gap:8px; }
+  :root[data-theme="ocean"] .ocean-rates { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  :root[data-theme="ocean"] .ocean-rates span { font-size:9px; }
+  :root[data-theme="ocean"] .ocean-rates strong { font-size:clamp(14px,2.2vw,21px); }
+  :root[data-theme="ocean"] .ocean-trace svg { height:30px; }
+  :root[data-theme="ocean"] .ocean-trace span { display:none; }
+  :root[data-theme="ocean"] .ocean-instruments { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; flex:none; margin:0 0 6px; }
+  :root[data-theme="ocean"] .ocean-instrument-toggle {
+    display:flex; align-items:center; gap:8px; width:100%; padding:5px 12px; min-height:36px;
+    color:#c8f7e8; background:var(--o-bolts),var(--o-panel); border:1px solid #688b83; border-radius:3px;
+    font:600 11px/1.2 var(--o-mono);
+  }
+  :root[data-theme="ocean"] .ocean-instrument-toggle span:nth-last-child(2) { margin-left:auto; font-weight:400; color:var(--muted); }
+  :root[data-theme="ocean"] .ocean-instrument-body { display:contents; }
+  :root[data-theme="ocean"] .ocean-bandwidth-module { grid-column:1/-1; grid-row:1; padding:9px; }
+  :root[data-theme="ocean"] .ocean-instrument-toggle { grid-column:1/-1; grid-row:2; }
+  :root[data-theme="ocean"] .ocean-instruments :is(.ocean-sonar-module,.ocean-systems-module) { display:none; }
+  :root[data-theme="ocean"] .ocean-instruments.expanded :is(.ocean-sonar-module,.ocean-systems-module) { display:block; grid-row:3; align-self:start; }
+
+}
 @media (max-width:760px), (max-width:950px) and (max-height:540px) {
-  :root[data-theme="ocean"] body .ocean-masthead {
-    height:clamp(100px,28vw,124px);
-    margin-bottom:10px;
-    padding:0 17px 17px;
-    background-size:cover,80% auto;
-    background-position:center,right 43%;
-  }
-  :root[data-theme="ocean"] .ocean-masthead h1 { font-size:clamp(35px,9vw,45px); }
-  :root[data-theme="ocean"] .ocean-frame { inset:8px; }
+  :root[data-theme="ocean"] body .workspace { background:#122326!important; }
+  :root[data-theme="ocean"] body .mobile-transfers { flex-shrink:0; }
+  :root[data-theme="ocean"] .ocean-monitor-heading, :root[data-theme="ocean"] .ocean-instruments { order:0; }
 }
+@media (max-width:600px) {
+  :root[data-theme="ocean"] .ocean-mini-sonar { width:36px; height:36px; }
+  :root[data-theme="ocean"] .ocean-instrument-toggle { min-height:46px; font-size:12px; }
 
+  :root[data-theme="ocean"] .ocean-trace-case { grid-template-columns:minmax(0,1fr); }
+  :root[data-theme="ocean"] .ocean-trace { display:none; }
+  :root[data-theme="ocean"] .ocean-instruments.expanded .ocean-trace { display:flex; }
+  :root[data-theme="ocean"] .ocean-instruments.expanded .ocean-trace svg { height:36px; }
+
+  :root[data-theme="ocean"] .ocean-rates { gap:4px; }
+  :root[data-theme="ocean"] .ocean-rates strong { font-size:clamp(13px,4.1vw,20px); }
+  :root[data-theme="ocean"] .ocean-legend { grid-template-columns:1fr; }
+  :root[data-theme="ocean"] .ocean-sonar-module, :root[data-theme="ocean"] .ocean-systems-module { padding:12px 7px; }
+  :root[data-theme="ocean"] .ocean-systems-module .ocean-gauge-row { flex-wrap:wrap; justify-content:start; }
+  :root[data-theme="ocean"] .ocean-gauge { min-width:55px; }
+  :root[data-theme="ocean"] .ocean-readouts > div { flex-wrap:wrap; }
+  :root[data-theme="ocean"] .ocean-module-label { padding-inline:2px; }
+  :root[data-theme="ocean"] .ocean-module-label h2 { font-size:11px; }
+}
 @media (orientation:landscape) and (max-width:950px) and (max-height:540px) {
-  :root[data-theme="ocean"] body .ocean-masthead {
-    height:clamp(42px,12dvh,58px);
-    padding:0 20px 8px;
-    margin-bottom:6px;
-  }
-  :root[data-theme="ocean"] .ocean-masthead h1 { font-size:30px; }
-  :root[data-theme="ocean"] .ocean-frame { inset:5px; }
+  :root[data-theme="ocean"] body .workspace { display:grid; grid-template-columns:minmax(0,1fr) 160px; align-content:start; }
+  :root[data-theme="ocean"] .ocean-bandwidth-module { padding:4px 8px; }
+  :root[data-theme="ocean"] .ocean-trace-case { border:0; padding:2px 6px; }
+  :root[data-theme="ocean"] .ocean-rates strong { font-size:13px; }
+  :root[data-theme="ocean"] .ocean-trace svg { height:22px; }
+  :root[data-theme="ocean"] .ocean-instruments { grid-column:2; grid-row:1; }
+  :root[data-theme="ocean"] .ocean-instruments.expanded { grid-column:1 / -1; grid-row:2; }
+  :root[data-theme="ocean"] .ocean-instrument-toggle { min-height:32px; justify-content:center; }
+  :root[data-theme="ocean"] .ocean-mini-sonar { width:18px; height:18px; }
+  :root[data-theme="ocean"] .ocean-instrument-toggle span:nth-last-child(2) { display:none; }
+  :root[data-theme="ocean"] .workspace > :is(.search-wrap,.library-mobile-controls,.mobile-transfers,.deck-status-rail,.connection-recovery,.form-error,.search-note) { grid-column:1 / -1; }
 }

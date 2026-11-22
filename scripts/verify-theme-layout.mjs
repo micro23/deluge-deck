@@ -11,11 +11,13 @@ const output = process.env.SCREENSHOT_DIR || '/tmp/deck-theme-review';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel:'chrome', headless:true });
 const results = [];
-const photographicMastheads = {
-  light: { selector: '.paper-folio-plate', asset: 'paper-observatory-atrium' },
-  ocean: { selector: '.ocean-masthead', asset: 'ocean-deep-sea-habitat' },
-  sunset: { selector: '.sunset-masthead', pseudo: '::before', asset: 'sunset-desert-observatory' },
+const redesignedThemes = {
+  light: '.notebook-brand:visible',
+  ocean: '.ocean-bandwidth-module',
+  sunset: '.sunset-ticket-strip',
+  dark: '.midnight-observations',
 };
+const primaryMetric = { darkhand: '.dh-stat strong', ocean: '.ocean-rates strong' };
 const requested = process.env.DECK_VERIFY_THEMES?.split(',');
 if (requested) assert.ok(requested.every(id => THEMES.some(([theme]) => theme === id)), 'Unknown verification theme');
 try {
@@ -28,25 +30,40 @@ try {
     for (const [width,height] of [[1456,900],[1200,900],[820,1000],[390,844],[320,740]]) {
       await page.setViewportSize({width,height});
       await page.goto(origin);
-      await page.locator(theme === 'darkhand' ? '.dh-stat strong' : '.stat-card strong').first().waitFor();
-      await page.waitForFunction(selector => document.querySelector(selector)?.textContent !== '0', theme === 'darkhand' ? '.dh-stat strong' : '.stat-card strong');
+      const metric = primaryMetric[theme] || '.stat-card strong';
+      await page.locator(metric).first().waitFor();
+      await page.waitForFunction(selector => /\d/.test(document.querySelector(selector)?.textContent || '') && document.querySelector(selector).textContent !== '0', metric);
       await page.evaluate(() => document.fonts.ready);
       // Auto sizing runs after font loading and ResizeObserver delivery.
       await page.waitForTimeout(250);
-      if (photographicMastheads[theme]) {
-        const { selector, pseudo, asset } = photographicMastheads[theme];
-        const artwork = page.locator(selector);
-        assert.ok(await artwork.isVisible(), `${theme} ${width}: masthead photo is visible`);
-        const imageLoaded = await artwork.evaluate(async (element, { pseudo, asset }) => {
-          const background = getComputedStyle(element, pseudo).backgroundImage;
-          const url = [...background.matchAll(/url\("([^"]+)"\)/g)].map(match => match[1]).find(url => url.includes(asset));
-          if (!url) return false;
-          const image = new Image();
-          image.src = url;
-          await image.decode();
-          return image.naturalWidth > 0;
-        }, { pseudo, asset });
-        assert.ok(imageLoaded, `${theme} ${width}: missing or undecodable masthead image`);
+      if (redesignedThemes[theme]) {
+        await page.locator(redesignedThemes[theme]).waitFor({ state: 'attached' });
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${theme} ${width}: layout fits the viewport`);
+        if (theme === 'light' && width > 760) {
+          const ruling = await page.locator('.table-shell').evaluate(el => el.style.getPropertyValue('--paper-column-lines'));
+          assert.match(ruling, /^linear-gradient\(90deg,/, 'Paper extends the live table columns into the notebook ruling');
+        }
+        if (theme === 'ocean' && width >= 1200) {
+          const [table, sonar] = await Promise.all([
+            page.locator('.table-shell').boundingBox(),
+            page.locator('.ocean-sonar-module').boundingBox(),
+          ]);
+          assert.ok(table && sonar && sonar.x >= table.x + table.width - 1, 'Ocean sonar shares the screen alongside the transfer list');
+          const legend = page.getByRole('button', { name: 'Filter paused torrents' });
+          await legend.click();
+          await page.waitForFunction(() => document.querySelectorAll('.table-shell tr[data-virtual-index]').length === 1);
+          await legend.click();
+          await page.waitForFunction(() => document.querySelectorAll('.table-shell tr[data-virtual-index]').length === 4);
+        }
+        if (theme === 'sunset' && width >= 1200)
+          assert.ok((await page.locator('.sidebar').boundingBox()).width > width * .9, 'Sunset library navigation spans the dashboard like a railway counter');
+        if (theme === 'dark' && width >= 1200) {
+          const [table, instruments] = await Promise.all([
+            page.locator('.table-shell').boundingBox(),
+            page.locator('.midnight-observations').boundingBox(),
+          ]);
+          assert.ok(table && instruments && instruments.y >= table.y + table.height - 1, 'Midnight telemetry sits beneath the transfer log');
+        }
         const colors = await page.locator('html').evaluate(root => {
           const style = getComputedStyle(root);
           const tokens = ['bg','surface','surface-2','surface-3','text','muted','muted-2','cyan','green','amber','danger','violet','accent-fg'];

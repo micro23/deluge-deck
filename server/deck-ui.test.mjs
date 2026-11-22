@@ -974,7 +974,7 @@ test('dashboard exposes the dream-loop telemetry hierarchy', async () => {
     source(),
     readFile(path.join(root, 'src/dashboard-polish.css'), 'utf8'),
   ]);
-  assert.match(ui, /<h1>Deluge<\/h1>/);
+  assert.match(ui, /className="topbar-heading">\s*<h1>/);
   assert.match(ui, /aria-label="Torrent filters"/);
   assert.match(ui, /className="deck-filter-summary"/);
   assert.match(ui, /aria-label="Session status"/);

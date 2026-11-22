@@ -829,3 +829,9 @@ html.deluge-deck-loading body .ext-el-mask {
   body .stats-grid .stat-card>.stat-spark { display:none!important; }
   body .table-shell>.table-tools { display:none!important; }
 }
+.add-options > .allocation-label { min-width:0; }
+@media (max-width:390px) {
+  .add-modal .add-options { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .add-modal .add-options :is(.free-space-status,.allocation-label) { grid-column:1/-1; }
+  .add-modal .allocation-label select { flex:1; min-width:0; }
+}

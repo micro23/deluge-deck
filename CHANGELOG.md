@@ -1,3 +1,11 @@
+## 1.0.105 — four distinct dashboard themes
+
+- Turn Paper into a leather-bound notebook with metal rings, ruled sheets, and ledger lines that follow the live table columns.
+- Give Ocean a submersible console with live bandwidth, a connection gauge, and interactive sonar that groups torrents by state and completion.
+- Rebuild Sunset as a desert railway poster with horizontal navigation, perforated metric tickets, and a printed transfer manifest.
+- Move Midnight’s filters to the right and put its brass star dial and session telemetry below the transfer log.
+- Refresh all four theme previews and fit the Add Torrent options on narrow phones.
+
 ## 1.0.104 — Paper, Ocean, and Sunset theme redesigns
 
 - Give Paper an ivory letterpress layout, an architectural photo spread, and an oxblood sidebar.

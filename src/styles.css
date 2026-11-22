@@ -1506,55 +1506,12 @@ tbody tr:hover .state-icon {
   }
 }
 
-/* Midnight environment plate: the generated environment sits behind the
-   unchanged dashboard geometry, with translucent surfaces preserving the
-   original information hierarchy. */
-:root[data-theme="dark"] .app-shell {
-  background:
-    linear-gradient(90deg,rgba(3,10,17,.94) 0%,rgba(3,10,17,.76) 22%,rgba(3,10,17,.68) 54%,rgba(3,10,17,.82) 100%),
-    url('./assets/midnight-operations-bay-optimized.webp') center/cover fixed!important;
-}
-:root[data-theme="dark"] .topbar {
-  background:linear-gradient(105deg,rgba(5,17,27,.9),rgba(7,26,40,.72) 55%,rgba(10,23,38,.86))!important;
-  backdrop-filter:blur(16px) saturate(1.22);
-}
-:root[data-theme="dark"] .sidebar {
-  background:linear-gradient(180deg,rgba(4,18,28,.94),rgba(3,12,20,.84) 65%,rgba(5,14,23,.92))!important;
-  backdrop-filter:blur(14px) saturate(1.18);
-}
-:root[data-theme="dark"] .stat-card {
-  background:linear-gradient(145deg,rgba(15,42,58,.78),rgba(7,22,33,.84) 58%,rgba(5,15,24,.9))!important;
-  backdrop-filter:blur(16px) saturate(1.25);
-}
-:root[data-theme="dark"] .table-shell {
-  background:linear-gradient(145deg,rgba(8,26,39,.78),rgba(4,14,23,.86))!important;
-  backdrop-filter:blur(18px) saturate(1.22);
-}
-:root[data-theme="dark"] .deck-status-rail,
-:root[data-theme="dark"] .search-wrap {
-  background:linear-gradient(135deg,rgba(11,34,48,.78),rgba(5,17,27,.86))!important;
-  backdrop-filter:blur(16px) saturate(1.18);
-}
-@media (max-width:760px) {
-  :root[data-theme="dark"] .app-shell { background-attachment:scroll!important; }
-}
-
-/* The remaining palettes share the same environmental depth, but each gets
-   its own light treatment so the identity of the palette remains intact. */
-:root[data-theme="ocean"] .app-shell {
-  background:linear-gradient(90deg,rgba(2,16,29,.82),rgba(3,26,45,.42) 48%,rgba(1,14,27,.74)),url('./assets/ocean-deep-sea-habitat-optimized.webp') center/cover fixed!important;
-}
-:root[data-theme="sunset"] .app-shell {
-  background:linear-gradient(90deg,rgba(16,20,42,.82),rgba(44,32,68,.44) 46%,rgba(65,28,48,.74)),url('./assets/sunset-desert-observatory-optimized.webp') center/cover fixed!important;
-}
+/* Environmental art for the seasonal palettes. */
 :root[data-theme="independence"] .app-shell {
   background:linear-gradient(90deg,rgba(2,12,31,.82),rgba(10,40,78,.44) 48%,rgba(46,14,32,.74)),url('./assets/independence-coastal-observatory-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="new-year"] .app-shell {
   background:linear-gradient(90deg,rgba(4,6,9,.84),rgba(29,27,21,.44) 48%,rgba(8,8,10,.78)),url('./assets/new-year-rooftop-observatory-optimized.webp') center/cover fixed!important;
-}
-:root[data-theme="light"] .app-shell {
-  background:linear-gradient(90deg,rgba(233,242,244,.84),rgba(218,235,236,.48) 48%,rgba(245,235,225,.78)),url('./assets/paper-observatory-atrium-optimized.webp') center/cover fixed!important;
 }
 :root[data-theme="forest"] .app-shell {
   background:linear-gradient(90deg,rgba(220,234,210,.82),rgba(202,224,199,.44) 48%,rgba(240,230,211,.76)),url('./assets/forest-bioluminescent-conservatory-optimized.webp') center/cover fixed!important;
